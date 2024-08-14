@@ -211,8 +211,8 @@
 |---|---|---|---|
 | message_id | Integer | true | Unique message identifier inside this chat |
 | message_thread_id | Integer | false | <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only |
-| from | User | false | <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat. |
-| sender_chat | Chat | false | <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat. |
+| from | User | false | <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats |
+| sender_chat | Chat | false | <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats. |
 | sender_boost_count | Integer | false | <em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user |
 | sender_business_bot | User | false | <em>Optional</em>. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account. |
 | date | Integer | true | Date the message was sent in Unix time. It is always a positive number, representing a valid date. |
@@ -1372,7 +1372,7 @@
 
 #### ChatMemberMember
 
-    ChatMemberMember(status: String, user: User)
+    ChatMemberMember(status: String, user: User, until_date: Integer)
 
 <p>Represents a <a href="#chatmember">chat member</a> that has no additional privileges or restrictions.</p>
 
@@ -1380,6 +1380,7 @@
 |---|---|---|---|
 | status | String | true | The member's status in the chat, always “member” |
 | user | User | true | Information about the user |
+| until_date | Integer | false | <em>Optional</em>. Date when the user's subscription will expire; Unix time |
 
 #### ChatMemberRestricted
 
@@ -1558,6 +1559,16 @@
 |---|---|---|---|
 | type | String | true | Type of the reaction, always “custom_emoji” |
 | custom_emoji_id | String | true | Custom emoji identifier |
+
+#### ReactionTypePaid
+
+    ReactionTypePaid(type: String)
+
+<p>The reaction is paid.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| type | String | true | Type of the reaction, always “paid” |
 
 #### ReactionCount
 
@@ -2273,13 +2284,14 @@
 
 #### sendPaidMedia
 
-    sendPaidMedia(chat_id: IntegerOrString, star_count: Integer, media: List<InputPaidMedia>, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendPaidMedia(business_connection_id: String, chat_id: IntegerOrString, star_count: Integer, media: List<InputPaidMedia>, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
-<p>Use this method to send paid media to channel chats. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>Use this method to send paid media. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
-| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance. |
 | star_count | Integer | true | The number of Telegram Stars that must be paid to buy access to the media |
 | media | List<InputPaidMedia> | true | A JSON-serialized array describing the media to be sent; up to 10 items |
 | caption | String | false | Media caption, 0-1024 characters after entities parsing |
@@ -2445,13 +2457,13 @@
 
     setMessageReaction(chat_id: IntegerOrString, message_id: Integer, reaction: List<ReactionType>, is_big: Boolean)
 
-<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead. |
-| reaction | List<ReactionType> | false | A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. |
+| reaction | List<ReactionType> | false | A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots. |
 | is_big | Boolean | false | Pass <em>True</em> to set the reaction with a big animation |
 
 #### getUserProfilePhotos
@@ -2627,6 +2639,31 @@
 | expire_date | Integer | false | Point in time (Unix timestamp) when the link will expire |
 | member_limit | Integer | false | The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999 |
 | creates_join_request | Boolean | false | <em>True</em>, if users joining the chat via the link need to be approved by chat administrators. If <em>True</em>, <em>member_limit</em> can't be specified |
+
+#### createChatSubscriptionInviteLink
+
+    createChatSubscriptionInviteLink(chat_id: IntegerOrString, name: String, subscription_period: Integer, subscription_price: Integer)
+
+<p>Use this method to create a <a href="https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions">subscription invite link</a> for a channel chat. The bot must have the <em>can_invite_users</em> administrator rights. The link can be edited using the method <a href="#editchatsubscriptioninvitelink">editChatSubscriptionInviteLink</a> or revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target channel chat or username of the target channel (in the format <code>@channelusername</code>) |
+| name | String | false | Invite link name; 0-32 characters |
+| subscription_period | Integer | true | The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days). |
+| subscription_price | Integer | true | The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500 |
+
+#### editChatSubscriptionInviteLink
+
+    editChatSubscriptionInviteLink(chat_id: IntegerOrString, invite_link: String, name: String)
+
+<p>Use this method to edit a subscription invite link created by the bot. The bot must have the <em>can_invite_users</em> administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| invite_link | String | true | The invite link to edit |
+| name | String | false | Invite link name; 0-32 characters |
 
 #### revokeChatInviteLink
 
@@ -2834,7 +2871,7 @@
 
     editForumTopic(chat_id: IntegerOrString, message_thread_id: Integer, name: String, icon_custom_emoji_id: String)
 
-<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -2891,7 +2928,7 @@
 
     editGeneralForumTopic(chat_id: IntegerOrString, name: String)
 
-<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
+<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -4265,7 +4302,7 @@
 
 #### TransactionPartnerUser
 
-    TransactionPartnerUser(type: String, user: User, invoice_payload: String)
+    TransactionPartnerUser(type: String, user: User, invoice_payload: String, paid_media: List<PaidMedia>)
 
 <p>Describes a transaction with a user.</p>
 
@@ -4274,6 +4311,7 @@
 | type | String | true | Type of the transaction partner, always “user” |
 | user | User | true | Information about the user |
 | invoice_payload | String | false | <em>Optional</em>. Bot-specified invoice payload |
+| paid_media | List<PaidMedia> | false | <em>Optional</em>. Information about the paid media bought by the user |
 
 #### TransactionPartnerFragment
 

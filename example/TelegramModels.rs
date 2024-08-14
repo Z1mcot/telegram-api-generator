@@ -435,8 +435,8 @@ pub struct ChatFullInfo {
  *
  * @property message_id Unique message identifier inside this chat
  * @property message_thread_id <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only
- * @property from <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
- * @property sender_chat <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+ * @property from <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats
+ * @property sender_chat <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats.
  * @property sender_boost_count <em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user
  * @property sender_business_bot <em>Optional</em>. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
  * @property date Date the message was sent in Unix time. It is always a positive number, representing a valid date.
@@ -528,10 +528,10 @@ pub struct Message {
     /// <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_thread_id: Option<Integer>,
-    /// <em>Optional</em>. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    /// <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from: Option<User>,
-    /// <em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.
+    /// <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sender_chat: Option<Chat>,
     /// <em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user
@@ -2897,6 +2897,7 @@ pub struct ChatMemberAdministrator {
  *
  * @property status The member's status in the chat, always “member”
  * @property user Information about the user
+ * @property until_date <em>Optional</em>. Date when the user's subscription will expire; Unix time
  *
  * @constructor Creates a [ChatMemberMember].
  * */
@@ -2905,7 +2906,10 @@ pub struct ChatMemberMember {
     /// The member's status in the chat, always “member”
     pub status: String,
     /// Information about the user
-    pub user: User
+    pub user: User,
+    /// <em>Optional</em>. Date when the user's subscription will expire; Unix time
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub until_date: Option<Integer>
 }
 
 /**
@@ -3242,6 +3246,20 @@ pub struct ReactionTypeCustomEmoji {
     pub type_: String,
     /// Custom emoji identifier
     pub custom_emoji_id: String
+}
+
+/**
+ * <p>The reaction is paid.</p>
+ *
+ * @property type Type of the reaction, always “paid”
+ *
+ * @constructor Creates a [ReactionTypePaid].
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct ReactionTypePaid {
+    /// Type of the reaction, always “paid”
+    #[serde(rename = "type")]
+    pub type_: String
 }
 
 /**
@@ -5793,6 +5811,7 @@ pub struct RevenueWithdrawalStateFailed {
  * @property type Type of the transaction partner, always “user”
  * @property user Information about the user
  * @property invoice_payload <em>Optional</em>. Bot-specified invoice payload
+ * @property paid_media <em>Optional</em>. Information about the paid media bought by the user
  *
  * @constructor Creates a [TransactionPartnerUser].
  * */
@@ -5805,7 +5824,10 @@ pub struct TransactionPartnerUser {
     pub user: User,
     /// <em>Optional</em>. Bot-specified invoice payload
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub invoice_payload: Option<String>
+    pub invoice_payload: Option<String>,
+    /// <em>Optional</em>. Information about the paid media bought by the user
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paid_media: Option<Vec<PaidMedia>>
 }
 
 /**
@@ -6884,9 +6906,10 @@ pub struct SendVideoNoteRequest {
 }
 
 /**
- * <p>Use this method to send paid media to channel chats. On success, the sent <a href="#message">Message</a> is returned.</p>
+ * <p>Use this method to send paid media. On success, the sent <a href="#message">Message</a> is returned.</p>
  *
- * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
  * @property star_count The number of Telegram Stars that must be paid to buy access to the media
  * @property media A JSON-serialized array describing the media to be sent; up to 10 items
  * @property caption Media caption, 0-1024 characters after entities parsing
@@ -6900,7 +6923,9 @@ pub struct SendVideoNoteRequest {
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
 pub struct SendPaidMediaRequest {
-    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    /// Unique identifier of the business connection on behalf of which the message will be sent
+    pub business_connection_id: Option<String>,
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
     pub chat_id: String,
     /// The number of Telegram Stars that must be paid to buy access to the media
     pub star_count: Integer,
@@ -7239,11 +7264,11 @@ pub struct SendChatActionRequest {
 }
 
 /**
- * <p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns <em>True</em> on success.</p>
+ * <p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
  * @property message_id Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
- * @property reaction A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+ * @property reaction A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
  * @property is_big Pass <em>True</em> to set the reaction with a big animation
  * */
 #[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
@@ -7252,7 +7277,7 @@ pub struct SetMessageReactionRequest {
     pub chat_id: String,
     /// Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
     pub message_id: Integer,
-    /// A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+    /// A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
     pub reaction: Option<Vec<ReactionType>>,
     /// Pass <em>True</em> to set the reaction with a big animation
     pub is_big: Option<bool>
@@ -7530,6 +7555,43 @@ pub struct EditChatInviteLinkRequest {
 }
 
 /**
+ * <p>Use this method to create a <a href="https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions">subscription invite link</a> for a channel chat. The bot must have the <em>can_invite_users</em> administrator rights. The link can be edited using the method <a href="#editchatsubscriptioninvitelink">editChatSubscriptionInviteLink</a> or revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ *
+ * @property chat_id Unique identifier for the target channel chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property name Invite link name; 0-32 characters
+ * @property subscription_period The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).
+ * @property subscription_price The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct CreateChatSubscriptionInviteLinkRequest {
+    /// Unique identifier for the target channel chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// Invite link name; 0-32 characters
+    pub name: Option<String>,
+    /// The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).
+    pub subscription_period: Integer,
+    /// The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500
+    pub subscription_price: Integer
+}
+
+/**
+ * <p>Use this method to edit a subscription invite link created by the bot. The bot must have the <em>can_invite_users</em> administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+ *
+ * @property chat_id Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+ * @property invite_link The invite link to edit
+ * @property name Invite link name; 0-32 characters
+ * */
+#[derive(Serialize, Deserialize, Clone, PartialEq, PartialOrd, Debug)]
+pub struct EditChatSubscriptionInviteLinkRequest {
+    /// Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)
+    pub chat_id: String,
+    /// The invite link to edit
+    pub invite_link: String,
+    /// Invite link name; 0-32 characters
+    pub name: Option<String>
+}
+
+/**
  * <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
  *
  * @property chat_id Unique identifier of the target chat or username of the target channel (in the format <code>@channelusername</code>)
@@ -7776,7 +7838,7 @@ pub struct CreateForumTopicRequest {
 }
 
 /**
- * <p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+ * <p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * @property message_thread_id Unique identifier for the target message thread of the forum topic
@@ -7852,7 +7914,7 @@ pub struct UnpinAllForumTopicMessagesRequest {
 }
 
 /**
- * <p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
+ * <p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
  *
  * @property chat_id Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)
  * @property name New topic name, 1-128 characters

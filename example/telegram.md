@@ -374,7 +374,7 @@
 
 <p>Represents a <a href="#chatmember">chat member</a> that has no additional privileges or restrictions.</p>
 
-    ChatMemberMember(status: String, user: User)
+    ChatMemberMember(status: String, user: User, until_date: Integer)
 
 <p>Represents a <a href="#chatmember">chat member</a> that is under certain restrictions in the chat. Supergroups only.</p>
 
@@ -427,6 +427,10 @@
 <p>The reaction is based on a custom emoji.</p>
 
     ReactionTypeCustomEmoji(type: String, custom_emoji_id: String)
+
+<p>The reaction is paid.</p>
+
+    ReactionTypePaid(type: String)
 
 <p>Represents a reaction added to a message along with the number of times it was added.</p>
 
@@ -629,9 +633,9 @@
 
     sendVideoNote(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, video_note: InputFileOrString, duration: Integer, length: Integer, thumbnail: InputFileOrString, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
-<p>Use this method to send paid media to channel chats. On success, the sent <a href="#message">Message</a> is returned.</p>
+<p>Use this method to send paid media. On success, the sent <a href="#message">Message</a> is returned.</p>
 
-    sendPaidMedia(chat_id: IntegerOrString, star_count: Integer, media: List<InputPaidMedia>, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    sendPaidMedia(business_connection_id: String, chat_id: IntegerOrString, star_count: Integer, media: List<InputPaidMedia>, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href="#message">Messages</a> that were sent is returned.</p>
 
@@ -663,7 +667,7 @@
 
     sendChatAction(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, action: String)
 
-<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns <em>True</em> on success.</p>
+<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>
 
     setMessageReaction(chat_id: IntegerOrString, message_id: Integer, reaction: List<ReactionType>, is_big: Boolean)
 
@@ -720,6 +724,14 @@
 <p>Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
     editChatInviteLink(chat_id: IntegerOrString, invite_link: String, name: String, expire_date: Integer, member_limit: Integer, creates_join_request: Boolean)
+
+<p>Use this method to create a <a href="https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions">subscription invite link</a> for a channel chat. The bot must have the <em>can_invite_users</em> administrator rights. The link can be edited using the method <a href="#editchatsubscriptioninvitelink">editChatSubscriptionInviteLink</a> or revoked using the method <a href="#revokechatinvitelink">revokeChatInviteLink</a>. Returns the new invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+
+    createChatSubscriptionInviteLink(chat_id: IntegerOrString, name: String, subscription_period: Integer, subscription_price: Integer)
+
+<p>Use this method to edit a subscription invite link created by the bot. The bot must have the <em>can_invite_users</em> administrator rights. Returns the edited invite link as a <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
+
+    editChatSubscriptionInviteLink(chat_id: IntegerOrString, invite_link: String, name: String)
 
 <p>Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as <a href="#chatinvitelink">ChatInviteLink</a> object.</p>
 
@@ -797,7 +809,7 @@
 
     createForumTopic(chat_id: IntegerOrString, name: String, icon_color: Integer, icon_custom_emoji_id: String)
 
-<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
 
     editForumTopic(chat_id: IntegerOrString, message_thread_id: Integer, name: String, icon_custom_emoji_id: String)
 
@@ -817,7 +829,7 @@
 
     unpinAllForumTopicMessages(chat_id: IntegerOrString, message_thread_id: Integer)
 
-<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
+<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>
 
     editGeneralForumTopic(chat_id: IntegerOrString, name: String)
 
@@ -1223,7 +1235,7 @@
 
 <p>Describes a transaction with a user.</p>
 
-    TransactionPartnerUser(type: String, user: User, invoice_payload: String)
+    TransactionPartnerUser(type: String, user: User, invoice_payload: String, paid_media: List<PaidMedia>)
 
 <p>Describes a withdrawal transaction with Fragment.</p>
 

@@ -1027,7 +1027,7 @@
           },
           {
             "name": "from",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats",
             "type": {
               "name": "User"
             },
@@ -1035,7 +1035,7 @@
           },
           {
             "name": "sender_chat",
-            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field \u003cem\u003efrom\u003c/em\u003e contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel\u0027s discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field \u003cem\u003efrom\u003c/em\u003e contains a fake sender user in non-channel chats.",
             "type": {
               "name": "Chat"
             },
@@ -5333,6 +5333,14 @@
               "name": "User"
             },
             "required": true
+          },
+          {
+            "name": "until_date",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Date when the user\u0027s subscription will expire; Unix time",
+            "type": {
+              "name": "Integer"
+            },
+            "required": false
           }
         ]
       },
@@ -5898,6 +5906,20 @@
           {
             "name": "custom_emoji_id",
             "description": "Custom emoji identifier",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          }
+        ]
+      },
+      {
+        "name": "ReactionTypePaid",
+        "description": "\u003cp\u003eThe reaction is paid.\u003c/p\u003e",
+        "docFields": [
+          {
+            "name": "type",
+            "description": "Type of the reaction, always “paid”",
             "type": {
               "name": "String"
             },
@@ -8852,11 +8874,19 @@
       },
       {
         "name": "sendPaidMedia",
-        "description": "\u003cp\u003eUse this method to send paid media to channel chats. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to send paid media. On success, the sent \u003ca href\u003d\"#message\"\u003eMessage\u003c/a\u003e is returned.\u003c/p\u003e",
         "docParameters": [
           {
+            "name": "business_connection_id",
+            "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
             "name": "chat_id",
-            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat\u0027s balance. Otherwise, they will be credited to the bot\u0027s balance.",
             "type": {
               "validTypes": [
                 {
@@ -9828,7 +9858,7 @@
       },
       {
         "name": "setMessageReaction",
-        "description": "\u003cp\u003eUse this method to change the chosen reactions on a message. Service messages can\u0027t be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to change the chosen reactions on a message. Service messages can\u0027t be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can\u0027t use paid reactions. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -9856,7 +9886,7 @@
           },
           {
             "name": "reaction",
-            "description": "A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.",
+            "description": "A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can\u0027t be used by bots.",
             "type": {
               "elementType": {
                 "subclasses": {},
@@ -10526,6 +10556,96 @@
         }
       },
       {
+        "name": "createChatSubscriptionInviteLink",
+        "description": "\u003cp\u003eUse this method to create a \u003ca href\u003d\"https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions\"\u003esubscription invite link\u003c/a\u003e for a channel chat. The bot must have the \u003cem\u003ecan_invite_users\u003c/em\u003e administrator rights. The link can be edited using the method \u003ca href\u003d\"#editchatsubscriptioninvitelink\"\u003eeditChatSubscriptionInviteLink\u003c/a\u003e or revoked using the method \u003ca href\u003d\"#revokechatinvitelink\"\u003erevokeChatInviteLink\u003c/a\u003e. Returns the new invite link as a \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target channel chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "name",
+            "description": "Invite link name; 0-32 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "subscription_period",
+            "description": "The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          },
+          {
+            "name": "subscription_price",
+            "description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500",
+            "type": {
+              "name": "Integer"
+            },
+            "required": true
+          }
+        ],
+        "returns": {
+          "name": "ChatInviteLink"
+        }
+      },
+      {
+        "name": "editChatSubscriptionInviteLink",
+        "description": "\u003cp\u003eUse this method to edit a subscription invite link created by the bot. The bot must have the \u003cem\u003ecan_invite_users\u003c/em\u003e administrator rights. Returns the edited invite link as a \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
+        "docParameters": [
+          {
+            "name": "chat_id",
+            "description": "Unique identifier for the target chat or username of the target channel (in the format \u003ccode\u003e@channelusername\u003c/code\u003e)",
+            "type": {
+              "validTypes": [
+                {
+                  "name": "Integer"
+                },
+                {
+                  "name": "String"
+                }
+              ],
+              "name": "IntegerOrString"
+            },
+            "required": true
+          },
+          {
+            "name": "invite_link",
+            "description": "The invite link to edit",
+            "type": {
+              "name": "String"
+            },
+            "required": true
+          },
+          {
+            "name": "name",
+            "description": "Invite link name; 0-32 characters",
+            "type": {
+              "name": "String"
+            },
+            "required": false
+          }
+        ],
+        "returns": {
+          "name": "ChatInviteLink"
+        }
+      },
+      {
         "name": "revokeChatInviteLink",
         "description": "\u003cp\u003eUse this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as \u003ca href\u003d\"#chatinvitelink\"\u003eChatInviteLink\u003c/a\u003e object.\u003c/p\u003e",
         "docParameters": [
@@ -11123,7 +11243,7 @@
       },
       {
         "name": "editForumTopic",
-        "description": "\u003cp\u003eUse this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have \u003cem\u003ecan_manage_topics\u003c/em\u003e administrator rights, unless it is the creator of the topic. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the \u003cem\u003ecan_manage_topics\u003c/em\u003e administrator rights, unless it is the creator of the topic. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -11304,7 +11424,7 @@
       },
       {
         "name": "editGeneralForumTopic",
-        "description": "\u003cp\u003eUse this method to edit the name of the \u0027General\u0027 topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have \u003cem\u003ecan_manage_topics\u003c/em\u003e administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
+        "description": "\u003cp\u003eUse this method to edit the name of the \u0027General\u0027 topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the \u003cem\u003ecan_manage_topics\u003c/em\u003e administrator rights. Returns \u003cem\u003eTrue\u003c/em\u003e on success.\u003c/p\u003e",
         "docParameters": [
           {
             "name": "chat_id",
@@ -16565,6 +16685,19 @@
             "description": "\u003cem\u003eOptional\u003c/em\u003e. Bot-specified invoice payload",
             "type": {
               "name": "String"
+            },
+            "required": false
+          },
+          {
+            "name": "paid_media",
+            "description": "\u003cem\u003eOptional\u003c/em\u003e. Information about the paid media bought by the user",
+            "type": {
+              "elementType": {
+                "subclasses": {},
+                "deserializer": "",
+                "name": "PaidMedia"
+              },
+              "name": "List\u003cPaidMedia\u003e"
             },
             "required": false
           }

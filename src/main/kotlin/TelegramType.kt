@@ -153,6 +153,30 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                                     Message.serializer()
                                 }"""
         )
+
+        object StoryAreaType : Super(
+            name = "StoryAreaType",
+            subclasses = { it.startsWith("StoryAreaType") },
+            deserializer = ""
+        )
+
+        object OwnedGift : Super(
+            name = "OwnedGift",
+            subclasses = { it.startsWith("OwnedGift") && it != "OwnedGifts" },
+            deserializer = ""
+        )
+
+        object InputProfilePhoto : Super(
+            name = "InputProfilePhoto",
+            subclasses = { it.startsWith("InputProfilePhoto") },
+            deserializer = ""
+        )
+
+        object InputStoryContent : Super(
+            name = "InputStoryContent",
+            subclasses = { it.startsWith("InputStoryContent") },
+            deserializer = ""
+        )
     }
 
     sealed class WithAlternative(name: String, val validTypes: List<TelegramType>, superType: TelegramType?) :
@@ -200,6 +224,10 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.InputPaidMedia,
             Super.KeyboardOption,
             Super.MaybeInaccessibleMessage,
+            Super.StoryAreaType,
+            Super.OwnedGift,
+            Super.InputProfilePhoto,
+            Super.InputStoryContent,
             WithAlternative.InputFileOrString,
             WithAlternative.IntegerOrString,
         )
@@ -242,6 +270,10 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "BotCommandScope" -> Super.BotCommandScope
             "KeyboardOption" -> Super.KeyboardOption
             "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage
+            "StoryAreaType" -> Super.StoryAreaType
+            "OwnedGift" -> Super.OwnedGift
+            "InputProfilePhoto" -> Super.InputProfilePhoto
+            "InputStoryContent" -> Super.InputStoryContent
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
             else -> {

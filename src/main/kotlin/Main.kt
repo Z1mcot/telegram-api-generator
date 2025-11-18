@@ -51,6 +51,8 @@ fun main() = runBlocking {
     File("example/TelegramModels.kt").writeText(docsRequiredFirst.toKotlinModels(useKotlinXSerialization = true))
     File("example/TelegramClient.kt").writeText(docsRequiredFirst.toKotlinMethods())
     File("example/TelegramModels.rs").writeText(docs.toRustModels())
+    File("example/TelegramModels.hpp").writeText(docs.toCppModels())
+    File("example/TelegramClient.hpp").writeText(docsRequiredFirst.toCppClient())
 
     println("🎉 $version - Examples generated!")
 }

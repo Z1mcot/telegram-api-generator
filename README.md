@@ -1,7 +1,7 @@
 # telegram-api-generator
 Parse https://core.telegram.org/bots/api page and generate a Kotlin class "DocSection" with "DocType" and "DocMethod"
 
-Last update: Telegram Bot API 7.9
+Last update: Telegram Bot API 9.2
 
 Example in:
 

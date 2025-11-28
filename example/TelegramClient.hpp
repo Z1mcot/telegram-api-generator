@@ -243,10 +243,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendMessage(    std::string chat_id,
+    TelegramResponse<Message> sendMessage(    ChatId chat_id,
         std::string text,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<ParseMode> parse_mode,
         std::optional<std::vector<MessageEntity>> entities,
@@ -254,7 +254,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -321,10 +321,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> forwardMessage(    std::string chat_id,
-        std::string from_chat_id,
-        std::int64_t message_id,
-        std::optional<std::int64_t> message_thread_id,
+    TelegramResponse<Message> forwardMessage(    ChatId chat_id,
+        ChatId from_chat_id,
+        MessageId message_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::int64_t> video_start_timestamp,
         std::optional<bool> disable_notification,
@@ -371,10 +371,10 @@ public:
      *
      * @return std::vector<MessageId>
      */
-    TelegramResponse<std::vector<MessageId>> forwardMessages(    std::string chat_id,
-        std::string from_chat_id,
-        std::vector<std::int64_t> message_ids,
-        std::optional<std::int64_t> message_thread_id,
+    TelegramResponse<std::vector<MessageId>> forwardMessages(    ChatId chat_id,
+        ChatId from_chat_id,
+        std::vector<MessageId> message_ids,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content
@@ -422,10 +422,10 @@ public:
      *
      * @return MessageId
      */
-    TelegramResponse<MessageId> copyMessage(    std::string chat_id,
-        std::string from_chat_id,
-        std::int64_t message_id,
-        std::optional<std::int64_t> message_thread_id,
+    TelegramResponse<MessageId> copyMessage(    ChatId chat_id,
+        ChatId from_chat_id,
+        MessageId message_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::int64_t> video_start_timestamp,
         std::optional<std::string> caption,
@@ -501,10 +501,10 @@ public:
      *
      * @return std::vector<MessageId>
      */
-    TelegramResponse<std::vector<MessageId>> copyMessages(    std::string chat_id,
-        std::string from_chat_id,
-        std::vector<std::int64_t> message_ids,
-        std::optional<std::int64_t> message_thread_id,
+    TelegramResponse<std::vector<MessageId>> copyMessages(    ChatId chat_id,
+        ChatId from_chat_id,
+        std::vector<MessageId> message_ids,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
@@ -557,10 +557,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendPhoto(    std::string chat_id,
+    TelegramResponse<Message> sendPhoto(    ChatId chat_id,
         std::string photo,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> caption,
         std::optional<ParseMode> parse_mode,
@@ -570,7 +570,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -653,10 +653,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendAudio(    std::string chat_id,
+    TelegramResponse<Message> sendAudio(    ChatId chat_id,
         std::string audio,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> caption,
         std::optional<ParseMode> parse_mode,
@@ -668,7 +668,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -755,10 +755,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendDocument(    std::string chat_id,
+    TelegramResponse<Message> sendDocument(    ChatId chat_id,
         std::string document,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> thumbnail,
         std::optional<std::string> caption,
@@ -768,7 +768,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -856,10 +856,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendVideo(    std::string chat_id,
+    TelegramResponse<Message> sendVideo(    ChatId chat_id,
         std::string video,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::int64_t> duration,
         std::optional<std::int64_t> width,
@@ -876,7 +876,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -982,10 +982,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendAnimation(    std::string chat_id,
+    TelegramResponse<Message> sendAnimation(    ChatId chat_id,
         std::string animation,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::int64_t> duration,
         std::optional<std::int64_t> width,
@@ -999,7 +999,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -1091,10 +1091,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendVoice(    std::string chat_id,
+    TelegramResponse<Message> sendVoice(    ChatId chat_id,
         std::string voice,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> caption,
         std::optional<ParseMode> parse_mode,
@@ -1103,7 +1103,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -1179,10 +1179,10 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendVideoNote(    std::string chat_id,
+    TelegramResponse<Message> sendVideoNote(    ChatId chat_id,
         std::string video_note,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::int64_t> duration,
         std::optional<std::int64_t> length,
@@ -1190,7 +1190,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -1265,11 +1265,11 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendPaidMedia(    std::string chat_id,
+    TelegramResponse<Message> sendPaidMedia(    ChatId chat_id,
         std::int64_t star_count,
         std::vector<InputPaidMedia> media,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> payload,
         std::optional<std::string> caption,
@@ -1350,15 +1350,15 @@ public:
      *
      * @return std::vector<Message>
      */
-    TelegramResponse<std::vector<Message>> sendMediaGroup(    std::string chat_id,
+    TelegramResponse<std::vector<Message>> sendMediaGroup(    ChatId chat_id,
         std::vector<InputMedia> media,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<ReplyParameters> reply_parameters
     ) {
         json j;
@@ -1416,11 +1416,11 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendLocation(    std::string chat_id,
+    TelegramResponse<Message> sendLocation(    ChatId chat_id,
         double latitude,
         double longitude,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<double> horizontal_accuracy,
         std::optional<std::int64_t> live_period,
@@ -1429,7 +1429,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -1510,13 +1510,13 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendVenue(    std::string chat_id,
+    TelegramResponse<Message> sendVenue(    ChatId chat_id,
         double latitude,
         double longitude,
         std::string title,
         std::string address,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> foursquare_id,
         std::optional<std::string> foursquare_type,
@@ -1525,7 +1525,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -1604,18 +1604,18 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendContact(    std::string chat_id,
+    TelegramResponse<Message> sendContact(    ChatId chat_id,
         std::string phone_number,
         std::string first_name,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> last_name,
         std::optional<std::string> vcard,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -1694,11 +1694,11 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendPoll(    std::string chat_id,
+    TelegramResponse<Message> sendPoll(    ChatId chat_id,
         std::string question,
         std::vector<InputPollOption> options,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::string> question_parse_mode,
         std::optional<std::vector<MessageEntity>> question_entities,
         std::optional<bool> is_anonymous,
@@ -1714,7 +1714,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
     ) {
@@ -1801,12 +1801,12 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendChecklist(    std::string business_connection_id,
-        std::int64_t chat_id,
+    TelegramResponse<Message> sendChecklist(    BusinessConnectionId business_connection_id,
+        ChatId chat_id,
         InputChecklist checklist,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<InlineKeyboardMarkup> reply_markup
     ) {
@@ -1852,15 +1852,15 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendDice(    std::string chat_id,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+    TelegramResponse<Message> sendDice(    ChatId chat_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> emoji,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -1917,10 +1917,10 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> sendChatAction(    std::string chat_id,
+    TelegramResponse<bool> sendChatAction(    ChatId chat_id,
         std::string action,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -1946,8 +1946,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setMessageReaction(    std::string chat_id,
-        std::int64_t message_id,
+    TelegramResponse<bool> setMessageReaction(    ChatId chat_id,
+        MessageId message_id,
         std::optional<std::vector<ReactionType>> reaction,
         std::optional<bool> is_big
     ) {
@@ -1974,7 +1974,7 @@ public:
      *
      * @return UserProfilePhotos
      */
-    TelegramResponse<UserProfilePhotos> getUserProfilePhotos(    std::int64_t user_id,
+    TelegramResponse<UserProfilePhotos> getUserProfilePhotos(    UserId user_id,
         std::optional<std::int64_t> offset,
         std::optional<std::int64_t> limit
     ) {
@@ -2000,7 +2000,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setUserEmojiStatus(    std::int64_t user_id,
+    TelegramResponse<bool> setUserEmojiStatus(    UserId user_id,
         std::optional<std::string> emoji_status_custom_emoji_id,
         std::optional<std::int64_t> emoji_status_expiration_date
     ) {
@@ -2043,8 +2043,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> banChatMember(    std::string chat_id,
-        std::int64_t user_id,
+    TelegramResponse<bool> banChatMember(    ChatId chat_id,
+        UserId user_id,
         std::optional<std::int64_t> until_date,
         std::optional<bool> revoke_messages
     ) {
@@ -2071,8 +2071,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> unbanChatMember(    std::string chat_id,
-        std::int64_t user_id,
+    TelegramResponse<bool> unbanChatMember(    ChatId chat_id,
+        UserId user_id,
         std::optional<bool> only_if_banned
     ) {
         json j;
@@ -2097,8 +2097,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> restrictChatMember(    std::string chat_id,
-        std::int64_t user_id,
+    TelegramResponse<bool> restrictChatMember(    ChatId chat_id,
+        UserId user_id,
         ChatPermissions permissions,
         std::optional<bool> use_independent_chat_permissions,
         std::optional<std::int64_t> until_date
@@ -2142,8 +2142,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> promoteChatMember(    std::string chat_id,
-        std::int64_t user_id,
+    TelegramResponse<bool> promoteChatMember(    ChatId chat_id,
+        UserId user_id,
         std::optional<bool> is_anonymous,
         std::optional<bool> can_manage_chat,
         std::optional<bool> can_delete_messages,
@@ -2226,8 +2226,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setChatAdministratorCustomTitle(    std::string chat_id,
-        std::int64_t user_id,
+    TelegramResponse<bool> setChatAdministratorCustomTitle(    ChatId chat_id,
+        UserId user_id,
         std::string custom_title
     ) {
         json j;
@@ -2247,8 +2247,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> banChatSenderChat(    std::string chat_id,
-        std::int64_t sender_chat_id
+    TelegramResponse<bool> banChatSenderChat(    ChatId chat_id,
+        ChatId sender_chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2266,8 +2266,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> unbanChatSenderChat(    std::string chat_id,
-        std::int64_t sender_chat_id
+    TelegramResponse<bool> unbanChatSenderChat(    ChatId chat_id,
+        ChatId sender_chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2286,7 +2286,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setChatPermissions(    std::string chat_id,
+    TelegramResponse<bool> setChatPermissions(    ChatId chat_id,
         ChatPermissions permissions,
         std::optional<bool> use_independent_chat_permissions
     ) {
@@ -2309,7 +2309,7 @@ public:
      *
      * @return std::string
      */
-    TelegramResponse<std::string> exportChatInviteLink(    std::string chat_id
+    TelegramResponse<std::string> exportChatInviteLink(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2329,7 +2329,7 @@ public:
      *
      * @return ChatInviteLink
      */
-    TelegramResponse<ChatInviteLink> createChatInviteLink(    std::string chat_id,
+    TelegramResponse<ChatInviteLink> createChatInviteLink(    ChatId chat_id,
         std::optional<std::string> name,
         std::optional<std::int64_t> expire_date,
         std::optional<std::int64_t> member_limit,
@@ -2366,7 +2366,7 @@ public:
      *
      * @return ChatInviteLink
      */
-    TelegramResponse<ChatInviteLink> editChatInviteLink(    std::string chat_id,
+    TelegramResponse<ChatInviteLink> editChatInviteLink(    ChatId chat_id,
         std::string invite_link,
         std::optional<std::string> name,
         std::optional<std::int64_t> expire_date,
@@ -2403,7 +2403,7 @@ public:
      *
      * @return ChatInviteLink
      */
-    TelegramResponse<ChatInviteLink> createChatSubscriptionInviteLink(    std::string chat_id,
+    TelegramResponse<ChatInviteLink> createChatSubscriptionInviteLink(    ChatId chat_id,
         std::int64_t subscription_period,
         std::int64_t subscription_price,
         std::optional<std::string> name
@@ -2429,7 +2429,7 @@ public:
      *
      * @return ChatInviteLink
      */
-    TelegramResponse<ChatInviteLink> editChatSubscriptionInviteLink(    std::string chat_id,
+    TelegramResponse<ChatInviteLink> editChatSubscriptionInviteLink(    ChatId chat_id,
         std::string invite_link,
         std::optional<std::string> name
     ) {
@@ -2452,7 +2452,7 @@ public:
      *
      * @return ChatInviteLink
      */
-    TelegramResponse<ChatInviteLink> revokeChatInviteLink(    std::string chat_id,
+    TelegramResponse<ChatInviteLink> revokeChatInviteLink(    ChatId chat_id,
         std::string invite_link
     ) {
         json j;
@@ -2471,8 +2471,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> approveChatJoinRequest(    std::string chat_id,
-        std::int64_t user_id
+    TelegramResponse<bool> approveChatJoinRequest(    ChatId chat_id,
+        UserId user_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2490,8 +2490,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> declineChatJoinRequest(    std::string chat_id,
-        std::int64_t user_id
+    TelegramResponse<bool> declineChatJoinRequest(    ChatId chat_id,
+        UserId user_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2509,7 +2509,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setChatPhoto(    std::string chat_id,
+    TelegramResponse<bool> setChatPhoto(    ChatId chat_id,
         InputFile photo
     ) {
         json j;
@@ -2527,7 +2527,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> deleteChatPhoto(    std::string chat_id
+    TelegramResponse<bool> deleteChatPhoto(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2544,7 +2544,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setChatTitle(    std::string chat_id,
+    TelegramResponse<bool> setChatTitle(    ChatId chat_id,
         std::string title
     ) {
         json j;
@@ -2563,7 +2563,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setChatDescription(    std::string chat_id,
+    TelegramResponse<bool> setChatDescription(    ChatId chat_id,
         std::optional<std::string> description
     ) {
         json j;
@@ -2586,9 +2586,9 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> pinChatMessage(    std::string chat_id,
-        std::int64_t message_id,
-        std::optional<std::string> business_connection_id,
+    TelegramResponse<bool> pinChatMessage(    ChatId chat_id,
+        MessageId message_id,
+        std::optional<BusinessConnectionId> business_connection_id,
         std::optional<bool> disable_notification
     ) {
         json j;
@@ -2614,9 +2614,9 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> unpinChatMessage(    std::string chat_id,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_id
+    TelegramResponse<bool> unpinChatMessage(    ChatId chat_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageId> message_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2638,7 +2638,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> unpinAllChatMessages(    std::string chat_id
+    TelegramResponse<bool> unpinAllChatMessages(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2654,7 +2654,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> leaveChat(    std::string chat_id
+    TelegramResponse<bool> leaveChat(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2670,7 +2670,7 @@ public:
      *
      * @return ChatFullInfo
      */
-    TelegramResponse<ChatFullInfo> getChat(    std::string chat_id
+    TelegramResponse<ChatFullInfo> getChat(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2686,7 +2686,7 @@ public:
      *
      * @return std::vector<ChatMember>
      */
-    TelegramResponse<std::vector<ChatMember>> getChatAdministrators(    std::string chat_id
+    TelegramResponse<std::vector<ChatMember>> getChatAdministrators(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2702,7 +2702,7 @@ public:
      *
      * @return Int
      */
-    TelegramResponse<Int> getChatMemberCount(    std::string chat_id
+    TelegramResponse<Int> getChatMemberCount(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2719,8 +2719,8 @@ public:
      *
      * @return ChatMember
      */
-    TelegramResponse<ChatMember> getChatMember(    std::string chat_id,
-        std::int64_t user_id
+    TelegramResponse<ChatMember> getChatMember(    ChatId chat_id,
+        UserId user_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2738,7 +2738,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setChatStickerSet(    std::string chat_id,
+    TelegramResponse<bool> setChatStickerSet(    ChatId chat_id,
         std::string sticker_set_name
     ) {
         json j;
@@ -2756,7 +2756,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> deleteChatStickerSet(    std::string chat_id
+    TelegramResponse<bool> deleteChatStickerSet(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2786,7 +2786,7 @@ public:
      *
      * @return ForumTopic
      */
-    TelegramResponse<ForumTopic> createForumTopic(    std::string chat_id,
+    TelegramResponse<ForumTopic> createForumTopic(    ChatId chat_id,
         std::string name,
         std::optional<std::int64_t> icon_color,
         std::optional<std::string> icon_custom_emoji_id
@@ -2815,8 +2815,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> editForumTopic(    std::string chat_id,
-        std::int64_t message_thread_id,
+    TelegramResponse<bool> editForumTopic(    ChatId chat_id,
+        MessageThreadId message_thread_id,
         std::optional<std::string> name,
         std::optional<std::string> icon_custom_emoji_id
     ) {
@@ -2842,8 +2842,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> closeForumTopic(    std::string chat_id,
-        std::int64_t message_thread_id
+    TelegramResponse<bool> closeForumTopic(    ChatId chat_id,
+        MessageThreadId message_thread_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2861,8 +2861,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> reopenForumTopic(    std::string chat_id,
-        std::int64_t message_thread_id
+    TelegramResponse<bool> reopenForumTopic(    ChatId chat_id,
+        MessageThreadId message_thread_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2880,8 +2880,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> deleteForumTopic(    std::string chat_id,
-        std::int64_t message_thread_id
+    TelegramResponse<bool> deleteForumTopic(    ChatId chat_id,
+        MessageThreadId message_thread_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2899,8 +2899,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> unpinAllForumTopicMessages(    std::string chat_id,
-        std::int64_t message_thread_id
+    TelegramResponse<bool> unpinAllForumTopicMessages(    ChatId chat_id,
+        MessageThreadId message_thread_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2918,7 +2918,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> editGeneralForumTopic(    std::string chat_id,
+    TelegramResponse<bool> editGeneralForumTopic(    ChatId chat_id,
         std::string name
     ) {
         json j;
@@ -2936,7 +2936,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> closeGeneralForumTopic(    std::string chat_id
+    TelegramResponse<bool> closeGeneralForumTopic(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2952,7 +2952,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> reopenGeneralForumTopic(    std::string chat_id
+    TelegramResponse<bool> reopenGeneralForumTopic(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2968,7 +2968,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> hideGeneralForumTopic(    std::string chat_id
+    TelegramResponse<bool> hideGeneralForumTopic(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -2984,7 +2984,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> unhideGeneralForumTopic(    std::string chat_id
+    TelegramResponse<bool> unhideGeneralForumTopic(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -3000,7 +3000,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> unpinAllGeneralForumTopicMessages(    std::string chat_id
+    TelegramResponse<bool> unpinAllGeneralForumTopicMessages(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -3054,8 +3054,8 @@ public:
      *
      * @return UserChatBoosts
      */
-    TelegramResponse<UserChatBoosts> getUserChatBoosts(    std::string chat_id,
-        std::int64_t user_id
+    TelegramResponse<UserChatBoosts> getUserChatBoosts(    ChatId chat_id,
+        UserId user_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -3072,7 +3072,7 @@ public:
      *
      * @return BusinessConnection
      */
-    TelegramResponse<BusinessConnection> getBusinessConnection(    std::string business_connection_id
+    TelegramResponse<BusinessConnection> getBusinessConnection(    BusinessConnectionId business_connection_id
     ) {
         json j;
         j["business_connection_id"] = business_connection_id;
@@ -3284,7 +3284,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setChatMenuButton(    std::optional<std::int64_t> chat_id,
+    TelegramResponse<bool> setChatMenuButton(    std::optional<ChatId> chat_id,
         std::optional<MenuButton> menu_button
     ) {
         json j;
@@ -3306,7 +3306,7 @@ public:
      *
      * @return MenuButton
      */
-    TelegramResponse<MenuButton> getChatMenuButton(    std::optional<std::int64_t> chat_id
+    TelegramResponse<MenuButton> getChatMenuButton(    std::optional<ChatId> chat_id
     ) {
         json j;
         if (chat_id.has_value()) {
@@ -3372,8 +3372,8 @@ public:
      * @return bool
      */
     TelegramResponse<bool> sendGift(    std::string gift_id,
-        std::optional<std::int64_t> user_id,
-        std::optional<std::string> chat_id,
+        std::optional<UserId> user_id,
+        std::optional<ChatId> chat_id,
         std::optional<bool> pay_for_upgrade,
         std::optional<std::string> text,
         std::optional<std::string> text_parse_mode,
@@ -3416,7 +3416,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> giftPremiumSubscription(    std::int64_t user_id,
+    TelegramResponse<bool> giftPremiumSubscription(    UserId user_id,
         std::int64_t month_count,
         std::int64_t star_count,
         std::optional<std::string> text,
@@ -3449,7 +3449,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> verifyUser(    std::int64_t user_id,
+    TelegramResponse<bool> verifyUser(    UserId user_id,
         std::optional<std::string> custom_description
     ) {
         json j;
@@ -3470,7 +3470,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> verifyChat(    std::string chat_id,
+    TelegramResponse<bool> verifyChat(    ChatId chat_id,
         std::optional<std::string> custom_description
     ) {
         json j;
@@ -3490,7 +3490,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> removeUserVerification(    std::int64_t user_id
+    TelegramResponse<bool> removeUserVerification(    UserId user_id
     ) {
         json j;
         j["user_id"] = user_id;
@@ -3506,7 +3506,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> removeChatVerification(    std::string chat_id
+    TelegramResponse<bool> removeChatVerification(    ChatId chat_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -3524,9 +3524,9 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> readBusinessMessage(    std::string business_connection_id,
-        std::int64_t chat_id,
-        std::int64_t message_id
+    TelegramResponse<bool> readBusinessMessage(    BusinessConnectionId business_connection_id,
+        ChatId chat_id,
+        MessageId message_id
     ) {
         json j;
         j["business_connection_id"] = business_connection_id;
@@ -3545,8 +3545,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> deleteBusinessMessages(    std::string business_connection_id,
-        std::vector<std::int64_t> message_ids
+    TelegramResponse<bool> deleteBusinessMessages(    BusinessConnectionId business_connection_id,
+        std::vector<MessageId> message_ids
     ) {
         json j;
         j["business_connection_id"] = business_connection_id;
@@ -3565,7 +3565,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setBusinessAccountName(    std::string business_connection_id,
+    TelegramResponse<bool> setBusinessAccountName(    BusinessConnectionId business_connection_id,
         std::string first_name,
         std::optional<std::string> last_name
     ) {
@@ -3588,7 +3588,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setBusinessAccountUsername(    std::string business_connection_id,
+    TelegramResponse<bool> setBusinessAccountUsername(    BusinessConnectionId business_connection_id,
         std::optional<std::string> username
     ) {
         json j;
@@ -3609,7 +3609,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setBusinessAccountBio(    std::string business_connection_id,
+    TelegramResponse<bool> setBusinessAccountBio(    BusinessConnectionId business_connection_id,
         std::optional<std::string> bio
     ) {
         json j;
@@ -3631,7 +3631,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setBusinessAccountProfilePhoto(    std::string business_connection_id,
+    TelegramResponse<bool> setBusinessAccountProfilePhoto(    BusinessConnectionId business_connection_id,
         InputProfilePhoto photo,
         std::optional<bool> is_public
     ) {
@@ -3654,7 +3654,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> removeBusinessAccountProfilePhoto(    std::string business_connection_id,
+    TelegramResponse<bool> removeBusinessAccountProfilePhoto(    BusinessConnectionId business_connection_id,
         std::optional<bool> is_public
     ) {
         json j;
@@ -3676,7 +3676,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setBusinessAccountGiftSettings(    std::string business_connection_id,
+    TelegramResponse<bool> setBusinessAccountGiftSettings(    BusinessConnectionId business_connection_id,
         bool show_gift_button,
         AcceptedGiftTypes accepted_gift_types
     ) {
@@ -3696,7 +3696,7 @@ public:
      *
      * @return StarAmount
      */
-    TelegramResponse<StarAmount> getBusinessAccountStarBalance(    std::string business_connection_id
+    TelegramResponse<StarAmount> getBusinessAccountStarBalance(    BusinessConnectionId business_connection_id
     ) {
         json j;
         j["business_connection_id"] = business_connection_id;
@@ -3713,7 +3713,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> transferBusinessAccountStars(    std::string business_connection_id,
+    TelegramResponse<bool> transferBusinessAccountStars(    BusinessConnectionId business_connection_id,
         std::int64_t star_count
     ) {
         json j;
@@ -3739,7 +3739,7 @@ public:
      *
      * @return OwnedGifts
      */
-    TelegramResponse<OwnedGifts> getBusinessAccountGifts(    std::string business_connection_id,
+    TelegramResponse<OwnedGifts> getBusinessAccountGifts(    BusinessConnectionId business_connection_id,
         std::optional<bool> exclude_unsaved,
         std::optional<bool> exclude_saved,
         std::optional<bool> exclude_unlimited,
@@ -3788,7 +3788,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> convertGiftToStars(    std::string business_connection_id,
+    TelegramResponse<bool> convertGiftToStars(    BusinessConnectionId business_connection_id,
         std::string owned_gift_id
     ) {
         json j;
@@ -3809,7 +3809,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> upgradeGift(    std::string business_connection_id,
+    TelegramResponse<bool> upgradeGift(    BusinessConnectionId business_connection_id,
         std::string owned_gift_id,
         std::optional<bool> keep_original_details,
         std::optional<std::int64_t> star_count
@@ -3838,9 +3838,9 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> transferGift(    std::string business_connection_id,
+    TelegramResponse<bool> transferGift(    BusinessConnectionId business_connection_id,
         std::string owned_gift_id,
-        std::int64_t new_owner_chat_id,
+        ChatId new_owner_chat_id,
         std::optional<std::int64_t> star_count
     ) {
         json j;
@@ -3870,7 +3870,7 @@ public:
      *
      * @return Story
      */
-    TelegramResponse<Story> postStory(    std::string business_connection_id,
+    TelegramResponse<Story> postStory(    BusinessConnectionId business_connection_id,
         InputStoryContent content,
         std::int64_t active_period,
         std::optional<std::string> caption,
@@ -3920,7 +3920,7 @@ public:
      *
      * @return Story
      */
-    TelegramResponse<Story> editStory(    std::string business_connection_id,
+    TelegramResponse<Story> editStory(    BusinessConnectionId business_connection_id,
         std::int64_t story_id,
         InputStoryContent content,
         std::optional<std::string> caption,
@@ -3957,7 +3957,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> deleteStory(    std::string business_connection_id,
+    TelegramResponse<bool> deleteStory(    BusinessConnectionId business_connection_id,
         std::int64_t story_id
     ) {
         json j;
@@ -3987,9 +3987,9 @@ public:
      * @return Message
      */
     TelegramResponse<Message> editMessageText(    std::string text,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::string> chat_id,
-        std::optional<std::int64_t> message_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id,
         std::optional<ParseMode> parse_mode,
         std::optional<std::vector<MessageEntity>> entities,
@@ -4042,9 +4042,9 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> editMessageCaption(    std::optional<std::string> business_connection_id,
-        std::optional<std::string> chat_id,
-        std::optional<std::int64_t> message_id,
+    TelegramResponse<Message> editMessageCaption(    std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id,
         std::optional<std::string> caption,
         std::optional<ParseMode> parse_mode,
@@ -4098,9 +4098,9 @@ public:
      * @return Message
      */
     TelegramResponse<Message> editMessageMedia(    InputMedia media,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::string> chat_id,
-        std::optional<std::int64_t> message_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id,
         std::optional<InlineKeyboardMarkup> reply_markup
     ) {
@@ -4145,9 +4145,9 @@ public:
      */
     TelegramResponse<Message> editMessageLiveLocation(    double latitude,
         double longitude,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::string> chat_id,
-        std::optional<std::int64_t> message_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id,
         std::optional<std::int64_t> live_period,
         std::optional<double> horizontal_accuracy,
@@ -4201,9 +4201,9 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> stopMessageLiveLocation(    std::optional<std::string> business_connection_id,
-        std::optional<std::string> chat_id,
-        std::optional<std::int64_t> message_id,
+    TelegramResponse<Message> stopMessageLiveLocation(    std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id,
         std::optional<InlineKeyboardMarkup> reply_markup
     ) {
@@ -4239,9 +4239,9 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> editMessageChecklist(    std::string business_connection_id,
-        std::int64_t chat_id,
-        std::int64_t message_id,
+    TelegramResponse<Message> editMessageChecklist(    BusinessConnectionId business_connection_id,
+        ChatId chat_id,
+        MessageId message_id,
         InputChecklist checklist,
         std::optional<InlineKeyboardMarkup> reply_markup
     ) {
@@ -4269,9 +4269,9 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> editMessageReplyMarkup(    std::optional<std::string> business_connection_id,
-        std::optional<std::string> chat_id,
-        std::optional<std::int64_t> message_id,
+    TelegramResponse<Message> editMessageReplyMarkup(    std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id,
         std::optional<InlineKeyboardMarkup> reply_markup
     ) {
@@ -4306,9 +4306,9 @@ public:
      *
      * @return Poll
      */
-    TelegramResponse<Poll> stopPoll(    std::string chat_id,
-        std::int64_t message_id,
-        std::optional<std::string> business_connection_id,
+    TelegramResponse<Poll> stopPoll(    ChatId chat_id,
+        MessageId message_id,
+        std::optional<BusinessConnectionId> business_connection_id,
         std::optional<InlineKeyboardMarkup> reply_markup
     ) {
         json j;
@@ -4334,8 +4334,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> approveSuggestedPost(    std::int64_t chat_id,
-        std::int64_t message_id,
+    TelegramResponse<bool> approveSuggestedPost(    ChatId chat_id,
+        MessageId message_id,
         std::optional<std::int64_t> send_date
     ) {
         json j;
@@ -4358,8 +4358,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> declineSuggestedPost(    std::int64_t chat_id,
-        std::int64_t message_id,
+    TelegramResponse<bool> declineSuggestedPost(    ChatId chat_id,
+        MessageId message_id,
         std::optional<std::string> comment
     ) {
         json j;
@@ -4381,8 +4381,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> deleteMessage(    std::string chat_id,
-        std::int64_t message_id
+    TelegramResponse<bool> deleteMessage(    ChatId chat_id,
+        MessageId message_id
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -4400,8 +4400,8 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> deleteMessages(    std::string chat_id,
-        std::vector<std::int64_t> message_ids
+    TelegramResponse<bool> deleteMessages(    ChatId chat_id,
+        std::vector<MessageId> message_ids
     ) {
         json j;
         j["chat_id"] = chat_id;
@@ -4433,16 +4433,16 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendSticker(    std::string chat_id,
+    TelegramResponse<Message> sendSticker(    ChatId chat_id,
         std::string sticker,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> emoji,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<KeyboardOption> reply_markup
@@ -4529,7 +4529,7 @@ public:
      *
      * @return File
      */
-    TelegramResponse<File> uploadStickerFile(    std::int64_t user_id,
+    TelegramResponse<File> uploadStickerFile(    UserId user_id,
         InputFile sticker,
         std::string sticker_format
     ) {
@@ -4554,7 +4554,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> createNewStickerSet(    std::int64_t user_id,
+    TelegramResponse<bool> createNewStickerSet(    UserId user_id,
         std::string name,
         std::string title,
         std::vector<InputSticker> stickers,
@@ -4586,7 +4586,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> addStickerToSet(    std::int64_t user_id,
+    TelegramResponse<bool> addStickerToSet(    UserId user_id,
         std::string name,
         InputSticker sticker
     ) {
@@ -4644,7 +4644,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> replaceStickerInSet(    std::int64_t user_id,
+    TelegramResponse<bool> replaceStickerInSet(    UserId user_id,
         std::string name,
         std::string old_sticker,
         InputSticker sticker
@@ -4750,7 +4750,7 @@ public:
      * @return bool
      */
     TelegramResponse<bool> setStickerSetThumbnail(    std::string name,
-        std::int64_t user_id,
+        UserId user_id,
         std::string format,
         std::optional<std::string> thumbnail
     ) {
@@ -4876,7 +4876,7 @@ public:
      *
      * @return PreparedInlineMessage
      */
-    TelegramResponse<PreparedInlineMessage> savePreparedInlineMessage(    std::int64_t user_id,
+    TelegramResponse<PreparedInlineMessage> savePreparedInlineMessage(    UserId user_id,
         InlineQueryResult result,
         std::optional<bool> allow_user_chats,
         std::optional<bool> allow_bot_chats,
@@ -4943,13 +4943,13 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendInvoice(    std::string chat_id,
+    TelegramResponse<Message> sendInvoice(    ChatId chat_id,
         std::string title,
         std::string description,
         std::string payload,
         std::string currency,
         std::vector<LabeledPrice> prices,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<std::int64_t> direct_messages_topic_id,
         std::optional<std::string> provider_token,
         std::optional<std::int64_t> max_tip_amount,
@@ -4970,7 +4970,7 @@ public:
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<SuggestedPostParameters> suggested_post_parameters,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<InlineKeyboardMarkup> reply_markup
@@ -5095,7 +5095,7 @@ public:
         std::string payload,
         std::string currency,
         std::vector<LabeledPrice> prices,
-        std::optional<std::string> business_connection_id,
+        std::optional<BusinessConnectionId> business_connection_id,
         std::optional<std::string> provider_token,
         std::optional<std::int64_t> subscription_period,
         std::optional<std::int64_t> max_tip_amount,
@@ -5259,7 +5259,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> refundStarPayment(    std::int64_t user_id,
+    TelegramResponse<bool> refundStarPayment(    UserId user_id,
         std::string telegram_payment_charge_id
     ) {
         json j;
@@ -5279,7 +5279,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> editUserStarSubscription(    std::int64_t user_id,
+    TelegramResponse<bool> editUserStarSubscription(    UserId user_id,
         std::string telegram_payment_charge_id,
         bool is_canceled
     ) {
@@ -5303,7 +5303,7 @@ public:
      *
      * @return bool
      */
-    TelegramResponse<bool> setPassportDataErrors(    std::int64_t user_id,
+    TelegramResponse<bool> setPassportDataErrors(    UserId user_id,
         std::vector<PassportElementError> errors
     ) {
         json j;
@@ -5333,14 +5333,14 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> sendGame(    std::int64_t chat_id,
+    TelegramResponse<Message> sendGame(    ChatId chat_id,
         std::string game_short_name,
-        std::optional<std::string> business_connection_id,
-        std::optional<std::int64_t> message_thread_id,
+        std::optional<BusinessConnectionId> business_connection_id,
+        std::optional<MessageThreadId> message_thread_id,
         std::optional<bool> disable_notification,
         std::optional<bool> protect_content,
         std::optional<bool> allow_paid_broadcast,
-        std::optional<std::string> message_effect_id,
+        std::optional<MessageEffectId> message_effect_id,
         std::optional<ReplyParameters> reply_parameters,
         std::optional<InlineKeyboardMarkup> reply_markup
     ) {
@@ -5389,12 +5389,12 @@ public:
      *
      * @return Message
      */
-    TelegramResponse<Message> setGameScore(    std::int64_t user_id,
+    TelegramResponse<Message> setGameScore(    UserId user_id,
         std::int64_t score,
         std::optional<bool> force,
         std::optional<bool> disable_edit_message,
-        std::optional<std::int64_t> chat_id,
-        std::optional<std::int64_t> message_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id
     ) {
         json j;
@@ -5431,9 +5431,9 @@ public:
      *
      * @return std::vector<GameHighScore>
      */
-    TelegramResponse<std::vector<GameHighScore>> getGameHighScores(    std::int64_t user_id,
-        std::optional<std::int64_t> chat_id,
-        std::optional<std::int64_t> message_id,
+    TelegramResponse<std::vector<GameHighScore>> getGameHighScores(    UserId user_id,
+        std::optional<ChatId> chat_id,
+        std::optional<MessageId> message_id,
         std::optional<std::string> inline_message_id
     ) {
         json j;

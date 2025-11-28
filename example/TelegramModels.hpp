@@ -6,159 +6,643 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <memory>
+#include <nlohmann/json.hpp>
 
-namespace telegram {
+namespace tgbot {
+using json = nlohmann::json;
+struct TelegramModel { virtual json to_json() const = 0; virtual ~TelegramModel(); };
+
+
+    // --- Forward Declarations ---
+
+    struct Update;
+    struct WebhookInfo;
+    struct User;
+    struct Chat;
+    struct ChatFullInfo;
+    struct Message;
+    struct MessageId;
+    struct InaccessibleMessage;
+    struct MessageEntity;
+    struct TextQuote;
+    struct ExternalReplyInfo;
+    struct ReplyParameters;
+    struct MessageOriginUser;
+    struct MessageOriginHiddenUser;
+    struct MessageOriginChat;
+    struct MessageOriginChannel;
+    struct PhotoSize;
+    struct Animation;
+    struct Audio;
+    struct Document;
+    struct Story;
+    struct Video;
+    struct VideoNote;
+    struct Voice;
+    struct PaidMediaInfo;
+    struct PaidMediaPreview;
+    struct PaidMediaPhoto;
+    struct PaidMediaVideo;
+    struct Contact;
+    struct Dice;
+    struct PollOption;
+    struct InputPollOption;
+    struct PollAnswer;
+    struct Poll;
+    struct ChecklistTask;
+    struct Checklist;
+    struct InputChecklistTask;
+    struct InputChecklist;
+    struct ChecklistTasksDone;
+    struct ChecklistTasksAdded;
+    struct Location;
+    struct Venue;
+    struct WebAppData;
+    struct ProximityAlertTriggered;
+    struct MessageAutoDeleteTimerChanged;
+    struct ChatBoostAdded;
+    struct BackgroundFillSolid;
+    struct BackgroundFillGradient;
+    struct BackgroundFillFreeformGradient;
+    struct BackgroundTypeFill;
+    struct BackgroundTypeWallpaper;
+    struct BackgroundTypePattern;
+    struct BackgroundTypeChatTheme;
+    struct ChatBackground;
+    struct ForumTopicCreated;
+    struct ForumTopicEdited;
+    struct SharedUser;
+    struct UsersShared;
+    struct ChatShared;
+    struct WriteAccessAllowed;
+    struct VideoChatScheduled;
+    struct VideoChatEnded;
+    struct VideoChatParticipantsInvited;
+    struct PaidMessagePriceChanged;
+    struct DirectMessagePriceChanged;
+    struct SuggestedPostApproved;
+    struct SuggestedPostApprovalFailed;
+    struct SuggestedPostDeclined;
+    struct SuggestedPostPaid;
+    struct SuggestedPostRefunded;
+    struct GiveawayCreated;
+    struct Giveaway;
+    struct GiveawayWinners;
+    struct GiveawayCompleted;
+    struct LinkPreviewOptions;
+    struct SuggestedPostPrice;
+    struct SuggestedPostInfo;
+    struct SuggestedPostParameters;
+    struct DirectMessagesTopic;
+    struct UserProfilePhotos;
+    struct File;
+    struct WebAppInfo;
+    struct ReplyKeyboardMarkup;
+    struct KeyboardButton;
+    struct KeyboardButtonRequestUsers;
+    struct KeyboardButtonRequestChat;
+    struct KeyboardButtonPollType;
+    struct ReplyKeyboardRemove;
+    struct InlineKeyboardMarkup;
+    struct InlineKeyboardButton;
+    struct LoginUrl;
+    struct SwitchInlineQueryChosenChat;
+    struct CopyTextButton;
+    struct CallbackQuery;
+    struct ForceReply;
+    struct ChatPhoto;
+    struct ChatInviteLink;
+    struct ChatAdministratorRights;
+    struct ChatMemberUpdated;
+    struct ChatMemberOwner;
+    struct ChatMemberAdministrator;
+    struct ChatMemberMember;
+    struct ChatMemberRestricted;
+    struct ChatMemberLeft;
+    struct ChatMemberBanned;
+    struct ChatJoinRequest;
+    struct ChatPermissions;
+    struct Birthdate;
+    struct BusinessIntro;
+    struct BusinessLocation;
+    struct BusinessOpeningHoursInterval;
+    struct BusinessOpeningHours;
+    struct StoryAreaPosition;
+    struct LocationAddress;
+    struct StoryAreaTypeLocation;
+    struct StoryAreaTypeSuggestedReaction;
+    struct StoryAreaTypeLink;
+    struct StoryAreaTypeWeather;
+    struct StoryAreaTypeUniqueGift;
+    struct StoryArea;
+    struct ChatLocation;
+    struct ReactionTypeEmoji;
+    struct ReactionTypeCustomEmoji;
+    struct ReactionTypePaid;
+    struct ReactionCount;
+    struct MessageReactionUpdated;
+    struct MessageReactionCountUpdated;
+    struct ForumTopic;
+    struct Gift;
+    struct Gifts;
+    struct UniqueGiftModel;
+    struct UniqueGiftSymbol;
+    struct UniqueGiftBackdropColors;
+    struct UniqueGiftBackdrop;
+    struct UniqueGift;
+    struct GiftInfo;
+    struct UniqueGiftInfo;
+    struct OwnedGiftRegular;
+    struct OwnedGiftUnique;
+    struct OwnedGifts;
+    struct AcceptedGiftTypes;
+    struct StarAmount;
+    struct BotCommand;
+    struct BotCommandScopeDefault;
+    struct BotCommandScopeAllPrivateChats;
+    struct BotCommandScopeAllGroupChats;
+    struct BotCommandScopeAllChatAdministrators;
+    struct BotCommandScopeChat;
+    struct BotCommandScopeChatAdministrators;
+    struct BotCommandScopeChatMember;
+    struct BotName;
+    struct BotDescription;
+    struct BotShortDescription;
+    struct MenuButtonCommands;
+    struct MenuButtonWebApp;
+    struct MenuButtonDefault;
+    struct ChatBoostSourcePremium;
+    struct ChatBoostSourceGiftCode;
+    struct ChatBoostSourceGiveaway;
+    struct ChatBoost;
+    struct ChatBoostUpdated;
+    struct ChatBoostRemoved;
+    struct UserChatBoosts;
+    struct BusinessBotRights;
+    struct BusinessConnection;
+    struct BusinessMessagesDeleted;
+    struct ResponseParameters;
+    struct InputMediaPhoto;
+    struct InputMediaVideo;
+    struct InputMediaAnimation;
+    struct InputMediaAudio;
+    struct InputMediaDocument;
+    struct InputPaidMediaPhoto;
+    struct InputPaidMediaVideo;
+    struct InputProfilePhotoStatic;
+    struct InputProfilePhotoAnimated;
+    struct InputStoryContentPhoto;
+    struct InputStoryContentVideo;
+    struct Sticker;
+    struct StickerSet;
+    struct MaskPosition;
+    struct InputSticker;
+    struct InlineQuery;
+    struct InlineQueryResultsButton;
+    struct InlineQueryResultArticle;
+    struct InlineQueryResultPhoto;
+    struct InlineQueryResultGif;
+    struct InlineQueryResultMpeg4Gif;
+    struct InlineQueryResultVideo;
+    struct InlineQueryResultAudio;
+    struct InlineQueryResultVoice;
+    struct InlineQueryResultDocument;
+    struct InlineQueryResultLocation;
+    struct InlineQueryResultVenue;
+    struct InlineQueryResultContact;
+    struct InlineQueryResultGame;
+    struct InlineQueryResultCachedPhoto;
+    struct InlineQueryResultCachedGif;
+    struct InlineQueryResultCachedMpeg4Gif;
+    struct InlineQueryResultCachedSticker;
+    struct InlineQueryResultCachedDocument;
+    struct InlineQueryResultCachedVideo;
+    struct InlineQueryResultCachedVoice;
+    struct InlineQueryResultCachedAudio;
+    struct InputTextMessageContent;
+    struct InputLocationMessageContent;
+    struct InputVenueMessageContent;
+    struct InputContactMessageContent;
+    struct InputInvoiceMessageContent;
+    struct ChosenInlineResult;
+    struct SentWebAppMessage;
+    struct PreparedInlineMessage;
+    struct LabeledPrice;
+    struct Invoice;
+    struct ShippingAddress;
+    struct OrderInfo;
+    struct ShippingOption;
+    struct SuccessfulPayment;
+    struct RefundedPayment;
+    struct ShippingQuery;
+    struct PreCheckoutQuery;
+    struct PaidMediaPurchased;
+    struct RevenueWithdrawalStatePending;
+    struct RevenueWithdrawalStateSucceeded;
+    struct RevenueWithdrawalStateFailed;
+    struct AffiliateInfo;
+    struct TransactionPartnerUser;
+    struct TransactionPartnerChat;
+    struct TransactionPartnerAffiliateProgram;
+    struct TransactionPartnerFragment;
+    struct TransactionPartnerTelegramAds;
+    struct TransactionPartnerTelegramApi;
+    struct TransactionPartnerOther;
+    struct StarTransaction;
+    struct StarTransactions;
+    struct PassportData;
+    struct PassportFile;
+    struct EncryptedPassportElement;
+    struct EncryptedCredentials;
+    struct PassportElementErrorDataField;
+    struct PassportElementErrorFrontSide;
+    struct PassportElementErrorReverseSide;
+    struct PassportElementErrorSelfie;
+    struct PassportElementErrorFile;
+    struct PassportElementErrorFiles;
+    struct PassportElementErrorTranslationFile;
+    struct PassportElementErrorTranslationFiles;
+    struct PassportElementErrorUnspecified;
+    struct Game;
+    struct GameHighScore;
+    struct GetUpdatesRequest;
+    struct SetWebhookRequest;
+    struct DeleteWebhookRequest;
+    struct SendMessageRequest;
+    struct ForwardMessageRequest;
+    struct ForwardMessagesRequest;
+    struct CopyMessageRequest;
+    struct CopyMessagesRequest;
+    struct SendPhotoRequest;
+    struct SendAudioRequest;
+    struct SendDocumentRequest;
+    struct SendVideoRequest;
+    struct SendAnimationRequest;
+    struct SendVoiceRequest;
+    struct SendVideoNoteRequest;
+    struct SendPaidMediaRequest;
+    struct SendMediaGroupRequest;
+    struct SendLocationRequest;
+    struct SendVenueRequest;
+    struct SendContactRequest;
+    struct SendPollRequest;
+    struct SendChecklistRequest;
+    struct SendDiceRequest;
+    struct SendChatActionRequest;
+    struct SetMessageReactionRequest;
+    struct GetUserProfilePhotosRequest;
+    struct SetUserEmojiStatusRequest;
+    struct GetFileRequest;
+    struct BanChatMemberRequest;
+    struct UnbanChatMemberRequest;
+    struct RestrictChatMemberRequest;
+    struct PromoteChatMemberRequest;
+    struct SetChatAdministratorCustomTitleRequest;
+    struct BanChatSenderChatRequest;
+    struct UnbanChatSenderChatRequest;
+    struct SetChatPermissionsRequest;
+    struct ExportChatInviteLinkRequest;
+    struct CreateChatInviteLinkRequest;
+    struct EditChatInviteLinkRequest;
+    struct CreateChatSubscriptionInviteLinkRequest;
+    struct EditChatSubscriptionInviteLinkRequest;
+    struct RevokeChatInviteLinkRequest;
+    struct ApproveChatJoinRequestRequest;
+    struct DeclineChatJoinRequestRequest;
+    struct SetChatPhotoRequest;
+    struct DeleteChatPhotoRequest;
+    struct SetChatTitleRequest;
+    struct SetChatDescriptionRequest;
+    struct PinChatMessageRequest;
+    struct UnpinChatMessageRequest;
+    struct UnpinAllChatMessagesRequest;
+    struct LeaveChatRequest;
+    struct GetChatRequest;
+    struct GetChatAdministratorsRequest;
+    struct GetChatMemberCountRequest;
+    struct GetChatMemberRequest;
+    struct SetChatStickerSetRequest;
+    struct DeleteChatStickerSetRequest;
+    struct CreateForumTopicRequest;
+    struct EditForumTopicRequest;
+    struct CloseForumTopicRequest;
+    struct ReopenForumTopicRequest;
+    struct DeleteForumTopicRequest;
+    struct UnpinAllForumTopicMessagesRequest;
+    struct EditGeneralForumTopicRequest;
+    struct CloseGeneralForumTopicRequest;
+    struct ReopenGeneralForumTopicRequest;
+    struct HideGeneralForumTopicRequest;
+    struct UnhideGeneralForumTopicRequest;
+    struct UnpinAllGeneralForumTopicMessagesRequest;
+    struct AnswerCallbackQueryRequest;
+    struct GetUserChatBoostsRequest;
+    struct GetBusinessConnectionRequest;
+    struct SetMyCommandsRequest;
+    struct DeleteMyCommandsRequest;
+    struct GetMyCommandsRequest;
+    struct SetMyNameRequest;
+    struct GetMyNameRequest;
+    struct SetMyDescriptionRequest;
+    struct GetMyDescriptionRequest;
+    struct SetMyShortDescriptionRequest;
+    struct GetMyShortDescriptionRequest;
+    struct SetChatMenuButtonRequest;
+    struct GetChatMenuButtonRequest;
+    struct SetMyDefaultAdministratorRightsRequest;
+    struct GetMyDefaultAdministratorRightsRequest;
+    struct SendGiftRequest;
+    struct GiftPremiumSubscriptionRequest;
+    struct VerifyUserRequest;
+    struct VerifyChatRequest;
+    struct RemoveUserVerificationRequest;
+    struct RemoveChatVerificationRequest;
+    struct ReadBusinessMessageRequest;
+    struct DeleteBusinessMessagesRequest;
+    struct SetBusinessAccountNameRequest;
+    struct SetBusinessAccountUsernameRequest;
+    struct SetBusinessAccountBioRequest;
+    struct SetBusinessAccountProfilePhotoRequest;
+    struct RemoveBusinessAccountProfilePhotoRequest;
+    struct SetBusinessAccountGiftSettingsRequest;
+    struct GetBusinessAccountStarBalanceRequest;
+    struct TransferBusinessAccountStarsRequest;
+    struct GetBusinessAccountGiftsRequest;
+    struct ConvertGiftToStarsRequest;
+    struct UpgradeGiftRequest;
+    struct TransferGiftRequest;
+    struct PostStoryRequest;
+    struct EditStoryRequest;
+    struct DeleteStoryRequest;
+    struct EditMessageTextRequest;
+    struct EditMessageCaptionRequest;
+    struct EditMessageMediaRequest;
+    struct EditMessageLiveLocationRequest;
+    struct StopMessageLiveLocationRequest;
+    struct EditMessageChecklistRequest;
+    struct EditMessageReplyMarkupRequest;
+    struct StopPollRequest;
+    struct ApproveSuggestedPostRequest;
+    struct DeclineSuggestedPostRequest;
+    struct DeleteMessageRequest;
+    struct DeleteMessagesRequest;
+    struct SendStickerRequest;
+    struct GetStickerSetRequest;
+    struct GetCustomEmojiStickersRequest;
+    struct UploadStickerFileRequest;
+    struct CreateNewStickerSetRequest;
+    struct AddStickerToSetRequest;
+    struct SetStickerPositionInSetRequest;
+    struct DeleteStickerFromSetRequest;
+    struct ReplaceStickerInSetRequest;
+    struct SetStickerEmojiListRequest;
+    struct SetStickerKeywordsRequest;
+    struct SetStickerMaskPositionRequest;
+    struct SetStickerSetTitleRequest;
+    struct SetStickerSetThumbnailRequest;
+    struct SetCustomEmojiStickerSetThumbnailRequest;
+    struct DeleteStickerSetRequest;
+    struct AnswerInlineQueryRequest;
+    struct AnswerWebAppQueryRequest;
+    struct SavePreparedInlineMessageRequest;
+    struct SendInvoiceRequest;
+    struct CreateInvoiceLinkRequest;
+    struct AnswerShippingQueryRequest;
+    struct AnswerPreCheckoutQueryRequest;
+    struct GetStarTransactionsRequest;
+    struct RefundStarPaymentRequest;
+    struct EditUserStarSubscriptionRequest;
+    struct SetPassportDataErrorsRequest;
+    struct SendGameRequest;
+    struct SetGameScoreRequest;
+    struct GetGameHighScoresRequest;
+    struct InputMedia;
+    struct InputMessageContent;
+    struct InlineQueryResult;
+    struct PassportElementError;
+    struct ChatMember;
+    struct BotCommandScope;
+    struct ReactionType;
+    struct MessageOrigin;
+    struct ChatBoostSource;
+    struct MenuButton;
+    struct BackgroundFill;
+    struct BackgroundType;
+    struct RevenueWithdrawalState;
+    struct TransactionPartner;
+    struct PaidMedia;
+    struct InputPaidMedia;
+    struct KeyboardOption;
+    struct MaybeInaccessibleMessage;
+    struct StoryAreaType;
+    struct OwnedGift;
+    struct InputProfilePhoto;
+    struct InputStoryContent;
+    struct InputFileOrString;
+    struct IntegerOrString;
+
+    // --- Value Classes ---
+
+    // chat_id
+    struct ChatId {
+        std::string stringValue;
+        std::int64_t longValue() const { return std::stoll(stringValue); }
+
+        json to_json() const { return stringValue; }
+        static void from_json(const json& j, ChatId& value) { value.stringValue = j.get<std::string>(); }
+    };
+
+    // user_id
+    struct UserId {
+        std::int64_t longValue;
+        ChatId toChatId() const { return ChatId{std::to_string(longValue)}; }
+
+        json to_json() const { return longValue; }
+        static void from_json(const json& j, UserId& value) { value.longValue = j.get<std::int64_t>(); }
+    };
+
+    // message_id
+    struct MessageId {
+        std::int64_t longValue;
+
+        json to_json() const { return longValue; }
+        static void from_json(const json& j, MessageId& value) { value.longValue = j.get<std::int64_t>(); }
+    };
+
+    // business_connection_id
+    struct BusinessConnectionId {
+        std::string stringValue;
+
+        json to_json() const { return stringValue; }
+        static void from_json(const json& j, BusinessConnectionId& value) { value.stringValue = j.get<std::string>(); }
+    };
+
+    // message_thread_id
+    struct MessageThreadId {
+        std::int64_t longValue;
+
+        json to_json() const { return longValue; }
+        static void from_json(const json& j, MessageThreadId& value) { value.longValue = j.get<std::int64_t>(); }
+    };
+
+    // message_effect_id
+    struct MessageEffectId {
+        std::string stringValue;
+
+        json to_json() const { return stringValue; }
+        static void from_json(const json& j, MessageEffectId& value) { value.stringValue = j.get<std::string>(); }
+    };
+
+
+    // --- Super Types (Polymorphic Base Classes) ---
+
+    struct InputMedia : public TelegramModel {
+        virtual ~InputMedia() = default;
+
+        static std::shared_ptr<InputMedia> fromJson(const nlohmann::json& j);
+    };
+
+    struct InputMessageContent : public TelegramModel {
+        virtual ~InputMessageContent() = default;
+
+        static std::shared_ptr<InputMessageContent> fromJson(const nlohmann::json& j);
+    };
+
+    struct InlineQueryResult : public TelegramModel {
+        virtual ~InlineQueryResult() = default;
+
+        static std::shared_ptr<InlineQueryResult> fromJson(const nlohmann::json& j);
+    };
+
+    struct PassportElementError : public TelegramModel {
+        virtual ~PassportElementError() = default;
+
+        static std::shared_ptr<PassportElementError> fromJson(const nlohmann::json& j);
+    };
+
+    struct ChatMember : public TelegramModel {
+        virtual ~ChatMember() = default;
+
+        static std::shared_ptr<ChatMember> fromJson(const nlohmann::json& j);
+    };
+
+    struct BotCommandScope : public TelegramModel {
+        virtual ~BotCommandScope() = default;
+
+        static std::shared_ptr<BotCommandScope> fromJson(const nlohmann::json& j);
+    };
+
+    struct ReactionType : public TelegramModel {
+        virtual ~ReactionType() = default;
+
+        static std::shared_ptr<ReactionType> fromJson(const nlohmann::json& j);
+    };
+
+    struct MessageOrigin : public TelegramModel {
+        virtual ~MessageOrigin() = default;
+
+        static std::shared_ptr<MessageOrigin> fromJson(const nlohmann::json& j);
+    };
+
+    struct ChatBoostSource : public TelegramModel {
+        virtual ~ChatBoostSource() = default;
+
+        static std::shared_ptr<ChatBoostSource> fromJson(const nlohmann::json& j);
+    };
+
+    struct MenuButton : public TelegramModel {
+        virtual ~MenuButton() = default;
+
+        static std::shared_ptr<MenuButton> fromJson(const nlohmann::json& j);
+    };
+
+    struct BackgroundFill : public TelegramModel {
+        virtual ~BackgroundFill() = default;
+
+        static std::shared_ptr<BackgroundFill> fromJson(const nlohmann::json& j);
+    };
+
+    struct BackgroundType : public TelegramModel {
+        virtual ~BackgroundType() = default;
+
+        static std::shared_ptr<BackgroundType> fromJson(const nlohmann::json& j);
+    };
+
+    struct RevenueWithdrawalState : public TelegramModel {
+        virtual ~RevenueWithdrawalState() = default;
+
+        static std::shared_ptr<RevenueWithdrawalState> fromJson(const nlohmann::json& j);
+    };
+
+    struct TransactionPartner : public TelegramModel {
+        virtual ~TransactionPartner() = default;
+
+        static std::shared_ptr<TransactionPartner> fromJson(const nlohmann::json& j);
+    };
+
+    struct PaidMedia : public TelegramModel {
+        virtual ~PaidMedia() = default;
+
+        static std::shared_ptr<PaidMedia> fromJson(const nlohmann::json& j);
+    };
+
+    struct InputPaidMedia : public TelegramModel {
+        virtual ~InputPaidMedia() = default;
+
+        static std::shared_ptr<InputPaidMedia> fromJson(const nlohmann::json& j);
+    };
+
+    struct KeyboardOption : public TelegramModel {
+        virtual ~KeyboardOption() = default;
+
+        static std::shared_ptr<KeyboardOption> fromJson(const nlohmann::json& j);
+    };
+
+    struct MaybeInaccessibleMessage : public TelegramModel {
+        virtual ~MaybeInaccessibleMessage() = default;
+
+        static std::shared_ptr<MaybeInaccessibleMessage> fromJson(const nlohmann::json& j);
+    };
+
+    struct StoryAreaType : public TelegramModel {
+        virtual ~StoryAreaType() = default;
+
+        static std::shared_ptr<StoryAreaType> fromJson(const nlohmann::json& j);
+    };
+
+    struct OwnedGift : public TelegramModel {
+        virtual ~OwnedGift() = default;
+
+        static std::shared_ptr<OwnedGift> fromJson(const nlohmann::json& j);
+    };
+
+    struct InputProfilePhoto : public TelegramModel {
+        virtual ~InputProfilePhoto() = default;
+
+        static std::shared_ptr<InputProfilePhoto> fromJson(const nlohmann::json& j);
+    };
+
+    struct InputStoryContent : public TelegramModel {
+        virtual ~InputStoryContent() = default;
+
+        static std::shared_ptr<InputStoryContent> fromJson(const nlohmann::json& j);
+    };
+
+    struct InputFileOrString : public TelegramModel {
+        virtual ~InputFileOrString() = default;
+
+        static std::shared_ptr<InputFileOrString> fromJson(const nlohmann::json& j);
+    };
+
+    struct IntegerOrString : public TelegramModel {
+        virtual ~IntegerOrString() = default;
+
+        static std::shared_ptr<IntegerOrString> fromJson(const nlohmann::json& j);
+    };
+
 
     // --- Parameters & Responses ---
-
-
-    // Getting updates
-
-    /**
-     * This object represents an incoming update.At most one of the optional parameters can be present in any given update.
-     *
-     * @param update_id The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
-     * @param message Optional. New incoming message of any kind - text, photo, sticker, etc.
-     * @param edited_message Optional. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
-     * @param channel_post Optional. New incoming channel post of any kind - text, photo, sticker, etc.
-     * @param edited_channel_post Optional. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
-     * @param business_connection Optional. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot
-     * @param business_message Optional. New message from a connected business account
-     * @param edited_business_message Optional. New version of a message from a connected business account
-     * @param deleted_business_messages Optional. Messages were deleted from a connected business account
-     * @param message_reaction Optional. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify "message_reaction" in the list of allowed_updates to receive these updates. The update isn't received for reactions set by bots.
-     * @param message_reaction_count Optional. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify "message_reaction_count" in the list of allowed_updates to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.
-     * @param inline_query Optional. New incoming inline query
-     * @param chosen_inline_result Optional. The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.
-     * @param callback_query Optional. New incoming callback query
-     * @param shipping_query Optional. New incoming shipping query. Only for invoices with flexible price
-     * @param pre_checkout_query Optional. New incoming pre-checkout query. Contains full information about checkout
-     * @param purchased_paid_media Optional. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat
-     * @param poll Optional. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot
-     * @param poll_answer Optional. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
-     * @param my_chat_member Optional. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
-     * @param chat_member Optional. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify "chat_member" in the list of allowed_updates to receive these updates.
-     * @param chat_join_request Optional. A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.
-     * @param chat_boost Optional. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates.
-     * @param removed_chat_boost Optional. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.
-     */
-
-    struct Update {
-        // The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
-        std::int64_t update_id;
-
-        // Optional. New incoming message of any kind - text, photo, sticker, etc.
-        std::optional<Message> message;
-
-        // Optional. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
-        std::optional<Message> edited_message;
-
-        // Optional. New incoming channel post of any kind - text, photo, sticker, etc.
-        std::optional<Message> channel_post;
-
-        // Optional. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
-        std::optional<Message> edited_channel_post;
-
-        // Optional. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot
-        std::optional<BusinessConnection> business_connection;
-
-        // Optional. New message from a connected business account
-        std::optional<Message> business_message;
-
-        // Optional. New version of a message from a connected business account
-        std::optional<Message> edited_business_message;
-
-        // Optional. Messages were deleted from a connected business account
-        std::optional<BusinessMessagesDeleted> deleted_business_messages;
-
-        // Optional. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify "message_reaction" in the list of allowed_updates to receive these updates. The update isn't received for reactions set by bots.
-        std::optional<MessageReactionUpdated> message_reaction;
-
-        // Optional. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify "message_reaction_count" in the list of allowed_updates to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.
-        std::optional<MessageReactionCountUpdated> message_reaction_count;
-
-        // Optional. New incoming inline query
-        std::optional<InlineQuery> inline_query;
-
-        // Optional. The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.
-        std::optional<ChosenInlineResult> chosen_inline_result;
-
-        // Optional. New incoming callback query
-        std::optional<CallbackQuery> callback_query;
-
-        // Optional. New incoming shipping query. Only for invoices with flexible price
-        std::optional<ShippingQuery> shipping_query;
-
-        // Optional. New incoming pre-checkout query. Contains full information about checkout
-        std::optional<PreCheckoutQuery> pre_checkout_query;
-
-        // Optional. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat
-        std::optional<PaidMediaPurchased> purchased_paid_media;
-
-        // Optional. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot
-        std::optional<Poll> poll;
-
-        // Optional. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
-        std::optional<PollAnswer> poll_answer;
-
-        // Optional. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
-        std::optional<ChatMemberUpdated> my_chat_member;
-
-        // Optional. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify "chat_member" in the list of allowed_updates to receive these updates.
-        std::optional<ChatMemberUpdated> chat_member;
-
-        // Optional. A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.
-        std::optional<ChatJoinRequest> chat_join_request;
-
-        // Optional. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates.
-        std::optional<ChatBoostUpdated> chat_boost;
-
-        // Optional. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.
-        std::optional<ChatBoostRemoved> removed_chat_boost;
-    };
-
-    /**
-     * Describes the current status of a webhook.
-     *
-     * @param url Webhook URL, may be empty if webhook is not set up
-     * @param has_custom_certificate True, if a custom certificate was provided for webhook certificate checks
-     * @param pending_update_count Number of updates awaiting delivery
-     * @param ip_address Optional. Currently used webhook IP address
-     * @param last_error_date Optional. Unix time for the most recent error that happened when trying to deliver an update via webhook
-     * @param last_error_message Optional. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
-     * @param last_synchronization_error_date Optional. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters
-     * @param max_connections Optional. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
-     * @param allowed_updates Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member
-     */
-
-    struct WebhookInfo {
-        // Webhook URL, may be empty if webhook is not set up
-        std::string url;
-
-        // True, if a custom certificate was provided for webhook certificate checks
-        bool has_custom_certificate;
-
-        // Number of updates awaiting delivery
-        std::int64_t pending_update_count;
-
-        // Optional. Currently used webhook IP address
-        std::optional<std::string> ip_address;
-
-        // Optional. Unix time for the most recent error that happened when trying to deliver an update via webhook
-        std::optional<std::int64_t> last_error_date;
-
-        // Optional. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
-        std::optional<std::string> last_error_message;
-
-        // Optional. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters
-        std::optional<std::int64_t> last_synchronization_error_date;
-
-        // Optional. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
-        std::optional<std::int64_t> max_connections;
-
-        // Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member
-        std::optional<std::vector<std::string>> allowed_updates;
-    };
 
 
     // Available types
@@ -181,9 +665,10 @@ namespace telegram {
      * @param has_main_web_app Optional. True, if the bot has a main Web App. Returned only in getMe.
      */
 
-    struct User {
+    struct User : public TelegramModel {
+        virtual ~User() = default;
         // Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::int64_t id;
+        UserId id;
 
         // True, if this user is a bot
         bool is_bot;
@@ -220,6 +705,69 @@ namespace telegram {
 
         // Optional. True, if the bot has a main Web App. Returned only in getMe.
         std::optional<bool> has_main_web_app;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id.to_json();
+            j["is_bot"] = is_bot;
+            j["first_name"] = first_name;
+            if (last_name.has_value()) {
+                j["last_name"] = last_name.value();
+            }
+            if (username.has_value()) {
+                j["username"] = username.value();
+            }
+            if (language_code.has_value()) {
+                j["language_code"] = language_code.value();
+            }
+            if (is_premium.has_value()) {
+                j["is_premium"] = is_premium.value();
+            }
+            if (added_to_attachment_menu.has_value()) {
+                j["added_to_attachment_menu"] = added_to_attachment_menu.value();
+            }
+            if (can_join_groups.has_value()) {
+                j["can_join_groups"] = can_join_groups.value();
+            }
+            if (can_read_all_group_messages.has_value()) {
+                j["can_read_all_group_messages"] = can_read_all_group_messages.value();
+            }
+            if (supports_inline_queries.has_value()) {
+                j["supports_inline_queries"] = supports_inline_queries.value();
+            }
+            if (can_connect_to_business.has_value()) {
+                j["can_connect_to_business"] = can_connect_to_business.value();
+            }
+            if (has_main_web_app.has_value()) {
+                j["has_main_web_app"] = has_main_web_app.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a topic of a direct messages chat.
+     *
+     * @param topic_id Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
+     * @param user Optional. Information about the user that created the topic. Currently, it is always present
+     */
+
+    struct DirectMessagesTopic : public TelegramModel {
+        virtual ~DirectMessagesTopic() = default;
+        // Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
+        std::int64_t topic_id;
+
+        // Optional. Information about the user that created the topic. Currently, it is always present
+        std::optional<User> user;
+
+        json to_json() const override {
+            json j;
+            j["topic_id"] = topic_id;
+            if (user.has_value()) {
+                j["user"] = user.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -235,9 +783,10 @@ namespace telegram {
      * @param is_direct_messages Optional. True, if the chat is the direct messages chat of a channel
      */
 
-    struct Chat {
+    struct Chat : public TelegramModel {
+        virtual ~Chat() = default;
         // Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::int64_t id;
+        ChatId id;
 
         // Type of the chat, can be either “private”, “group”, “supergroup” or “channel”
         std::string type_;
@@ -259,201 +808,3424 @@ namespace telegram {
 
         // Optional. True, if the chat is the direct messages chat of a channel
         std::optional<bool> is_direct_messages;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id.to_json();
+            j["type"] = type_;
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (username.has_value()) {
+                j["username"] = username.value();
+            }
+            if (first_name.has_value()) {
+                j["first_name"] = first_name.value();
+            }
+            if (last_name.has_value()) {
+                j["last_name"] = last_name.value();
+            }
+            if (is_forum.has_value()) {
+                j["is_forum"] = is_forum.value();
+            }
+            if (is_direct_messages.has_value()) {
+                j["is_direct_messages"] = is_direct_messages.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
-     * This object contains full information about a chat.
+     * Describes the options used for link preview generation.
      *
-     * @param id Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-     * @param type Type of the chat, can be either “private”, “group”, “supergroup” or “channel”
-     * @param title Optional. Title, for supergroups, channels and group chats
-     * @param username Optional. Username, for private chats, supergroups and channels if available
-     * @param first_name Optional. First name of the other party in a private chat
-     * @param last_name Optional. Last name of the other party in a private chat
-     * @param is_forum Optional. True, if the supergroup chat is a forum (has topics enabled)
-     * @param is_direct_messages Optional. True, if the chat is the direct messages chat of a channel
-     * @param accent_color_id Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See accent colors for more details.
-     * @param max_reaction_count The maximum number of reactions that can be set on a message in the chat
-     * @param photo Optional. Chat photo
-     * @param active_usernames Optional. If non-empty, the list of all active chat usernames; for private chats, supergroups and channels
-     * @param birthdate Optional. For private chats, the date of birth of the user
-     * @param business_intro Optional. For private chats with business accounts, the intro of the business
-     * @param business_location Optional. For private chats with business accounts, the location of the business
-     * @param business_opening_hours Optional. For private chats with business accounts, the opening hours of the business
-     * @param personal_chat Optional. For private chats, the personal channel of the user
-     * @param parent_chat Optional. Information about the corresponding channel chat; for direct messages chats only
-     * @param available_reactions Optional. List of available reactions allowed in the chat. If omitted, then all emoji reactions are allowed.
-     * @param background_custom_emoji_id Optional. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background
-     * @param profile_accent_color_id Optional. Identifier of the accent color for the chat's profile background. See profile accent colors for more details.
-     * @param profile_background_custom_emoji_id Optional. Custom emoji identifier of the emoji chosen by the chat for its profile background
-     * @param emoji_status_custom_emoji_id Optional. Custom emoji identifier of the emoji status of the chat or the other party in a private chat
-     * @param emoji_status_expiration_date Optional. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any
-     * @param bio Optional. Bio of the other party in a private chat
-     * @param has_private_forwards Optional. True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user
-     * @param has_restricted_voice_and_video_messages Optional. True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat
-     * @param join_to_send_messages Optional. True, if users need to join the supergroup before they can send messages
-     * @param join_by_request Optional. True, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators
-     * @param description Optional. Description, for groups, supergroups and channel chats
-     * @param invite_link Optional. Primary invite link, for groups, supergroups and channel chats
-     * @param pinned_message Optional. The most recent pinned message (by sending date)
-     * @param permissions Optional. Default chat member permissions, for groups and supergroups
-     * @param accepted_gift_types Information about types of gifts that are accepted by the chat or by the corresponding user for private chats
-     * @param can_send_paid_media Optional. True, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
-     * @param slow_mode_delay Optional. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
-     * @param unrestrict_boost_count Optional. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions
-     * @param message_auto_delete_time Optional. The time after which all messages sent to the chat will be automatically deleted; in seconds
-     * @param has_aggressive_anti_spam_enabled Optional. True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators.
-     * @param has_hidden_members Optional. True, if non-administrators can only get the list of bots and administrators in the chat
-     * @param has_protected_content Optional. True, if messages from the chat can't be forwarded to other chats
-     * @param has_visible_history Optional. True, if new chat members will have access to old messages; available only to chat administrators
-     * @param sticker_set_name Optional. For supergroups, name of the group sticker set
-     * @param can_set_sticker_set Optional. True, if the bot can change the group sticker set
-     * @param custom_emoji_sticker_set_name Optional. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.
-     * @param linked_chat_id Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
-     * @param location Optional. For supergroups, the location to which the supergroup is connected
+     * @param is_disabled Optional. True, if the link preview is disabled
+     * @param url Optional. URL to use for the link preview. If empty, then the first URL found in the message text will be used
+     * @param prefer_small_media Optional. True, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
+     * @param prefer_large_media Optional. True, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
+     * @param show_above_text Optional. True, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text
      */
 
-    struct ChatFullInfo {
-        // Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::int64_t id;
+    struct LinkPreviewOptions : public TelegramModel {
+        virtual ~LinkPreviewOptions() = default;
+        // Optional. True, if the link preview is disabled
+        std::optional<bool> is_disabled;
 
-        // Type of the chat, can be either “private”, “group”, “supergroup” or “channel”
-        std::string type_;
+        // Optional. URL to use for the link preview. If empty, then the first URL found in the message text will be used
+        std::optional<std::string> url;
 
-        // Optional. Title, for supergroups, channels and group chats
+        // Optional. True, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
+        std::optional<bool> prefer_small_media;
+
+        // Optional. True, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
+        std::optional<bool> prefer_large_media;
+
+        // Optional. True, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text
+        std::optional<bool> show_above_text;
+
+        json to_json() const override {
+            json j;
+            if (is_disabled.has_value()) {
+                j["is_disabled"] = is_disabled.value();
+            }
+            if (url.has_value()) {
+                j["url"] = url.value();
+            }
+            if (prefer_small_media.has_value()) {
+                j["prefer_small_media"] = prefer_small_media.value();
+            }
+            if (prefer_large_media.has_value()) {
+                j["prefer_large_media"] = prefer_large_media.value();
+            }
+            if (show_above_text.has_value()) {
+                j["show_above_text"] = show_above_text.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents one size of a photo or a file / sticker thumbnail.
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param width Photo width
+     * @param height Photo height
+     * @param file_size Optional. File size in bytes
+     */
+
+    struct PhotoSize : public TelegramModel {
+        virtual ~PhotoSize() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Photo width
+        std::int64_t width;
+
+        // Photo height
+        std::int64_t height;
+
+        // Optional. File size in bytes
+        std::optional<std::int64_t> file_size;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["width"] = width;
+            j["height"] = height;
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param width Video width as defined by the sender
+     * @param height Video height as defined by the sender
+     * @param duration Duration of the video in seconds as defined by the sender
+     * @param thumbnail Optional. Animation thumbnail as defined by the sender
+     * @param file_name Optional. Original animation filename as defined by the sender
+     * @param mime_type Optional. MIME type of the file as defined by the sender
+     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+     */
+
+    struct Animation : public TelegramModel {
+        virtual ~Animation() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Video width as defined by the sender
+        std::int64_t width;
+
+        // Video height as defined by the sender
+        std::int64_t height;
+
+        // Duration of the video in seconds as defined by the sender
+        std::int64_t duration;
+
+        // Optional. Animation thumbnail as defined by the sender
+        std::optional<PhotoSize> thumbnail;
+
+        // Optional. Original animation filename as defined by the sender
+        std::optional<std::string> file_name;
+
+        // Optional. MIME type of the file as defined by the sender
+        std::optional<std::string> mime_type;
+
+        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+        std::optional<std::int64_t> file_size;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["width"] = width;
+            j["height"] = height;
+            j["duration"] = duration;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value().to_json();
+            }
+            if (file_name.has_value()) {
+                j["file_name"] = file_name.value();
+            }
+            if (mime_type.has_value()) {
+                j["mime_type"] = mime_type.value();
+            }
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents an audio file to be treated as music by the Telegram clients.
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param duration Duration of the audio in seconds as defined by the sender
+     * @param performer Optional. Performer of the audio as defined by the sender or by audio tags
+     * @param title Optional. Title of the audio as defined by the sender or by audio tags
+     * @param file_name Optional. Original filename as defined by the sender
+     * @param mime_type Optional. MIME type of the file as defined by the sender
+     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+     * @param thumbnail Optional. Thumbnail of the album cover to which the music file belongs
+     */
+
+    struct Audio : public TelegramModel {
+        virtual ~Audio() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Duration of the audio in seconds as defined by the sender
+        std::int64_t duration;
+
+        // Optional. Performer of the audio as defined by the sender or by audio tags
+        std::optional<std::string> performer;
+
+        // Optional. Title of the audio as defined by the sender or by audio tags
         std::optional<std::string> title;
 
-        // Optional. Username, for private chats, supergroups and channels if available
-        std::optional<std::string> username;
+        // Optional. Original filename as defined by the sender
+        std::optional<std::string> file_name;
 
-        // Optional. First name of the other party in a private chat
-        std::optional<std::string> first_name;
+        // Optional. MIME type of the file as defined by the sender
+        std::optional<std::string> mime_type;
 
-        // Optional. Last name of the other party in a private chat
+        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+        std::optional<std::int64_t> file_size;
+
+        // Optional. Thumbnail of the album cover to which the music file belongs
+        std::optional<PhotoSize> thumbnail;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["duration"] = duration;
+            if (performer.has_value()) {
+                j["performer"] = performer.value();
+            }
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (file_name.has_value()) {
+                j["file_name"] = file_name.value();
+            }
+            if (mime_type.has_value()) {
+                j["mime_type"] = mime_type.value();
+            }
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a general file (as opposed to photos, voice messages and audio files).
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param thumbnail Optional. Document thumbnail as defined by the sender
+     * @param file_name Optional. Original filename as defined by the sender
+     * @param mime_type Optional. MIME type of the file as defined by the sender
+     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+     */
+
+    struct Document : public TelegramModel {
+        virtual ~Document() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Optional. Document thumbnail as defined by the sender
+        std::optional<PhotoSize> thumbnail;
+
+        // Optional. Original filename as defined by the sender
+        std::optional<std::string> file_name;
+
+        // Optional. MIME type of the file as defined by the sender
+        std::optional<std::string> mime_type;
+
+        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+        std::optional<std::int64_t> file_size;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value().to_json();
+            }
+            if (file_name.has_value()) {
+                j["file_name"] = file_name.value();
+            }
+            if (mime_type.has_value()) {
+                j["mime_type"] = mime_type.value();
+            }
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes the paid media added to a message.
+     *
+     * @param star_count The number of Telegram Stars that must be paid to buy access to the media
+     * @param paid_media Information about the paid media
+     */
+
+    struct PaidMediaInfo : public PaidMedia {
+        virtual ~PaidMediaInfo() = default;
+        // The number of Telegram Stars that must be paid to buy access to the media
+        std::int64_t star_count;
+
+        // Information about the paid media
+        std::vector<PaidMedia> paid_media;
+
+        json to_json() const override {
+            json j;
+            j["star_count"] = star_count;
+            std::vector<json> paid_media_values;
+            paid_media_values.reserve(paid_media.size());
+            for (auto& e : paid_media) {
+                paid_media_values.push_back(e.to_json());
+            }
+            j["paid_media"] = paid_media_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a file ready to be downloaded. The file can be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling getFile.
+     *  The maximum file size to download is 20 MB
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+     * @param file_path Optional. File path. Use https://api.telegram.org/file/bot<token>/<file_path> to get the file.
+     */
+
+    struct File : public TelegramModel {
+        virtual ~File() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+        std::optional<std::int64_t> file_size;
+
+        // Optional. File path. Use https://api.telegram.org/file/bot<token>/<file_path> to get the file.
+        std::optional<std::string> file_path;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            if (file_path.has_value()) {
+                j["file_path"] = file_path.value();
+            }
+            return j.dump();
+        }
+    };
+
+
+    // Stickers
+
+    /**
+     * This object describes the position on faces where a mask should be placed by default.
+     *
+     * @param point The part of the face relative to which the mask should be placed. One of “forehead”, “eyes”, “mouth”, or “chin”.
+     * @param x_shift Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.
+     * @param y_shift Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.
+     * @param scale Mask scaling coefficient. For example, 2.0 means double size.
+     */
+
+    struct MaskPosition : public TelegramModel {
+        virtual ~MaskPosition() = default;
+        // The part of the face relative to which the mask should be placed. One of “forehead”, “eyes”, “mouth”, or “chin”.
+        std::string point;
+
+        // Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.
+        double x_shift;
+
+        // Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.
+        double y_shift;
+
+        // Mask scaling coefficient. For example, 2.0 means double size.
+        double scale;
+
+        json to_json() const override {
+            json j;
+            j["point"] = point;
+            j["x_shift"] = x_shift;
+            j["y_shift"] = y_shift;
+            j["scale"] = scale;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a sticker.
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param type Type of the sticker, currently one of “regular”, “mask”, “custom_emoji”. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.
+     * @param width Sticker width
+     * @param height Sticker height
+     * @param is_animated True, if the sticker is animated
+     * @param is_video True, if the sticker is a video sticker
+     * @param thumbnail Optional. Sticker thumbnail in the .WEBP or .JPG format
+     * @param emoji Optional. Emoji associated with the sticker
+     * @param set_name Optional. Name of the sticker set to which the sticker belongs
+     * @param premium_animation Optional. For premium regular stickers, premium animation for the sticker
+     * @param mask_position Optional. For mask stickers, the position where the mask should be placed
+     * @param custom_emoji_id Optional. For custom emoji stickers, unique identifier of the custom emoji
+     * @param needs_repainting Optional. True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places
+     * @param file_size Optional. File size in bytes
+     */
+
+    struct Sticker : public TelegramModel {
+        virtual ~Sticker() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Type of the sticker, currently one of “regular”, “mask”, “custom_emoji”. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.
+        std::string type_;
+
+        // Sticker width
+        std::int64_t width;
+
+        // Sticker height
+        std::int64_t height;
+
+        // True, if the sticker is animated
+        bool is_animated;
+
+        // True, if the sticker is a video sticker
+        bool is_video;
+
+        // Optional. Sticker thumbnail in the .WEBP or .JPG format
+        std::optional<PhotoSize> thumbnail;
+
+        // Optional. Emoji associated with the sticker
+        std::optional<std::string> emoji;
+
+        // Optional. Name of the sticker set to which the sticker belongs
+        std::optional<std::string> set_name;
+
+        // Optional. For premium regular stickers, premium animation for the sticker
+        std::optional<File> premium_animation;
+
+        // Optional. For mask stickers, the position where the mask should be placed
+        std::optional<MaskPosition> mask_position;
+
+        // Optional. For custom emoji stickers, unique identifier of the custom emoji
+        std::optional<std::string> custom_emoji_id;
+
+        // Optional. True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places
+        std::optional<bool> needs_repainting;
+
+        // Optional. File size in bytes
+        std::optional<std::int64_t> file_size;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["type"] = type_;
+            j["width"] = width;
+            j["height"] = height;
+            j["is_animated"] = is_animated;
+            j["is_video"] = is_video;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value().to_json();
+            }
+            if (emoji.has_value()) {
+                j["emoji"] = emoji.value();
+            }
+            if (set_name.has_value()) {
+                j["set_name"] = set_name.value();
+            }
+            if (premium_animation.has_value()) {
+                j["premium_animation"] = premium_animation.value().to_json();
+            }
+            if (mask_position.has_value()) {
+                j["mask_position"] = mask_position.value().to_json();
+            }
+            if (custom_emoji_id.has_value()) {
+                j["custom_emoji_id"] = custom_emoji_id.value();
+            }
+            if (needs_repainting.has_value()) {
+                j["needs_repainting"] = needs_repainting.value();
+            }
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            return j.dump();
+        }
+    };
+
+
+    // Available types
+
+    /**
+     * This object represents a story.
+     *
+     * @param chat Chat that posted the story
+     * @param id Unique identifier for the story in the chat
+     */
+
+    struct Story : public TelegramModel {
+        virtual ~Story() = default;
+        // Chat that posted the story
+        std::shared_ptr<Chat> chat;
+
+        // Unique identifier for the story in the chat
+        std::int64_t id;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["id"] = id;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a video file.
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param width Video width as defined by the sender
+     * @param height Video height as defined by the sender
+     * @param duration Duration of the video in seconds as defined by the sender
+     * @param thumbnail Optional. Video thumbnail
+     * @param cover Optional. Available sizes of the cover of the video in the message
+     * @param start_timestamp Optional. Timestamp in seconds from which the video will play in the message
+     * @param file_name Optional. Original filename as defined by the sender
+     * @param mime_type Optional. MIME type of the file as defined by the sender
+     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+     */
+
+    struct Video : public TelegramModel {
+        virtual ~Video() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Video width as defined by the sender
+        std::int64_t width;
+
+        // Video height as defined by the sender
+        std::int64_t height;
+
+        // Duration of the video in seconds as defined by the sender
+        std::int64_t duration;
+
+        // Optional. Video thumbnail
+        std::optional<PhotoSize> thumbnail;
+
+        // Optional. Available sizes of the cover of the video in the message
+        std::optional<std::vector<PhotoSize>> cover;
+
+        // Optional. Timestamp in seconds from which the video will play in the message
+        std::optional<std::int64_t> start_timestamp;
+
+        // Optional. Original filename as defined by the sender
+        std::optional<std::string> file_name;
+
+        // Optional. MIME type of the file as defined by the sender
+        std::optional<std::string> mime_type;
+
+        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+        std::optional<std::int64_t> file_size;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["width"] = width;
+            j["height"] = height;
+            j["duration"] = duration;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value().to_json();
+            }
+            if (cover.has_value()) {
+                std::vector<json> cover_values;
+                cover_values.reserve(cover.value().size());
+                for (auto& e : cover.value()) {
+                    cover_values.push_back(e.to_json());
+                }
+                j["cover"] = cover_values;
+            }
+            if (start_timestamp.has_value()) {
+                j["start_timestamp"] = start_timestamp.value();
+            }
+            if (file_name.has_value()) {
+                j["file_name"] = file_name.value();
+            }
+            if (mime_type.has_value()) {
+                j["mime_type"] = mime_type.value();
+            }
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a video message (available in Telegram apps as of v.4.0).
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param length Video width and height (diameter of the video message) as defined by the sender
+     * @param duration Duration of the video in seconds as defined by the sender
+     * @param thumbnail Optional. Video thumbnail
+     * @param file_size Optional. File size in bytes
+     */
+
+    struct VideoNote : public TelegramModel {
+        virtual ~VideoNote() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Video width and height (diameter of the video message) as defined by the sender
+        std::int64_t length;
+
+        // Duration of the video in seconds as defined by the sender
+        std::int64_t duration;
+
+        // Optional. Video thumbnail
+        std::optional<PhotoSize> thumbnail;
+
+        // Optional. File size in bytes
+        std::optional<std::int64_t> file_size;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["length"] = length;
+            j["duration"] = duration;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value().to_json();
+            }
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a voice note.
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param duration Duration of the audio in seconds as defined by the sender
+     * @param mime_type Optional. MIME type of the file as defined by the sender
+     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+     */
+
+    struct Voice : public TelegramModel {
+        virtual ~Voice() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // Duration of the audio in seconds as defined by the sender
+        std::int64_t duration;
+
+        // Optional. MIME type of the file as defined by the sender
+        std::optional<std::string> mime_type;
+
+        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
+        std::optional<std::int64_t> file_size;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["duration"] = duration;
+            if (mime_type.has_value()) {
+                j["mime_type"] = mime_type.value();
+            }
+            if (file_size.has_value()) {
+                j["file_size"] = file_size.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.
+     *
+     * @param type Type of the entity. Currently, can be “mention” (@username), “hashtag” (#hashtag or #hashtag@chatusername), “cashtag” ($USD or $USD@chatusername), “bot_command” (/start@jobs_bot), “url” (https://telegram.org), “email” (do-not-reply@telegram.org), “phone_number” (+1-212-555-0123), “bold” (bold text), “italic” (italic text), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users without usernames), “custom_emoji” (for inline custom emoji stickers)
+     * @param offset Offset in UTF-16 code units to the start of the entity
+     * @param length Length of the entity in UTF-16 code units
+     * @param url Optional. For “text_link” only, URL that will be opened after user taps on the text
+     * @param user Optional. For “text_mention” only, the mentioned user
+     * @param language Optional. For “pre” only, the programming language of the entity text
+     * @param custom_emoji_id Optional. For “custom_emoji” only, unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker
+     */
+
+    struct MessageEntity : public TelegramModel {
+        virtual ~MessageEntity() = default;
+        // Type of the entity. Currently, can be “mention” (@username), “hashtag” (#hashtag or #hashtag@chatusername), “cashtag” ($USD or $USD@chatusername), “bot_command” (/start@jobs_bot), “url” (https://telegram.org), “email” (do-not-reply@telegram.org), “phone_number” (+1-212-555-0123), “bold” (bold text), “italic” (italic text), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users without usernames), “custom_emoji” (for inline custom emoji stickers)
+        std::string type_;
+
+        // Offset in UTF-16 code units to the start of the entity
+        std::int64_t offset;
+
+        // Length of the entity in UTF-16 code units
+        std::int64_t length;
+
+        // Optional. For “text_link” only, URL that will be opened after user taps on the text
+        std::optional<std::string> url;
+
+        // Optional. For “text_mention” only, the mentioned user
+        std::optional<User> user;
+
+        // Optional. For “pre” only, the programming language of the entity text
+        std::optional<std::string> language;
+
+        // Optional. For “custom_emoji” only, unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker
+        std::optional<std::string> custom_emoji_id;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["offset"] = offset;
+            j["length"] = length;
+            if (url.has_value()) {
+                j["url"] = url.value();
+            }
+            if (user.has_value()) {
+                j["user"] = user.value().to_json();
+            }
+            if (language.has_value()) {
+                j["language"] = language.value();
+            }
+            if (custom_emoji_id.has_value()) {
+                j["custom_emoji_id"] = custom_emoji_id.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a task in a checklist.
+     *
+     * @param id Unique identifier of the task
+     * @param text Text of the task
+     * @param text_entities Optional. Special entities that appear in the task text
+     * @param completed_by_user Optional. User that completed the task; omitted if the task wasn't completed
+     * @param completion_date Optional. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
+     */
+
+    struct ChecklistTask : public TelegramModel {
+        virtual ~ChecklistTask() = default;
+        // Unique identifier of the task
+        std::int64_t id;
+
+        // Text of the task
+        std::string text;
+
+        // Optional. Special entities that appear in the task text
+        std::optional<std::vector<MessageEntity>> text_entities;
+
+        // Optional. User that completed the task; omitted if the task wasn't completed
+        std::optional<User> completed_by_user;
+
+        // Optional. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
+        std::optional<std::int64_t> completion_date;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["text"] = text;
+            if (text_entities.has_value()) {
+                std::vector<json> text_entities_values;
+                text_entities_values.reserve(text_entities.value().size());
+                for (auto& e : text_entities.value()) {
+                    text_entities_values.push_back(e.to_json());
+                }
+                j["text_entities"] = text_entities_values;
+            }
+            if (completed_by_user.has_value()) {
+                j["completed_by_user"] = completed_by_user.value().to_json();
+            }
+            if (completion_date.has_value()) {
+                j["completion_date"] = completion_date.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a checklist.
+     *
+     * @param title Title of the checklist
+     * @param title_entities Optional. Special entities that appear in the checklist title
+     * @param tasks List of tasks in the checklist
+     * @param others_can_add_tasks Optional. True, if users other than the creator of the list can add tasks to the list
+     * @param others_can_mark_tasks_as_done Optional. True, if users other than the creator of the list can mark tasks as done or not done
+     */
+
+    struct Checklist : public TelegramModel {
+        virtual ~Checklist() = default;
+        // Title of the checklist
+        std::string title;
+
+        // Optional. Special entities that appear in the checklist title
+        std::optional<std::vector<MessageEntity>> title_entities;
+
+        // List of tasks in the checklist
+        std::vector<ChecklistTask> tasks;
+
+        // Optional. True, if users other than the creator of the list can add tasks to the list
+        std::optional<bool> others_can_add_tasks;
+
+        // Optional. True, if users other than the creator of the list can mark tasks as done or not done
+        std::optional<bool> others_can_mark_tasks_as_done;
+
+        json to_json() const override {
+            json j;
+            j["title"] = title;
+            if (title_entities.has_value()) {
+                std::vector<json> title_entities_values;
+                title_entities_values.reserve(title_entities.value().size());
+                for (auto& e : title_entities.value()) {
+                    title_entities_values.push_back(e.to_json());
+                }
+                j["title_entities"] = title_entities_values;
+            }
+            std::vector<json> tasks_values;
+            tasks_values.reserve(tasks.size());
+            for (auto& e : tasks) {
+                tasks_values.push_back(e.to_json());
+            }
+            j["tasks"] = tasks_values;
+            if (others_can_add_tasks.has_value()) {
+                j["others_can_add_tasks"] = others_can_add_tasks.value();
+            }
+            if (others_can_mark_tasks_as_done.has_value()) {
+                j["others_can_mark_tasks_as_done"] = others_can_mark_tasks_as_done.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a phone contact.
+     *
+     * @param phone_number Contact's phone number
+     * @param first_name Contact's first name
+     * @param last_name Optional. Contact's last name
+     * @param user_id Optional. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
+     * @param vcard Optional. Additional data about the contact in the form of a vCard
+     */
+
+    struct Contact : public TelegramModel {
+        virtual ~Contact() = default;
+        // Contact's phone number
+        std::string phone_number;
+
+        // Contact's first name
+        std::string first_name;
+
+        // Optional. Contact's last name
         std::optional<std::string> last_name;
 
-        // Optional. True, if the supergroup chat is a forum (has topics enabled)
-        std::optional<bool> is_forum;
+        // Optional. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
+        std::optional<UserId> user_id;
 
-        // Optional. True, if the chat is the direct messages chat of a channel
-        std::optional<bool> is_direct_messages;
+        // Optional. Additional data about the contact in the form of a vCard
+        std::optional<std::string> vcard;
 
-        // Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See accent colors for more details.
-        std::int64_t accent_color_id;
+        json to_json() const override {
+            json j;
+            j["phone_number"] = phone_number;
+            j["first_name"] = first_name;
+            if (last_name.has_value()) {
+                j["last_name"] = last_name.value();
+            }
+            if (user_id.has_value()) {
+                j["user_id"] = user_id.value().to_json();
+            }
+            if (vcard.has_value()) {
+                j["vcard"] = vcard.value();
+            }
+            return j.dump();
+        }
+    };
 
-        // The maximum number of reactions that can be set on a message in the chat
-        std::int64_t max_reaction_count;
+    /**
+     * This object represents an animated emoji that displays a random value.
+     *
+     * @param emoji Emoji on which the dice throw animation is based
+     * @param value Value of the dice, 1-6 for “”, “” and “” base emoji, 1-5 for “” and “” base emoji, 1-64 for “” base emoji
+     */
 
-        // Optional. Chat photo
-        std::optional<ChatPhoto> photo;
+    struct Dice : public TelegramModel {
+        virtual ~Dice() = default;
+        // Emoji on which the dice throw animation is based
+        std::string emoji;
 
-        // Optional. If non-empty, the list of all active chat usernames; for private chats, supergroups and channels
-        std::optional<std::vector<std::string>> active_usernames;
+        // Value of the dice, 1-6 for “”, “” and “” base emoji, 1-5 for “” and “” base emoji, 1-64 for “” base emoji
+        std::int64_t value;
 
-        // Optional. For private chats, the date of birth of the user
-        std::optional<Birthdate> birthdate;
+        json to_json() const override {
+            json j;
+            j["emoji"] = emoji;
+            j["value"] = value;
+            return j.dump();
+        }
+    };
 
-        // Optional. For private chats with business accounts, the intro of the business
-        std::optional<BusinessIntro> business_intro;
 
-        // Optional. For private chats with business accounts, the location of the business
-        std::optional<BusinessLocation> business_location;
+    // Games
 
-        // Optional. For private chats with business accounts, the opening hours of the business
-        std::optional<BusinessOpeningHours> business_opening_hours;
+    /**
+     * This object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.
+     *
+     * @param title Title of the game
+     * @param description Description of the game
+     * @param photo Photo that will be displayed in the game message in chats.
+     * @param text Optional. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls setGameScore, or manually edited using editMessageText. 0-4096 characters.
+     * @param text_entities Optional. Special entities that appear in text, such as usernames, URLs, bot commands, etc.
+     * @param animation Optional. Animation that will be displayed in the game message in chats. Upload via BotFather
+     */
 
-        // Optional. For private chats, the personal channel of the user
-        std::optional<Chat> personal_chat;
+    struct Game : public TelegramModel {
+        virtual ~Game() = default;
+        // Title of the game
+        std::string title;
 
-        // Optional. Information about the corresponding channel chat; for direct messages chats only
-        std::optional<Chat> parent_chat;
+        // Description of the game
+        std::string description;
 
-        // Optional. List of available reactions allowed in the chat. If omitted, then all emoji reactions are allowed.
-        std::optional<std::vector<ReactionType>> available_reactions;
+        // Photo that will be displayed in the game message in chats.
+        std::vector<PhotoSize> photo;
 
-        // Optional. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background
-        std::optional<std::string> background_custom_emoji_id;
+        // Optional. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls setGameScore, or manually edited using editMessageText. 0-4096 characters.
+        std::optional<std::string> text;
 
-        // Optional. Identifier of the accent color for the chat's profile background. See profile accent colors for more details.
-        std::optional<std::int64_t> profile_accent_color_id;
+        // Optional. Special entities that appear in text, such as usernames, URLs, bot commands, etc.
+        std::optional<std::vector<MessageEntity>> text_entities;
 
-        // Optional. Custom emoji identifier of the emoji chosen by the chat for its profile background
-        std::optional<std::string> profile_background_custom_emoji_id;
+        // Optional. Animation that will be displayed in the game message in chats. Upload via BotFather
+        std::optional<Animation> animation;
 
-        // Optional. Custom emoji identifier of the emoji status of the chat or the other party in a private chat
-        std::optional<std::string> emoji_status_custom_emoji_id;
+        json to_json() const override {
+            json j;
+            j["title"] = title;
+            j["description"] = description;
+            std::vector<json> photo_values;
+            photo_values.reserve(photo.size());
+            for (auto& e : photo) {
+                photo_values.push_back(e.to_json());
+            }
+            j["photo"] = photo_values;
+            if (text.has_value()) {
+                j["text"] = text.value();
+            }
+            if (text_entities.has_value()) {
+                std::vector<json> text_entities_values;
+                text_entities_values.reserve(text_entities.value().size());
+                for (auto& e : text_entities.value()) {
+                    text_entities_values.push_back(e.to_json());
+                }
+                j["text_entities"] = text_entities_values;
+            }
+            if (animation.has_value()) {
+                j["animation"] = animation.value().to_json();
+            }
+            return j.dump();
+        }
+    };
 
-        // Optional. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any
-        std::optional<std::int64_t> emoji_status_expiration_date;
 
-        // Optional. Bio of the other party in a private chat
-        std::optional<std::string> bio;
+    // Available types
 
-        // Optional. True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user
-        std::optional<bool> has_private_forwards;
+    /**
+     * This object represents a message about a scheduled giveaway.
+     *
+     * @param chats The list of chats which the user must join to participate in the giveaway
+     * @param winners_selection_date Point in time (Unix timestamp) when winners of the giveaway will be selected
+     * @param winner_count The number of users which are supposed to be selected as winners of the giveaway
+     * @param only_new_members Optional. True, if only users who join the chats after the giveaway started should be eligible to win
+     * @param has_public_winners Optional. True, if the list of giveaway winners will be visible to everyone
+     * @param prize_description Optional. Description of additional giveaway prize
+     * @param country_codes Optional. A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.
+     * @param prize_star_count Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+     * @param premium_subscription_month_count Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
+     */
 
-        // Optional. True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat
-        std::optional<bool> has_restricted_voice_and_video_messages;
+    struct Giveaway : public TelegramModel {
+        virtual ~Giveaway() = default;
+        // The list of chats which the user must join to participate in the giveaway
+        std::vector<Chat> chats;
 
-        // Optional. True, if users need to join the supergroup before they can send messages
-        std::optional<bool> join_to_send_messages;
+        // Point in time (Unix timestamp) when winners of the giveaway will be selected
+        std::int64_t winners_selection_date;
 
-        // Optional. True, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators
-        std::optional<bool> join_by_request;
+        // The number of users which are supposed to be selected as winners of the giveaway
+        std::int64_t winner_count;
 
-        // Optional. Description, for groups, supergroups and channel chats
-        std::optional<std::string> description;
+        // Optional. True, if only users who join the chats after the giveaway started should be eligible to win
+        std::optional<bool> only_new_members;
 
-        // Optional. Primary invite link, for groups, supergroups and channel chats
-        std::optional<std::string> invite_link;
+        // Optional. True, if the list of giveaway winners will be visible to everyone
+        std::optional<bool> has_public_winners;
 
-        // Optional. The most recent pinned message (by sending date)
-        std::optional<Message> pinned_message;
+        // Optional. Description of additional giveaway prize
+        std::optional<std::string> prize_description;
 
-        // Optional. Default chat member permissions, for groups and supergroups
-        std::optional<ChatPermissions> permissions;
+        // Optional. A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.
+        std::optional<std::vector<std::string>> country_codes;
 
-        // Information about types of gifts that are accepted by the chat or by the corresponding user for private chats
-        AcceptedGiftTypes accepted_gift_types;
+        // Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+        std::optional<std::int64_t> prize_star_count;
 
-        // Optional. True, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
-        std::optional<bool> can_send_paid_media;
+        // Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
+        std::optional<std::int64_t> premium_subscription_month_count;
 
-        // Optional. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
-        std::optional<std::int64_t> slow_mode_delay;
+        json to_json() const override {
+            json j;
+            std::vector<json> chats_values;
+            chats_values.reserve(chats.size());
+            for (auto& e : chats) {
+                chats_values.push_back(e.to_json());
+            }
+            j["chats"] = chats_values;
+            j["winners_selection_date"] = winners_selection_date;
+            j["winner_count"] = winner_count;
+            if (only_new_members.has_value()) {
+                j["only_new_members"] = only_new_members.value();
+            }
+            if (has_public_winners.has_value()) {
+                j["has_public_winners"] = has_public_winners.value();
+            }
+            if (prize_description.has_value()) {
+                j["prize_description"] = prize_description.value();
+            }
+            if (country_codes.has_value()) {
+                j["country_codes"] = country_codes.value();
+            }
+            if (prize_star_count.has_value()) {
+                j["prize_star_count"] = prize_star_count.value();
+            }
+            if (premium_subscription_month_count.has_value()) {
+                j["premium_subscription_month_count"] = premium_subscription_month_count.value();
+            }
+            return j.dump();
+        }
+    };
 
-        // Optional. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions
-        std::optional<std::int64_t> unrestrict_boost_count;
+    /**
+     * This object represents a message about the completion of a giveaway with public winners.
+     *
+     * @param chat The chat that created the giveaway
+     * @param giveaway_message_id Identifier of the message with the giveaway in the chat
+     * @param winners_selection_date Point in time (Unix timestamp) when winners of the giveaway were selected
+     * @param winner_count Total number of winners in the giveaway
+     * @param winners List of up to 100 winners of the giveaway
+     * @param additional_chat_count Optional. The number of other chats the user had to join in order to be eligible for the giveaway
+     * @param prize_star_count Optional. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only
+     * @param premium_subscription_month_count Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
+     * @param unclaimed_prize_count Optional. Number of undistributed prizes
+     * @param only_new_members Optional. True, if only users who had joined the chats after the giveaway started were eligible to win
+     * @param was_refunded Optional. True, if the giveaway was canceled because the payment for it was refunded
+     * @param prize_description Optional. Description of additional giveaway prize
+     */
 
-        // Optional. The time after which all messages sent to the chat will be automatically deleted; in seconds
-        std::optional<std::int64_t> message_auto_delete_time;
+    struct GiveawayWinners : public TelegramModel {
+        virtual ~GiveawayWinners() = default;
+        // The chat that created the giveaway
+        std::shared_ptr<Chat> chat;
 
-        // Optional. True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators.
-        std::optional<bool> has_aggressive_anti_spam_enabled;
+        // Identifier of the message with the giveaway in the chat
+        std::int64_t giveaway_message_id;
 
-        // Optional. True, if non-administrators can only get the list of bots and administrators in the chat
-        std::optional<bool> has_hidden_members;
+        // Point in time (Unix timestamp) when winners of the giveaway were selected
+        std::int64_t winners_selection_date;
 
-        // Optional. True, if messages from the chat can't be forwarded to other chats
-        std::optional<bool> has_protected_content;
+        // Total number of winners in the giveaway
+        std::int64_t winner_count;
 
-        // Optional. True, if new chat members will have access to old messages; available only to chat administrators
-        std::optional<bool> has_visible_history;
+        // List of up to 100 winners of the giveaway
+        std::vector<User> winners;
 
-        // Optional. For supergroups, name of the group sticker set
-        std::optional<std::string> sticker_set_name;
+        // Optional. The number of other chats the user had to join in order to be eligible for the giveaway
+        std::optional<std::int64_t> additional_chat_count;
 
-        // Optional. True, if the bot can change the group sticker set
-        std::optional<bool> can_set_sticker_set;
+        // Optional. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only
+        std::optional<std::int64_t> prize_star_count;
 
-        // Optional. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.
-        std::optional<std::string> custom_emoji_sticker_set_name;
+        // Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
+        std::optional<std::int64_t> premium_subscription_month_count;
 
-        // Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
-        std::optional<std::int64_t> linked_chat_id;
+        // Optional. Number of undistributed prizes
+        std::optional<std::int64_t> unclaimed_prize_count;
 
-        // Optional. For supergroups, the location to which the supergroup is connected
-        std::optional<ChatLocation> location;
+        // Optional. True, if only users who had joined the chats after the giveaway started were eligible to win
+        std::optional<bool> only_new_members;
+
+        // Optional. True, if the giveaway was canceled because the payment for it was refunded
+        std::optional<bool> was_refunded;
+
+        // Optional. Description of additional giveaway prize
+        std::optional<std::string> prize_description;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["giveaway_message_id"] = giveaway_message_id;
+            j["winners_selection_date"] = winners_selection_date;
+            j["winner_count"] = winner_count;
+            std::vector<json> winners_values;
+            winners_values.reserve(winners.size());
+            for (auto& e : winners) {
+                winners_values.push_back(e.to_json());
+            }
+            j["winners"] = winners_values;
+            if (additional_chat_count.has_value()) {
+                j["additional_chat_count"] = additional_chat_count.value();
+            }
+            if (prize_star_count.has_value()) {
+                j["prize_star_count"] = prize_star_count.value();
+            }
+            if (premium_subscription_month_count.has_value()) {
+                j["premium_subscription_month_count"] = premium_subscription_month_count.value();
+            }
+            if (unclaimed_prize_count.has_value()) {
+                j["unclaimed_prize_count"] = unclaimed_prize_count.value();
+            }
+            if (only_new_members.has_value()) {
+                j["only_new_members"] = only_new_members.value();
+            }
+            if (was_refunded.has_value()) {
+                j["was_refunded"] = was_refunded.value();
+            }
+            if (prize_description.has_value()) {
+                j["prize_description"] = prize_description.value();
+            }
+            return j.dump();
+        }
+    };
+
+
+    // Payments
+
+    /**
+     * This object contains basic information about an invoice.
+     *
+     * @param title Product name
+     * @param description Product description
+     * @param start_parameter Unique bot deep-linking parameter that can be used to generate this invoice
+     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
+     * @param total_amount Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+     */
+
+    struct Invoice : public TelegramModel {
+        virtual ~Invoice() = default;
+        // Product name
+        std::string title;
+
+        // Product description
+        std::string description;
+
+        // Unique bot deep-linking parameter that can be used to generate this invoice
+        std::string start_parameter;
+
+        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
+        std::string currency;
+
+        // Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+        std::int64_t total_amount;
+
+        json to_json() const override {
+            json j;
+            j["title"] = title;
+            j["description"] = description;
+            j["start_parameter"] = start_parameter;
+            j["currency"] = currency;
+            j["total_amount"] = total_amount;
+            return j.dump();
+        }
+    };
+
+
+    // Available types
+
+    /**
+     * This object represents a point on the map.
+     *
+     * @param latitude Latitude as defined by the sender
+     * @param longitude Longitude as defined by the sender
+     * @param horizontal_accuracy Optional. The radius of uncertainty for the location, measured in meters; 0-1500
+     * @param live_period Optional. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
+     * @param heading Optional. The direction in which user is moving, in degrees; 1-360. For active live locations only.
+     * @param proximity_alert_radius Optional. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
+     */
+
+    struct Location : public TelegramModel {
+        virtual ~Location() = default;
+        // Latitude as defined by the sender
+        double latitude;
+
+        // Longitude as defined by the sender
+        double longitude;
+
+        // Optional. The radius of uncertainty for the location, measured in meters; 0-1500
+        std::optional<double> horizontal_accuracy;
+
+        // Optional. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
+        std::optional<std::int64_t> live_period;
+
+        // Optional. The direction in which user is moving, in degrees; 1-360. For active live locations only.
+        std::optional<std::int64_t> heading;
+
+        // Optional. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
+        std::optional<std::int64_t> proximity_alert_radius;
+
+        json to_json() const override {
+            json j;
+            j["latitude"] = latitude;
+            j["longitude"] = longitude;
+            if (horizontal_accuracy.has_value()) {
+                j["horizontal_accuracy"] = horizontal_accuracy.value();
+            }
+            if (live_period.has_value()) {
+                j["live_period"] = live_period.value();
+            }
+            if (heading.has_value()) {
+                j["heading"] = heading.value();
+            }
+            if (proximity_alert_radius.has_value()) {
+                j["proximity_alert_radius"] = proximity_alert_radius.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about one answer option in a poll.
+     *
+     * @param text Option text, 1-100 characters
+     * @param text_entities Optional. Special entities that appear in the option text. Currently, only custom emoji entities are allowed in poll option texts
+     * @param voter_count Number of users that voted for this option
+     */
+
+    struct PollOption : public TelegramModel {
+        virtual ~PollOption() = default;
+        // Option text, 1-100 characters
+        std::string text;
+
+        // Optional. Special entities that appear in the option text. Currently, only custom emoji entities are allowed in poll option texts
+        std::optional<std::vector<MessageEntity>> text_entities;
+
+        // Number of users that voted for this option
+        std::int64_t voter_count;
+
+        json to_json() const override {
+            json j;
+            j["text"] = text;
+            if (text_entities.has_value()) {
+                std::vector<json> text_entities_values;
+                text_entities_values.reserve(text_entities.value().size());
+                for (auto& e : text_entities.value()) {
+                    text_entities_values.push_back(e.to_json());
+                }
+                j["text_entities"] = text_entities_values;
+            }
+            j["voter_count"] = voter_count;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about a poll.
+     *
+     * @param id Unique poll identifier
+     * @param question Poll question, 1-300 characters
+     * @param question_entities Optional. Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions
+     * @param options List of poll options
+     * @param total_voter_count Total number of users that voted in the poll
+     * @param is_closed True, if the poll is closed
+     * @param is_anonymous True, if the poll is anonymous
+     * @param type Poll type, currently can be “regular” or “quiz”
+     * @param allows_multiple_answers True, if the poll allows multiple answers
+     * @param correct_option_id Optional. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.
+     * @param explanation Optional. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
+     * @param explanation_entities Optional. Special entities like usernames, URLs, bot commands, etc. that appear in the explanation
+     * @param open_period Optional. Amount of time in seconds the poll will be active after creation
+     * @param close_date Optional. Point in time (Unix timestamp) when the poll will be automatically closed
+     */
+
+    struct Poll : public TelegramModel {
+        virtual ~Poll() = default;
+        // Unique poll identifier
+        std::string id;
+
+        // Poll question, 1-300 characters
+        std::string question;
+
+        // Optional. Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions
+        std::optional<std::vector<MessageEntity>> question_entities;
+
+        // List of poll options
+        std::vector<PollOption> options;
+
+        // Total number of users that voted in the poll
+        std::int64_t total_voter_count;
+
+        // True, if the poll is closed
+        bool is_closed;
+
+        // True, if the poll is anonymous
+        bool is_anonymous;
+
+        // Poll type, currently can be “regular” or “quiz”
+        std::string type_;
+
+        // True, if the poll allows multiple answers
+        bool allows_multiple_answers;
+
+        // Optional. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.
+        std::optional<std::int64_t> correct_option_id;
+
+        // Optional. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
+        std::optional<std::string> explanation;
+
+        // Optional. Special entities like usernames, URLs, bot commands, etc. that appear in the explanation
+        std::optional<std::vector<MessageEntity>> explanation_entities;
+
+        // Optional. Amount of time in seconds the poll will be active after creation
+        std::optional<std::int64_t> open_period;
+
+        // Optional. Point in time (Unix timestamp) when the poll will be automatically closed
+        std::optional<std::int64_t> close_date;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["question"] = question;
+            if (question_entities.has_value()) {
+                std::vector<json> question_entities_values;
+                question_entities_values.reserve(question_entities.value().size());
+                for (auto& e : question_entities.value()) {
+                    question_entities_values.push_back(e.to_json());
+                }
+                j["question_entities"] = question_entities_values;
+            }
+            std::vector<json> options_values;
+            options_values.reserve(options.size());
+            for (auto& e : options) {
+                options_values.push_back(e.to_json());
+            }
+            j["options"] = options_values;
+            j["total_voter_count"] = total_voter_count;
+            j["is_closed"] = is_closed;
+            j["is_anonymous"] = is_anonymous;
+            j["type"] = type_;
+            j["allows_multiple_answers"] = allows_multiple_answers;
+            if (correct_option_id.has_value()) {
+                j["correct_option_id"] = correct_option_id.value();
+            }
+            if (explanation.has_value()) {
+                j["explanation"] = explanation.value();
+            }
+            if (explanation_entities.has_value()) {
+                std::vector<json> explanation_entities_values;
+                explanation_entities_values.reserve(explanation_entities.value().size());
+                for (auto& e : explanation_entities.value()) {
+                    explanation_entities_values.push_back(e.to_json());
+                }
+                j["explanation_entities"] = explanation_entities_values;
+            }
+            if (open_period.has_value()) {
+                j["open_period"] = open_period.value();
+            }
+            if (close_date.has_value()) {
+                j["close_date"] = close_date.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a venue.
+     *
+     * @param location Venue location. Can't be a live location
+     * @param title Name of the venue
+     * @param address Address of the venue
+     * @param foursquare_id Optional. Foursquare identifier of the venue
+     * @param foursquare_type Optional. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+     * @param google_place_id Optional. Google Places identifier of the venue
+     * @param google_place_type Optional. Google Places type of the venue. (See supported types.)
+     */
+
+    struct Venue : public TelegramModel {
+        virtual ~Venue() = default;
+        // Venue location. Can't be a live location
+        std::shared_ptr<Location> location;
+
+        // Name of the venue
+        std::string title;
+
+        // Address of the venue
+        std::string address;
+
+        // Optional. Foursquare identifier of the venue
+        std::optional<std::string> foursquare_id;
+
+        // Optional. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+        std::optional<std::string> foursquare_type;
+
+        // Optional. Google Places identifier of the venue
+        std::optional<std::string> google_place_id;
+
+        // Optional. Google Places type of the venue. (See supported types.)
+        std::optional<std::string> google_place_type;
+
+        json to_json() const override {
+            json j;
+            j["location"] = location->to_json();
+            j["title"] = title;
+            j["address"] = address;
+            if (foursquare_id.has_value()) {
+                j["foursquare_id"] = foursquare_id.value();
+            }
+            if (foursquare_type.has_value()) {
+                j["foursquare_type"] = foursquare_type.value();
+            }
+            if (google_place_id.has_value()) {
+                j["google_place_id"] = google_place_id.value();
+            }
+            if (google_place_type.has_value()) {
+                j["google_place_type"] = google_place_type.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about a message that is being replied to, which may come from another chat or forum topic.
+     *
+     * @param origin Origin of the message replied to by the given message
+     * @param chat Optional. Chat the original message belongs to. Available only if the chat is a supergroup or a channel.
+     * @param message_id Optional. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.
+     * @param link_preview_options Optional. Options used for link preview generation for the original message, if it is a text message
+     * @param animation Optional. Message is an animation, information about the animation
+     * @param audio Optional. Message is an audio file, information about the file
+     * @param document Optional. Message is a general file, information about the file
+     * @param paid_media Optional. Message contains paid media; information about the paid media
+     * @param photo Optional. Message is a photo, available sizes of the photo
+     * @param sticker Optional. Message is a sticker, information about the sticker
+     * @param story Optional. Message is a forwarded story
+     * @param video Optional. Message is a video, information about the video
+     * @param video_note Optional. Message is a video note, information about the video message
+     * @param voice Optional. Message is a voice message, information about the file
+     * @param has_media_spoiler Optional. True, if the message media is covered by a spoiler animation
+     * @param checklist Optional. Message is a checklist
+     * @param contact Optional. Message is a shared contact, information about the contact
+     * @param dice Optional. Message is a dice with random value
+     * @param game Optional. Message is a game, information about the game. More about games »
+     * @param giveaway Optional. Message is a scheduled giveaway, information about the giveaway
+     * @param giveaway_winners Optional. A giveaway with public winners was completed
+     * @param invoice Optional. Message is an invoice for a payment, information about the invoice. More about payments »
+     * @param location Optional. Message is a shared location, information about the location
+     * @param poll Optional. Message is a native poll, information about the poll
+     * @param venue Optional. Message is a venue, information about the venue
+     */
+
+    struct ExternalReplyInfo : public TelegramModel {
+        virtual ~ExternalReplyInfo() = default;
+        // Origin of the message replied to by the given message
+        std::shared_ptr<MessageOrigin> origin;
+
+        // Optional. Chat the original message belongs to. Available only if the chat is a supergroup or a channel.
+        std::optional<Chat> chat;
+
+        // Optional. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.
+        std::optional<MessageId> message_id;
+
+        // Optional. Options used for link preview generation for the original message, if it is a text message
+        std::optional<LinkPreviewOptions> link_preview_options;
+
+        // Optional. Message is an animation, information about the animation
+        std::optional<Animation> animation;
+
+        // Optional. Message is an audio file, information about the file
+        std::optional<Audio> audio;
+
+        // Optional. Message is a general file, information about the file
+        std::optional<Document> document;
+
+        // Optional. Message contains paid media; information about the paid media
+        std::optional<PaidMediaInfo> paid_media;
+
+        // Optional. Message is a photo, available sizes of the photo
+        std::optional<std::vector<PhotoSize>> photo;
+
+        // Optional. Message is a sticker, information about the sticker
+        std::optional<Sticker> sticker;
+
+        // Optional. Message is a forwarded story
+        std::optional<Story> story;
+
+        // Optional. Message is a video, information about the video
+        std::optional<Video> video;
+
+        // Optional. Message is a video note, information about the video message
+        std::optional<VideoNote> video_note;
+
+        // Optional. Message is a voice message, information about the file
+        std::optional<Voice> voice;
+
+        // Optional. True, if the message media is covered by a spoiler animation
+        std::optional<bool> has_media_spoiler;
+
+        // Optional. Message is a checklist
+        std::optional<Checklist> checklist;
+
+        // Optional. Message is a shared contact, information about the contact
+        std::optional<Contact> contact;
+
+        // Optional. Message is a dice with random value
+        std::optional<Dice> dice;
+
+        // Optional. Message is a game, information about the game. More about games »
+        std::optional<Game> game;
+
+        // Optional. Message is a scheduled giveaway, information about the giveaway
+        std::optional<Giveaway> giveaway;
+
+        // Optional. A giveaway with public winners was completed
+        std::optional<GiveawayWinners> giveaway_winners;
+
+        // Optional. Message is an invoice for a payment, information about the invoice. More about payments »
+        std::optional<Invoice> invoice;
+
+        // Optional. Message is a shared location, information about the location
+        std::optional<Location> location;
+
+        // Optional. Message is a native poll, information about the poll
+        std::optional<Poll> poll;
+
+        // Optional. Message is a venue, information about the venue
+        std::optional<Venue> venue;
+
+        json to_json() const override {
+            json j;
+            j["origin"] = origin->to_json();
+            if (chat.has_value()) {
+                j["chat"] = chat.value().to_json();
+            }
+            if (message_id.has_value()) {
+                j["message_id"] = message_id.value().to_json();
+            }
+            if (link_preview_options.has_value()) {
+                j["link_preview_options"] = link_preview_options.value().to_json();
+            }
+            if (animation.has_value()) {
+                j["animation"] = animation.value().to_json();
+            }
+            if (audio.has_value()) {
+                j["audio"] = audio.value().to_json();
+            }
+            if (document.has_value()) {
+                j["document"] = document.value().to_json();
+            }
+            if (paid_media.has_value()) {
+                j["paid_media"] = paid_media.value().to_json();
+            }
+            if (photo.has_value()) {
+                std::vector<json> photo_values;
+                photo_values.reserve(photo.value().size());
+                for (auto& e : photo.value()) {
+                    photo_values.push_back(e.to_json());
+                }
+                j["photo"] = photo_values;
+            }
+            if (sticker.has_value()) {
+                j["sticker"] = sticker.value().to_json();
+            }
+            if (story.has_value()) {
+                j["story"] = story.value().to_json();
+            }
+            if (video.has_value()) {
+                j["video"] = video.value().to_json();
+            }
+            if (video_note.has_value()) {
+                j["video_note"] = video_note.value().to_json();
+            }
+            if (voice.has_value()) {
+                j["voice"] = voice.value().to_json();
+            }
+            if (has_media_spoiler.has_value()) {
+                j["has_media_spoiler"] = has_media_spoiler.value();
+            }
+            if (checklist.has_value()) {
+                j["checklist"] = checklist.value().to_json();
+            }
+            if (contact.has_value()) {
+                j["contact"] = contact.value().to_json();
+            }
+            if (dice.has_value()) {
+                j["dice"] = dice.value().to_json();
+            }
+            if (game.has_value()) {
+                j["game"] = game.value().to_json();
+            }
+            if (giveaway.has_value()) {
+                j["giveaway"] = giveaway.value().to_json();
+            }
+            if (giveaway_winners.has_value()) {
+                j["giveaway_winners"] = giveaway_winners.value().to_json();
+            }
+            if (invoice.has_value()) {
+                j["invoice"] = invoice.value().to_json();
+            }
+            if (location.has_value()) {
+                j["location"] = location.value().to_json();
+            }
+            if (poll.has_value()) {
+                j["poll"] = poll.value().to_json();
+            }
+            if (venue.has_value()) {
+                j["venue"] = venue.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about the quoted part of a message that is replied to by the given message.
+     *
+     * @param text Text of the quoted part of a message that is replied to by the given message
+     * @param entities Optional. Special entities that appear in the quote. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are kept in quotes.
+     * @param position Approximate quote position in the original message in UTF-16 code units as specified by the sender
+     * @param is_manual Optional. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
+     */
+
+    struct TextQuote : public TelegramModel {
+        virtual ~TextQuote() = default;
+        // Text of the quoted part of a message that is replied to by the given message
+        std::string text;
+
+        // Optional. Special entities that appear in the quote. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are kept in quotes.
+        std::optional<std::vector<MessageEntity>> entities;
+
+        // Approximate quote position in the original message in UTF-16 code units as specified by the sender
+        std::int64_t position;
+
+        // Optional. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
+        std::optional<bool> is_manual;
+
+        json to_json() const override {
+            json j;
+            j["text"] = text;
+            if (entities.has_value()) {
+                std::vector<json> entities_values;
+                entities_values.reserve(entities.value().size());
+                for (auto& e : entities.value()) {
+                    entities_values.push_back(e.to_json());
+                }
+                j["entities"] = entities_values;
+            }
+            j["position"] = position;
+            if (is_manual.has_value()) {
+                j["is_manual"] = is_manual.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes the price of a suggested post.
+     *
+     * @param currency Currency in which the post will be paid. Currently, must be one of “XTR” for Telegram Stars or “TON” for toncoins
+     * @param amount The amount of the currency that will be paid for the post in the smallest units of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.
+     */
+
+    struct SuggestedPostPrice : public TelegramModel {
+        virtual ~SuggestedPostPrice() = default;
+        // Currency in which the post will be paid. Currently, must be one of “XTR” for Telegram Stars or “TON” for toncoins
+        std::string currency;
+
+        // The amount of the currency that will be paid for the post in the smallest units of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.
+        std::int64_t amount;
+
+        json to_json() const override {
+            json j;
+            j["currency"] = currency;
+            j["amount"] = amount;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Contains information about a suggested post.
+     *
+     * @param state State of the suggested post. Currently, it can be one of “pending”, “approved”, “declined”.
+     * @param price Optional. Proposed price of the post. If the field is omitted, then the post is unpaid.
+     * @param send_date Optional. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it.
+     */
+
+    struct SuggestedPostInfo : public TelegramModel {
+        virtual ~SuggestedPostInfo() = default;
+        // State of the suggested post. Currently, it can be one of “pending”, “approved”, “declined”.
+        std::string state;
+
+        // Optional. Proposed price of the post. If the field is omitted, then the post is unpaid.
+        std::optional<SuggestedPostPrice> price;
+
+        // Optional. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it.
+        std::optional<std::int64_t> send_date;
+
+        json to_json() const override {
+            json j;
+            j["state"] = state;
+            if (price.has_value()) {
+                j["price"] = price.value().to_json();
+            }
+            if (send_date.has_value()) {
+                j["send_date"] = send_date.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about a change in auto-delete timer settings.
+     *
+     * @param message_auto_delete_time New auto-delete time for messages in the chat; in seconds
+     */
+
+    struct MessageAutoDeleteTimerChanged : public TelegramModel {
+        virtual ~MessageAutoDeleteTimerChanged() = default;
+        // New auto-delete time for messages in the chat; in seconds
+        std::int64_t message_auto_delete_time;
+
+        json to_json() const override {
+            json j;
+            j["message_auto_delete_time"] = message_auto_delete_time;
+            return j.dump();
+        }
+    };
+
+
+    // Payments
+
+    /**
+     * This object represents a shipping address.
+     *
+     * @param country_code Two-letter ISO 3166-1 alpha-2 country code
+     * @param state State, if applicable
+     * @param city City
+     * @param street_line1 First line for the address
+     * @param street_line2 Second line for the address
+     * @param post_code Address post code
+     */
+
+    struct ShippingAddress : public TelegramModel {
+        virtual ~ShippingAddress() = default;
+        // Two-letter ISO 3166-1 alpha-2 country code
+        std::string country_code;
+
+        // State, if applicable
+        std::string state;
+
+        // City
+        std::string city;
+
+        // First line for the address
+        std::string street_line1;
+
+        // Second line for the address
+        std::string street_line2;
+
+        // Address post code
+        std::string post_code;
+
+        json to_json() const override {
+            json j;
+            j["country_code"] = country_code;
+            j["state"] = state;
+            j["city"] = city;
+            j["street_line1"] = street_line1;
+            j["street_line2"] = street_line2;
+            j["post_code"] = post_code;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents information about an order.
+     *
+     * @param name Optional. User name
+     * @param phone_number Optional. User's phone number
+     * @param email Optional. User email
+     * @param shipping_address Optional. User shipping address
+     */
+
+    struct OrderInfo : public TelegramModel {
+        virtual ~OrderInfo() = default;
+        // Optional. User name
+        std::optional<std::string> name;
+
+        // Optional. User's phone number
+        std::optional<std::string> phone_number;
+
+        // Optional. User email
+        std::optional<std::string> email;
+
+        // Optional. User shipping address
+        std::optional<ShippingAddress> shipping_address;
+
+        json to_json() const override {
+            json j;
+            if (name.has_value()) {
+                j["name"] = name.value();
+            }
+            if (phone_number.has_value()) {
+                j["phone_number"] = phone_number.value();
+            }
+            if (email.has_value()) {
+                j["email"] = email.value();
+            }
+            if (shipping_address.has_value()) {
+                j["shipping_address"] = shipping_address.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.
+     *
+     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
+     * @param total_amount Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+     * @param invoice_payload Bot-specified invoice payload
+     * @param subscription_expiration_date Optional. Expiration date of the subscription, in Unix time; for recurring payments only
+     * @param is_recurring Optional. True, if the payment is a recurring payment for a subscription
+     * @param is_first_recurring Optional. True, if the payment is the first payment for a subscription
+     * @param shipping_option_id Optional. Identifier of the shipping option chosen by the user
+     * @param order_info Optional. Order information provided by the user
+     * @param telegram_payment_charge_id Telegram payment identifier
+     * @param provider_payment_charge_id Provider payment identifier
+     */
+
+    struct SuccessfulPayment : public TelegramModel {
+        virtual ~SuccessfulPayment() = default;
+        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
+        std::string currency;
+
+        // Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+        std::int64_t total_amount;
+
+        // Bot-specified invoice payload
+        std::string invoice_payload;
+
+        // Optional. Expiration date of the subscription, in Unix time; for recurring payments only
+        std::optional<std::int64_t> subscription_expiration_date;
+
+        // Optional. True, if the payment is a recurring payment for a subscription
+        std::optional<bool> is_recurring;
+
+        // Optional. True, if the payment is the first payment for a subscription
+        std::optional<bool> is_first_recurring;
+
+        // Optional. Identifier of the shipping option chosen by the user
+        std::optional<std::string> shipping_option_id;
+
+        // Optional. Order information provided by the user
+        std::optional<OrderInfo> order_info;
+
+        // Telegram payment identifier
+        std::string telegram_payment_charge_id;
+
+        // Provider payment identifier
+        std::string provider_payment_charge_id;
+
+        json to_json() const override {
+            json j;
+            j["currency"] = currency;
+            j["total_amount"] = total_amount;
+            j["invoice_payload"] = invoice_payload;
+            if (subscription_expiration_date.has_value()) {
+                j["subscription_expiration_date"] = subscription_expiration_date.value();
+            }
+            if (is_recurring.has_value()) {
+                j["is_recurring"] = is_recurring.value();
+            }
+            if (is_first_recurring.has_value()) {
+                j["is_first_recurring"] = is_first_recurring.value();
+            }
+            if (shipping_option_id.has_value()) {
+                j["shipping_option_id"] = shipping_option_id.value();
+            }
+            if (order_info.has_value()) {
+                j["order_info"] = order_info.value().to_json();
+            }
+            j["telegram_payment_charge_id"] = telegram_payment_charge_id;
+            j["provider_payment_charge_id"] = provider_payment_charge_id;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains basic information about a refunded payment.
+     *
+     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars. Currently, always “XTR”
+     * @param total_amount Total refunded price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45, total_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+     * @param invoice_payload Bot-specified invoice payload
+     * @param telegram_payment_charge_id Telegram payment identifier
+     * @param provider_payment_charge_id Optional. Provider payment identifier
+     */
+
+    struct RefundedPayment : public TelegramModel {
+        virtual ~RefundedPayment() = default;
+        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars. Currently, always “XTR”
+        std::string currency;
+
+        // Total refunded price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45, total_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+        std::int64_t total_amount;
+
+        // Bot-specified invoice payload
+        std::string invoice_payload;
+
+        // Telegram payment identifier
+        std::string telegram_payment_charge_id;
+
+        // Optional. Provider payment identifier
+        std::optional<std::string> provider_payment_charge_id;
+
+        json to_json() const override {
+            json j;
+            j["currency"] = currency;
+            j["total_amount"] = total_amount;
+            j["invoice_payload"] = invoice_payload;
+            j["telegram_payment_charge_id"] = telegram_payment_charge_id;
+            if (provider_payment_charge_id.has_value()) {
+                j["provider_payment_charge_id"] = provider_payment_charge_id.value();
+            }
+            return j.dump();
+        }
+    };
+
+
+    // Available types
+
+    /**
+     * This object contains information about a user that was shared with the bot using a KeyboardButtonRequestUsers button.
+     *
+     * @param user_id Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.
+     * @param first_name Optional. First name of the user, if the name was requested by the bot
+     * @param last_name Optional. Last name of the user, if the name was requested by the bot
+     * @param username Optional. Username of the user, if the username was requested by the bot
+     * @param photo Optional. Available sizes of the chat photo, if the photo was requested by the bot
+     */
+
+    struct SharedUser : public TelegramModel {
+        virtual ~SharedUser() = default;
+        // Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.
+        UserId user_id;
+
+        // Optional. First name of the user, if the name was requested by the bot
+        std::optional<std::string> first_name;
+
+        // Optional. Last name of the user, if the name was requested by the bot
+        std::optional<std::string> last_name;
+
+        // Optional. Username of the user, if the username was requested by the bot
+        std::optional<std::string> username;
+
+        // Optional. Available sizes of the chat photo, if the photo was requested by the bot
+        std::optional<std::vector<PhotoSize>> photo;
+
+        json to_json() const override {
+            json j;
+            j["user_id"] = user_id.to_json();
+            if (first_name.has_value()) {
+                j["first_name"] = first_name.value();
+            }
+            if (last_name.has_value()) {
+                j["last_name"] = last_name.value();
+            }
+            if (username.has_value()) {
+                j["username"] = username.value();
+            }
+            if (photo.has_value()) {
+                std::vector<json> photo_values;
+                photo_values.reserve(photo.value().size());
+                for (auto& e : photo.value()) {
+                    photo_values.push_back(e.to_json());
+                }
+                j["photo"] = photo_values;
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about the users whose identifiers were shared with the bot using a KeyboardButtonRequestUsers button.
+     *
+     * @param request_id Identifier of the request
+     * @param users Information about users shared with the bot.
+     */
+
+    struct UsersShared : public TelegramModel {
+        virtual ~UsersShared() = default;
+        // Identifier of the request
+        std::int64_t request_id;
+
+        // Information about users shared with the bot.
+        std::vector<SharedUser> users;
+
+        json to_json() const override {
+            json j;
+            j["request_id"] = request_id;
+            std::vector<json> users_values;
+            users_values.reserve(users.size());
+            for (auto& e : users) {
+                users_values.push_back(e.to_json());
+            }
+            j["users"] = users_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about a chat that was shared with the bot using a KeyboardButtonRequestChat button.
+     *
+     * @param request_id Identifier of the request
+     * @param chat_id Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.
+     * @param title Optional. Title of the chat, if the title was requested by the bot.
+     * @param username Optional. Username of the chat, if the username was requested by the bot and available.
+     * @param photo Optional. Available sizes of the chat photo, if the photo was requested by the bot
+     */
+
+    struct ChatShared : public TelegramModel {
+        virtual ~ChatShared() = default;
+        // Identifier of the request
+        std::int64_t request_id;
+
+        // Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.
+        ChatId chat_id;
+
+        // Optional. Title of the chat, if the title was requested by the bot.
+        std::optional<std::string> title;
+
+        // Optional. Username of the chat, if the username was requested by the bot and available.
+        std::optional<std::string> username;
+
+        // Optional. Available sizes of the chat photo, if the photo was requested by the bot
+        std::optional<std::vector<PhotoSize>> photo;
+
+        json to_json() const override {
+            json j;
+            j["request_id"] = request_id;
+            j["chat_id"] = chat_id.to_json();
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (username.has_value()) {
+                j["username"] = username.value();
+            }
+            if (photo.has_value()) {
+                std::vector<json> photo_values;
+                photo_values.reserve(photo.value().size());
+                for (auto& e : photo.value()) {
+                    photo_values.push_back(e.to_json());
+                }
+                j["photo"] = photo_values;
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a gift that can be sent by the bot.
+     *
+     * @param id Unique identifier of the gift
+     * @param sticker The sticker that represents the gift
+     * @param star_count The number of Telegram Stars that must be paid to send the sticker
+     * @param upgrade_star_count Optional. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
+     * @param total_count Optional. The total number of the gifts of this type that can be sent; for limited gifts only
+     * @param remaining_count Optional. The number of remaining gifts of this type that can be sent; for limited gifts only
+     * @param publisher_chat Optional. Information about the chat that published the gift
+     */
+
+    struct Gift : public TelegramModel {
+        virtual ~Gift() = default;
+        // Unique identifier of the gift
+        std::string id;
+
+        // The sticker that represents the gift
+        std::shared_ptr<Sticker> sticker;
+
+        // The number of Telegram Stars that must be paid to send the sticker
+        std::int64_t star_count;
+
+        // Optional. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
+        std::optional<std::int64_t> upgrade_star_count;
+
+        // Optional. The total number of the gifts of this type that can be sent; for limited gifts only
+        std::optional<std::int64_t> total_count;
+
+        // Optional. The number of remaining gifts of this type that can be sent; for limited gifts only
+        std::optional<std::int64_t> remaining_count;
+
+        // Optional. Information about the chat that published the gift
+        std::optional<Chat> publisher_chat;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["sticker"] = sticker->to_json();
+            j["star_count"] = star_count;
+            if (upgrade_star_count.has_value()) {
+                j["upgrade_star_count"] = upgrade_star_count.value();
+            }
+            if (total_count.has_value()) {
+                j["total_count"] = total_count.value();
+            }
+            if (remaining_count.has_value()) {
+                j["remaining_count"] = remaining_count.value();
+            }
+            if (publisher_chat.has_value()) {
+                j["publisher_chat"] = publisher_chat.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about a regular gift that was sent or received.
+     *
+     * @param gift Information about the gift
+     * @param owned_gift_id Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+     * @param convert_star_count Optional. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
+     * @param prepaid_upgrade_star_count Optional. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
+     * @param can_be_upgraded Optional. True, if the gift can be upgraded to a unique gift
+     * @param text Optional. Text of the message that was added to the gift
+     * @param entities Optional. Special entities that appear in the text
+     * @param is_private Optional. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+     */
+
+    struct GiftInfo : public TelegramModel {
+        virtual ~GiftInfo() = default;
+        // Information about the gift
+        std::shared_ptr<Gift> gift;
+
+        // Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+        std::optional<std::string> owned_gift_id;
+
+        // Optional. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
+        std::optional<std::int64_t> convert_star_count;
+
+        // Optional. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
+        std::optional<std::int64_t> prepaid_upgrade_star_count;
+
+        // Optional. True, if the gift can be upgraded to a unique gift
+        std::optional<bool> can_be_upgraded;
+
+        // Optional. Text of the message that was added to the gift
+        std::optional<std::string> text;
+
+        // Optional. Special entities that appear in the text
+        std::optional<std::vector<MessageEntity>> entities;
+
+        // Optional. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+        std::optional<bool> is_private;
+
+        json to_json() const override {
+            json j;
+            j["gift"] = gift->to_json();
+            if (owned_gift_id.has_value()) {
+                j["owned_gift_id"] = owned_gift_id.value();
+            }
+            if (convert_star_count.has_value()) {
+                j["convert_star_count"] = convert_star_count.value();
+            }
+            if (prepaid_upgrade_star_count.has_value()) {
+                j["prepaid_upgrade_star_count"] = prepaid_upgrade_star_count.value();
+            }
+            if (can_be_upgraded.has_value()) {
+                j["can_be_upgraded"] = can_be_upgraded.value();
+            }
+            if (text.has_value()) {
+                j["text"] = text.value();
+            }
+            if (entities.has_value()) {
+                std::vector<json> entities_values;
+                entities_values.reserve(entities.value().size());
+                for (auto& e : entities.value()) {
+                    entities_values.push_back(e.to_json());
+                }
+                j["entities"] = entities_values;
+            }
+            if (is_private.has_value()) {
+                j["is_private"] = is_private.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object describes the model of a unique gift.
+     *
+     * @param name Name of the model
+     * @param sticker The sticker that represents the unique gift
+     * @param rarity_per_mille The number of unique gifts that receive this model for every 1000 gifts upgraded
+     */
+
+    struct UniqueGiftModel : public TelegramModel {
+        virtual ~UniqueGiftModel() = default;
+        // Name of the model
+        std::string name;
+
+        // The sticker that represents the unique gift
+        std::shared_ptr<Sticker> sticker;
+
+        // The number of unique gifts that receive this model for every 1000 gifts upgraded
+        std::int64_t rarity_per_mille;
+
+        json to_json() const override {
+            json j;
+            j["name"] = name;
+            j["sticker"] = sticker->to_json();
+            j["rarity_per_mille"] = rarity_per_mille;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object describes the symbol shown on the pattern of a unique gift.
+     *
+     * @param name Name of the symbol
+     * @param sticker The sticker that represents the unique gift
+     * @param rarity_per_mille The number of unique gifts that receive this model for every 1000 gifts upgraded
+     */
+
+    struct UniqueGiftSymbol : public TelegramModel {
+        virtual ~UniqueGiftSymbol() = default;
+        // Name of the symbol
+        std::string name;
+
+        // The sticker that represents the unique gift
+        std::shared_ptr<Sticker> sticker;
+
+        // The number of unique gifts that receive this model for every 1000 gifts upgraded
+        std::int64_t rarity_per_mille;
+
+        json to_json() const override {
+            json j;
+            j["name"] = name;
+            j["sticker"] = sticker->to_json();
+            j["rarity_per_mille"] = rarity_per_mille;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object describes the colors of the backdrop of a unique gift.
+     *
+     * @param center_color The color in the center of the backdrop in RGB format
+     * @param edge_color The color on the edges of the backdrop in RGB format
+     * @param symbol_color The color to be applied to the symbol in RGB format
+     * @param text_color The color for the text on the backdrop in RGB format
+     */
+
+    struct UniqueGiftBackdropColors : public TelegramModel {
+        virtual ~UniqueGiftBackdropColors() = default;
+        // The color in the center of the backdrop in RGB format
+        std::int64_t center_color;
+
+        // The color on the edges of the backdrop in RGB format
+        std::int64_t edge_color;
+
+        // The color to be applied to the symbol in RGB format
+        std::int64_t symbol_color;
+
+        // The color for the text on the backdrop in RGB format
+        std::int64_t text_color;
+
+        json to_json() const override {
+            json j;
+            j["center_color"] = center_color;
+            j["edge_color"] = edge_color;
+            j["symbol_color"] = symbol_color;
+            j["text_color"] = text_color;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object describes the backdrop of a unique gift.
+     *
+     * @param name Name of the backdrop
+     * @param colors Colors of the backdrop
+     * @param rarity_per_mille The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
+     */
+
+    struct UniqueGiftBackdrop : public TelegramModel {
+        virtual ~UniqueGiftBackdrop() = default;
+        // Name of the backdrop
+        std::string name;
+
+        // Colors of the backdrop
+        std::shared_ptr<UniqueGiftBackdropColors> colors;
+
+        // The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
+        std::int64_t rarity_per_mille;
+
+        json to_json() const override {
+            json j;
+            j["name"] = name;
+            j["colors"] = colors->to_json();
+            j["rarity_per_mille"] = rarity_per_mille;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object describes a unique gift that was upgraded from a regular gift.
+     *
+     * @param base_name Human-readable name of the regular gift from which this unique gift was upgraded
+     * @param name Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas
+     * @param number Unique number of the upgraded gift among gifts upgraded from the same regular gift
+     * @param model Model of the gift
+     * @param symbol Symbol of the gift
+     * @param backdrop Backdrop of the gift
+     * @param publisher_chat Optional. Information about the chat that published the gift
+     */
+
+    struct UniqueGift : public TelegramModel {
+        virtual ~UniqueGift() = default;
+        // Human-readable name of the regular gift from which this unique gift was upgraded
+        std::string base_name;
+
+        // Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas
+        std::string name;
+
+        // Unique number of the upgraded gift among gifts upgraded from the same regular gift
+        std::int64_t number;
+
+        // Model of the gift
+        std::shared_ptr<UniqueGiftModel> model;
+
+        // Symbol of the gift
+        std::shared_ptr<UniqueGiftSymbol> symbol;
+
+        // Backdrop of the gift
+        std::shared_ptr<UniqueGiftBackdrop> backdrop;
+
+        // Optional. Information about the chat that published the gift
+        std::optional<Chat> publisher_chat;
+
+        json to_json() const override {
+            json j;
+            j["base_name"] = base_name;
+            j["name"] = name;
+            j["number"] = number;
+            j["model"] = model->to_json();
+            j["symbol"] = symbol->to_json();
+            j["backdrop"] = backdrop->to_json();
+            if (publisher_chat.has_value()) {
+                j["publisher_chat"] = publisher_chat.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about a unique gift that was sent or received.
+     *
+     * @param gift Information about the gift
+     * @param origin Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
+     * @param last_resale_star_count Optional. For gifts bought from other users, the price paid for the gift
+     * @param owned_gift_id Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+     * @param transfer_star_count Optional. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+     * @param next_transfer_date Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+     */
+
+    struct UniqueGiftInfo : public TelegramModel {
+        virtual ~UniqueGiftInfo() = default;
+        // Information about the gift
+        std::shared_ptr<UniqueGift> gift;
+
+        // Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
+        std::string origin;
+
+        // Optional. For gifts bought from other users, the price paid for the gift
+        std::optional<std::int64_t> last_resale_star_count;
+
+        // Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
+        std::optional<std::string> owned_gift_id;
+
+        // Optional. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
+        std::optional<std::int64_t> transfer_star_count;
+
+        // Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
+        std::optional<std::int64_t> next_transfer_date;
+
+        json to_json() const override {
+            json j;
+            j["gift"] = gift->to_json();
+            j["origin"] = origin;
+            if (last_resale_star_count.has_value()) {
+                j["last_resale_star_count"] = last_resale_star_count.value();
+            }
+            if (owned_gift_id.has_value()) {
+                j["owned_gift_id"] = owned_gift_id.value();
+            }
+            if (transfer_star_count.has_value()) {
+                j["transfer_star_count"] = transfer_star_count.value();
+            }
+            if (next_transfer_date.has_value()) {
+                j["next_transfer_date"] = next_transfer_date.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess.
+     *
+     * @param from_request Optional. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess
+     * @param web_app_name Optional. Name of the Web App, if the access was granted when the Web App was launched from a link
+     * @param from_attachment_menu Optional. True, if the access was granted when the bot was added to the attachment or side menu
+     */
+
+    struct WriteAccessAllowed : public TelegramModel {
+        virtual ~WriteAccessAllowed() = default;
+        // Optional. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess
+        std::optional<bool> from_request;
+
+        // Optional. Name of the Web App, if the access was granted when the Web App was launched from a link
+        std::optional<std::string> web_app_name;
+
+        // Optional. True, if the access was granted when the bot was added to the attachment or side menu
+        std::optional<bool> from_attachment_menu;
+
+        json to_json() const override {
+            json j;
+            if (from_request.has_value()) {
+                j["from_request"] = from_request.value();
+            }
+            if (web_app_name.has_value()) {
+                j["web_app_name"] = web_app_name.value();
+            }
+            if (from_attachment_menu.has_value()) {
+                j["from_attachment_menu"] = from_attachment_menu.value();
+            }
+            return j.dump();
+        }
+    };
+
+
+    // Telegram Passport
+
+    /**
+     * This object represents a file uploaded to Telegram Passport. Currently all Telegram Passport files are in JPEG format when decrypted and don't exceed 10MB.
+     *
+     * @param file_id Identifier for this file, which can be used to download or reuse the file
+     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param file_size File size in bytes
+     * @param file_date Unix time when the file was uploaded
+     */
+
+    struct PassportFile : public TelegramModel {
+        virtual ~PassportFile() = default;
+        // Identifier for this file, which can be used to download or reuse the file
+        std::string file_id;
+
+        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string file_unique_id;
+
+        // File size in bytes
+        std::int64_t file_size;
+
+        // Unix time when the file was uploaded
+        std::int64_t file_date;
+
+        json to_json() const override {
+            json j;
+            j["file_id"] = file_id;
+            j["file_unique_id"] = file_unique_id;
+            j["file_size"] = file_size;
+            j["file_date"] = file_date;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes documents or other Telegram Passport elements shared with the bot by the user.
+     *
+     * @param type Element type. One of “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport”, “address”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”, “phone_number”, “email”.
+     * @param data Optional. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport” and “address” types. Can be decrypted and verified using the accompanying EncryptedCredentials.
+     * @param phone_number Optional. User's verified phone number; available only for “phone_number” type
+     * @param email Optional. User's verified email address; available only for “email” type
+     * @param files Optional. Array of encrypted files with documents provided by the user; available only for “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
+     * @param front_side Optional. Encrypted file with the front side of the document, provided by the user; available only for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
+     * @param reverse_side Optional. Encrypted file with the reverse side of the document, provided by the user; available only for “driver_license” and “identity_card”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
+     * @param selfie Optional. Encrypted file with the selfie of the user holding a document, provided by the user; available if requested for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
+     * @param translation Optional. Array of encrypted files with translated versions of documents provided by the user; available if requested for “passport”, “driver_license”, “identity_card”, “internal_passport”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
+     * @param hash Base64-encoded element hash for using in PassportElementErrorUnspecified
+     */
+
+    struct EncryptedPassportElement : public TelegramModel {
+        virtual ~EncryptedPassportElement() = default;
+        // Element type. One of “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport”, “address”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”, “phone_number”, “email”.
+        std::string type_;
+
+        // Optional. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport” and “address” types. Can be decrypted and verified using the accompanying EncryptedCredentials.
+        std::optional<std::string> data;
+
+        // Optional. User's verified phone number; available only for “phone_number” type
+        std::optional<std::string> phone_number;
+
+        // Optional. User's verified email address; available only for “email” type
+        std::optional<std::string> email;
+
+        // Optional. Array of encrypted files with documents provided by the user; available only for “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
+        std::optional<std::vector<PassportFile>> files;
+
+        // Optional. Encrypted file with the front side of the document, provided by the user; available only for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
+        std::optional<PassportFile> front_side;
+
+        // Optional. Encrypted file with the reverse side of the document, provided by the user; available only for “driver_license” and “identity_card”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
+        std::optional<PassportFile> reverse_side;
+
+        // Optional. Encrypted file with the selfie of the user holding a document, provided by the user; available if requested for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
+        std::optional<PassportFile> selfie;
+
+        // Optional. Array of encrypted files with translated versions of documents provided by the user; available if requested for “passport”, “driver_license”, “identity_card”, “internal_passport”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
+        std::optional<std::vector<PassportFile>> translation;
+
+        // Base64-encoded element hash for using in PassportElementErrorUnspecified
+        std::string hash;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            if (data.has_value()) {
+                j["data"] = data.value();
+            }
+            if (phone_number.has_value()) {
+                j["phone_number"] = phone_number.value();
+            }
+            if (email.has_value()) {
+                j["email"] = email.value();
+            }
+            if (files.has_value()) {
+                std::vector<json> files_values;
+                files_values.reserve(files.value().size());
+                for (auto& e : files.value()) {
+                    files_values.push_back(e.to_json());
+                }
+                j["files"] = files_values;
+            }
+            if (front_side.has_value()) {
+                j["front_side"] = front_side.value().to_json();
+            }
+            if (reverse_side.has_value()) {
+                j["reverse_side"] = reverse_side.value().to_json();
+            }
+            if (selfie.has_value()) {
+                j["selfie"] = selfie.value().to_json();
+            }
+            if (translation.has_value()) {
+                std::vector<json> translation_values;
+                translation_values.reserve(translation.value().size());
+                for (auto& e : translation.value()) {
+                    translation_values.push_back(e.to_json());
+                }
+                j["translation"] = translation_values;
+            }
+            j["hash"] = hash;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes data required for decrypting and authenticating EncryptedPassportElement. See the Telegram Passport Documentation for a complete description of the data decryption and authentication processes.
+     *
+     * @param data Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for EncryptedPassportElement decryption and authentication
+     * @param hash Base64-encoded data hash for data authentication
+     * @param secret Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption
+     */
+
+    struct EncryptedCredentials : public TelegramModel {
+        virtual ~EncryptedCredentials() = default;
+        // Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for EncryptedPassportElement decryption and authentication
+        std::string data;
+
+        // Base64-encoded data hash for data authentication
+        std::string hash;
+
+        // Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption
+        std::string secret;
+
+        json to_json() const override {
+            json j;
+            j["data"] = data;
+            j["hash"] = hash;
+            j["secret"] = secret;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes Telegram Passport data shared with the bot by the user.
+     *
+     * @param data Array with information about documents and other Telegram Passport elements that was shared with the bot
+     * @param credentials Encrypted credentials required to decrypt the data
+     */
+
+    struct PassportData : public TelegramModel {
+        virtual ~PassportData() = default;
+        // Array with information about documents and other Telegram Passport elements that was shared with the bot
+        std::vector<EncryptedPassportElement> data;
+
+        // Encrypted credentials required to decrypt the data
+        std::shared_ptr<EncryptedCredentials> credentials;
+
+        json to_json() const override {
+            json j;
+            std::vector<json> data_values;
+            data_values.reserve(data.size());
+            for (auto& e : data) {
+                data_values.push_back(e.to_json());
+            }
+            j["data"] = data_values;
+            j["credentials"] = credentials->to_json();
+            return j.dump();
+        }
+    };
+
+
+    // Available types
+
+    /**
+     * This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.
+     *
+     * @param traveler User that triggered the alert
+     * @param watcher User that set the alert
+     * @param distance The distance between the users
+     */
+
+    struct ProximityAlertTriggered : public TelegramModel {
+        virtual ~ProximityAlertTriggered() = default;
+        // User that triggered the alert
+        std::shared_ptr<User> traveler;
+
+        // User that set the alert
+        std::shared_ptr<User> watcher;
+
+        // The distance between the users
+        std::int64_t distance;
+
+        json to_json() const override {
+            json j;
+            j["traveler"] = traveler->to_json();
+            j["watcher"] = watcher->to_json();
+            j["distance"] = distance;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about a user boosting a chat.
+     *
+     * @param boost_count Number of boosts added by the user
+     */
+
+    struct ChatBoostAdded : public TelegramModel {
+        virtual ~ChatBoostAdded() = default;
+        // Number of boosts added by the user
+        std::int64_t boost_count;
+
+        json to_json() const override {
+            json j;
+            j["boost_count"] = boost_count;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a chat background.
+     *
+     * @param type Type of the background
+     */
+
+    struct ChatBackground : public TelegramModel {
+        virtual ~ChatBackground() = default;
+        // Type of the background
+        std::shared_ptr<BackgroundType> type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_->to_json();
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about checklist tasks marked as done or not done.
+     *
+     * @param checklist_message Optional. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+     * @param marked_as_done_task_ids Optional. Identifiers of the tasks that were marked as done
+     * @param marked_as_not_done_task_ids Optional. Identifiers of the tasks that were marked as not done
+     */
+
+    struct ChecklistTasksDone : public TelegramModel {
+        virtual ~ChecklistTasksDone() = default;
+        // Optional. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+        std::optional<Message> checklist_message;
+
+        // Optional. Identifiers of the tasks that were marked as done
+        std::optional<std::vector<std::int64_t>> marked_as_done_task_ids;
+
+        // Optional. Identifiers of the tasks that were marked as not done
+        std::optional<std::vector<std::int64_t>> marked_as_not_done_task_ids;
+
+        json to_json() const override {
+            json j;
+            if (checklist_message.has_value()) {
+                j["checklist_message"] = checklist_message.value().to_json();
+            }
+            if (marked_as_done_task_ids.has_value()) {
+                j["marked_as_done_task_ids"] = marked_as_done_task_ids.value();
+            }
+            if (marked_as_not_done_task_ids.has_value()) {
+                j["marked_as_not_done_task_ids"] = marked_as_not_done_task_ids.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about tasks added to a checklist.
+     *
+     * @param checklist_message Optional. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+     * @param tasks List of tasks added to the checklist
+     */
+
+    struct ChecklistTasksAdded : public TelegramModel {
+        virtual ~ChecklistTasksAdded() = default;
+        // Optional. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+        std::optional<Message> checklist_message;
+
+        // List of tasks added to the checklist
+        std::vector<ChecklistTask> tasks;
+
+        json to_json() const override {
+            json j;
+            if (checklist_message.has_value()) {
+                j["checklist_message"] = checklist_message.value().to_json();
+            }
+            std::vector<json> tasks_values;
+            tasks_values.reserve(tasks.size());
+            for (auto& e : tasks) {
+                tasks_values.push_back(e.to_json());
+            }
+            j["tasks"] = tasks_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about a change in the price of direct messages sent to a channel chat.
+     *
+     * @param are_direct_messages_enabled True, if direct messages are enabled for the channel chat; false otherwise
+     * @param direct_message_star_count Optional. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
+     */
+
+    struct DirectMessagePriceChanged : public TelegramModel {
+        virtual ~DirectMessagePriceChanged() = default;
+        // True, if direct messages are enabled for the channel chat; false otherwise
+        bool are_direct_messages_enabled;
+
+        // Optional. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
+        std::optional<std::int64_t> direct_message_star_count;
+
+        json to_json() const override {
+            json j;
+            j["are_direct_messages_enabled"] = are_direct_messages_enabled;
+            if (direct_message_star_count.has_value()) {
+                j["direct_message_star_count"] = direct_message_star_count.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about a new forum topic created in the chat.
+     *
+     * @param name Name of the topic
+     * @param icon_color Color of the topic icon in RGB format
+     * @param icon_custom_emoji_id Optional. Unique identifier of the custom emoji shown as the topic icon
+     */
+
+    struct ForumTopicCreated : public TelegramModel {
+        virtual ~ForumTopicCreated() = default;
+        // Name of the topic
+        std::string name;
+
+        // Color of the topic icon in RGB format
+        std::int64_t icon_color;
+
+        // Optional. Unique identifier of the custom emoji shown as the topic icon
+        std::optional<std::string> icon_custom_emoji_id;
+
+        json to_json() const override {
+            json j;
+            j["name"] = name;
+            j["icon_color"] = icon_color;
+            if (icon_custom_emoji_id.has_value()) {
+                j["icon_custom_emoji_id"] = icon_custom_emoji_id.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about an edited forum topic.
+     *
+     * @param name Optional. New name of the topic, if it was edited
+     * @param icon_custom_emoji_id Optional. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed
+     */
+
+    struct ForumTopicEdited : public TelegramModel {
+        virtual ~ForumTopicEdited() = default;
+        // Optional. New name of the topic, if it was edited
+        std::optional<std::string> name;
+
+        // Optional. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed
+        std::optional<std::string> icon_custom_emoji_id;
+
+        json to_json() const override {
+            json j;
+            if (name.has_value()) {
+                j["name"] = name.value();
+            }
+            if (icon_custom_emoji_id.has_value()) {
+                j["icon_custom_emoji_id"] = icon_custom_emoji_id.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about the completion of a giveaway without public winners.
+     *
+     * @param winner_count Number of winners in the giveaway
+     * @param unclaimed_prize_count Optional. Number of undistributed prizes
+     * @param giveaway_message Optional. Message with the giveaway that was completed, if it wasn't deleted
+     * @param is_star_giveaway Optional. True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
+     */
+
+    struct GiveawayCompleted : public TelegramModel {
+        virtual ~GiveawayCompleted() = default;
+        // Number of winners in the giveaway
+        std::int64_t winner_count;
+
+        // Optional. Number of undistributed prizes
+        std::optional<std::int64_t> unclaimed_prize_count;
+
+        // Optional. Message with the giveaway that was completed, if it wasn't deleted
+        std::optional<Message> giveaway_message;
+
+        // Optional. True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
+        std::optional<bool> is_star_giveaway;
+
+        json to_json() const override {
+            json j;
+            j["winner_count"] = winner_count;
+            if (unclaimed_prize_count.has_value()) {
+                j["unclaimed_prize_count"] = unclaimed_prize_count.value();
+            }
+            if (giveaway_message.has_value()) {
+                j["giveaway_message"] = giveaway_message.value().to_json();
+            }
+            if (is_star_giveaway.has_value()) {
+                j["is_star_giveaway"] = is_star_giveaway.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about a change in the price of paid messages within a chat.
+     *
+     * @param paid_message_star_count The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message
+     */
+
+    struct PaidMessagePriceChanged : public TelegramModel {
+        virtual ~PaidMessagePriceChanged() = default;
+        // The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message
+        std::int64_t paid_message_star_count;
+
+        json to_json() const override {
+            json j;
+            j["paid_message_star_count"] = paid_message_star_count;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about the approval of a suggested post.
+     *
+     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+     * @param price Optional. Amount paid for the post
+     * @param send_date Date when the post will be published
+     */
+
+    struct SuggestedPostApproved : public TelegramModel {
+        virtual ~SuggestedPostApproved() = default;
+        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+        std::optional<Message> suggested_post_message;
+
+        // Optional. Amount paid for the post
+        std::optional<SuggestedPostPrice> price;
+
+        // Date when the post will be published
+        std::int64_t send_date;
+
+        json to_json() const override {
+            json j;
+            if (suggested_post_message.has_value()) {
+                j["suggested_post_message"] = suggested_post_message.value().to_json();
+            }
+            if (price.has_value()) {
+                j["price"] = price.value().to_json();
+            }
+            j["send_date"] = send_date;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about the failed approval of a suggested post. Currently, only caused by insufficient user funds at the time of approval.
+     *
+     * @param suggested_post_message Optional. Message containing the suggested post whose approval has failed. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+     * @param price Expected price of the post
+     */
+
+    struct SuggestedPostApprovalFailed : public TelegramModel {
+        virtual ~SuggestedPostApprovalFailed() = default;
+        // Optional. Message containing the suggested post whose approval has failed. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+        std::optional<Message> suggested_post_message;
+
+        // Expected price of the post
+        std::shared_ptr<SuggestedPostPrice> price;
+
+        json to_json() const override {
+            json j;
+            if (suggested_post_message.has_value()) {
+                j["suggested_post_message"] = suggested_post_message.value().to_json();
+            }
+            j["price"] = price->to_json();
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about the rejection of a suggested post.
+     *
+     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+     * @param comment Optional. Comment with which the post was declined
+     */
+
+    struct SuggestedPostDeclined : public TelegramModel {
+        virtual ~SuggestedPostDeclined() = default;
+        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+        std::optional<Message> suggested_post_message;
+
+        // Optional. Comment with which the post was declined
+        std::optional<std::string> comment;
+
+        json to_json() const override {
+            json j;
+            if (suggested_post_message.has_value()) {
+                j["suggested_post_message"] = suggested_post_message.value().to_json();
+            }
+            if (comment.has_value()) {
+                j["comment"] = comment.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes an amount of Telegram Stars.
+     *
+     * @param amount Integer amount of Telegram Stars, rounded to 0; can be negative
+     * @param nanostar_amount Optional. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if amount is non-positive
+     */
+
+    struct StarAmount : public TelegramModel {
+        virtual ~StarAmount() = default;
+        // Integer amount of Telegram Stars, rounded to 0; can be negative
+        std::int64_t amount;
+
+        // Optional. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if amount is non-positive
+        std::optional<std::int64_t> nanostar_amount;
+
+        json to_json() const override {
+            json j;
+            j["amount"] = amount;
+            if (nanostar_amount.has_value()) {
+                j["nanostar_amount"] = nanostar_amount.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about a successful payment for a suggested post.
+     *
+     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+     * @param currency Currency in which the payment was made. Currently, one of “XTR” for Telegram Stars or “TON” for toncoins
+     * @param amount Optional. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only
+     * @param star_amount Optional. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only
+     */
+
+    struct SuggestedPostPaid : public TelegramModel {
+        virtual ~SuggestedPostPaid() = default;
+        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+        std::optional<Message> suggested_post_message;
+
+        // Currency in which the payment was made. Currently, one of “XTR” for Telegram Stars or “TON” for toncoins
+        std::string currency;
+
+        // Optional. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only
+        std::optional<std::int64_t> amount;
+
+        // Optional. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only
+        std::optional<StarAmount> star_amount;
+
+        json to_json() const override {
+            json j;
+            if (suggested_post_message.has_value()) {
+                j["suggested_post_message"] = suggested_post_message.value().to_json();
+            }
+            j["currency"] = currency;
+            if (amount.has_value()) {
+                j["amount"] = amount.value();
+            }
+            if (star_amount.has_value()) {
+                j["star_amount"] = star_amount.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a service message about a payment refund for a suggested post.
+     *
+     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+     * @param reason Reason for the refund. Currently, one of “post_deleted” if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or “payment_refunded” if the payer refunded their payment.
+     */
+
+    struct SuggestedPostRefunded : public TelegramModel {
+        virtual ~SuggestedPostRefunded() = default;
+        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
+        std::optional<Message> suggested_post_message;
+
+        // Reason for the refund. Currently, one of “post_deleted” if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or “payment_refunded” if the payer refunded their payment.
+        std::string reason;
+
+        json to_json() const override {
+            json j;
+            if (suggested_post_message.has_value()) {
+                j["suggested_post_message"] = suggested_post_message.value().to_json();
+            }
+            j["reason"] = reason;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about a video chat scheduled in the chat.
+     *
+     * @param start_date Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator
+     */
+
+    struct VideoChatScheduled : public TelegramModel {
+        virtual ~VideoChatScheduled() = default;
+        // Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator
+        std::int64_t start_date;
+
+        json to_json() const override {
+            json j;
+            j["start_date"] = start_date;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about a video chat ended in the chat.
+     *
+     * @param duration Video chat duration in seconds
+     */
+
+    struct VideoChatEnded : public TelegramModel {
+        virtual ~VideoChatEnded() = default;
+        // Video chat duration in seconds
+        std::int64_t duration;
+
+        json to_json() const override {
+            json j;
+            j["duration"] = duration;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about new members invited to a video chat.
+     *
+     * @param users New members that were invited to the video chat
+     */
+
+    struct VideoChatParticipantsInvited : public TelegramModel {
+        virtual ~VideoChatParticipantsInvited() = default;
+        // New members that were invited to the video chat
+        std::vector<User> users;
+
+        json to_json() const override {
+            json j;
+            std::vector<json> users_values;
+            users_values.reserve(users.size());
+            for (auto& e : users) {
+                users_values.push_back(e.to_json());
+            }
+            j["users"] = users_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes data sent from a Web App to the bot.
+     *
+     * @param data The data. Be aware that a bad client can send arbitrary data in this field.
+     * @param button_text Text of the web_app keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.
+     */
+
+    struct WebAppData : public TelegramModel {
+        virtual ~WebAppData() = default;
+        // The data. Be aware that a bad client can send arbitrary data in this field.
+        std::string data;
+
+        // Text of the web_app keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.
+        std::string button_text;
+
+        json to_json() const override {
+            json j;
+            j["data"] = data;
+            j["button_text"] = button_text;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a Web App.
+     *
+     * @param url An HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps
+     */
+
+    struct WebAppInfo : public TelegramModel {
+        virtual ~WebAppInfo() = default;
+        // An HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps
+        std::string url;
+
+        json to_json() const override {
+            json j;
+            j["url"] = url;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:Telegram apps support these buttons as of version 5.7.
+     *  Sample bot: @discussbot
+     *
+     * @param url An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in Receiving authorization data.NOTE: You must always check the hash of the received data to verify the authentication and the integrity of the data as described in Checking authorization.
+     * @param forward_text Optional. New text of the button in forwarded messages.
+     * @param bot_username Optional. Username of a bot, which will be used for user authorization. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.
+     * @param request_write_access Optional. Pass True to request the permission for your bot to send messages to the user.
+     */
+
+    struct LoginUrl : public TelegramModel {
+        virtual ~LoginUrl() = default;
+        // An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in Receiving authorization data.NOTE: You must always check the hash of the received data to verify the authentication and the integrity of the data as described in Checking authorization.
+        std::string url;
+
+        // Optional. New text of the button in forwarded messages.
+        std::optional<std::string> forward_text;
+
+        // Optional. Username of a bot, which will be used for user authorization. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.
+        std::optional<std::string> bot_username;
+
+        // Optional. Pass True to request the permission for your bot to send messages to the user.
+        std::optional<bool> request_write_access;
+
+        json to_json() const override {
+            json j;
+            j["url"] = url;
+            if (forward_text.has_value()) {
+                j["forward_text"] = forward_text.value();
+            }
+            if (bot_username.has_value()) {
+                j["bot_username"] = bot_username.value();
+            }
+            if (request_write_access.has_value()) {
+                j["request_write_access"] = request_write_access.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.
+     *
+     * @param query Optional. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
+     * @param allow_user_chats Optional. True, if private chats with users can be chosen
+     * @param allow_bot_chats Optional. True, if private chats with bots can be chosen
+     * @param allow_group_chats Optional. True, if group and supergroup chats can be chosen
+     * @param allow_channel_chats Optional. True, if channel chats can be chosen
+     */
+
+    struct SwitchInlineQueryChosenChat : public TelegramModel {
+        virtual ~SwitchInlineQueryChosenChat() = default;
+        // Optional. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
+        std::optional<std::string> query;
+
+        // Optional. True, if private chats with users can be chosen
+        std::optional<bool> allow_user_chats;
+
+        // Optional. True, if private chats with bots can be chosen
+        std::optional<bool> allow_bot_chats;
+
+        // Optional. True, if group and supergroup chats can be chosen
+        std::optional<bool> allow_group_chats;
+
+        // Optional. True, if channel chats can be chosen
+        std::optional<bool> allow_channel_chats;
+
+        json to_json() const override {
+            json j;
+            if (query.has_value()) {
+                j["query"] = query.value();
+            }
+            if (allow_user_chats.has_value()) {
+                j["allow_user_chats"] = allow_user_chats.value();
+            }
+            if (allow_bot_chats.has_value()) {
+                j["allow_bot_chats"] = allow_bot_chats.value();
+            }
+            if (allow_group_chats.has_value()) {
+                j["allow_group_chats"] = allow_group_chats.value();
+            }
+            if (allow_channel_chats.has_value()) {
+                j["allow_channel_chats"] = allow_channel_chats.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents an inline keyboard button that copies specified text to the clipboard.
+     *
+     * @param text The text to be copied to the clipboard; 1-256 characters
+     */
+
+    struct CopyTextButton : public TelegramModel {
+        virtual ~CopyTextButton() = default;
+        // The text to be copied to the clipboard; 1-256 characters
+        std::string text;
+
+        json to_json() const override {
+            json j;
+            j["text"] = text;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.
+     *
+     * @param text Label text on the button
+     * @param url Optional. HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
+     * @param callback_data Optional. Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes
+     * @param web_app Optional. Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
+     * @param login_url Optional. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.
+     * @param switch_inline_query Optional. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
+     * @param switch_inline_query_current_chat Optional. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
+     * @param switch_inline_query_chosen_chat Optional. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
+     * @param copy_text Optional. Description of the button that copies the specified text to the clipboard.
+     * @param callback_game Optional. Description of the game that will be launched when the user presses the button.NOTE: This type of button must always be the first button in the first row.
+     * @param pay Optional. Specify True, to send a Pay button. Substrings “” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.
+     */
+
+    struct InlineKeyboardButton : public TelegramModel {
+        virtual ~InlineKeyboardButton() = default;
+        // Label text on the button
+        std::string text;
+
+        // Optional. HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
+        std::optional<std::string> url;
+
+        // Optional. Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes
+        std::optional<std::string> callback_data;
+
+        // Optional. Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
+        std::optional<WebAppInfo> web_app;
+
+        // Optional. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.
+        std::optional<LoginUrl> login_url;
+
+        // Optional. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
+        std::optional<std::string> switch_inline_query;
+
+        // Optional. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
+        std::optional<std::string> switch_inline_query_current_chat;
+
+        // Optional. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
+        std::optional<SwitchInlineQueryChosenChat> switch_inline_query_chosen_chat;
+
+        // Optional. Description of the button that copies the specified text to the clipboard.
+        std::optional<CopyTextButton> copy_text;
+
+        // Optional. Description of the game that will be launched when the user presses the button.NOTE: This type of button must always be the first button in the first row.
+        std::optional<CallbackGame> callback_game;
+
+        // Optional. Specify True, to send a Pay button. Substrings “” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.
+        std::optional<bool> pay;
+
+        json to_json() const override {
+            json j;
+            j["text"] = text;
+            if (url.has_value()) {
+                j["url"] = url.value();
+            }
+            if (callback_data.has_value()) {
+                j["callback_data"] = callback_data.value();
+            }
+            if (web_app.has_value()) {
+                j["web_app"] = web_app.value().to_json();
+            }
+            if (login_url.has_value()) {
+                j["login_url"] = login_url.value().to_json();
+            }
+            if (switch_inline_query.has_value()) {
+                j["switch_inline_query"] = switch_inline_query.value();
+            }
+            if (switch_inline_query_current_chat.has_value()) {
+                j["switch_inline_query_current_chat"] = switch_inline_query_current_chat.value();
+            }
+            if (switch_inline_query_chosen_chat.has_value()) {
+                j["switch_inline_query_chosen_chat"] = switch_inline_query_chosen_chat.value().to_json();
+            }
+            if (copy_text.has_value()) {
+                j["copy_text"] = copy_text.value().to_json();
+            }
+            if (callback_game.has_value()) {
+                j["callback_game"] = callback_game.value().to_json();
+            }
+            if (pay.has_value()) {
+                j["pay"] = pay.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents an inline keyboard that appears right next to the message it belongs to.
+     *
+     * @param inline_keyboard Array of button rows, each represented by an Array of InlineKeyboardButton objects
+     */
+
+    struct InlineKeyboardMarkup : public KeyboardOption {
+        virtual ~InlineKeyboardMarkup() = default;
+        // Array of button rows, each represented by an Array of InlineKeyboardButton objects
+        std::vector<std::vector<InlineKeyboardButton>> inline_keyboard;
+
+        json to_json() const override {
+            json j;
+            std::vector<json> inline_keyboard_values;
+            inline_keyboard_values.reserve(inline_keyboard.size());
+            for (auto& e : inline_keyboard) {
+                inline_keyboard_values.push_back(e.to_json());
+            }
+            j["inline_keyboard"] = inline_keyboard_values;
+            return j.dump();
+        }
     };
 
     /**
@@ -563,12 +4335,13 @@ namespace telegram {
      * @param reply_markup Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.
      */
 
-    struct Message {
+    struct Message : public MaybeInaccessibleMessage {
+        virtual ~Message() = default;
         // Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
-        std::int64_t message_id;
+        MessageId message_id;
 
         // Optional. Unique identifier of a message thread to which the message belongs; for supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Optional. Information about the direct messages chat topic that contains the message
         std::optional<DirectMessagesTopic> direct_messages_topic;
@@ -589,10 +4362,10 @@ namespace telegram {
         std::int64_t date;
 
         // Optional. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Chat the message belongs to
-        Chat chat;
+        std::shared_ptr<Chat> chat;
 
         // Optional. Information about the original message for forwarded messages
         std::optional<MessageOrigin> forward_origin;
@@ -748,10 +4521,10 @@ namespace telegram {
         std::optional<MessageAutoDeleteTimerChanged> message_auto_delete_timer_changed;
 
         // Optional. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::optional<std::int64_t> migrate_to_chat_id;
+        std::optional<ChatId> migrate_to_chat_id;
 
         // Optional. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::optional<std::int64_t> migrate_from_chat_id;
+        std::optional<ChatId> migrate_from_chat_id;
 
         // Optional. Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
         std::optional<MaybeInaccessibleMessage> pinned_message;
@@ -869,2094 +4642,744 @@ namespace telegram {
 
         // Optional. Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.
         std::optional<InlineKeyboardMarkup> reply_markup;
+
+        json to_json() const override {
+            json j;
+            j["message_id"] = message_id.to_json();
+            if (message_thread_id.has_value()) {
+                j["message_thread_id"] = message_thread_id.value().to_json();
+            }
+            if (direct_messages_topic.has_value()) {
+                j["direct_messages_topic"] = direct_messages_topic.value().to_json();
+            }
+            if (from.has_value()) {
+                j["from"] = from.value().to_json();
+            }
+            if (sender_chat.has_value()) {
+                j["sender_chat"] = sender_chat.value().to_json();
+            }
+            if (sender_boost_count.has_value()) {
+                j["sender_boost_count"] = sender_boost_count.value();
+            }
+            if (sender_business_bot.has_value()) {
+                j["sender_business_bot"] = sender_business_bot.value().to_json();
+            }
+            j["date"] = date;
+            if (business_connection_id.has_value()) {
+                j["business_connection_id"] = business_connection_id.value().to_json();
+            }
+            j["chat"] = chat->to_json();
+            if (forward_origin.has_value()) {
+                j["forward_origin"] = forward_origin.value().to_json();
+            }
+            if (is_topic_message.has_value()) {
+                j["is_topic_message"] = is_topic_message.value();
+            }
+            if (is_automatic_forward.has_value()) {
+                j["is_automatic_forward"] = is_automatic_forward.value();
+            }
+            if (reply_to_message.has_value()) {
+                j["reply_to_message"] = reply_to_message.value().to_json();
+            }
+            if (external_reply.has_value()) {
+                j["external_reply"] = external_reply.value().to_json();
+            }
+            if (quote.has_value()) {
+                j["quote"] = quote.value().to_json();
+            }
+            if (reply_to_story.has_value()) {
+                j["reply_to_story"] = reply_to_story.value().to_json();
+            }
+            if (reply_to_checklist_task_id.has_value()) {
+                j["reply_to_checklist_task_id"] = reply_to_checklist_task_id.value();
+            }
+            if (via_bot.has_value()) {
+                j["via_bot"] = via_bot.value().to_json();
+            }
+            if (edit_date.has_value()) {
+                j["edit_date"] = edit_date.value();
+            }
+            if (has_protected_content.has_value()) {
+                j["has_protected_content"] = has_protected_content.value();
+            }
+            if (is_from_offline.has_value()) {
+                j["is_from_offline"] = is_from_offline.value();
+            }
+            if (is_paid_post.has_value()) {
+                j["is_paid_post"] = is_paid_post.value();
+            }
+            if (media_group_id.has_value()) {
+                j["media_group_id"] = media_group_id.value();
+            }
+            if (author_signature.has_value()) {
+                j["author_signature"] = author_signature.value();
+            }
+            if (paid_star_count.has_value()) {
+                j["paid_star_count"] = paid_star_count.value();
+            }
+            if (text.has_value()) {
+                j["text"] = text.value();
+            }
+            if (entities.has_value()) {
+                std::vector<json> entities_values;
+                entities_values.reserve(entities.value().size());
+                for (auto& e : entities.value()) {
+                    entities_values.push_back(e.to_json());
+                }
+                j["entities"] = entities_values;
+            }
+            if (link_preview_options.has_value()) {
+                j["link_preview_options"] = link_preview_options.value().to_json();
+            }
+            if (suggested_post_info.has_value()) {
+                j["suggested_post_info"] = suggested_post_info.value().to_json();
+            }
+            if (effect_id.has_value()) {
+                j["effect_id"] = effect_id.value();
+            }
+            if (animation.has_value()) {
+                j["animation"] = animation.value().to_json();
+            }
+            if (audio.has_value()) {
+                j["audio"] = audio.value().to_json();
+            }
+            if (document.has_value()) {
+                j["document"] = document.value().to_json();
+            }
+            if (paid_media.has_value()) {
+                j["paid_media"] = paid_media.value().to_json();
+            }
+            if (photo.has_value()) {
+                std::vector<json> photo_values;
+                photo_values.reserve(photo.value().size());
+                for (auto& e : photo.value()) {
+                    photo_values.push_back(e.to_json());
+                }
+                j["photo"] = photo_values;
+            }
+            if (sticker.has_value()) {
+                j["sticker"] = sticker.value().to_json();
+            }
+            if (story.has_value()) {
+                j["story"] = story.value().to_json();
+            }
+            if (video.has_value()) {
+                j["video"] = video.value().to_json();
+            }
+            if (video_note.has_value()) {
+                j["video_note"] = video_note.value().to_json();
+            }
+            if (voice.has_value()) {
+                j["voice"] = voice.value().to_json();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (has_media_spoiler.has_value()) {
+                j["has_media_spoiler"] = has_media_spoiler.value();
+            }
+            if (checklist.has_value()) {
+                j["checklist"] = checklist.value().to_json();
+            }
+            if (contact.has_value()) {
+                j["contact"] = contact.value().to_json();
+            }
+            if (dice.has_value()) {
+                j["dice"] = dice.value().to_json();
+            }
+            if (game.has_value()) {
+                j["game"] = game.value().to_json();
+            }
+            if (poll.has_value()) {
+                j["poll"] = poll.value().to_json();
+            }
+            if (venue.has_value()) {
+                j["venue"] = venue.value().to_json();
+            }
+            if (location.has_value()) {
+                j["location"] = location.value().to_json();
+            }
+            if (new_chat_members.has_value()) {
+                std::vector<json> new_chat_members_values;
+                new_chat_members_values.reserve(new_chat_members.value().size());
+                for (auto& e : new_chat_members.value()) {
+                    new_chat_members_values.push_back(e.to_json());
+                }
+                j["new_chat_members"] = new_chat_members_values;
+            }
+            if (left_chat_member.has_value()) {
+                j["left_chat_member"] = left_chat_member.value().to_json();
+            }
+            if (new_chat_title.has_value()) {
+                j["new_chat_title"] = new_chat_title.value();
+            }
+            if (new_chat_photo.has_value()) {
+                std::vector<json> new_chat_photo_values;
+                new_chat_photo_values.reserve(new_chat_photo.value().size());
+                for (auto& e : new_chat_photo.value()) {
+                    new_chat_photo_values.push_back(e.to_json());
+                }
+                j["new_chat_photo"] = new_chat_photo_values;
+            }
+            if (delete_chat_photo.has_value()) {
+                j["delete_chat_photo"] = delete_chat_photo.value();
+            }
+            if (group_chat_created.has_value()) {
+                j["group_chat_created"] = group_chat_created.value();
+            }
+            if (supergroup_chat_created.has_value()) {
+                j["supergroup_chat_created"] = supergroup_chat_created.value();
+            }
+            if (channel_chat_created.has_value()) {
+                j["channel_chat_created"] = channel_chat_created.value();
+            }
+            if (message_auto_delete_timer_changed.has_value()) {
+                j["message_auto_delete_timer_changed"] = message_auto_delete_timer_changed.value().to_json();
+            }
+            if (migrate_to_chat_id.has_value()) {
+                j["migrate_to_chat_id"] = migrate_to_chat_id.value().to_json();
+            }
+            if (migrate_from_chat_id.has_value()) {
+                j["migrate_from_chat_id"] = migrate_from_chat_id.value().to_json();
+            }
+            if (pinned_message.has_value()) {
+                j["pinned_message"] = pinned_message.value().to_json();
+            }
+            if (invoice.has_value()) {
+                j["invoice"] = invoice.value().to_json();
+            }
+            if (successful_payment.has_value()) {
+                j["successful_payment"] = successful_payment.value().to_json();
+            }
+            if (refunded_payment.has_value()) {
+                j["refunded_payment"] = refunded_payment.value().to_json();
+            }
+            if (users_shared.has_value()) {
+                j["users_shared"] = users_shared.value().to_json();
+            }
+            if (chat_shared.has_value()) {
+                j["chat_shared"] = chat_shared.value().to_json();
+            }
+            if (gift.has_value()) {
+                j["gift"] = gift.value().to_json();
+            }
+            if (unique_gift.has_value()) {
+                j["unique_gift"] = unique_gift.value().to_json();
+            }
+            if (connected_website.has_value()) {
+                j["connected_website"] = connected_website.value();
+            }
+            if (write_access_allowed.has_value()) {
+                j["write_access_allowed"] = write_access_allowed.value().to_json();
+            }
+            if (passport_data.has_value()) {
+                j["passport_data"] = passport_data.value().to_json();
+            }
+            if (proximity_alert_triggered.has_value()) {
+                j["proximity_alert_triggered"] = proximity_alert_triggered.value().to_json();
+            }
+            if (boost_added.has_value()) {
+                j["boost_added"] = boost_added.value().to_json();
+            }
+            if (chat_background_set.has_value()) {
+                j["chat_background_set"] = chat_background_set.value().to_json();
+            }
+            if (checklist_tasks_done.has_value()) {
+                j["checklist_tasks_done"] = checklist_tasks_done.value().to_json();
+            }
+            if (checklist_tasks_added.has_value()) {
+                j["checklist_tasks_added"] = checklist_tasks_added.value().to_json();
+            }
+            if (direct_message_price_changed.has_value()) {
+                j["direct_message_price_changed"] = direct_message_price_changed.value().to_json();
+            }
+            if (forum_topic_created.has_value()) {
+                j["forum_topic_created"] = forum_topic_created.value().to_json();
+            }
+            if (forum_topic_edited.has_value()) {
+                j["forum_topic_edited"] = forum_topic_edited.value().to_json();
+            }
+            if (forum_topic_closed.has_value()) {
+                j["forum_topic_closed"] = forum_topic_closed.value().to_json();
+            }
+            if (forum_topic_reopened.has_value()) {
+                j["forum_topic_reopened"] = forum_topic_reopened.value().to_json();
+            }
+            if (general_forum_topic_hidden.has_value()) {
+                j["general_forum_topic_hidden"] = general_forum_topic_hidden.value().to_json();
+            }
+            if (general_forum_topic_unhidden.has_value()) {
+                j["general_forum_topic_unhidden"] = general_forum_topic_unhidden.value().to_json();
+            }
+            if (giveaway_created.has_value()) {
+                j["giveaway_created"] = giveaway_created.value().to_json();
+            }
+            if (giveaway.has_value()) {
+                j["giveaway"] = giveaway.value().to_json();
+            }
+            if (giveaway_winners.has_value()) {
+                j["giveaway_winners"] = giveaway_winners.value().to_json();
+            }
+            if (giveaway_completed.has_value()) {
+                j["giveaway_completed"] = giveaway_completed.value().to_json();
+            }
+            if (paid_message_price_changed.has_value()) {
+                j["paid_message_price_changed"] = paid_message_price_changed.value().to_json();
+            }
+            if (suggested_post_approved.has_value()) {
+                j["suggested_post_approved"] = suggested_post_approved.value().to_json();
+            }
+            if (suggested_post_approval_failed.has_value()) {
+                j["suggested_post_approval_failed"] = suggested_post_approval_failed.value().to_json();
+            }
+            if (suggested_post_declined.has_value()) {
+                j["suggested_post_declined"] = suggested_post_declined.value().to_json();
+            }
+            if (suggested_post_paid.has_value()) {
+                j["suggested_post_paid"] = suggested_post_paid.value().to_json();
+            }
+            if (suggested_post_refunded.has_value()) {
+                j["suggested_post_refunded"] = suggested_post_refunded.value().to_json();
+            }
+            if (video_chat_scheduled.has_value()) {
+                j["video_chat_scheduled"] = video_chat_scheduled.value().to_json();
+            }
+            if (video_chat_started.has_value()) {
+                j["video_chat_started"] = video_chat_started.value().to_json();
+            }
+            if (video_chat_ended.has_value()) {
+                j["video_chat_ended"] = video_chat_ended.value().to_json();
+            }
+            if (video_chat_participants_invited.has_value()) {
+                j["video_chat_participants_invited"] = video_chat_participants_invited.value().to_json();
+            }
+            if (web_app_data.has_value()) {
+                j["web_app_data"] = web_app_data.value().to_json();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
-     * This object represents a unique message identifier.
+     * Represents the rights of a business bot.
      *
-     * @param message_id Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
+     * @param can_reply Optional. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours
+     * @param can_read_messages Optional. True, if the bot can mark incoming private messages as read
+     * @param can_delete_sent_messages Optional. True, if the bot can delete messages sent by the bot
+     * @param can_delete_all_messages Optional. True, if the bot can delete all private messages in managed chats
+     * @param can_edit_name Optional. True, if the bot can edit the first and last name of the business account
+     * @param can_edit_bio Optional. True, if the bot can edit the bio of the business account
+     * @param can_edit_profile_photo Optional. True, if the bot can edit the profile photo of the business account
+     * @param can_edit_username Optional. True, if the bot can edit the username of the business account
+     * @param can_change_gift_settings Optional. True, if the bot can change the privacy settings pertaining to gifts for the business account
+     * @param can_view_gifts_and_stars Optional. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account
+     * @param can_convert_gifts_to_stars Optional. True, if the bot can convert regular gifts owned by the business account to Telegram Stars
+     * @param can_transfer_and_upgrade_gifts Optional. True, if the bot can transfer and upgrade gifts owned by the business account
+     * @param can_transfer_stars Optional. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts
+     * @param can_manage_stories Optional. True, if the bot can post, edit and delete stories on behalf of the business account
      */
 
-    struct MessageId {
-        // Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
-        std::int64_t message_id;
+    struct BusinessBotRights : public TelegramModel {
+        virtual ~BusinessBotRights() = default;
+        // Optional. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours
+        std::optional<bool> can_reply;
+
+        // Optional. True, if the bot can mark incoming private messages as read
+        std::optional<bool> can_read_messages;
+
+        // Optional. True, if the bot can delete messages sent by the bot
+        std::optional<bool> can_delete_sent_messages;
+
+        // Optional. True, if the bot can delete all private messages in managed chats
+        std::optional<bool> can_delete_all_messages;
+
+        // Optional. True, if the bot can edit the first and last name of the business account
+        std::optional<bool> can_edit_name;
+
+        // Optional. True, if the bot can edit the bio of the business account
+        std::optional<bool> can_edit_bio;
+
+        // Optional. True, if the bot can edit the profile photo of the business account
+        std::optional<bool> can_edit_profile_photo;
+
+        // Optional. True, if the bot can edit the username of the business account
+        std::optional<bool> can_edit_username;
+
+        // Optional. True, if the bot can change the privacy settings pertaining to gifts for the business account
+        std::optional<bool> can_change_gift_settings;
+
+        // Optional. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account
+        std::optional<bool> can_view_gifts_and_stars;
+
+        // Optional. True, if the bot can convert regular gifts owned by the business account to Telegram Stars
+        std::optional<bool> can_convert_gifts_to_stars;
+
+        // Optional. True, if the bot can transfer and upgrade gifts owned by the business account
+        std::optional<bool> can_transfer_and_upgrade_gifts;
+
+        // Optional. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts
+        std::optional<bool> can_transfer_stars;
+
+        // Optional. True, if the bot can post, edit and delete stories on behalf of the business account
+        std::optional<bool> can_manage_stories;
+
+        json to_json() const override {
+            json j;
+            if (can_reply.has_value()) {
+                j["can_reply"] = can_reply.value();
+            }
+            if (can_read_messages.has_value()) {
+                j["can_read_messages"] = can_read_messages.value();
+            }
+            if (can_delete_sent_messages.has_value()) {
+                j["can_delete_sent_messages"] = can_delete_sent_messages.value();
+            }
+            if (can_delete_all_messages.has_value()) {
+                j["can_delete_all_messages"] = can_delete_all_messages.value();
+            }
+            if (can_edit_name.has_value()) {
+                j["can_edit_name"] = can_edit_name.value();
+            }
+            if (can_edit_bio.has_value()) {
+                j["can_edit_bio"] = can_edit_bio.value();
+            }
+            if (can_edit_profile_photo.has_value()) {
+                j["can_edit_profile_photo"] = can_edit_profile_photo.value();
+            }
+            if (can_edit_username.has_value()) {
+                j["can_edit_username"] = can_edit_username.value();
+            }
+            if (can_change_gift_settings.has_value()) {
+                j["can_change_gift_settings"] = can_change_gift_settings.value();
+            }
+            if (can_view_gifts_and_stars.has_value()) {
+                j["can_view_gifts_and_stars"] = can_view_gifts_and_stars.value();
+            }
+            if (can_convert_gifts_to_stars.has_value()) {
+                j["can_convert_gifts_to_stars"] = can_convert_gifts_to_stars.value();
+            }
+            if (can_transfer_and_upgrade_gifts.has_value()) {
+                j["can_transfer_and_upgrade_gifts"] = can_transfer_and_upgrade_gifts.value();
+            }
+            if (can_transfer_stars.has_value()) {
+                j["can_transfer_stars"] = can_transfer_stars.value();
+            }
+            if (can_manage_stories.has_value()) {
+                j["can_manage_stories"] = can_manage_stories.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
-     * This object describes a message that was deleted or is otherwise inaccessible to the bot.
+     * Describes the connection of the bot with a business account.
      *
-     * @param chat Chat the message belonged to
-     * @param message_id Unique message identifier inside the chat
-     * @param date Always 0. The field can be used to differentiate regular and inaccessible messages.
+     * @param id Unique identifier of the business connection
+     * @param user Business account user that created the business connection
+     * @param user_chat_id Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
+     * @param date Date the connection was established in Unix time
+     * @param rights Optional. Rights of the business bot
+     * @param is_enabled True, if the connection is active
      */
 
-    struct InaccessibleMessage {
-        // Chat the message belonged to
-        Chat chat;
+    struct BusinessConnection : public TelegramModel {
+        virtual ~BusinessConnection() = default;
+        // Unique identifier of the business connection
+        BusinessConnectionId id;
 
-        // Unique message identifier inside the chat
-        std::int64_t message_id;
+        // Business account user that created the business connection
+        std::shared_ptr<User> user;
 
-        // Always 0. The field can be used to differentiate regular and inaccessible messages.
+        // Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
+        ChatId user_chat_id;
+
+        // Date the connection was established in Unix time
         std::int64_t date;
+
+        // Optional. Rights of the business bot
+        std::optional<BusinessBotRights> rights;
+
+        // True, if the connection is active
+        bool is_enabled;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id.to_json();
+            j["user"] = user->to_json();
+            j["user_chat_id"] = user_chat_id.to_json();
+            j["date"] = date;
+            if (rights.has_value()) {
+                j["rights"] = rights.value().to_json();
+            }
+            j["is_enabled"] = is_enabled;
+            return j.dump();
+        }
     };
 
     /**
-     * This object represents one special entity in a text message. For example, hashtags, usernames, URLs, etc.
+     * This object is received when messages are deleted from a connected business account.
      *
-     * @param type Type of the entity. Currently, can be “mention” (@username), “hashtag” (#hashtag or #hashtag@chatusername), “cashtag” ($USD or $USD@chatusername), “bot_command” (/start@jobs_bot), “url” (https://telegram.org), “email” (do-not-reply@telegram.org), “phone_number” (+1-212-555-0123), “bold” (bold text), “italic” (italic text), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users without usernames), “custom_emoji” (for inline custom emoji stickers)
-     * @param offset Offset in UTF-16 code units to the start of the entity
-     * @param length Length of the entity in UTF-16 code units
-     * @param url Optional. For “text_link” only, URL that will be opened after user taps on the text
-     * @param user Optional. For “text_mention” only, the mentioned user
-     * @param language Optional. For “pre” only, the programming language of the entity text
-     * @param custom_emoji_id Optional. For “custom_emoji” only, unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker
+     * @param business_connection_id Unique identifier of the business connection
+     * @param chat Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.
+     * @param message_ids The list of identifiers of deleted messages in the chat of the business account
      */
 
-    struct MessageEntity {
-        // Type of the entity. Currently, can be “mention” (@username), “hashtag” (#hashtag or #hashtag@chatusername), “cashtag” ($USD or $USD@chatusername), “bot_command” (/start@jobs_bot), “url” (https://telegram.org), “email” (do-not-reply@telegram.org), “phone_number” (+1-212-555-0123), “bold” (bold text), “italic” (italic text), “underline” (underlined text), “strikethrough” (strikethrough text), “spoiler” (spoiler message), “blockquote” (block quotation), “expandable_blockquote” (collapsed-by-default block quotation), “code” (monowidth string), “pre” (monowidth block), “text_link” (for clickable text URLs), “text_mention” (for users without usernames), “custom_emoji” (for inline custom emoji stickers)
-        std::string type_;
+    struct BusinessMessagesDeleted : public TelegramModel {
+        virtual ~BusinessMessagesDeleted() = default;
+        // Unique identifier of the business connection
+        BusinessConnectionId business_connection_id;
 
-        // Offset in UTF-16 code units to the start of the entity
-        std::int64_t offset;
+        // Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.
+        std::shared_ptr<Chat> chat;
 
-        // Length of the entity in UTF-16 code units
-        std::int64_t length;
+        // The list of identifiers of deleted messages in the chat of the business account
+        std::vector<MessageId> message_ids;
 
-        // Optional. For “text_link” only, URL that will be opened after user taps on the text
-        std::optional<std::string> url;
+        json to_json() const override {
+            json j;
+            j["business_connection_id"] = business_connection_id.to_json();
+            j["chat"] = chat->to_json();
+            std::vector<json> message_ids_values;
+            message_ids_values.reserve(message_ids.size());
+            for (auto& e : message_ids) {
+                message_ids_values.push_back(e.to_json());
+            }
+            j["message_ids"] = message_ids_values;
+            return j.dump();
+        }
+    };
 
-        // Optional. For “text_mention” only, the mentioned user
+    /**
+     * This object represents a change of a reaction on a message performed by a user.
+     *
+     * @param chat The chat containing the message the user reacted to
+     * @param message_id Unique identifier of the message inside the chat
+     * @param user Optional. The user that changed the reaction, if the user isn't anonymous
+     * @param actor_chat Optional. The chat on behalf of which the reaction was changed, if the user is anonymous
+     * @param date Date of the change in Unix time
+     * @param old_reaction Previous list of reaction types that were set by the user
+     * @param new_reaction New list of reaction types that have been set by the user
+     */
+
+    struct MessageReactionUpdated : public TelegramModel {
+        virtual ~MessageReactionUpdated() = default;
+        // The chat containing the message the user reacted to
+        std::shared_ptr<Chat> chat;
+
+        // Unique identifier of the message inside the chat
+        MessageId message_id;
+
+        // Optional. The user that changed the reaction, if the user isn't anonymous
         std::optional<User> user;
 
-        // Optional. For “pre” only, the programming language of the entity text
-        std::optional<std::string> language;
+        // Optional. The chat on behalf of which the reaction was changed, if the user is anonymous
+        std::optional<Chat> actor_chat;
 
-        // Optional. For “custom_emoji” only, unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker
-        std::optional<std::string> custom_emoji_id;
-    };
-
-    /**
-     * This object contains information about the quoted part of a message that is replied to by the given message.
-     *
-     * @param text Text of the quoted part of a message that is replied to by the given message
-     * @param entities Optional. Special entities that appear in the quote. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are kept in quotes.
-     * @param position Approximate quote position in the original message in UTF-16 code units as specified by the sender
-     * @param is_manual Optional. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
-     */
-
-    struct TextQuote {
-        // Text of the quoted part of a message that is replied to by the given message
-        std::string text;
-
-        // Optional. Special entities that appear in the quote. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are kept in quotes.
-        std::optional<std::vector<MessageEntity>> entities;
-
-        // Approximate quote position in the original message in UTF-16 code units as specified by the sender
-        std::int64_t position;
-
-        // Optional. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
-        std::optional<bool> is_manual;
-    };
-
-    /**
-     * This object contains information about a message that is being replied to, which may come from another chat or forum topic.
-     *
-     * @param origin Origin of the message replied to by the given message
-     * @param chat Optional. Chat the original message belongs to. Available only if the chat is a supergroup or a channel.
-     * @param message_id Optional. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.
-     * @param link_preview_options Optional. Options used for link preview generation for the original message, if it is a text message
-     * @param animation Optional. Message is an animation, information about the animation
-     * @param audio Optional. Message is an audio file, information about the file
-     * @param document Optional. Message is a general file, information about the file
-     * @param paid_media Optional. Message contains paid media; information about the paid media
-     * @param photo Optional. Message is a photo, available sizes of the photo
-     * @param sticker Optional. Message is a sticker, information about the sticker
-     * @param story Optional. Message is a forwarded story
-     * @param video Optional. Message is a video, information about the video
-     * @param video_note Optional. Message is a video note, information about the video message
-     * @param voice Optional. Message is a voice message, information about the file
-     * @param has_media_spoiler Optional. True, if the message media is covered by a spoiler animation
-     * @param checklist Optional. Message is a checklist
-     * @param contact Optional. Message is a shared contact, information about the contact
-     * @param dice Optional. Message is a dice with random value
-     * @param game Optional. Message is a game, information about the game. More about games »
-     * @param giveaway Optional. Message is a scheduled giveaway, information about the giveaway
-     * @param giveaway_winners Optional. A giveaway with public winners was completed
-     * @param invoice Optional. Message is an invoice for a payment, information about the invoice. More about payments »
-     * @param location Optional. Message is a shared location, information about the location
-     * @param poll Optional. Message is a native poll, information about the poll
-     * @param venue Optional. Message is a venue, information about the venue
-     */
-
-    struct ExternalReplyInfo {
-        // Origin of the message replied to by the given message
-        MessageOrigin origin;
-
-        // Optional. Chat the original message belongs to. Available only if the chat is a supergroup or a channel.
-        std::optional<Chat> chat;
-
-        // Optional. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.
-        std::optional<std::int64_t> message_id;
-
-        // Optional. Options used for link preview generation for the original message, if it is a text message
-        std::optional<LinkPreviewOptions> link_preview_options;
-
-        // Optional. Message is an animation, information about the animation
-        std::optional<Animation> animation;
-
-        // Optional. Message is an audio file, information about the file
-        std::optional<Audio> audio;
-
-        // Optional. Message is a general file, information about the file
-        std::optional<Document> document;
-
-        // Optional. Message contains paid media; information about the paid media
-        std::optional<PaidMediaInfo> paid_media;
-
-        // Optional. Message is a photo, available sizes of the photo
-        std::optional<std::vector<PhotoSize>> photo;
-
-        // Optional. Message is a sticker, information about the sticker
-        std::optional<Sticker> sticker;
-
-        // Optional. Message is a forwarded story
-        std::optional<Story> story;
-
-        // Optional. Message is a video, information about the video
-        std::optional<Video> video;
-
-        // Optional. Message is a video note, information about the video message
-        std::optional<VideoNote> video_note;
-
-        // Optional. Message is a voice message, information about the file
-        std::optional<Voice> voice;
-
-        // Optional. True, if the message media is covered by a spoiler animation
-        std::optional<bool> has_media_spoiler;
-
-        // Optional. Message is a checklist
-        std::optional<Checklist> checklist;
-
-        // Optional. Message is a shared contact, information about the contact
-        std::optional<Contact> contact;
-
-        // Optional. Message is a dice with random value
-        std::optional<Dice> dice;
-
-        // Optional. Message is a game, information about the game. More about games »
-        std::optional<Game> game;
-
-        // Optional. Message is a scheduled giveaway, information about the giveaway
-        std::optional<Giveaway> giveaway;
-
-        // Optional. A giveaway with public winners was completed
-        std::optional<GiveawayWinners> giveaway_winners;
-
-        // Optional. Message is an invoice for a payment, information about the invoice. More about payments »
-        std::optional<Invoice> invoice;
-
-        // Optional. Message is a shared location, information about the location
-        std::optional<Location> location;
-
-        // Optional. Message is a native poll, information about the poll
-        std::optional<Poll> poll;
-
-        // Optional. Message is a venue, information about the venue
-        std::optional<Venue> venue;
-    };
-
-    /**
-     * Describes reply parameters for the message that is being sent.
-     *
-     * @param message_id Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified
-     * @param chat_id Optional. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.
-     * @param allow_sending_without_reply Optional. Pass True if the message should be sent even if the specified message to be replied to is not found. Always False for replies in another chat or forum topic. Always True for messages sent on behalf of a business account.
-     * @param quote Optional. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities. The message will fail to send if the quote isn't found in the original message.
-     * @param quote_parse_mode Optional. Mode for parsing entities in the quote. See formatting options for more details.
-     * @param quote_entities Optional. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of quote_parse_mode.
-     * @param quote_position Optional. Position of the quote in the original message in UTF-16 code units
-     * @param checklist_task_id Optional. Identifier of the specific checklist task to be replied to
-     */
-
-    struct ReplyParameters {
-        // Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified
-        std::int64_t message_id;
-
-        // Optional. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.
-        std::optional<std::string> chat_id;
-
-        // Optional. Pass True if the message should be sent even if the specified message to be replied to is not found. Always False for replies in another chat or forum topic. Always True for messages sent on behalf of a business account.
-        std::optional<bool> allow_sending_without_reply;
-
-        // Optional. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities. The message will fail to send if the quote isn't found in the original message.
-        std::optional<std::string> quote;
-
-        // Optional. Mode for parsing entities in the quote. See formatting options for more details.
-        std::optional<std::string> quote_parse_mode;
-
-        // Optional. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of quote_parse_mode.
-        std::optional<std::vector<MessageEntity>> quote_entities;
-
-        // Optional. Position of the quote in the original message in UTF-16 code units
-        std::optional<std::int64_t> quote_position;
-
-        // Optional. Identifier of the specific checklist task to be replied to
-        std::optional<std::int64_t> checklist_task_id;
-    };
-
-    /**
-     * The message was originally sent by a known user.
-     *
-     * @param type Type of the message origin, always “user”
-     * @param date Date the message was sent originally in Unix time
-     * @param sender_user User that sent the message originally
-     */
-
-    struct MessageOriginUser {
-        // Type of the message origin, always “user”
-        std::string type_;
-
-        // Date the message was sent originally in Unix time
+        // Date of the change in Unix time
         std::int64_t date;
 
-        // User that sent the message originally
-        User sender_user;
-    };
-
-    /**
-     * The message was originally sent by an unknown user.
-     *
-     * @param type Type of the message origin, always “hidden_user”
-     * @param date Date the message was sent originally in Unix time
-     * @param sender_user_name Name of the user that sent the message originally
-     */
-
-    struct MessageOriginHiddenUser {
-        // Type of the message origin, always “hidden_user”
-        std::string type_;
-
-        // Date the message was sent originally in Unix time
-        std::int64_t date;
-
-        // Name of the user that sent the message originally
-        std::string sender_user_name;
-    };
-
-    /**
-     * The message was originally sent on behalf of a chat to a group chat.
-     *
-     * @param type Type of the message origin, always “chat”
-     * @param date Date the message was sent originally in Unix time
-     * @param sender_chat Chat that sent the message originally
-     * @param author_signature Optional. For messages originally sent by an anonymous chat administrator, original message author signature
-     */
-
-    struct MessageOriginChat {
-        // Type of the message origin, always “chat”
-        std::string type_;
-
-        // Date the message was sent originally in Unix time
-        std::int64_t date;
-
-        // Chat that sent the message originally
-        Chat sender_chat;
-
-        // Optional. For messages originally sent by an anonymous chat administrator, original message author signature
-        std::optional<std::string> author_signature;
-    };
-
-    /**
-     * The message was originally sent to a channel chat.
-     *
-     * @param type Type of the message origin, always “channel”
-     * @param date Date the message was sent originally in Unix time
-     * @param chat Channel chat to which the message was originally sent
-     * @param message_id Unique message identifier inside the chat
-     * @param author_signature Optional. Signature of the original post author
-     */
-
-    struct MessageOriginChannel {
-        // Type of the message origin, always “channel”
-        std::string type_;
-
-        // Date the message was sent originally in Unix time
-        std::int64_t date;
-
-        // Channel chat to which the message was originally sent
-        Chat chat;
-
-        // Unique message identifier inside the chat
-        std::int64_t message_id;
-
-        // Optional. Signature of the original post author
-        std::optional<std::string> author_signature;
-    };
-
-    /**
-     * This object represents one size of a photo or a file / sticker thumbnail.
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param width Photo width
-     * @param height Photo height
-     * @param file_size Optional. File size in bytes
-     */
-
-    struct PhotoSize {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Photo width
-        std::int64_t width;
-
-        // Photo height
-        std::int64_t height;
-
-        // Optional. File size in bytes
-        std::optional<std::int64_t> file_size;
-    };
-
-    /**
-     * This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param width Video width as defined by the sender
-     * @param height Video height as defined by the sender
-     * @param duration Duration of the video in seconds as defined by the sender
-     * @param thumbnail Optional. Animation thumbnail as defined by the sender
-     * @param file_name Optional. Original animation filename as defined by the sender
-     * @param mime_type Optional. MIME type of the file as defined by the sender
-     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-     */
-
-    struct Animation {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Video width as defined by the sender
-        std::int64_t width;
-
-        // Video height as defined by the sender
-        std::int64_t height;
-
-        // Duration of the video in seconds as defined by the sender
-        std::int64_t duration;
-
-        // Optional. Animation thumbnail as defined by the sender
-        std::optional<PhotoSize> thumbnail;
-
-        // Optional. Original animation filename as defined by the sender
-        std::optional<std::string> file_name;
-
-        // Optional. MIME type of the file as defined by the sender
-        std::optional<std::string> mime_type;
-
-        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-        std::optional<std::int64_t> file_size;
-    };
-
-    /**
-     * This object represents an audio file to be treated as music by the Telegram clients.
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param duration Duration of the audio in seconds as defined by the sender
-     * @param performer Optional. Performer of the audio as defined by the sender or by audio tags
-     * @param title Optional. Title of the audio as defined by the sender or by audio tags
-     * @param file_name Optional. Original filename as defined by the sender
-     * @param mime_type Optional. MIME type of the file as defined by the sender
-     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-     * @param thumbnail Optional. Thumbnail of the album cover to which the music file belongs
-     */
-
-    struct Audio {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Duration of the audio in seconds as defined by the sender
-        std::int64_t duration;
-
-        // Optional. Performer of the audio as defined by the sender or by audio tags
-        std::optional<std::string> performer;
-
-        // Optional. Title of the audio as defined by the sender or by audio tags
-        std::optional<std::string> title;
-
-        // Optional. Original filename as defined by the sender
-        std::optional<std::string> file_name;
-
-        // Optional. MIME type of the file as defined by the sender
-        std::optional<std::string> mime_type;
-
-        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-        std::optional<std::int64_t> file_size;
-
-        // Optional. Thumbnail of the album cover to which the music file belongs
-        std::optional<PhotoSize> thumbnail;
-    };
-
-    /**
-     * This object represents a general file (as opposed to photos, voice messages and audio files).
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param thumbnail Optional. Document thumbnail as defined by the sender
-     * @param file_name Optional. Original filename as defined by the sender
-     * @param mime_type Optional. MIME type of the file as defined by the sender
-     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-     */
-
-    struct Document {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Optional. Document thumbnail as defined by the sender
-        std::optional<PhotoSize> thumbnail;
-
-        // Optional. Original filename as defined by the sender
-        std::optional<std::string> file_name;
-
-        // Optional. MIME type of the file as defined by the sender
-        std::optional<std::string> mime_type;
-
-        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-        std::optional<std::int64_t> file_size;
-    };
-
-    /**
-     * This object represents a story.
-     *
-     * @param chat Chat that posted the story
-     * @param id Unique identifier for the story in the chat
-     */
-
-    struct Story {
-        // Chat that posted the story
-        Chat chat;
-
-        // Unique identifier for the story in the chat
-        std::int64_t id;
-    };
-
-    /**
-     * This object represents a video file.
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param width Video width as defined by the sender
-     * @param height Video height as defined by the sender
-     * @param duration Duration of the video in seconds as defined by the sender
-     * @param thumbnail Optional. Video thumbnail
-     * @param cover Optional. Available sizes of the cover of the video in the message
-     * @param start_timestamp Optional. Timestamp in seconds from which the video will play in the message
-     * @param file_name Optional. Original filename as defined by the sender
-     * @param mime_type Optional. MIME type of the file as defined by the sender
-     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-     */
-
-    struct Video {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Video width as defined by the sender
-        std::int64_t width;
-
-        // Video height as defined by the sender
-        std::int64_t height;
-
-        // Duration of the video in seconds as defined by the sender
-        std::int64_t duration;
-
-        // Optional. Video thumbnail
-        std::optional<PhotoSize> thumbnail;
-
-        // Optional. Available sizes of the cover of the video in the message
-        std::optional<std::vector<PhotoSize>> cover;
-
-        // Optional. Timestamp in seconds from which the video will play in the message
-        std::optional<std::int64_t> start_timestamp;
-
-        // Optional. Original filename as defined by the sender
-        std::optional<std::string> file_name;
-
-        // Optional. MIME type of the file as defined by the sender
-        std::optional<std::string> mime_type;
-
-        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-        std::optional<std::int64_t> file_size;
-    };
-
-    /**
-     * This object represents a video message (available in Telegram apps as of v.4.0).
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param length Video width and height (diameter of the video message) as defined by the sender
-     * @param duration Duration of the video in seconds as defined by the sender
-     * @param thumbnail Optional. Video thumbnail
-     * @param file_size Optional. File size in bytes
-     */
-
-    struct VideoNote {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Video width and height (diameter of the video message) as defined by the sender
-        std::int64_t length;
-
-        // Duration of the video in seconds as defined by the sender
-        std::int64_t duration;
-
-        // Optional. Video thumbnail
-        std::optional<PhotoSize> thumbnail;
-
-        // Optional. File size in bytes
-        std::optional<std::int64_t> file_size;
-    };
-
-    /**
-     * This object represents a voice note.
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param duration Duration of the audio in seconds as defined by the sender
-     * @param mime_type Optional. MIME type of the file as defined by the sender
-     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-     */
-
-    struct Voice {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Duration of the audio in seconds as defined by the sender
-        std::int64_t duration;
-
-        // Optional. MIME type of the file as defined by the sender
-        std::optional<std::string> mime_type;
-
-        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-        std::optional<std::int64_t> file_size;
-    };
-
-    /**
-     * Describes the paid media added to a message.
-     *
-     * @param star_count The number of Telegram Stars that must be paid to buy access to the media
-     * @param paid_media Information about the paid media
-     */
-
-    struct PaidMediaInfo {
-        // The number of Telegram Stars that must be paid to buy access to the media
-        std::int64_t star_count;
-
-        // Information about the paid media
-        std::vector<PaidMedia> paid_media;
-    };
-
-    /**
-     * The paid media isn't available before the payment.
-     *
-     * @param type Type of the paid media, always “preview”
-     * @param width Optional. Media width as defined by the sender
-     * @param height Optional. Media height as defined by the sender
-     * @param duration Optional. Duration of the media in seconds as defined by the sender
-     */
-
-    struct PaidMediaPreview {
-        // Type of the paid media, always “preview”
-        std::string type_;
-
-        // Optional. Media width as defined by the sender
-        std::optional<std::int64_t> width;
-
-        // Optional. Media height as defined by the sender
-        std::optional<std::int64_t> height;
-
-        // Optional. Duration of the media in seconds as defined by the sender
-        std::optional<std::int64_t> duration;
-    };
-
-    /**
-     * The paid media is a photo.
-     *
-     * @param type Type of the paid media, always “photo”
-     * @param photo The photo
-     */
-
-    struct PaidMediaPhoto {
-        // Type of the paid media, always “photo”
-        std::string type_;
-
-        // The photo
-        std::vector<PhotoSize> photo;
-    };
-
-    /**
-     * The paid media is a video.
-     *
-     * @param type Type of the paid media, always “video”
-     * @param video The video
-     */
-
-    struct PaidMediaVideo {
-        // Type of the paid media, always “video”
-        std::string type_;
-
-        // The video
-        Video video;
-    };
-
-    /**
-     * This object represents a phone contact.
-     *
-     * @param phone_number Contact's phone number
-     * @param first_name Contact's first name
-     * @param last_name Optional. Contact's last name
-     * @param user_id Optional. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
-     * @param vcard Optional. Additional data about the contact in the form of a vCard
-     */
-
-    struct Contact {
-        // Contact's phone number
-        std::string phone_number;
-
-        // Contact's first name
-        std::string first_name;
-
-        // Optional. Contact's last name
-        std::optional<std::string> last_name;
-
-        // Optional. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::optional<std::int64_t> user_id;
-
-        // Optional. Additional data about the contact in the form of a vCard
-        std::optional<std::string> vcard;
-    };
-
-    /**
-     * This object represents an animated emoji that displays a random value.
-     *
-     * @param emoji Emoji on which the dice throw animation is based
-     * @param value Value of the dice, 1-6 for “”, “” and “” base emoji, 1-5 for “” and “” base emoji, 1-64 for “” base emoji
-     */
-
-    struct Dice {
-        // Emoji on which the dice throw animation is based
-        std::string emoji;
-
-        // Value of the dice, 1-6 for “”, “” and “” base emoji, 1-5 for “” and “” base emoji, 1-64 for “” base emoji
-        std::int64_t value;
-    };
-
-    /**
-     * This object contains information about one answer option in a poll.
-     *
-     * @param text Option text, 1-100 characters
-     * @param text_entities Optional. Special entities that appear in the option text. Currently, only custom emoji entities are allowed in poll option texts
-     * @param voter_count Number of users that voted for this option
-     */
-
-    struct PollOption {
-        // Option text, 1-100 characters
-        std::string text;
-
-        // Optional. Special entities that appear in the option text. Currently, only custom emoji entities are allowed in poll option texts
-        std::optional<std::vector<MessageEntity>> text_entities;
-
-        // Number of users that voted for this option
-        std::int64_t voter_count;
-    };
-
-    /**
-     * This object contains information about one answer option in a poll to be sent.
-     *
-     * @param text Option text, 1-100 characters
-     * @param text_parse_mode Optional. Mode for parsing entities in the text. See formatting options for more details. Currently, only custom emoji entities are allowed
-     * @param text_entities Optional. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of text_parse_mode
-     */
-
-    struct InputPollOption {
-        // Option text, 1-100 characters
-        std::string text;
-
-        // Optional. Mode for parsing entities in the text. See formatting options for more details. Currently, only custom emoji entities are allowed
-        std::optional<std::string> text_parse_mode;
-
-        // Optional. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of text_parse_mode
-        std::optional<std::vector<MessageEntity>> text_entities;
-    };
-
-    /**
-     * This object represents an answer of a user in a non-anonymous poll.
-     *
-     * @param poll_id Unique poll identifier
-     * @param voter_chat Optional. The chat that changed the answer to the poll, if the voter is anonymous
-     * @param user Optional. The user that changed the answer to the poll, if the voter isn't anonymous
-     * @param option_ids 0-based identifiers of chosen answer options. May be empty if the vote was retracted.
-     */
-
-    struct PollAnswer {
-        // Unique poll identifier
-        std::string poll_id;
-
-        // Optional. The chat that changed the answer to the poll, if the voter is anonymous
-        std::optional<Chat> voter_chat;
-
-        // Optional. The user that changed the answer to the poll, if the voter isn't anonymous
-        std::optional<User> user;
-
-        // 0-based identifiers of chosen answer options. May be empty if the vote was retracted.
-        std::vector<std::int64_t> option_ids;
-    };
-
-    /**
-     * This object contains information about a poll.
-     *
-     * @param id Unique poll identifier
-     * @param question Poll question, 1-300 characters
-     * @param question_entities Optional. Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions
-     * @param options List of poll options
-     * @param total_voter_count Total number of users that voted in the poll
-     * @param is_closed True, if the poll is closed
-     * @param is_anonymous True, if the poll is anonymous
-     * @param type Poll type, currently can be “regular” or “quiz”
-     * @param allows_multiple_answers True, if the poll allows multiple answers
-     * @param correct_option_id Optional. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.
-     * @param explanation Optional. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
-     * @param explanation_entities Optional. Special entities like usernames, URLs, bot commands, etc. that appear in the explanation
-     * @param open_period Optional. Amount of time in seconds the poll will be active after creation
-     * @param close_date Optional. Point in time (Unix timestamp) when the poll will be automatically closed
-     */
-
-    struct Poll {
-        // Unique poll identifier
-        std::string id;
-
-        // Poll question, 1-300 characters
-        std::string question;
-
-        // Optional. Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions
-        std::optional<std::vector<MessageEntity>> question_entities;
-
-        // List of poll options
-        std::vector<PollOption> options;
-
-        // Total number of users that voted in the poll
-        std::int64_t total_voter_count;
-
-        // True, if the poll is closed
-        bool is_closed;
-
-        // True, if the poll is anonymous
-        bool is_anonymous;
-
-        // Poll type, currently can be “regular” or “quiz”
-        std::string type_;
-
-        // True, if the poll allows multiple answers
-        bool allows_multiple_answers;
-
-        // Optional. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.
-        std::optional<std::int64_t> correct_option_id;
-
-        // Optional. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters
-        std::optional<std::string> explanation;
-
-        // Optional. Special entities like usernames, URLs, bot commands, etc. that appear in the explanation
-        std::optional<std::vector<MessageEntity>> explanation_entities;
-
-        // Optional. Amount of time in seconds the poll will be active after creation
-        std::optional<std::int64_t> open_period;
-
-        // Optional. Point in time (Unix timestamp) when the poll will be automatically closed
-        std::optional<std::int64_t> close_date;
-    };
-
-    /**
-     * Describes a task in a checklist.
-     *
-     * @param id Unique identifier of the task
-     * @param text Text of the task
-     * @param text_entities Optional. Special entities that appear in the task text
-     * @param completed_by_user Optional. User that completed the task; omitted if the task wasn't completed
-     * @param completion_date Optional. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
-     */
-
-    struct ChecklistTask {
-        // Unique identifier of the task
-        std::int64_t id;
-
-        // Text of the task
-        std::string text;
-
-        // Optional. Special entities that appear in the task text
-        std::optional<std::vector<MessageEntity>> text_entities;
-
-        // Optional. User that completed the task; omitted if the task wasn't completed
-        std::optional<User> completed_by_user;
-
-        // Optional. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
-        std::optional<std::int64_t> completion_date;
-    };
-
-    /**
-     * Describes a checklist.
-     *
-     * @param title Title of the checklist
-     * @param title_entities Optional. Special entities that appear in the checklist title
-     * @param tasks List of tasks in the checklist
-     * @param others_can_add_tasks Optional. True, if users other than the creator of the list can add tasks to the list
-     * @param others_can_mark_tasks_as_done Optional. True, if users other than the creator of the list can mark tasks as done or not done
-     */
-
-    struct Checklist {
-        // Title of the checklist
-        std::string title;
-
-        // Optional. Special entities that appear in the checklist title
-        std::optional<std::vector<MessageEntity>> title_entities;
-
-        // List of tasks in the checklist
-        std::vector<ChecklistTask> tasks;
-
-        // Optional. True, if users other than the creator of the list can add tasks to the list
-        std::optional<bool> others_can_add_tasks;
-
-        // Optional. True, if users other than the creator of the list can mark tasks as done or not done
-        std::optional<bool> others_can_mark_tasks_as_done;
-    };
-
-    /**
-     * Describes a task to add to a checklist.
-     *
-     * @param id Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist
-     * @param text Text of the task; 1-100 characters after entities parsing
-     * @param parse_mode Optional. Mode for parsing entities in the text. See formatting options for more details.
-     * @param text_entities Optional. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
-     */
-
-    struct InputChecklistTask {
-        // Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist
-        std::int64_t id;
-
-        // Text of the task; 1-100 characters after entities parsing
-        std::string text;
-
-        // Optional. Mode for parsing entities in the text. See formatting options for more details.
-        std::optional<ParseMode> parse_mode;
-
-        // Optional. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
-        std::optional<std::vector<MessageEntity>> text_entities;
-    };
-
-    /**
-     * Describes a checklist to create.
-     *
-     * @param title Title of the checklist; 1-255 characters after entities parsing
-     * @param parse_mode Optional. Mode for parsing entities in the title. See formatting options for more details.
-     * @param title_entities Optional. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
-     * @param tasks List of 1-30 tasks in the checklist
-     * @param others_can_add_tasks Optional. Pass True if other users can add tasks to the checklist
-     * @param others_can_mark_tasks_as_done Optional. Pass True if other users can mark tasks as done or not done in the checklist
-     */
-
-    struct InputChecklist {
-        // Title of the checklist; 1-255 characters after entities parsing
-        std::string title;
-
-        // Optional. Mode for parsing entities in the title. See formatting options for more details.
-        std::optional<ParseMode> parse_mode;
-
-        // Optional. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
-        std::optional<std::vector<MessageEntity>> title_entities;
-
-        // List of 1-30 tasks in the checklist
-        std::vector<InputChecklistTask> tasks;
-
-        // Optional. Pass True if other users can add tasks to the checklist
-        std::optional<bool> others_can_add_tasks;
-
-        // Optional. Pass True if other users can mark tasks as done or not done in the checklist
-        std::optional<bool> others_can_mark_tasks_as_done;
-    };
-
-    /**
-     * Describes a service message about checklist tasks marked as done or not done.
-     *
-     * @param checklist_message Optional. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-     * @param marked_as_done_task_ids Optional. Identifiers of the tasks that were marked as done
-     * @param marked_as_not_done_task_ids Optional. Identifiers of the tasks that were marked as not done
-     */
-
-    struct ChecklistTasksDone {
-        // Optional. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-        std::optional<Message> checklist_message;
-
-        // Optional. Identifiers of the tasks that were marked as done
-        std::optional<std::vector<std::int64_t>> marked_as_done_task_ids;
-
-        // Optional. Identifiers of the tasks that were marked as not done
-        std::optional<std::vector<std::int64_t>> marked_as_not_done_task_ids;
-    };
-
-    /**
-     * Describes a service message about tasks added to a checklist.
-     *
-     * @param checklist_message Optional. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-     * @param tasks List of tasks added to the checklist
-     */
-
-    struct ChecklistTasksAdded {
-        // Optional. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-        std::optional<Message> checklist_message;
-
-        // List of tasks added to the checklist
-        std::vector<ChecklistTask> tasks;
-    };
-
-    /**
-     * This object represents a point on the map.
-     *
-     * @param latitude Latitude as defined by the sender
-     * @param longitude Longitude as defined by the sender
-     * @param horizontal_accuracy Optional. The radius of uncertainty for the location, measured in meters; 0-1500
-     * @param live_period Optional. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
-     * @param heading Optional. The direction in which user is moving, in degrees; 1-360. For active live locations only.
-     * @param proximity_alert_radius Optional. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
-     */
-
-    struct Location {
-        // Latitude as defined by the sender
-        double latitude;
-
-        // Longitude as defined by the sender
-        double longitude;
-
-        // Optional. The radius of uncertainty for the location, measured in meters; 0-1500
-        std::optional<double> horizontal_accuracy;
-
-        // Optional. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.
-        std::optional<std::int64_t> live_period;
-
-        // Optional. The direction in which user is moving, in degrees; 1-360. For active live locations only.
-        std::optional<std::int64_t> heading;
-
-        // Optional. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
-        std::optional<std::int64_t> proximity_alert_radius;
-    };
-
-    /**
-     * This object represents a venue.
-     *
-     * @param location Venue location. Can't be a live location
-     * @param title Name of the venue
-     * @param address Address of the venue
-     * @param foursquare_id Optional. Foursquare identifier of the venue
-     * @param foursquare_type Optional. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
-     * @param google_place_id Optional. Google Places identifier of the venue
-     * @param google_place_type Optional. Google Places type of the venue. (See supported types.)
-     */
-
-    struct Venue {
-        // Venue location. Can't be a live location
-        Location location;
-
-        // Name of the venue
-        std::string title;
-
-        // Address of the venue
-        std::string address;
-
-        // Optional. Foursquare identifier of the venue
-        std::optional<std::string> foursquare_id;
-
-        // Optional. Foursquare type of the venue. (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
-        std::optional<std::string> foursquare_type;
-
-        // Optional. Google Places identifier of the venue
-        std::optional<std::string> google_place_id;
-
-        // Optional. Google Places type of the venue. (See supported types.)
-        std::optional<std::string> google_place_type;
-    };
-
-    /**
-     * Describes data sent from a Web App to the bot.
-     *
-     * @param data The data. Be aware that a bad client can send arbitrary data in this field.
-     * @param button_text Text of the web_app keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.
-     */
-
-    struct WebAppData {
-        // The data. Be aware that a bad client can send arbitrary data in this field.
-        std::string data;
-
-        // Text of the web_app keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.
-        std::string button_text;
-    };
-
-    /**
-     * This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.
-     *
-     * @param traveler User that triggered the alert
-     * @param watcher User that set the alert
-     * @param distance The distance between the users
-     */
-
-    struct ProximityAlertTriggered {
-        // User that triggered the alert
-        User traveler;
-
-        // User that set the alert
-        User watcher;
-
-        // The distance between the users
-        std::int64_t distance;
-    };
-
-    /**
-     * This object represents a service message about a change in auto-delete timer settings.
-     *
-     * @param message_auto_delete_time New auto-delete time for messages in the chat; in seconds
-     */
-
-    struct MessageAutoDeleteTimerChanged {
-        // New auto-delete time for messages in the chat; in seconds
-        std::int64_t message_auto_delete_time;
-    };
-
-    /**
-     * This object represents a service message about a user boosting a chat.
-     *
-     * @param boost_count Number of boosts added by the user
-     */
-
-    struct ChatBoostAdded {
-        // Number of boosts added by the user
-        std::int64_t boost_count;
-    };
-
-    /**
-     * The background is filled using the selected color.
-     *
-     * @param type Type of the background fill, always “solid”
-     * @param color The color of the background fill in the RGB24 format
-     */
-
-    struct BackgroundFillSolid {
-        // Type of the background fill, always “solid”
-        std::string type_;
-
-        // The color of the background fill in the RGB24 format
-        std::int64_t color;
-    };
-
-    /**
-     * The background is a gradient fill.
-     *
-     * @param type Type of the background fill, always “gradient”
-     * @param top_color Top color of the gradient in the RGB24 format
-     * @param bottom_color Bottom color of the gradient in the RGB24 format
-     * @param rotation_angle Clockwise rotation angle of the background fill in degrees; 0-359
-     */
-
-    struct BackgroundFillGradient {
-        // Type of the background fill, always “gradient”
-        std::string type_;
-
-        // Top color of the gradient in the RGB24 format
-        std::int64_t top_color;
-
-        // Bottom color of the gradient in the RGB24 format
-        std::int64_t bottom_color;
-
-        // Clockwise rotation angle of the background fill in degrees; 0-359
-        std::int64_t rotation_angle;
-    };
-
-    /**
-     * The background is a freeform gradient that rotates after every message in the chat.
-     *
-     * @param type Type of the background fill, always “freeform_gradient”
-     * @param colors A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format
-     */
-
-    struct BackgroundFillFreeformGradient {
-        // Type of the background fill, always “freeform_gradient”
-        std::string type_;
-
-        // A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format
-        std::vector<std::int64_t> colors;
-    };
-
-    /**
-     * The background is automatically filled based on the selected colors.
-     *
-     * @param type Type of the background, always “fill”
-     * @param fill The background fill
-     * @param dark_theme_dimming Dimming of the background in dark themes, as a percentage; 0-100
-     */
-
-    struct BackgroundTypeFill {
-        // Type of the background, always “fill”
-        std::string type_;
-
-        // The background fill
-        BackgroundFill fill;
-
-        // Dimming of the background in dark themes, as a percentage; 0-100
-        std::int64_t dark_theme_dimming;
-    };
-
-    /**
-     * The background is a wallpaper in the JPEG format.
-     *
-     * @param type Type of the background, always “wallpaper”
-     * @param document Document with the wallpaper
-     * @param dark_theme_dimming Dimming of the background in dark themes, as a percentage; 0-100
-     * @param is_blurred Optional. True, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12
-     * @param is_moving Optional. True, if the background moves slightly when the device is tilted
-     */
-
-    struct BackgroundTypeWallpaper {
-        // Type of the background, always “wallpaper”
-        std::string type_;
-
-        // Document with the wallpaper
-        Document document;
-
-        // Dimming of the background in dark themes, as a percentage; 0-100
-        std::int64_t dark_theme_dimming;
-
-        // Optional. True, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12
-        std::optional<bool> is_blurred;
-
-        // Optional. True, if the background moves slightly when the device is tilted
-        std::optional<bool> is_moving;
-    };
-
-    /**
-     * The background is a .PNG or .TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.
-     *
-     * @param type Type of the background, always “pattern”
-     * @param document Document with the pattern
-     * @param fill The background fill that is combined with the pattern
-     * @param intensity Intensity of the pattern when it is shown above the filled background; 0-100
-     * @param is_inverted Optional. True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only
-     * @param is_moving Optional. True, if the background moves slightly when the device is tilted
-     */
-
-    struct BackgroundTypePattern {
-        // Type of the background, always “pattern”
-        std::string type_;
-
-        // Document with the pattern
-        Document document;
-
-        // The background fill that is combined with the pattern
-        BackgroundFill fill;
-
-        // Intensity of the pattern when it is shown above the filled background; 0-100
-        std::int64_t intensity;
-
-        // Optional. True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only
-        std::optional<bool> is_inverted;
-
-        // Optional. True, if the background moves slightly when the device is tilted
-        std::optional<bool> is_moving;
-    };
-
-    /**
-     * The background is taken directly from a built-in chat theme.
-     *
-     * @param type Type of the background, always “chat_theme”
-     * @param theme_name Name of the chat theme, which is usually an emoji
-     */
-
-    struct BackgroundTypeChatTheme {
-        // Type of the background, always “chat_theme”
-        std::string type_;
-
-        // Name of the chat theme, which is usually an emoji
-        std::string theme_name;
-    };
-
-    /**
-     * This object represents a chat background.
-     *
-     * @param type Type of the background
-     */
-
-    struct ChatBackground {
-        // Type of the background
-        BackgroundType type_;
-    };
-
-    /**
-     * This object represents a service message about a new forum topic created in the chat.
-     *
-     * @param name Name of the topic
-     * @param icon_color Color of the topic icon in RGB format
-     * @param icon_custom_emoji_id Optional. Unique identifier of the custom emoji shown as the topic icon
-     */
-
-    struct ForumTopicCreated {
-        // Name of the topic
-        std::string name;
-
-        // Color of the topic icon in RGB format
-        std::int64_t icon_color;
-
-        // Optional. Unique identifier of the custom emoji shown as the topic icon
-        std::optional<std::string> icon_custom_emoji_id;
-    };
-
-    /**
-     * This object represents a service message about an edited forum topic.
-     *
-     * @param name Optional. New name of the topic, if it was edited
-     * @param icon_custom_emoji_id Optional. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed
-     */
-
-    struct ForumTopicEdited {
-        // Optional. New name of the topic, if it was edited
-        std::optional<std::string> name;
-
-        // Optional. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed
-        std::optional<std::string> icon_custom_emoji_id;
-    };
-
-    /**
-     * This object contains information about a user that was shared with the bot using a KeyboardButtonRequestUsers button.
-     *
-     * @param user_id Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.
-     * @param first_name Optional. First name of the user, if the name was requested by the bot
-     * @param last_name Optional. Last name of the user, if the name was requested by the bot
-     * @param username Optional. Username of the user, if the username was requested by the bot
-     * @param photo Optional. Available sizes of the chat photo, if the photo was requested by the bot
-     */
-
-    struct SharedUser {
-        // Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.
-        std::int64_t user_id;
-
-        // Optional. First name of the user, if the name was requested by the bot
-        std::optional<std::string> first_name;
-
-        // Optional. Last name of the user, if the name was requested by the bot
-        std::optional<std::string> last_name;
-
-        // Optional. Username of the user, if the username was requested by the bot
-        std::optional<std::string> username;
-
-        // Optional. Available sizes of the chat photo, if the photo was requested by the bot
-        std::optional<std::vector<PhotoSize>> photo;
-    };
-
-    /**
-     * This object contains information about the users whose identifiers were shared with the bot using a KeyboardButtonRequestUsers button.
-     *
-     * @param request_id Identifier of the request
-     * @param users Information about users shared with the bot.
-     */
-
-    struct UsersShared {
-        // Identifier of the request
-        std::int64_t request_id;
-
-        // Information about users shared with the bot.
-        std::vector<SharedUser> users;
-    };
-
-    /**
-     * This object contains information about a chat that was shared with the bot using a KeyboardButtonRequestChat button.
-     *
-     * @param request_id Identifier of the request
-     * @param chat_id Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.
-     * @param title Optional. Title of the chat, if the title was requested by the bot.
-     * @param username Optional. Username of the chat, if the username was requested by the bot and available.
-     * @param photo Optional. Available sizes of the chat photo, if the photo was requested by the bot
-     */
-
-    struct ChatShared {
-        // Identifier of the request
-        std::int64_t request_id;
-
-        // Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.
-        std::int64_t chat_id;
-
-        // Optional. Title of the chat, if the title was requested by the bot.
-        std::optional<std::string> title;
-
-        // Optional. Username of the chat, if the username was requested by the bot and available.
-        std::optional<std::string> username;
-
-        // Optional. Available sizes of the chat photo, if the photo was requested by the bot
-        std::optional<std::vector<PhotoSize>> photo;
-    };
-
-    /**
-     * This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess.
-     *
-     * @param from_request Optional. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess
-     * @param web_app_name Optional. Name of the Web App, if the access was granted when the Web App was launched from a link
-     * @param from_attachment_menu Optional. True, if the access was granted when the bot was added to the attachment or side menu
-     */
-
-    struct WriteAccessAllowed {
-        // Optional. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess
-        std::optional<bool> from_request;
-
-        // Optional. Name of the Web App, if the access was granted when the Web App was launched from a link
-        std::optional<std::string> web_app_name;
-
-        // Optional. True, if the access was granted when the bot was added to the attachment or side menu
-        std::optional<bool> from_attachment_menu;
-    };
-
-    /**
-     * This object represents a service message about a video chat scheduled in the chat.
-     *
-     * @param start_date Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator
-     */
-
-    struct VideoChatScheduled {
-        // Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator
-        std::int64_t start_date;
-    };
-
-    /**
-     * This object represents a service message about a video chat ended in the chat.
-     *
-     * @param duration Video chat duration in seconds
-     */
-
-    struct VideoChatEnded {
-        // Video chat duration in seconds
-        std::int64_t duration;
-    };
-
-    /**
-     * This object represents a service message about new members invited to a video chat.
-     *
-     * @param users New members that were invited to the video chat
-     */
-
-    struct VideoChatParticipantsInvited {
-        // New members that were invited to the video chat
-        std::vector<User> users;
-    };
-
-    /**
-     * Describes a service message about a change in the price of paid messages within a chat.
-     *
-     * @param paid_message_star_count The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message
-     */
-
-    struct PaidMessagePriceChanged {
-        // The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message
-        std::int64_t paid_message_star_count;
-    };
-
-    /**
-     * Describes a service message about a change in the price of direct messages sent to a channel chat.
-     *
-     * @param are_direct_messages_enabled True, if direct messages are enabled for the channel chat; false otherwise
-     * @param direct_message_star_count Optional. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
-     */
-
-    struct DirectMessagePriceChanged {
-        // True, if direct messages are enabled for the channel chat; false otherwise
-        bool are_direct_messages_enabled;
-
-        // Optional. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
-        std::optional<std::int64_t> direct_message_star_count;
-    };
-
-    /**
-     * Describes a service message about the approval of a suggested post.
-     *
-     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-     * @param price Optional. Amount paid for the post
-     * @param send_date Date when the post will be published
-     */
-
-    struct SuggestedPostApproved {
-        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-        std::optional<Message> suggested_post_message;
-
-        // Optional. Amount paid for the post
-        std::optional<SuggestedPostPrice> price;
-
-        // Date when the post will be published
-        std::int64_t send_date;
-    };
-
-    /**
-     * Describes a service message about the failed approval of a suggested post. Currently, only caused by insufficient user funds at the time of approval.
-     *
-     * @param suggested_post_message Optional. Message containing the suggested post whose approval has failed. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-     * @param price Expected price of the post
-     */
-
-    struct SuggestedPostApprovalFailed {
-        // Optional. Message containing the suggested post whose approval has failed. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-        std::optional<Message> suggested_post_message;
-
-        // Expected price of the post
-        SuggestedPostPrice price;
-    };
-
-    /**
-     * Describes a service message about the rejection of a suggested post.
-     *
-     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-     * @param comment Optional. Comment with which the post was declined
-     */
-
-    struct SuggestedPostDeclined {
-        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-        std::optional<Message> suggested_post_message;
-
-        // Optional. Comment with which the post was declined
-        std::optional<std::string> comment;
-    };
-
-    /**
-     * Describes a service message about a successful payment for a suggested post.
-     *
-     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-     * @param currency Currency in which the payment was made. Currently, one of “XTR” for Telegram Stars or “TON” for toncoins
-     * @param amount Optional. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only
-     * @param star_amount Optional. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only
-     */
-
-    struct SuggestedPostPaid {
-        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-        std::optional<Message> suggested_post_message;
-
-        // Currency in which the payment was made. Currently, one of “XTR” for Telegram Stars or “TON” for toncoins
-        std::string currency;
-
-        // Optional. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only
-        std::optional<std::int64_t> amount;
-
-        // Optional. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only
-        std::optional<StarAmount> star_amount;
-    };
-
-    /**
-     * Describes a service message about a payment refund for a suggested post.
-     *
-     * @param suggested_post_message Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-     * @param reason Reason for the refund. Currently, one of “post_deleted” if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or “payment_refunded” if the payer refunded their payment.
-     */
-
-    struct SuggestedPostRefunded {
-        // Optional. Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.
-        std::optional<Message> suggested_post_message;
-
-        // Reason for the refund. Currently, one of “post_deleted” if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or “payment_refunded” if the payer refunded their payment.
-        std::string reason;
-    };
-
-    /**
-     * This object represents a service message about the creation of a scheduled giveaway.
-     *
-     * @param prize_star_count Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
-     */
-
-    struct GiveawayCreated {
-        // Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
-        std::optional<std::int64_t> prize_star_count;
-    };
-
-    /**
-     * This object represents a message about a scheduled giveaway.
-     *
-     * @param chats The list of chats which the user must join to participate in the giveaway
-     * @param winners_selection_date Point in time (Unix timestamp) when winners of the giveaway will be selected
-     * @param winner_count The number of users which are supposed to be selected as winners of the giveaway
-     * @param only_new_members Optional. True, if only users who join the chats after the giveaway started should be eligible to win
-     * @param has_public_winners Optional. True, if the list of giveaway winners will be visible to everyone
-     * @param prize_description Optional. Description of additional giveaway prize
-     * @param country_codes Optional. A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.
-     * @param prize_star_count Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
-     * @param premium_subscription_month_count Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
-     */
-
-    struct Giveaway {
-        // The list of chats which the user must join to participate in the giveaway
-        std::vector<Chat> chats;
-
-        // Point in time (Unix timestamp) when winners of the giveaway will be selected
-        std::int64_t winners_selection_date;
-
-        // The number of users which are supposed to be selected as winners of the giveaway
-        std::int64_t winner_count;
-
-        // Optional. True, if only users who join the chats after the giveaway started should be eligible to win
-        std::optional<bool> only_new_members;
-
-        // Optional. True, if the list of giveaway winners will be visible to everyone
-        std::optional<bool> has_public_winners;
-
-        // Optional. Description of additional giveaway prize
-        std::optional<std::string> prize_description;
-
-        // Optional. A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.
-        std::optional<std::vector<std::string>> country_codes;
-
-        // Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
-        std::optional<std::int64_t> prize_star_count;
-
-        // Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
-        std::optional<std::int64_t> premium_subscription_month_count;
-    };
-
-    /**
-     * This object represents a message about the completion of a giveaway with public winners.
-     *
-     * @param chat The chat that created the giveaway
-     * @param giveaway_message_id Identifier of the message with the giveaway in the chat
-     * @param winners_selection_date Point in time (Unix timestamp) when winners of the giveaway were selected
-     * @param winner_count Total number of winners in the giveaway
-     * @param winners List of up to 100 winners of the giveaway
-     * @param additional_chat_count Optional. The number of other chats the user had to join in order to be eligible for the giveaway
-     * @param prize_star_count Optional. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only
-     * @param premium_subscription_month_count Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
-     * @param unclaimed_prize_count Optional. Number of undistributed prizes
-     * @param only_new_members Optional. True, if only users who had joined the chats after the giveaway started were eligible to win
-     * @param was_refunded Optional. True, if the giveaway was canceled because the payment for it was refunded
-     * @param prize_description Optional. Description of additional giveaway prize
-     */
-
-    struct GiveawayWinners {
-        // The chat that created the giveaway
-        Chat chat;
-
-        // Identifier of the message with the giveaway in the chat
-        std::int64_t giveaway_message_id;
-
-        // Point in time (Unix timestamp) when winners of the giveaway were selected
-        std::int64_t winners_selection_date;
-
-        // Total number of winners in the giveaway
-        std::int64_t winner_count;
-
-        // List of up to 100 winners of the giveaway
-        std::vector<User> winners;
-
-        // Optional. The number of other chats the user had to join in order to be eligible for the giveaway
-        std::optional<std::int64_t> additional_chat_count;
-
-        // Optional. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only
-        std::optional<std::int64_t> prize_star_count;
-
-        // Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
-        std::optional<std::int64_t> premium_subscription_month_count;
-
-        // Optional. Number of undistributed prizes
-        std::optional<std::int64_t> unclaimed_prize_count;
-
-        // Optional. True, if only users who had joined the chats after the giveaway started were eligible to win
-        std::optional<bool> only_new_members;
-
-        // Optional. True, if the giveaway was canceled because the payment for it was refunded
-        std::optional<bool> was_refunded;
-
-        // Optional. Description of additional giveaway prize
-        std::optional<std::string> prize_description;
-    };
-
-    /**
-     * This object represents a service message about the completion of a giveaway without public winners.
-     *
-     * @param winner_count Number of winners in the giveaway
-     * @param unclaimed_prize_count Optional. Number of undistributed prizes
-     * @param giveaway_message Optional. Message with the giveaway that was completed, if it wasn't deleted
-     * @param is_star_giveaway Optional. True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
-     */
-
-    struct GiveawayCompleted {
-        // Number of winners in the giveaway
-        std::int64_t winner_count;
-
-        // Optional. Number of undistributed prizes
-        std::optional<std::int64_t> unclaimed_prize_count;
-
-        // Optional. Message with the giveaway that was completed, if it wasn't deleted
-        std::optional<Message> giveaway_message;
-
-        // Optional. True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
-        std::optional<bool> is_star_giveaway;
-    };
-
-    /**
-     * Describes the options used for link preview generation.
-     *
-     * @param is_disabled Optional. True, if the link preview is disabled
-     * @param url Optional. URL to use for the link preview. If empty, then the first URL found in the message text will be used
-     * @param prefer_small_media Optional. True, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
-     * @param prefer_large_media Optional. True, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
-     * @param show_above_text Optional. True, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text
-     */
-
-    struct LinkPreviewOptions {
-        // Optional. True, if the link preview is disabled
-        std::optional<bool> is_disabled;
-
-        // Optional. URL to use for the link preview. If empty, then the first URL found in the message text will be used
-        std::optional<std::string> url;
-
-        // Optional. True, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
-        std::optional<bool> prefer_small_media;
-
-        // Optional. True, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview
-        std::optional<bool> prefer_large_media;
-
-        // Optional. True, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text
-        std::optional<bool> show_above_text;
-    };
-
-    /**
-     * Describes the price of a suggested post.
-     *
-     * @param currency Currency in which the post will be paid. Currently, must be one of “XTR” for Telegram Stars or “TON” for toncoins
-     * @param amount The amount of the currency that will be paid for the post in the smallest units of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.
-     */
-
-    struct SuggestedPostPrice {
-        // Currency in which the post will be paid. Currently, must be one of “XTR” for Telegram Stars or “TON” for toncoins
-        std::string currency;
-
-        // The amount of the currency that will be paid for the post in the smallest units of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.
-        std::int64_t amount;
-    };
-
-    /**
-     * Contains information about a suggested post.
-     *
-     * @param state State of the suggested post. Currently, it can be one of “pending”, “approved”, “declined”.
-     * @param price Optional. Proposed price of the post. If the field is omitted, then the post is unpaid.
-     * @param send_date Optional. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it.
-     */
-
-    struct SuggestedPostInfo {
-        // State of the suggested post. Currently, it can be one of “pending”, “approved”, “declined”.
-        std::string state;
-
-        // Optional. Proposed price of the post. If the field is omitted, then the post is unpaid.
-        std::optional<SuggestedPostPrice> price;
-
-        // Optional. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it.
-        std::optional<std::int64_t> send_date;
-    };
-
-    /**
-     * Contains parameters of a post that is being suggested by the bot.
-     *
-     * @param price Optional. Proposed price for the post. If the field is omitted, then the post is unpaid.
-     * @param send_date Optional. Proposed send date of the post. If specified, then the date must be between 300 second and 2678400 seconds (30 days) in the future. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user who approves it.
-     */
-
-    struct SuggestedPostParameters {
-        // Optional. Proposed price for the post. If the field is omitted, then the post is unpaid.
-        std::optional<SuggestedPostPrice> price;
-
-        // Optional. Proposed send date of the post. If specified, then the date must be between 300 second and 2678400 seconds (30 days) in the future. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user who approves it.
-        std::optional<std::int64_t> send_date;
-    };
-
-    /**
-     * Describes a topic of a direct messages chat.
-     *
-     * @param topic_id Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
-     * @param user Optional. Information about the user that created the topic. Currently, it is always present
-     */
-
-    struct DirectMessagesTopic {
-        // Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::int64_t topic_id;
-
-        // Optional. Information about the user that created the topic. Currently, it is always present
-        std::optional<User> user;
-    };
-
-    /**
-     * This object represent a user's profile pictures.
-     *
-     * @param total_count Total number of profile pictures the target user has
-     * @param photos Requested profile pictures (in up to 4 sizes each)
-     */
-
-    struct UserProfilePhotos {
-        // Total number of profile pictures the target user has
+        // Previous list of reaction types that were set by the user
+        std::vector<ReactionType> old_reaction;
+
+        // New list of reaction types that have been set by the user
+        std::vector<ReactionType> new_reaction;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["message_id"] = message_id.to_json();
+            if (user.has_value()) {
+                j["user"] = user.value().to_json();
+            }
+            if (actor_chat.has_value()) {
+                j["actor_chat"] = actor_chat.value().to_json();
+            }
+            j["date"] = date;
+            std::vector<json> old_reaction_values;
+            old_reaction_values.reserve(old_reaction.size());
+            for (auto& e : old_reaction) {
+                old_reaction_values.push_back(e.to_json());
+            }
+            j["old_reaction"] = old_reaction_values;
+            std::vector<json> new_reaction_values;
+            new_reaction_values.reserve(new_reaction.size());
+            for (auto& e : new_reaction) {
+                new_reaction_values.push_back(e.to_json());
+            }
+            j["new_reaction"] = new_reaction_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Represents a reaction added to a message along with the number of times it was added.
+     *
+     * @param type Type of the reaction
+     * @param total_count Number of times the reaction was added
+     */
+
+    struct ReactionCount : public TelegramModel {
+        virtual ~ReactionCount() = default;
+        // Type of the reaction
+        std::shared_ptr<ReactionType> type_;
+
+        // Number of times the reaction was added
         std::int64_t total_count;
 
-        // Requested profile pictures (in up to 4 sizes each)
-        std::vector<std::vector<PhotoSize>> photos;
+        json to_json() const override {
+            json j;
+            j["type"] = type_->to_json();
+            j["total_count"] = total_count;
+            return j.dump();
+        }
     };
 
     /**
-     * This object represents a file ready to be downloaded. The file can be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling getFile.
-     *  The maximum file size to download is 20 MB
+     * This object represents reaction changes on a message with anonymous reactions.
      *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param file_size Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-     * @param file_path Optional. File path. Use https://api.telegram.org/file/bot<token>/<file_path> to get the file.
+     * @param chat The chat containing the message
+     * @param message_id Unique message identifier inside the chat
+     * @param date Date of the change in Unix time
+     * @param reactions List of reactions that are present on the message
      */
 
-    struct File {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
+    struct MessageReactionCountUpdated : public TelegramModel {
+        virtual ~MessageReactionCountUpdated() = default;
+        // The chat containing the message
+        std::shared_ptr<Chat> chat;
 
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
+        // Unique message identifier inside the chat
+        MessageId message_id;
 
-        // Optional. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.
-        std::optional<std::int64_t> file_size;
+        // Date of the change in Unix time
+        std::int64_t date;
 
-        // Optional. File path. Use https://api.telegram.org/file/bot<token>/<file_path> to get the file.
-        std::optional<std::string> file_path;
+        // List of reactions that are present on the message
+        std::vector<ReactionCount> reactions;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["message_id"] = message_id.to_json();
+            j["date"] = date;
+            std::vector<json> reactions_values;
+            reactions_values.reserve(reactions.size());
+            for (auto& e : reactions) {
+                reactions_values.push_back(e.to_json());
+            }
+            j["reactions"] = reactions_values;
+            return j.dump();
+        }
+    };
+
+
+    // Inline mode
+
+    /**
+     * This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.
+     *
+     * @param id Unique identifier for this query
+     * @param from Sender
+     * @param query Text of the query (up to 256 characters)
+     * @param offset Offset of the results to be returned, can be controlled by the bot
+     * @param chat_type Optional. Type of the chat from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat
+     * @param location Optional. Sender location, only for bots that request user location
+     */
+
+    struct InlineQuery : public TelegramModel {
+        virtual ~InlineQuery() = default;
+        // Unique identifier for this query
+        std::string id;
+
+        // Sender
+        std::shared_ptr<User> from;
+
+        // Text of the query (up to 256 characters)
+        std::string query;
+
+        // Offset of the results to be returned, can be controlled by the bot
+        std::string offset;
+
+        // Optional. Type of the chat from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat
+        std::optional<std::string> chat_type;
+
+        // Optional. Sender location, only for bots that request user location
+        std::optional<Location> location;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["from"] = from->to_json();
+            j["query"] = query;
+            j["offset"] = offset;
+            if (chat_type.has_value()) {
+                j["chat_type"] = chat_type.value();
+            }
+            if (location.has_value()) {
+                j["location"] = location.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
-     * Describes a Web App.
+     * Represents a result of an inline query that was chosen by the user and sent to their chat partner.Note: It is necessary to enable inline feedback via @BotFather in order to receive these objects in updates.
      *
-     * @param url An HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps
+     * @param result_id The unique identifier for the result that was chosen
+     * @param from The user that chose the result
+     * @param location Optional. Sender location, only for bots that require user location
+     * @param inline_message_id Optional. Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message. Will be also received in callback queries and can be used to edit the message.
+     * @param query The query that was used to obtain the result
      */
 
-    struct WebAppInfo {
-        // An HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps
-        std::string url;
+    struct ChosenInlineResult : public TelegramModel {
+        virtual ~ChosenInlineResult() = default;
+        // The unique identifier for the result that was chosen
+        std::string result_id;
+
+        // The user that chose the result
+        std::shared_ptr<User> from;
+
+        // Optional. Sender location, only for bots that require user location
+        std::optional<Location> location;
+
+        // Optional. Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message. Will be also received in callback queries and can be used to edit the message.
+        std::optional<std::string> inline_message_id;
+
+        // The query that was used to obtain the result
+        std::string query;
+
+        json to_json() const override {
+            json j;
+            j["result_id"] = result_id;
+            j["from"] = from->to_json();
+            if (location.has_value()) {
+                j["location"] = location.value().to_json();
+            }
+            if (inline_message_id.has_value()) {
+                j["inline_message_id"] = inline_message_id.value();
+            }
+            j["query"] = query;
+            return j.dump();
+        }
     };
 
-    /**
-     * This object represents a custom keyboard with reply options (see Introduction to bots for details and examples). Not supported in channels and for messages sent on behalf of a Telegram Business account.
-     *
-     * @param keyboard Array of button rows, each represented by an Array of KeyboardButton objects
-     * @param is_persistent Optional. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to false, in which case the custom keyboard can be hidden and opened with a keyboard icon.
-     * @param resize_keyboard Optional. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.
-     * @param one_time_keyboard Optional. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat - the user can press a special button in the input field to see the custom keyboard again. Defaults to false.
-     * @param input_field_placeholder Optional. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
-     * @param selective Optional. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
-     */
 
-    struct ReplyKeyboardMarkup {
-        // Array of button rows, each represented by an Array of KeyboardButton objects
-        std::vector<std::vector<KeyboardButton>> keyboard;
-
-        // Optional. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to false, in which case the custom keyboard can be hidden and opened with a keyboard icon.
-        std::optional<bool> is_persistent;
-
-        // Optional. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.
-        std::optional<bool> resize_keyboard;
-
-        // Optional. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat - the user can press a special button in the input field to see the custom keyboard again. Defaults to false.
-        std::optional<bool> one_time_keyboard;
-
-        // Optional. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
-        std::optional<std::string> input_field_placeholder;
-
-        // Optional. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
-        std::optional<bool> selective;
-    };
-
-    /**
-     * This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, String can be used instead of this object to specify the button text.Note: request_users and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.
-     *
-     * @param text Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed
-     * @param request_users Optional. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a “users_shared” service message. Available in private chats only.
-     * @param request_chat Optional. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a “chat_shared” service message. Available in private chats only.
-     * @param request_contact Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.
-     * @param request_location Optional. If True, the user's current location will be sent when the button is pressed. Available in private chats only.
-     * @param request_poll Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.
-     * @param web_app Optional. If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.
-     */
-
-    struct KeyboardButton {
-        // Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed
-        std::string text;
-
-        // Optional. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a “users_shared” service message. Available in private chats only.
-        std::optional<KeyboardButtonRequestUsers> request_users;
-
-        // Optional. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a “chat_shared” service message. Available in private chats only.
-        std::optional<KeyboardButtonRequestChat> request_chat;
-
-        // Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.
-        std::optional<bool> request_contact;
-
-        // Optional. If True, the user's current location will be sent when the button is pressed. Available in private chats only.
-        std::optional<bool> request_location;
-
-        // Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.
-        std::optional<KeyboardButtonPollType> request_poll;
-
-        // Optional. If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.
-        std::optional<WebAppInfo> web_app;
-    };
-
-    /**
-     * This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. More about requesting users »
-     *
-     * @param request_id Signed 32-bit identifier of the request that will be received back in the UsersShared object. Must be unique within the message
-     * @param user_is_bot Optional. Pass True to request bots, pass False to request regular users. If not specified, no additional restrictions are applied.
-     * @param user_is_premium Optional. Pass True to request premium users, pass False to request non-premium users. If not specified, no additional restrictions are applied.
-     * @param max_quantity Optional. The maximum number of users to be selected; 1-10. Defaults to 1.
-     * @param request_name Optional. Pass True to request the users' first and last names
-     * @param request_username Optional. Pass True to request the users' usernames
-     * @param request_photo Optional. Pass True to request the users' photos
-     */
-
-    struct KeyboardButtonRequestUsers {
-        // Signed 32-bit identifier of the request that will be received back in the UsersShared object. Must be unique within the message
-        std::int64_t request_id;
-
-        // Optional. Pass True to request bots, pass False to request regular users. If not specified, no additional restrictions are applied.
-        std::optional<bool> user_is_bot;
-
-        // Optional. Pass True to request premium users, pass False to request non-premium users. If not specified, no additional restrictions are applied.
-        std::optional<bool> user_is_premium;
-
-        // Optional. The maximum number of users to be selected; 1-10. Defaults to 1.
-        std::optional<std::int64_t> max_quantity;
-
-        // Optional. Pass True to request the users' first and last names
-        std::optional<bool> request_name;
-
-        // Optional. Pass True to request the users' usernames
-        std::optional<bool> request_username;
-
-        // Optional. Pass True to request the users' photos
-        std::optional<bool> request_photo;
-    };
-
-    /**
-     * This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. More about requesting chats ».
-     *
-     * @param request_id Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message
-     * @param chat_is_channel Pass True to request a channel chat, pass False to request a group or a supergroup chat.
-     * @param chat_is_forum Optional. Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.
-     * @param chat_has_username Optional. Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.
-     * @param chat_is_created Optional. Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.
-     * @param user_administrator_rights Optional. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.
-     * @param bot_administrator_rights Optional. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.
-     * @param bot_is_member Optional. Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.
-     * @param request_title Optional. Pass True to request the chat's title
-     * @param request_username Optional. Pass True to request the chat's username
-     * @param request_photo Optional. Pass True to request the chat's photo
-     */
-
-    struct KeyboardButtonRequestChat {
-        // Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message
-        std::int64_t request_id;
-
-        // Pass True to request a channel chat, pass False to request a group or a supergroup chat.
-        bool chat_is_channel;
-
-        // Optional. Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.
-        std::optional<bool> chat_is_forum;
-
-        // Optional. Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.
-        std::optional<bool> chat_has_username;
-
-        // Optional. Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.
-        std::optional<bool> chat_is_created;
-
-        // Optional. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.
-        std::optional<ChatAdministratorRights> user_administrator_rights;
-
-        // Optional. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.
-        std::optional<ChatAdministratorRights> bot_administrator_rights;
-
-        // Optional. Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.
-        std::optional<bool> bot_is_member;
-
-        // Optional. Pass True to request the chat's title
-        std::optional<bool> request_title;
-
-        // Optional. Pass True to request the chat's username
-        std::optional<bool> request_username;
-
-        // Optional. Pass True to request the chat's photo
-        std::optional<bool> request_photo;
-    };
-
-    /**
-     * This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.
-     *
-     * @param type Optional. If quiz is passed, the user will be allowed to create only polls in the quiz mode. If regular is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.
-     */
-
-    struct KeyboardButtonPollType {
-        // Optional. If quiz is passed, the user will be allowed to create only polls in the quiz mode. If regular is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.
-        std::optional<std::string> type_;
-    };
-
-    /**
-     * Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see ReplyKeyboardMarkup). Not supported in channels and for messages sent on behalf of a Telegram Business account.
-     *
-     * @param remove_keyboard Requests clients to remove the custom keyboard (user will not be able to summon this keyboard; if you want to hide the keyboard from sight but keep it accessible, use one_time_keyboard in ReplyKeyboardMarkup)
-     * @param selective Optional. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.
-     */
-
-    struct ReplyKeyboardRemove {
-        // Requests clients to remove the custom keyboard (user will not be able to summon this keyboard; if you want to hide the keyboard from sight but keep it accessible, use one_time_keyboard in ReplyKeyboardMarkup)
-        bool remove_keyboard;
-
-        // Optional. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.
-        std::optional<bool> selective;
-    };
-
-    /**
-     * This object represents an inline keyboard that appears right next to the message it belongs to.
-     *
-     * @param inline_keyboard Array of button rows, each represented by an Array of InlineKeyboardButton objects
-     */
-
-    struct InlineKeyboardMarkup {
-        // Array of button rows, each represented by an Array of InlineKeyboardButton objects
-        std::vector<std::vector<InlineKeyboardButton>> inline_keyboard;
-    };
-
-    /**
-     * This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.
-     *
-     * @param text Label text on the button
-     * @param url Optional. HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
-     * @param callback_data Optional. Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes
-     * @param web_app Optional. Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
-     * @param login_url Optional. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.
-     * @param switch_inline_query Optional. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
-     * @param switch_inline_query_current_chat Optional. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
-     * @param switch_inline_query_chosen_chat Optional. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
-     * @param copy_text Optional. Description of the button that copies the specified text to the clipboard.
-     * @param callback_game Optional. Description of the game that will be launched when the user presses the button.NOTE: This type of button must always be the first button in the first row.
-     * @param pay Optional. Specify True, to send a Pay button. Substrings “” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.
-     */
-
-    struct InlineKeyboardButton {
-        // Label text on the button
-        std::string text;
-
-        // Optional. HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.
-        std::optional<std::string> url;
-
-        // Optional. Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes
-        std::optional<std::string> callback_data;
-
-        // Optional. Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account.
-        std::optional<WebAppInfo> web_app;
-
-        // Optional. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the Telegram Login Widget.
-        std::optional<LoginUrl> login_url;
-
-        // Optional. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
-        std::optional<std::string> switch_inline_query;
-
-        // Optional. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted.This offers a quick way for the user to open your bot in inline mode in the same chat - good for selecting something from multiple options. Not supported in channels and for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
-        std::optional<std::string> switch_inline_query_current_chat;
-
-        // Optional. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account.
-        std::optional<SwitchInlineQueryChosenChat> switch_inline_query_chosen_chat;
-
-        // Optional. Description of the button that copies the specified text to the clipboard.
-        std::optional<CopyTextButton> copy_text;
-
-        // Optional. Description of the game that will be launched when the user presses the button.NOTE: This type of button must always be the first button in the first row.
-        std::optional<CallbackGame> callback_game;
-
-        // Optional. Specify True, to send a Pay button. Substrings “” and “XTR” in the buttons's text will be replaced with a Telegram Star icon.NOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.
-        std::optional<bool> pay;
-    };
-
-    /**
-     * This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:Telegram apps support these buttons as of version 5.7.
-     *  Sample bot: @discussbot
-     *
-     * @param url An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in Receiving authorization data.NOTE: You must always check the hash of the received data to verify the authentication and the integrity of the data as described in Checking authorization.
-     * @param forward_text Optional. New text of the button in forwarded messages.
-     * @param bot_username Optional. Username of a bot, which will be used for user authorization. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.
-     * @param request_write_access Optional. Pass True to request the permission for your bot to send messages to the user.
-     */
-
-    struct LoginUrl {
-        // An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in Receiving authorization data.NOTE: You must always check the hash of the received data to verify the authentication and the integrity of the data as described in Checking authorization.
-        std::string url;
-
-        // Optional. New text of the button in forwarded messages.
-        std::optional<std::string> forward_text;
-
-        // Optional. Username of a bot, which will be used for user authorization. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.
-        std::optional<std::string> bot_username;
-
-        // Optional. Pass True to request the permission for your bot to send messages to the user.
-        std::optional<bool> request_write_access;
-    };
-
-    /**
-     * This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.
-     *
-     * @param query Optional. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
-     * @param allow_user_chats Optional. True, if private chats with users can be chosen
-     * @param allow_bot_chats Optional. True, if private chats with bots can be chosen
-     * @param allow_group_chats Optional. True, if group and supergroup chats can be chosen
-     * @param allow_channel_chats Optional. True, if channel chats can be chosen
-     */
-
-    struct SwitchInlineQueryChosenChat {
-        // Optional. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted
-        std::optional<std::string> query;
-
-        // Optional. True, if private chats with users can be chosen
-        std::optional<bool> allow_user_chats;
-
-        // Optional. True, if private chats with bots can be chosen
-        std::optional<bool> allow_bot_chats;
-
-        // Optional. True, if group and supergroup chats can be chosen
-        std::optional<bool> allow_group_chats;
-
-        // Optional. True, if channel chats can be chosen
-        std::optional<bool> allow_channel_chats;
-    };
-
-    /**
-     * This object represents an inline keyboard button that copies specified text to the clipboard.
-     *
-     * @param text The text to be copied to the clipboard; 1-256 characters
-     */
-
-    struct CopyTextButton {
-        // The text to be copied to the clipboard; 1-256 characters
-        std::string text;
-    };
+    // Available types
 
     /**
      * This object represents an incoming callback query from a callback button in an inline keyboard. If the button that originated the query was attached to a message sent by the bot, the field message will be present. If the button was attached to a message sent via the bot (in inline mode), the field inline_message_id will be present. Exactly one of the fields data or game_short_name will be present.
@@ -2971,12 +5394,13 @@ namespace telegram {
      * @param game_short_name Optional. Short name of a Game to be returned, serves as the unique identifier for the game
      */
 
-    struct CallbackQuery {
+    struct CallbackQuery : public TelegramModel {
+        virtual ~CallbackQuery() = default;
         // Unique identifier for this query
         std::string id;
 
         // Sender
-        User from;
+        std::shared_ptr<User> from;
 
         // Optional. Message sent by the bot with the callback button that originated the query
         std::optional<MaybeInaccessibleMessage> message;
@@ -2992,54 +5416,177 @@ namespace telegram {
 
         // Optional. Short name of a Game to be returned, serves as the unique identifier for the game
         std::optional<std::string> game_short_name;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["from"] = from->to_json();
+            if (message.has_value()) {
+                j["message"] = message.value().to_json();
+            }
+            if (inline_message_id.has_value()) {
+                j["inline_message_id"] = inline_message_id.value();
+            }
+            j["chat_instance"] = chat_instance;
+            if (data.has_value()) {
+                j["data"] = data.value();
+            }
+            if (game_short_name.has_value()) {
+                j["game_short_name"] = game_short_name.value();
+            }
+            return j.dump();
+        }
+    };
+
+
+    // Payments
+
+    /**
+     * This object contains information about an incoming shipping query.
+     *
+     * @param id Unique query identifier
+     * @param from User who sent the query
+     * @param invoice_payload Bot-specified invoice payload
+     * @param shipping_address User specified shipping address
+     */
+
+    struct ShippingQuery : public TelegramModel {
+        virtual ~ShippingQuery() = default;
+        // Unique query identifier
+        std::string id;
+
+        // User who sent the query
+        std::shared_ptr<User> from;
+
+        // Bot-specified invoice payload
+        std::string invoice_payload;
+
+        // User specified shipping address
+        std::shared_ptr<ShippingAddress> shipping_address;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["from"] = from->to_json();
+            j["invoice_payload"] = invoice_payload;
+            j["shipping_address"] = shipping_address->to_json();
+            return j.dump();
+        }
     };
 
     /**
-     * Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice privacy mode. Not supported in channels and for messages sent on behalf of a Telegram Business account.
-     *  Example: A poll bot for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:
-     *  
-     *   Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.
-     *   Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.
-     *  
-     *  The last option is definitely more attractive. And if you use ForceReply in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions - without any extra work for the user.
+     * This object contains information about an incoming pre-checkout query.
      *
-     * @param force_reply Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
-     * @param input_field_placeholder Optional. The placeholder to be shown in the input field when the reply is active; 1-64 characters
-     * @param selective Optional. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.
+     * @param id Unique query identifier
+     * @param from User who sent the query
+     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
+     * @param total_amount Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+     * @param invoice_payload Bot-specified invoice payload
+     * @param shipping_option_id Optional. Identifier of the shipping option chosen by the user
+     * @param order_info Optional. Order information provided by the user
      */
 
-    struct ForceReply {
-        // Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
-        bool force_reply;
+    struct PreCheckoutQuery : public TelegramModel {
+        virtual ~PreCheckoutQuery() = default;
+        // Unique query identifier
+        std::string id;
 
-        // Optional. The placeholder to be shown in the input field when the reply is active; 1-64 characters
-        std::optional<std::string> input_field_placeholder;
+        // User who sent the query
+        std::shared_ptr<User> from;
 
-        // Optional. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.
-        std::optional<bool> selective;
+        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
+        std::string currency;
+
+        // Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+        std::int64_t total_amount;
+
+        // Bot-specified invoice payload
+        std::string invoice_payload;
+
+        // Optional. Identifier of the shipping option chosen by the user
+        std::optional<std::string> shipping_option_id;
+
+        // Optional. Order information provided by the user
+        std::optional<OrderInfo> order_info;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["from"] = from->to_json();
+            j["currency"] = currency;
+            j["total_amount"] = total_amount;
+            j["invoice_payload"] = invoice_payload;
+            if (shipping_option_id.has_value()) {
+                j["shipping_option_id"] = shipping_option_id.value();
+            }
+            if (order_info.has_value()) {
+                j["order_info"] = order_info.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
-     * This object represents a chat photo.
+     * This object contains information about a paid media purchase.
      *
-     * @param small_file_id File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
-     * @param small_file_unique_id Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param big_file_id File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
-     * @param big_file_unique_id Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param from User who purchased the media
+     * @param paid_media_payload Bot-specified paid media payload
      */
 
-    struct ChatPhoto {
-        // File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
-        std::string small_file_id;
+    struct PaidMediaPurchased : public PaidMedia {
+        virtual ~PaidMediaPurchased() = default;
+        // User who purchased the media
+        std::shared_ptr<User> from;
 
-        // Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string small_file_unique_id;
+        // Bot-specified paid media payload
+        std::string paid_media_payload;
 
-        // File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
-        std::string big_file_id;
+        json to_json() const override {
+            json j;
+            j["from"] = from->to_json();
+            j["paid_media_payload"] = paid_media_payload;
+            return j.dump();
+        }
+    };
 
-        // Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string big_file_unique_id;
+
+    // Available types
+
+    /**
+     * This object represents an answer of a user in a non-anonymous poll.
+     *
+     * @param poll_id Unique poll identifier
+     * @param voter_chat Optional. The chat that changed the answer to the poll, if the voter is anonymous
+     * @param user Optional. The user that changed the answer to the poll, if the voter isn't anonymous
+     * @param option_ids 0-based identifiers of chosen answer options. May be empty if the vote was retracted.
+     */
+
+    struct PollAnswer : public TelegramModel {
+        virtual ~PollAnswer() = default;
+        // Unique poll identifier
+        std::string poll_id;
+
+        // Optional. The chat that changed the answer to the poll, if the voter is anonymous
+        std::optional<Chat> voter_chat;
+
+        // Optional. The user that changed the answer to the poll, if the voter isn't anonymous
+        std::optional<User> user;
+
+        // 0-based identifiers of chosen answer options. May be empty if the vote was retracted.
+        std::vector<std::int64_t> option_ids;
+
+        json to_json() const override {
+            json j;
+            j["poll_id"] = poll_id;
+            if (voter_chat.has_value()) {
+                j["voter_chat"] = voter_chat.value().to_json();
+            }
+            if (user.has_value()) {
+                j["user"] = user.value().to_json();
+            }
+            j["option_ids"] = option_ids;
+            return j.dump();
+        }
     };
 
     /**
@@ -3058,12 +5605,13 @@ namespace telegram {
      * @param subscription_price Optional. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link
      */
 
-    struct ChatInviteLink {
+    struct ChatInviteLink : public TelegramModel {
+        virtual ~ChatInviteLink() = default;
         // The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with “…”.
         std::string invite_link;
 
         // Creator of the link
-        User creator;
+        std::shared_ptr<User> creator;
 
         // True, if users joining the chat via the link need to be approved by chat administrators
         bool creates_join_request;
@@ -3091,6 +5639,1994 @@ namespace telegram {
 
         // Optional. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link
         std::optional<std::int64_t> subscription_price;
+
+        json to_json() const override {
+            json j;
+            j["invite_link"] = invite_link;
+            j["creator"] = creator->to_json();
+            j["creates_join_request"] = creates_join_request;
+            j["is_primary"] = is_primary;
+            j["is_revoked"] = is_revoked;
+            if (name.has_value()) {
+                j["name"] = name.value();
+            }
+            if (expire_date.has_value()) {
+                j["expire_date"] = expire_date.value();
+            }
+            if (member_limit.has_value()) {
+                j["member_limit"] = member_limit.value();
+            }
+            if (pending_join_request_count.has_value()) {
+                j["pending_join_request_count"] = pending_join_request_count.value();
+            }
+            if (subscription_period.has_value()) {
+                j["subscription_period"] = subscription_period.value();
+            }
+            if (subscription_price.has_value()) {
+                j["subscription_price"] = subscription_price.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents changes in the status of a chat member.
+     *
+     * @param chat Chat the user belongs to
+     * @param from Performer of the action, which resulted in the change
+     * @param date Date the change was done in Unix time
+     * @param old_chat_member Previous information about the chat member
+     * @param new_chat_member New information about the chat member
+     * @param invite_link Optional. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
+     * @param via_join_request Optional. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
+     * @param via_chat_folder_invite_link Optional. True, if the user joined the chat via a chat folder invite link
+     */
+
+    struct ChatMemberUpdated : public ChatMember {
+        virtual ~ChatMemberUpdated() = default;
+        // Chat the user belongs to
+        std::shared_ptr<Chat> chat;
+
+        // Performer of the action, which resulted in the change
+        std::shared_ptr<User> from;
+
+        // Date the change was done in Unix time
+        std::int64_t date;
+
+        // Previous information about the chat member
+        std::shared_ptr<ChatMember> old_chat_member;
+
+        // New information about the chat member
+        std::shared_ptr<ChatMember> new_chat_member;
+
+        // Optional. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
+        std::optional<ChatInviteLink> invite_link;
+
+        // Optional. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
+        std::optional<bool> via_join_request;
+
+        // Optional. True, if the user joined the chat via a chat folder invite link
+        std::optional<bool> via_chat_folder_invite_link;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["from"] = from->to_json();
+            j["date"] = date;
+            j["old_chat_member"] = old_chat_member->to_json();
+            j["new_chat_member"] = new_chat_member->to_json();
+            if (invite_link.has_value()) {
+                j["invite_link"] = invite_link.value().to_json();
+            }
+            if (via_join_request.has_value()) {
+                j["via_join_request"] = via_join_request.value();
+            }
+            if (via_chat_folder_invite_link.has_value()) {
+                j["via_chat_folder_invite_link"] = via_chat_folder_invite_link.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Represents a join request sent to a chat.
+     *
+     * @param chat Chat to which the request was sent
+     * @param from User that sent the join request
+     * @param user_chat_id Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user.
+     * @param date Date the request was sent in Unix time
+     * @param bio Optional. Bio of the user.
+     * @param invite_link Optional. Chat invite link that was used by the user to send the join request
+     */
+
+    struct ChatJoinRequest : public TelegramModel {
+        virtual ~ChatJoinRequest() = default;
+        // Chat to which the request was sent
+        std::shared_ptr<Chat> chat;
+
+        // User that sent the join request
+        std::shared_ptr<User> from;
+
+        // Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user.
+        ChatId user_chat_id;
+
+        // Date the request was sent in Unix time
+        std::int64_t date;
+
+        // Optional. Bio of the user.
+        std::optional<std::string> bio;
+
+        // Optional. Chat invite link that was used by the user to send the join request
+        std::optional<ChatInviteLink> invite_link;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["from"] = from->to_json();
+            j["user_chat_id"] = user_chat_id.to_json();
+            j["date"] = date;
+            if (bio.has_value()) {
+                j["bio"] = bio.value();
+            }
+            if (invite_link.has_value()) {
+                j["invite_link"] = invite_link.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about a chat boost.
+     *
+     * @param boost_id Unique identifier of the boost
+     * @param add_date Point in time (Unix timestamp) when the chat was boosted
+     * @param expiration_date Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged
+     * @param source Source of the added boost
+     */
+
+    struct ChatBoost : public TelegramModel {
+        virtual ~ChatBoost() = default;
+        // Unique identifier of the boost
+        std::string boost_id;
+
+        // Point in time (Unix timestamp) when the chat was boosted
+        std::int64_t add_date;
+
+        // Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged
+        std::int64_t expiration_date;
+
+        // Source of the added boost
+        std::shared_ptr<ChatBoostSource> source;
+
+        json to_json() const override {
+            json j;
+            j["boost_id"] = boost_id;
+            j["add_date"] = add_date;
+            j["expiration_date"] = expiration_date;
+            j["source"] = source->to_json();
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a boost added to a chat or changed.
+     *
+     * @param chat Chat which was boosted
+     * @param boost Information about the chat boost
+     */
+
+    struct ChatBoostUpdated : public TelegramModel {
+        virtual ~ChatBoostUpdated() = default;
+        // Chat which was boosted
+        std::shared_ptr<Chat> chat;
+
+        // Information about the chat boost
+        std::shared_ptr<ChatBoost> boost;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["boost"] = boost->to_json();
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a boost removed from a chat.
+     *
+     * @param chat Chat which was boosted
+     * @param boost_id Unique identifier of the boost
+     * @param remove_date Point in time (Unix timestamp) when the boost was removed
+     * @param source Source of the removed boost
+     */
+
+    struct ChatBoostRemoved : public TelegramModel {
+        virtual ~ChatBoostRemoved() = default;
+        // Chat which was boosted
+        std::shared_ptr<Chat> chat;
+
+        // Unique identifier of the boost
+        std::string boost_id;
+
+        // Point in time (Unix timestamp) when the boost was removed
+        std::int64_t remove_date;
+
+        // Source of the removed boost
+        std::shared_ptr<ChatBoostSource> source;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["boost_id"] = boost_id;
+            j["remove_date"] = remove_date;
+            j["source"] = source->to_json();
+            return j.dump();
+        }
+    };
+
+
+    // Getting updates
+
+    /**
+     * This object represents an incoming update.At most one of the optional parameters can be present in any given update.
+     *
+     * @param update_id The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
+     * @param message Optional. New incoming message of any kind - text, photo, sticker, etc.
+     * @param edited_message Optional. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
+     * @param channel_post Optional. New incoming channel post of any kind - text, photo, sticker, etc.
+     * @param edited_channel_post Optional. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
+     * @param business_connection Optional. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot
+     * @param business_message Optional. New message from a connected business account
+     * @param edited_business_message Optional. New version of a message from a connected business account
+     * @param deleted_business_messages Optional. Messages were deleted from a connected business account
+     * @param message_reaction Optional. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify "message_reaction" in the list of allowed_updates to receive these updates. The update isn't received for reactions set by bots.
+     * @param message_reaction_count Optional. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify "message_reaction_count" in the list of allowed_updates to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.
+     * @param inline_query Optional. New incoming inline query
+     * @param chosen_inline_result Optional. The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.
+     * @param callback_query Optional. New incoming callback query
+     * @param shipping_query Optional. New incoming shipping query. Only for invoices with flexible price
+     * @param pre_checkout_query Optional. New incoming pre-checkout query. Contains full information about checkout
+     * @param purchased_paid_media Optional. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat
+     * @param poll Optional. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot
+     * @param poll_answer Optional. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
+     * @param my_chat_member Optional. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
+     * @param chat_member Optional. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify "chat_member" in the list of allowed_updates to receive these updates.
+     * @param chat_join_request Optional. A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.
+     * @param chat_boost Optional. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates.
+     * @param removed_chat_boost Optional. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.
+     */
+
+    struct Update : public TelegramModel {
+        virtual ~Update() = default;
+        // The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.
+        std::int64_t update_id;
+
+        // Optional. New incoming message of any kind - text, photo, sticker, etc.
+        std::optional<Message> message;
+
+        // Optional. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
+        std::optional<Message> edited_message;
+
+        // Optional. New incoming channel post of any kind - text, photo, sticker, etc.
+        std::optional<Message> channel_post;
+
+        // Optional. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.
+        std::optional<Message> edited_channel_post;
+
+        // Optional. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot
+        std::optional<BusinessConnection> business_connection;
+
+        // Optional. New message from a connected business account
+        std::optional<Message> business_message;
+
+        // Optional. New version of a message from a connected business account
+        std::optional<Message> edited_business_message;
+
+        // Optional. Messages were deleted from a connected business account
+        std::optional<BusinessMessagesDeleted> deleted_business_messages;
+
+        // Optional. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify "message_reaction" in the list of allowed_updates to receive these updates. The update isn't received for reactions set by bots.
+        std::optional<MessageReactionUpdated> message_reaction;
+
+        // Optional. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify "message_reaction_count" in the list of allowed_updates to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.
+        std::optional<MessageReactionCountUpdated> message_reaction_count;
+
+        // Optional. New incoming inline query
+        std::optional<InlineQuery> inline_query;
+
+        // Optional. The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.
+        std::optional<ChosenInlineResult> chosen_inline_result;
+
+        // Optional. New incoming callback query
+        std::optional<CallbackQuery> callback_query;
+
+        // Optional. New incoming shipping query. Only for invoices with flexible price
+        std::optional<ShippingQuery> shipping_query;
+
+        // Optional. New incoming pre-checkout query. Contains full information about checkout
+        std::optional<PreCheckoutQuery> pre_checkout_query;
+
+        // Optional. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat
+        std::optional<PaidMediaPurchased> purchased_paid_media;
+
+        // Optional. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot
+        std::optional<Poll> poll;
+
+        // Optional. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.
+        std::optional<PollAnswer> poll_answer;
+
+        // Optional. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.
+        std::optional<ChatMemberUpdated> my_chat_member;
+
+        // Optional. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify "chat_member" in the list of allowed_updates to receive these updates.
+        std::optional<ChatMemberUpdated> chat_member;
+
+        // Optional. A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.
+        std::optional<ChatJoinRequest> chat_join_request;
+
+        // Optional. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates.
+        std::optional<ChatBoostUpdated> chat_boost;
+
+        // Optional. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.
+        std::optional<ChatBoostRemoved> removed_chat_boost;
+
+        json to_json() const override {
+            json j;
+            j["update_id"] = update_id;
+            if (message.has_value()) {
+                j["message"] = message.value().to_json();
+            }
+            if (edited_message.has_value()) {
+                j["edited_message"] = edited_message.value().to_json();
+            }
+            if (channel_post.has_value()) {
+                j["channel_post"] = channel_post.value().to_json();
+            }
+            if (edited_channel_post.has_value()) {
+                j["edited_channel_post"] = edited_channel_post.value().to_json();
+            }
+            if (business_connection.has_value()) {
+                j["business_connection"] = business_connection.value().to_json();
+            }
+            if (business_message.has_value()) {
+                j["business_message"] = business_message.value().to_json();
+            }
+            if (edited_business_message.has_value()) {
+                j["edited_business_message"] = edited_business_message.value().to_json();
+            }
+            if (deleted_business_messages.has_value()) {
+                j["deleted_business_messages"] = deleted_business_messages.value().to_json();
+            }
+            if (message_reaction.has_value()) {
+                j["message_reaction"] = message_reaction.value().to_json();
+            }
+            if (message_reaction_count.has_value()) {
+                j["message_reaction_count"] = message_reaction_count.value().to_json();
+            }
+            if (inline_query.has_value()) {
+                j["inline_query"] = inline_query.value().to_json();
+            }
+            if (chosen_inline_result.has_value()) {
+                j["chosen_inline_result"] = chosen_inline_result.value().to_json();
+            }
+            if (callback_query.has_value()) {
+                j["callback_query"] = callback_query.value().to_json();
+            }
+            if (shipping_query.has_value()) {
+                j["shipping_query"] = shipping_query.value().to_json();
+            }
+            if (pre_checkout_query.has_value()) {
+                j["pre_checkout_query"] = pre_checkout_query.value().to_json();
+            }
+            if (purchased_paid_media.has_value()) {
+                j["purchased_paid_media"] = purchased_paid_media.value().to_json();
+            }
+            if (poll.has_value()) {
+                j["poll"] = poll.value().to_json();
+            }
+            if (poll_answer.has_value()) {
+                j["poll_answer"] = poll_answer.value().to_json();
+            }
+            if (my_chat_member.has_value()) {
+                j["my_chat_member"] = my_chat_member.value().to_json();
+            }
+            if (chat_member.has_value()) {
+                j["chat_member"] = chat_member.value().to_json();
+            }
+            if (chat_join_request.has_value()) {
+                j["chat_join_request"] = chat_join_request.value().to_json();
+            }
+            if (chat_boost.has_value()) {
+                j["chat_boost"] = chat_boost.value().to_json();
+            }
+            if (removed_chat_boost.has_value()) {
+                j["removed_chat_boost"] = removed_chat_boost.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes the current status of a webhook.
+     *
+     * @param url Webhook URL, may be empty if webhook is not set up
+     * @param has_custom_certificate True, if a custom certificate was provided for webhook certificate checks
+     * @param pending_update_count Number of updates awaiting delivery
+     * @param ip_address Optional. Currently used webhook IP address
+     * @param last_error_date Optional. Unix time for the most recent error that happened when trying to deliver an update via webhook
+     * @param last_error_message Optional. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
+     * @param last_synchronization_error_date Optional. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters
+     * @param max_connections Optional. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
+     * @param allowed_updates Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member
+     */
+
+    struct WebhookInfo : public TelegramModel {
+        virtual ~WebhookInfo() = default;
+        // Webhook URL, may be empty if webhook is not set up
+        std::string url;
+
+        // True, if a custom certificate was provided for webhook certificate checks
+        bool has_custom_certificate;
+
+        // Number of updates awaiting delivery
+        std::int64_t pending_update_count;
+
+        // Optional. Currently used webhook IP address
+        std::optional<std::string> ip_address;
+
+        // Optional. Unix time for the most recent error that happened when trying to deliver an update via webhook
+        std::optional<std::int64_t> last_error_date;
+
+        // Optional. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
+        std::optional<std::string> last_error_message;
+
+        // Optional. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters
+        std::optional<std::int64_t> last_synchronization_error_date;
+
+        // Optional. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
+        std::optional<std::int64_t> max_connections;
+
+        // Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member
+        std::optional<std::vector<std::string>> allowed_updates;
+
+        json to_json() const override {
+            json j;
+            j["url"] = url;
+            j["has_custom_certificate"] = has_custom_certificate;
+            j["pending_update_count"] = pending_update_count;
+            if (ip_address.has_value()) {
+                j["ip_address"] = ip_address.value();
+            }
+            if (last_error_date.has_value()) {
+                j["last_error_date"] = last_error_date.value();
+            }
+            if (last_error_message.has_value()) {
+                j["last_error_message"] = last_error_message.value();
+            }
+            if (last_synchronization_error_date.has_value()) {
+                j["last_synchronization_error_date"] = last_synchronization_error_date.value();
+            }
+            if (max_connections.has_value()) {
+                j["max_connections"] = max_connections.value();
+            }
+            if (allowed_updates.has_value()) {
+                j["allowed_updates"] = allowed_updates.value();
+            }
+            return j.dump();
+        }
+    };
+
+
+    // Available types
+
+    /**
+     * This object represents a chat photo.
+     *
+     * @param small_file_id File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
+     * @param small_file_unique_id Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     * @param big_file_id File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
+     * @param big_file_unique_id Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+     */
+
+    struct ChatPhoto : public TelegramModel {
+        virtual ~ChatPhoto() = default;
+        // File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
+        std::string small_file_id;
+
+        // Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string small_file_unique_id;
+
+        // File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.
+        std::string big_file_id;
+
+        // Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
+        std::string big_file_unique_id;
+
+        json to_json() const override {
+            json j;
+            j["small_file_id"] = small_file_id;
+            j["small_file_unique_id"] = small_file_unique_id;
+            j["big_file_id"] = big_file_id;
+            j["big_file_unique_id"] = big_file_unique_id;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes the birthdate of a user.
+     *
+     * @param day Day of the user's birth; 1-31
+     * @param month Month of the user's birth; 1-12
+     * @param year Optional. Year of the user's birth
+     */
+
+    struct Birthdate : public TelegramModel {
+        virtual ~Birthdate() = default;
+        // Day of the user's birth; 1-31
+        std::int64_t day;
+
+        // Month of the user's birth; 1-12
+        std::int64_t month;
+
+        // Optional. Year of the user's birth
+        std::optional<std::int64_t> year;
+
+        json to_json() const override {
+            json j;
+            j["day"] = day;
+            j["month"] = month;
+            if (year.has_value()) {
+                j["year"] = year.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Contains information about the start page settings of a Telegram Business account.
+     *
+     * @param title Optional. Title text of the business intro
+     * @param message Optional. Message text of the business intro
+     * @param sticker Optional. Sticker of the business intro
+     */
+
+    struct BusinessIntro : public TelegramModel {
+        virtual ~BusinessIntro() = default;
+        // Optional. Title text of the business intro
+        std::optional<std::string> title;
+
+        // Optional. Message text of the business intro
+        std::optional<std::string> message;
+
+        // Optional. Sticker of the business intro
+        std::optional<Sticker> sticker;
+
+        json to_json() const override {
+            json j;
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (message.has_value()) {
+                j["message"] = message.value();
+            }
+            if (sticker.has_value()) {
+                j["sticker"] = sticker.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Contains information about the location of a Telegram Business account.
+     *
+     * @param address Address of the business
+     * @param location Optional. Location of the business
+     */
+
+    struct BusinessLocation : public TelegramModel {
+        virtual ~BusinessLocation() = default;
+        // Address of the business
+        std::string address;
+
+        // Optional. Location of the business
+        std::optional<Location> location;
+
+        json to_json() const override {
+            json j;
+            j["address"] = address;
+            if (location.has_value()) {
+                j["location"] = location.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes an interval of time during which a business is open.
+     *
+     * @param opening_minute The minute's sequence number in a week, starting on Monday, marking the start of the time interval during which the business is open; 0 - 7 * 24 * 60
+     * @param closing_minute The minute's sequence number in a week, starting on Monday, marking the end of the time interval during which the business is open; 0 - 8 * 24 * 60
+     */
+
+    struct BusinessOpeningHoursInterval : public TelegramModel {
+        virtual ~BusinessOpeningHoursInterval() = default;
+        // The minute's sequence number in a week, starting on Monday, marking the start of the time interval during which the business is open; 0 - 7 * 24 * 60
+        std::int64_t opening_minute;
+
+        // The minute's sequence number in a week, starting on Monday, marking the end of the time interval during which the business is open; 0 - 8 * 24 * 60
+        std::int64_t closing_minute;
+
+        json to_json() const override {
+            json j;
+            j["opening_minute"] = opening_minute;
+            j["closing_minute"] = closing_minute;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes the opening hours of a business.
+     *
+     * @param time_zone_name Unique name of the time zone for which the opening hours are defined
+     * @param opening_hours List of time intervals describing business opening hours
+     */
+
+    struct BusinessOpeningHours : public TelegramModel {
+        virtual ~BusinessOpeningHours() = default;
+        // Unique name of the time zone for which the opening hours are defined
+        std::string time_zone_name;
+
+        // List of time intervals describing business opening hours
+        std::vector<BusinessOpeningHoursInterval> opening_hours;
+
+        json to_json() const override {
+            json j;
+            j["time_zone_name"] = time_zone_name;
+            std::vector<json> opening_hours_values;
+            opening_hours_values.reserve(opening_hours.size());
+            for (auto& e : opening_hours) {
+                opening_hours_values.push_back(e.to_json());
+            }
+            j["opening_hours"] = opening_hours_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes actions that a non-administrator user is allowed to take in a chat.
+     *
+     * @param can_send_messages Optional. True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues
+     * @param can_send_audios Optional. True, if the user is allowed to send audios
+     * @param can_send_documents Optional. True, if the user is allowed to send documents
+     * @param can_send_photos Optional. True, if the user is allowed to send photos
+     * @param can_send_videos Optional. True, if the user is allowed to send videos
+     * @param can_send_video_notes Optional. True, if the user is allowed to send video notes
+     * @param can_send_voice_notes Optional. True, if the user is allowed to send voice notes
+     * @param can_send_polls Optional. True, if the user is allowed to send polls and checklists
+     * @param can_send_other_messages Optional. True, if the user is allowed to send animations, games, stickers and use inline bots
+     * @param can_add_web_page_previews Optional. True, if the user is allowed to add web page previews to their messages
+     * @param can_change_info Optional. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
+     * @param can_invite_users Optional. True, if the user is allowed to invite new users to the chat
+     * @param can_pin_messages Optional. True, if the user is allowed to pin messages. Ignored in public supergroups
+     * @param can_manage_topics Optional. True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages
+     */
+
+    struct ChatPermissions : public TelegramModel {
+        virtual ~ChatPermissions() = default;
+        // Optional. True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues
+        std::optional<bool> can_send_messages;
+
+        // Optional. True, if the user is allowed to send audios
+        std::optional<bool> can_send_audios;
+
+        // Optional. True, if the user is allowed to send documents
+        std::optional<bool> can_send_documents;
+
+        // Optional. True, if the user is allowed to send photos
+        std::optional<bool> can_send_photos;
+
+        // Optional. True, if the user is allowed to send videos
+        std::optional<bool> can_send_videos;
+
+        // Optional. True, if the user is allowed to send video notes
+        std::optional<bool> can_send_video_notes;
+
+        // Optional. True, if the user is allowed to send voice notes
+        std::optional<bool> can_send_voice_notes;
+
+        // Optional. True, if the user is allowed to send polls and checklists
+        std::optional<bool> can_send_polls;
+
+        // Optional. True, if the user is allowed to send animations, games, stickers and use inline bots
+        std::optional<bool> can_send_other_messages;
+
+        // Optional. True, if the user is allowed to add web page previews to their messages
+        std::optional<bool> can_add_web_page_previews;
+
+        // Optional. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
+        std::optional<bool> can_change_info;
+
+        // Optional. True, if the user is allowed to invite new users to the chat
+        std::optional<bool> can_invite_users;
+
+        // Optional. True, if the user is allowed to pin messages. Ignored in public supergroups
+        std::optional<bool> can_pin_messages;
+
+        // Optional. True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages
+        std::optional<bool> can_manage_topics;
+
+        json to_json() const override {
+            json j;
+            if (can_send_messages.has_value()) {
+                j["can_send_messages"] = can_send_messages.value();
+            }
+            if (can_send_audios.has_value()) {
+                j["can_send_audios"] = can_send_audios.value();
+            }
+            if (can_send_documents.has_value()) {
+                j["can_send_documents"] = can_send_documents.value();
+            }
+            if (can_send_photos.has_value()) {
+                j["can_send_photos"] = can_send_photos.value();
+            }
+            if (can_send_videos.has_value()) {
+                j["can_send_videos"] = can_send_videos.value();
+            }
+            if (can_send_video_notes.has_value()) {
+                j["can_send_video_notes"] = can_send_video_notes.value();
+            }
+            if (can_send_voice_notes.has_value()) {
+                j["can_send_voice_notes"] = can_send_voice_notes.value();
+            }
+            if (can_send_polls.has_value()) {
+                j["can_send_polls"] = can_send_polls.value();
+            }
+            if (can_send_other_messages.has_value()) {
+                j["can_send_other_messages"] = can_send_other_messages.value();
+            }
+            if (can_add_web_page_previews.has_value()) {
+                j["can_add_web_page_previews"] = can_add_web_page_previews.value();
+            }
+            if (can_change_info.has_value()) {
+                j["can_change_info"] = can_change_info.value();
+            }
+            if (can_invite_users.has_value()) {
+                j["can_invite_users"] = can_invite_users.value();
+            }
+            if (can_pin_messages.has_value()) {
+                j["can_pin_messages"] = can_pin_messages.value();
+            }
+            if (can_manage_topics.has_value()) {
+                j["can_manage_topics"] = can_manage_topics.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object describes the types of gifts that can be gifted to a user or a chat.
+     *
+     * @param unlimited_gifts True, if unlimited regular gifts are accepted
+     * @param limited_gifts True, if limited regular gifts are accepted
+     * @param unique_gifts True, if unique gifts or gifts that can be upgraded to unique for free are accepted
+     * @param premium_subscription True, if a Telegram Premium subscription is accepted
+     */
+
+    struct AcceptedGiftTypes : public TelegramModel {
+        virtual ~AcceptedGiftTypes() = default;
+        // True, if unlimited regular gifts are accepted
+        bool unlimited_gifts;
+
+        // True, if limited regular gifts are accepted
+        bool limited_gifts;
+
+        // True, if unique gifts or gifts that can be upgraded to unique for free are accepted
+        bool unique_gifts;
+
+        // True, if a Telegram Premium subscription is accepted
+        bool premium_subscription;
+
+        json to_json() const override {
+            json j;
+            j["unlimited_gifts"] = unlimited_gifts;
+            j["limited_gifts"] = limited_gifts;
+            j["unique_gifts"] = unique_gifts;
+            j["premium_subscription"] = premium_subscription;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Represents a location to which a chat is connected.
+     *
+     * @param location The location to which the supergroup is connected. Can't be a live location.
+     * @param address Location address; 1-64 characters, as defined by the chat owner
+     */
+
+    struct ChatLocation : public TelegramModel {
+        virtual ~ChatLocation() = default;
+        // The location to which the supergroup is connected. Can't be a live location.
+        std::shared_ptr<Location> location;
+
+        // Location address; 1-64 characters, as defined by the chat owner
+        std::string address;
+
+        json to_json() const override {
+            json j;
+            j["location"] = location->to_json();
+            j["address"] = address;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains full information about a chat.
+     *
+     * @param id Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
+     * @param type Type of the chat, can be either “private”, “group”, “supergroup” or “channel”
+     * @param title Optional. Title, for supergroups, channels and group chats
+     * @param username Optional. Username, for private chats, supergroups and channels if available
+     * @param first_name Optional. First name of the other party in a private chat
+     * @param last_name Optional. Last name of the other party in a private chat
+     * @param is_forum Optional. True, if the supergroup chat is a forum (has topics enabled)
+     * @param is_direct_messages Optional. True, if the chat is the direct messages chat of a channel
+     * @param accent_color_id Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See accent colors for more details.
+     * @param max_reaction_count The maximum number of reactions that can be set on a message in the chat
+     * @param photo Optional. Chat photo
+     * @param active_usernames Optional. If non-empty, the list of all active chat usernames; for private chats, supergroups and channels
+     * @param birthdate Optional. For private chats, the date of birth of the user
+     * @param business_intro Optional. For private chats with business accounts, the intro of the business
+     * @param business_location Optional. For private chats with business accounts, the location of the business
+     * @param business_opening_hours Optional. For private chats with business accounts, the opening hours of the business
+     * @param personal_chat Optional. For private chats, the personal channel of the user
+     * @param parent_chat Optional. Information about the corresponding channel chat; for direct messages chats only
+     * @param available_reactions Optional. List of available reactions allowed in the chat. If omitted, then all emoji reactions are allowed.
+     * @param background_custom_emoji_id Optional. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background
+     * @param profile_accent_color_id Optional. Identifier of the accent color for the chat's profile background. See profile accent colors for more details.
+     * @param profile_background_custom_emoji_id Optional. Custom emoji identifier of the emoji chosen by the chat for its profile background
+     * @param emoji_status_custom_emoji_id Optional. Custom emoji identifier of the emoji status of the chat or the other party in a private chat
+     * @param emoji_status_expiration_date Optional. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any
+     * @param bio Optional. Bio of the other party in a private chat
+     * @param has_private_forwards Optional. True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user
+     * @param has_restricted_voice_and_video_messages Optional. True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat
+     * @param join_to_send_messages Optional. True, if users need to join the supergroup before they can send messages
+     * @param join_by_request Optional. True, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators
+     * @param description Optional. Description, for groups, supergroups and channel chats
+     * @param invite_link Optional. Primary invite link, for groups, supergroups and channel chats
+     * @param pinned_message Optional. The most recent pinned message (by sending date)
+     * @param permissions Optional. Default chat member permissions, for groups and supergroups
+     * @param accepted_gift_types Information about types of gifts that are accepted by the chat or by the corresponding user for private chats
+     * @param can_send_paid_media Optional. True, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
+     * @param slow_mode_delay Optional. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
+     * @param unrestrict_boost_count Optional. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions
+     * @param message_auto_delete_time Optional. The time after which all messages sent to the chat will be automatically deleted; in seconds
+     * @param has_aggressive_anti_spam_enabled Optional. True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators.
+     * @param has_hidden_members Optional. True, if non-administrators can only get the list of bots and administrators in the chat
+     * @param has_protected_content Optional. True, if messages from the chat can't be forwarded to other chats
+     * @param has_visible_history Optional. True, if new chat members will have access to old messages; available only to chat administrators
+     * @param sticker_set_name Optional. For supergroups, name of the group sticker set
+     * @param can_set_sticker_set Optional. True, if the bot can change the group sticker set
+     * @param custom_emoji_sticker_set_name Optional. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.
+     * @param linked_chat_id Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+     * @param location Optional. For supergroups, the location to which the supergroup is connected
+     */
+
+    struct ChatFullInfo : public TelegramModel {
+        virtual ~ChatFullInfo() = default;
+        // Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
+        ChatId id;
+
+        // Type of the chat, can be either “private”, “group”, “supergroup” or “channel”
+        std::string type_;
+
+        // Optional. Title, for supergroups, channels and group chats
+        std::optional<std::string> title;
+
+        // Optional. Username, for private chats, supergroups and channels if available
+        std::optional<std::string> username;
+
+        // Optional. First name of the other party in a private chat
+        std::optional<std::string> first_name;
+
+        // Optional. Last name of the other party in a private chat
+        std::optional<std::string> last_name;
+
+        // Optional. True, if the supergroup chat is a forum (has topics enabled)
+        std::optional<bool> is_forum;
+
+        // Optional. True, if the chat is the direct messages chat of a channel
+        std::optional<bool> is_direct_messages;
+
+        // Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See accent colors for more details.
+        std::int64_t accent_color_id;
+
+        // The maximum number of reactions that can be set on a message in the chat
+        std::int64_t max_reaction_count;
+
+        // Optional. Chat photo
+        std::optional<ChatPhoto> photo;
+
+        // Optional. If non-empty, the list of all active chat usernames; for private chats, supergroups and channels
+        std::optional<std::vector<std::string>> active_usernames;
+
+        // Optional. For private chats, the date of birth of the user
+        std::optional<Birthdate> birthdate;
+
+        // Optional. For private chats with business accounts, the intro of the business
+        std::optional<BusinessIntro> business_intro;
+
+        // Optional. For private chats with business accounts, the location of the business
+        std::optional<BusinessLocation> business_location;
+
+        // Optional. For private chats with business accounts, the opening hours of the business
+        std::optional<BusinessOpeningHours> business_opening_hours;
+
+        // Optional. For private chats, the personal channel of the user
+        std::optional<Chat> personal_chat;
+
+        // Optional. Information about the corresponding channel chat; for direct messages chats only
+        std::optional<Chat> parent_chat;
+
+        // Optional. List of available reactions allowed in the chat. If omitted, then all emoji reactions are allowed.
+        std::optional<std::vector<ReactionType>> available_reactions;
+
+        // Optional. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background
+        std::optional<std::string> background_custom_emoji_id;
+
+        // Optional. Identifier of the accent color for the chat's profile background. See profile accent colors for more details.
+        std::optional<std::int64_t> profile_accent_color_id;
+
+        // Optional. Custom emoji identifier of the emoji chosen by the chat for its profile background
+        std::optional<std::string> profile_background_custom_emoji_id;
+
+        // Optional. Custom emoji identifier of the emoji status of the chat or the other party in a private chat
+        std::optional<std::string> emoji_status_custom_emoji_id;
+
+        // Optional. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any
+        std::optional<std::int64_t> emoji_status_expiration_date;
+
+        // Optional. Bio of the other party in a private chat
+        std::optional<std::string> bio;
+
+        // Optional. True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user
+        std::optional<bool> has_private_forwards;
+
+        // Optional. True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat
+        std::optional<bool> has_restricted_voice_and_video_messages;
+
+        // Optional. True, if users need to join the supergroup before they can send messages
+        std::optional<bool> join_to_send_messages;
+
+        // Optional. True, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators
+        std::optional<bool> join_by_request;
+
+        // Optional. Description, for groups, supergroups and channel chats
+        std::optional<std::string> description;
+
+        // Optional. Primary invite link, for groups, supergroups and channel chats
+        std::optional<std::string> invite_link;
+
+        // Optional. The most recent pinned message (by sending date)
+        std::optional<Message> pinned_message;
+
+        // Optional. Default chat member permissions, for groups and supergroups
+        std::optional<ChatPermissions> permissions;
+
+        // Information about types of gifts that are accepted by the chat or by the corresponding user for private chats
+        std::shared_ptr<AcceptedGiftTypes> accepted_gift_types;
+
+        // Optional. True, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.
+        std::optional<bool> can_send_paid_media;
+
+        // Optional. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds
+        std::optional<std::int64_t> slow_mode_delay;
+
+        // Optional. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions
+        std::optional<std::int64_t> unrestrict_boost_count;
+
+        // Optional. The time after which all messages sent to the chat will be automatically deleted; in seconds
+        std::optional<std::int64_t> message_auto_delete_time;
+
+        // Optional. True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators.
+        std::optional<bool> has_aggressive_anti_spam_enabled;
+
+        // Optional. True, if non-administrators can only get the list of bots and administrators in the chat
+        std::optional<bool> has_hidden_members;
+
+        // Optional. True, if messages from the chat can't be forwarded to other chats
+        std::optional<bool> has_protected_content;
+
+        // Optional. True, if new chat members will have access to old messages; available only to chat administrators
+        std::optional<bool> has_visible_history;
+
+        // Optional. For supergroups, name of the group sticker set
+        std::optional<std::string> sticker_set_name;
+
+        // Optional. True, if the bot can change the group sticker set
+        std::optional<bool> can_set_sticker_set;
+
+        // Optional. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.
+        std::optional<std::string> custom_emoji_sticker_set_name;
+
+        // Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
+        std::optional<ChatId> linked_chat_id;
+
+        // Optional. For supergroups, the location to which the supergroup is connected
+        std::optional<ChatLocation> location;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id.to_json();
+            j["type"] = type_;
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (username.has_value()) {
+                j["username"] = username.value();
+            }
+            if (first_name.has_value()) {
+                j["first_name"] = first_name.value();
+            }
+            if (last_name.has_value()) {
+                j["last_name"] = last_name.value();
+            }
+            if (is_forum.has_value()) {
+                j["is_forum"] = is_forum.value();
+            }
+            if (is_direct_messages.has_value()) {
+                j["is_direct_messages"] = is_direct_messages.value();
+            }
+            j["accent_color_id"] = accent_color_id;
+            j["max_reaction_count"] = max_reaction_count;
+            if (photo.has_value()) {
+                j["photo"] = photo.value().to_json();
+            }
+            if (active_usernames.has_value()) {
+                j["active_usernames"] = active_usernames.value();
+            }
+            if (birthdate.has_value()) {
+                j["birthdate"] = birthdate.value().to_json();
+            }
+            if (business_intro.has_value()) {
+                j["business_intro"] = business_intro.value().to_json();
+            }
+            if (business_location.has_value()) {
+                j["business_location"] = business_location.value().to_json();
+            }
+            if (business_opening_hours.has_value()) {
+                j["business_opening_hours"] = business_opening_hours.value().to_json();
+            }
+            if (personal_chat.has_value()) {
+                j["personal_chat"] = personal_chat.value().to_json();
+            }
+            if (parent_chat.has_value()) {
+                j["parent_chat"] = parent_chat.value().to_json();
+            }
+            if (available_reactions.has_value()) {
+                std::vector<json> available_reactions_values;
+                available_reactions_values.reserve(available_reactions.value().size());
+                for (auto& e : available_reactions.value()) {
+                    available_reactions_values.push_back(e.to_json());
+                }
+                j["available_reactions"] = available_reactions_values;
+            }
+            if (background_custom_emoji_id.has_value()) {
+                j["background_custom_emoji_id"] = background_custom_emoji_id.value();
+            }
+            if (profile_accent_color_id.has_value()) {
+                j["profile_accent_color_id"] = profile_accent_color_id.value();
+            }
+            if (profile_background_custom_emoji_id.has_value()) {
+                j["profile_background_custom_emoji_id"] = profile_background_custom_emoji_id.value();
+            }
+            if (emoji_status_custom_emoji_id.has_value()) {
+                j["emoji_status_custom_emoji_id"] = emoji_status_custom_emoji_id.value();
+            }
+            if (emoji_status_expiration_date.has_value()) {
+                j["emoji_status_expiration_date"] = emoji_status_expiration_date.value();
+            }
+            if (bio.has_value()) {
+                j["bio"] = bio.value();
+            }
+            if (has_private_forwards.has_value()) {
+                j["has_private_forwards"] = has_private_forwards.value();
+            }
+            if (has_restricted_voice_and_video_messages.has_value()) {
+                j["has_restricted_voice_and_video_messages"] = has_restricted_voice_and_video_messages.value();
+            }
+            if (join_to_send_messages.has_value()) {
+                j["join_to_send_messages"] = join_to_send_messages.value();
+            }
+            if (join_by_request.has_value()) {
+                j["join_by_request"] = join_by_request.value();
+            }
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (invite_link.has_value()) {
+                j["invite_link"] = invite_link.value();
+            }
+            if (pinned_message.has_value()) {
+                j["pinned_message"] = pinned_message.value().to_json();
+            }
+            if (permissions.has_value()) {
+                j["permissions"] = permissions.value().to_json();
+            }
+            j["accepted_gift_types"] = accepted_gift_types->to_json();
+            if (can_send_paid_media.has_value()) {
+                j["can_send_paid_media"] = can_send_paid_media.value();
+            }
+            if (slow_mode_delay.has_value()) {
+                j["slow_mode_delay"] = slow_mode_delay.value();
+            }
+            if (unrestrict_boost_count.has_value()) {
+                j["unrestrict_boost_count"] = unrestrict_boost_count.value();
+            }
+            if (message_auto_delete_time.has_value()) {
+                j["message_auto_delete_time"] = message_auto_delete_time.value();
+            }
+            if (has_aggressive_anti_spam_enabled.has_value()) {
+                j["has_aggressive_anti_spam_enabled"] = has_aggressive_anti_spam_enabled.value();
+            }
+            if (has_hidden_members.has_value()) {
+                j["has_hidden_members"] = has_hidden_members.value();
+            }
+            if (has_protected_content.has_value()) {
+                j["has_protected_content"] = has_protected_content.value();
+            }
+            if (has_visible_history.has_value()) {
+                j["has_visible_history"] = has_visible_history.value();
+            }
+            if (sticker_set_name.has_value()) {
+                j["sticker_set_name"] = sticker_set_name.value();
+            }
+            if (can_set_sticker_set.has_value()) {
+                j["can_set_sticker_set"] = can_set_sticker_set.value();
+            }
+            if (custom_emoji_sticker_set_name.has_value()) {
+                j["custom_emoji_sticker_set_name"] = custom_emoji_sticker_set_name.value();
+            }
+            if (linked_chat_id.has_value()) {
+                j["linked_chat_id"] = linked_chat_id.value().to_json();
+            }
+            if (location.has_value()) {
+                j["location"] = location.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a unique message identifier.
+     *
+     * @param message_id Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
+     */
+
+    struct MessageId : public TelegramModel {
+        virtual ~MessageId() = default;
+        // Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
+        MessageId message_id;
+
+        json to_json() const override {
+            json j;
+            j["message_id"] = message_id.to_json();
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object describes a message that was deleted or is otherwise inaccessible to the bot.
+     *
+     * @param chat Chat the message belonged to
+     * @param message_id Unique message identifier inside the chat
+     * @param date Always 0. The field can be used to differentiate regular and inaccessible messages.
+     */
+
+    struct InaccessibleMessage : public MaybeInaccessibleMessage {
+        virtual ~InaccessibleMessage() = default;
+        // Chat the message belonged to
+        std::shared_ptr<Chat> chat;
+
+        // Unique message identifier inside the chat
+        MessageId message_id;
+
+        // Always 0. The field can be used to differentiate regular and inaccessible messages.
+        std::int64_t date;
+
+        json to_json() const override {
+            json j;
+            j["chat"] = chat->to_json();
+            j["message_id"] = message_id.to_json();
+            j["date"] = date;
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes reply parameters for the message that is being sent.
+     *
+     * @param message_id Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified
+     * @param chat_id Optional. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.
+     * @param allow_sending_without_reply Optional. Pass True if the message should be sent even if the specified message to be replied to is not found. Always False for replies in another chat or forum topic. Always True for messages sent on behalf of a business account.
+     * @param quote Optional. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities. The message will fail to send if the quote isn't found in the original message.
+     * @param quote_parse_mode Optional. Mode for parsing entities in the quote. See formatting options for more details.
+     * @param quote_entities Optional. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of quote_parse_mode.
+     * @param quote_position Optional. Position of the quote in the original message in UTF-16 code units
+     * @param checklist_task_id Optional. Identifier of the specific checklist task to be replied to
+     */
+
+    struct ReplyParameters : public TelegramModel {
+        virtual ~ReplyParameters() = default;
+        // Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified
+        MessageId message_id;
+
+        // Optional. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.
+        std::optional<ChatId> chat_id;
+
+        // Optional. Pass True if the message should be sent even if the specified message to be replied to is not found. Always False for replies in another chat or forum topic. Always True for messages sent on behalf of a business account.
+        std::optional<bool> allow_sending_without_reply;
+
+        // Optional. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities. The message will fail to send if the quote isn't found in the original message.
+        std::optional<std::string> quote;
+
+        // Optional. Mode for parsing entities in the quote. See formatting options for more details.
+        std::optional<std::string> quote_parse_mode;
+
+        // Optional. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of quote_parse_mode.
+        std::optional<std::vector<MessageEntity>> quote_entities;
+
+        // Optional. Position of the quote in the original message in UTF-16 code units
+        std::optional<std::int64_t> quote_position;
+
+        // Optional. Identifier of the specific checklist task to be replied to
+        std::optional<std::int64_t> checklist_task_id;
+
+        json to_json() const override {
+            json j;
+            j["message_id"] = message_id.to_json();
+            if (chat_id.has_value()) {
+                j["chat_id"] = chat_id.value().to_json();
+            }
+            if (allow_sending_without_reply.has_value()) {
+                j["allow_sending_without_reply"] = allow_sending_without_reply.value();
+            }
+            if (quote.has_value()) {
+                j["quote"] = quote.value();
+            }
+            if (quote_parse_mode.has_value()) {
+                j["quote_parse_mode"] = quote_parse_mode.value();
+            }
+            if (quote_entities.has_value()) {
+                std::vector<json> quote_entities_values;
+                quote_entities_values.reserve(quote_entities.value().size());
+                for (auto& e : quote_entities.value()) {
+                    quote_entities_values.push_back(e.to_json());
+                }
+                j["quote_entities"] = quote_entities_values;
+            }
+            if (quote_position.has_value()) {
+                j["quote_position"] = quote_position.value();
+            }
+            if (checklist_task_id.has_value()) {
+                j["checklist_task_id"] = checklist_task_id.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * The message was originally sent by a known user.
+     *
+     * @param type Type of the message origin, always “user”
+     * @param date Date the message was sent originally in Unix time
+     * @param sender_user User that sent the message originally
+     */
+
+    struct MessageOriginUser : public MessageOrigin {
+        virtual ~MessageOriginUser() = default;
+        // Type of the message origin, always “user”
+        std::string type_;
+
+        // Date the message was sent originally in Unix time
+        std::int64_t date;
+
+        // User that sent the message originally
+        std::shared_ptr<User> sender_user;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["date"] = date;
+            j["sender_user"] = sender_user->to_json();
+            return j.dump();
+        }
+    };
+
+    /**
+     * The message was originally sent by an unknown user.
+     *
+     * @param type Type of the message origin, always “hidden_user”
+     * @param date Date the message was sent originally in Unix time
+     * @param sender_user_name Name of the user that sent the message originally
+     */
+
+    struct MessageOriginHiddenUser : public MessageOrigin {
+        virtual ~MessageOriginHiddenUser() = default;
+        // Type of the message origin, always “hidden_user”
+        std::string type_;
+
+        // Date the message was sent originally in Unix time
+        std::int64_t date;
+
+        // Name of the user that sent the message originally
+        std::string sender_user_name;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["date"] = date;
+            j["sender_user_name"] = sender_user_name;
+            return j.dump();
+        }
+    };
+
+    /**
+     * The message was originally sent on behalf of a chat to a group chat.
+     *
+     * @param type Type of the message origin, always “chat”
+     * @param date Date the message was sent originally in Unix time
+     * @param sender_chat Chat that sent the message originally
+     * @param author_signature Optional. For messages originally sent by an anonymous chat administrator, original message author signature
+     */
+
+    struct MessageOriginChat : public MessageOrigin {
+        virtual ~MessageOriginChat() = default;
+        // Type of the message origin, always “chat”
+        std::string type_;
+
+        // Date the message was sent originally in Unix time
+        std::int64_t date;
+
+        // Chat that sent the message originally
+        std::shared_ptr<Chat> sender_chat;
+
+        // Optional. For messages originally sent by an anonymous chat administrator, original message author signature
+        std::optional<std::string> author_signature;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["date"] = date;
+            j["sender_chat"] = sender_chat->to_json();
+            if (author_signature.has_value()) {
+                j["author_signature"] = author_signature.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * The message was originally sent to a channel chat.
+     *
+     * @param type Type of the message origin, always “channel”
+     * @param date Date the message was sent originally in Unix time
+     * @param chat Channel chat to which the message was originally sent
+     * @param message_id Unique message identifier inside the chat
+     * @param author_signature Optional. Signature of the original post author
+     */
+
+    struct MessageOriginChannel : public MessageOrigin {
+        virtual ~MessageOriginChannel() = default;
+        // Type of the message origin, always “channel”
+        std::string type_;
+
+        // Date the message was sent originally in Unix time
+        std::int64_t date;
+
+        // Channel chat to which the message was originally sent
+        std::shared_ptr<Chat> chat;
+
+        // Unique message identifier inside the chat
+        MessageId message_id;
+
+        // Optional. Signature of the original post author
+        std::optional<std::string> author_signature;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["date"] = date;
+            j["chat"] = chat->to_json();
+            j["message_id"] = message_id.to_json();
+            if (author_signature.has_value()) {
+                j["author_signature"] = author_signature.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * The paid media isn't available before the payment.
+     *
+     * @param type Type of the paid media, always “preview”
+     * @param width Optional. Media width as defined by the sender
+     * @param height Optional. Media height as defined by the sender
+     * @param duration Optional. Duration of the media in seconds as defined by the sender
+     */
+
+    struct PaidMediaPreview : public PaidMedia {
+        virtual ~PaidMediaPreview() = default;
+        // Type of the paid media, always “preview”
+        std::string type_;
+
+        // Optional. Media width as defined by the sender
+        std::optional<std::int64_t> width;
+
+        // Optional. Media height as defined by the sender
+        std::optional<std::int64_t> height;
+
+        // Optional. Duration of the media in seconds as defined by the sender
+        std::optional<std::int64_t> duration;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            if (width.has_value()) {
+                j["width"] = width.value();
+            }
+            if (height.has_value()) {
+                j["height"] = height.value();
+            }
+            if (duration.has_value()) {
+                j["duration"] = duration.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * The paid media is a photo.
+     *
+     * @param type Type of the paid media, always “photo”
+     * @param photo The photo
+     */
+
+    struct PaidMediaPhoto : public PaidMedia {
+        virtual ~PaidMediaPhoto() = default;
+        // Type of the paid media, always “photo”
+        std::string type_;
+
+        // The photo
+        std::vector<PhotoSize> photo;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            std::vector<json> photo_values;
+            photo_values.reserve(photo.size());
+            for (auto& e : photo) {
+                photo_values.push_back(e.to_json());
+            }
+            j["photo"] = photo_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * The paid media is a video.
+     *
+     * @param type Type of the paid media, always “video”
+     * @param video The video
+     */
+
+    struct PaidMediaVideo : public PaidMedia {
+        virtual ~PaidMediaVideo() = default;
+        // Type of the paid media, always “video”
+        std::string type_;
+
+        // The video
+        std::shared_ptr<Video> video;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["video"] = video->to_json();
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object contains information about one answer option in a poll to be sent.
+     *
+     * @param text Option text, 1-100 characters
+     * @param text_parse_mode Optional. Mode for parsing entities in the text. See formatting options for more details. Currently, only custom emoji entities are allowed
+     * @param text_entities Optional. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of text_parse_mode
+     */
+
+    struct InputPollOption : public TelegramModel {
+        virtual ~InputPollOption() = default;
+        // Option text, 1-100 characters
+        std::string text;
+
+        // Optional. Mode for parsing entities in the text. See formatting options for more details. Currently, only custom emoji entities are allowed
+        std::optional<std::string> text_parse_mode;
+
+        // Optional. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of text_parse_mode
+        std::optional<std::vector<MessageEntity>> text_entities;
+
+        json to_json() const override {
+            json j;
+            j["text"] = text;
+            if (text_parse_mode.has_value()) {
+                j["text_parse_mode"] = text_parse_mode.value();
+            }
+            if (text_entities.has_value()) {
+                std::vector<json> text_entities_values;
+                text_entities_values.reserve(text_entities.value().size());
+                for (auto& e : text_entities.value()) {
+                    text_entities_values.push_back(e.to_json());
+                }
+                j["text_entities"] = text_entities_values;
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a task to add to a checklist.
+     *
+     * @param id Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist
+     * @param text Text of the task; 1-100 characters after entities parsing
+     * @param parse_mode Optional. Mode for parsing entities in the text. See formatting options for more details.
+     * @param text_entities Optional. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
+     */
+
+    struct InputChecklistTask : public TelegramModel {
+        virtual ~InputChecklistTask() = default;
+        // Unique identifier of the task; must be positive and unique among all task identifiers currently present in the checklist
+        std::int64_t id;
+
+        // Text of the task; 1-100 characters after entities parsing
+        std::string text;
+
+        // Optional. Mode for parsing entities in the text. See formatting options for more details.
+        std::optional<ParseMode> parse_mode;
+
+        // Optional. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
+        std::optional<std::vector<MessageEntity>> text_entities;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["text"] = text;
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (text_entities.has_value()) {
+                std::vector<json> text_entities_values;
+                text_entities_values.reserve(text_entities.value().size());
+                for (auto& e : text_entities.value()) {
+                    text_entities_values.push_back(e.to_json());
+                }
+                j["text_entities"] = text_entities_values;
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Describes a checklist to create.
+     *
+     * @param title Title of the checklist; 1-255 characters after entities parsing
+     * @param parse_mode Optional. Mode for parsing entities in the title. See formatting options for more details.
+     * @param title_entities Optional. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
+     * @param tasks List of 1-30 tasks in the checklist
+     * @param others_can_add_tasks Optional. Pass True if other users can add tasks to the checklist
+     * @param others_can_mark_tasks_as_done Optional. Pass True if other users can mark tasks as done or not done in the checklist
+     */
+
+    struct InputChecklist : public TelegramModel {
+        virtual ~InputChecklist() = default;
+        // Title of the checklist; 1-255 characters after entities parsing
+        std::string title;
+
+        // Optional. Mode for parsing entities in the title. See formatting options for more details.
+        std::optional<ParseMode> parse_mode;
+
+        // Optional. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
+        std::optional<std::vector<MessageEntity>> title_entities;
+
+        // List of 1-30 tasks in the checklist
+        std::vector<InputChecklistTask> tasks;
+
+        // Optional. Pass True if other users can add tasks to the checklist
+        std::optional<bool> others_can_add_tasks;
+
+        // Optional. Pass True if other users can mark tasks as done or not done in the checklist
+        std::optional<bool> others_can_mark_tasks_as_done;
+
+        json to_json() const override {
+            json j;
+            j["title"] = title;
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (title_entities.has_value()) {
+                std::vector<json> title_entities_values;
+                title_entities_values.reserve(title_entities.value().size());
+                for (auto& e : title_entities.value()) {
+                    title_entities_values.push_back(e.to_json());
+                }
+                j["title_entities"] = title_entities_values;
+            }
+            std::vector<json> tasks_values;
+            tasks_values.reserve(tasks.size());
+            for (auto& e : tasks) {
+                tasks_values.push_back(e.to_json());
+            }
+            j["tasks"] = tasks_values;
+            if (others_can_add_tasks.has_value()) {
+                j["others_can_add_tasks"] = others_can_add_tasks.value();
+            }
+            if (others_can_mark_tasks_as_done.has_value()) {
+                j["others_can_mark_tasks_as_done"] = others_can_mark_tasks_as_done.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * The background is filled using the selected color.
+     *
+     * @param type Type of the background fill, always “solid”
+     * @param color The color of the background fill in the RGB24 format
+     */
+
+    struct BackgroundFillSolid : public BackgroundFill {
+        virtual ~BackgroundFillSolid() = default;
+        // Type of the background fill, always “solid”
+        std::string type_;
+
+        // The color of the background fill in the RGB24 format
+        std::int64_t color;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["color"] = color;
+            return j.dump();
+        }
+    };
+
+    /**
+     * The background is a gradient fill.
+     *
+     * @param type Type of the background fill, always “gradient”
+     * @param top_color Top color of the gradient in the RGB24 format
+     * @param bottom_color Bottom color of the gradient in the RGB24 format
+     * @param rotation_angle Clockwise rotation angle of the background fill in degrees; 0-359
+     */
+
+    struct BackgroundFillGradient : public BackgroundFill {
+        virtual ~BackgroundFillGradient() = default;
+        // Type of the background fill, always “gradient”
+        std::string type_;
+
+        // Top color of the gradient in the RGB24 format
+        std::int64_t top_color;
+
+        // Bottom color of the gradient in the RGB24 format
+        std::int64_t bottom_color;
+
+        // Clockwise rotation angle of the background fill in degrees; 0-359
+        std::int64_t rotation_angle;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["top_color"] = top_color;
+            j["bottom_color"] = bottom_color;
+            j["rotation_angle"] = rotation_angle;
+            return j.dump();
+        }
+    };
+
+    /**
+     * The background is a freeform gradient that rotates after every message in the chat.
+     *
+     * @param type Type of the background fill, always “freeform_gradient”
+     * @param colors A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format
+     */
+
+    struct BackgroundFillFreeformGradient : public BackgroundFill {
+        virtual ~BackgroundFillFreeformGradient() = default;
+        // Type of the background fill, always “freeform_gradient”
+        std::string type_;
+
+        // A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format
+        std::vector<std::int64_t> colors;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["colors"] = colors;
+            return j.dump();
+        }
+    };
+
+    /**
+     * The background is automatically filled based on the selected colors.
+     *
+     * @param type Type of the background, always “fill”
+     * @param fill The background fill
+     * @param dark_theme_dimming Dimming of the background in dark themes, as a percentage; 0-100
+     */
+
+    struct BackgroundTypeFill : public BackgroundType {
+        virtual ~BackgroundTypeFill() = default;
+        // Type of the background, always “fill”
+        std::string type_;
+
+        // The background fill
+        std::shared_ptr<BackgroundFill> fill;
+
+        // Dimming of the background in dark themes, as a percentage; 0-100
+        std::int64_t dark_theme_dimming;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["fill"] = fill->to_json();
+            j["dark_theme_dimming"] = dark_theme_dimming;
+            return j.dump();
+        }
+    };
+
+    /**
+     * The background is a wallpaper in the JPEG format.
+     *
+     * @param type Type of the background, always “wallpaper”
+     * @param document Document with the wallpaper
+     * @param dark_theme_dimming Dimming of the background in dark themes, as a percentage; 0-100
+     * @param is_blurred Optional. True, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12
+     * @param is_moving Optional. True, if the background moves slightly when the device is tilted
+     */
+
+    struct BackgroundTypeWallpaper : public BackgroundType {
+        virtual ~BackgroundTypeWallpaper() = default;
+        // Type of the background, always “wallpaper”
+        std::string type_;
+
+        // Document with the wallpaper
+        std::shared_ptr<Document> document;
+
+        // Dimming of the background in dark themes, as a percentage; 0-100
+        std::int64_t dark_theme_dimming;
+
+        // Optional. True, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12
+        std::optional<bool> is_blurred;
+
+        // Optional. True, if the background moves slightly when the device is tilted
+        std::optional<bool> is_moving;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["document"] = document->to_json();
+            j["dark_theme_dimming"] = dark_theme_dimming;
+            if (is_blurred.has_value()) {
+                j["is_blurred"] = is_blurred.value();
+            }
+            if (is_moving.has_value()) {
+                j["is_moving"] = is_moving.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * The background is a .PNG or .TGV (gzipped subset of SVG with MIME type “application/x-tgwallpattern”) pattern to be combined with the background fill chosen by the user.
+     *
+     * @param type Type of the background, always “pattern”
+     * @param document Document with the pattern
+     * @param fill The background fill that is combined with the pattern
+     * @param intensity Intensity of the pattern when it is shown above the filled background; 0-100
+     * @param is_inverted Optional. True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only
+     * @param is_moving Optional. True, if the background moves slightly when the device is tilted
+     */
+
+    struct BackgroundTypePattern : public BackgroundType {
+        virtual ~BackgroundTypePattern() = default;
+        // Type of the background, always “pattern”
+        std::string type_;
+
+        // Document with the pattern
+        std::shared_ptr<Document> document;
+
+        // The background fill that is combined with the pattern
+        std::shared_ptr<BackgroundFill> fill;
+
+        // Intensity of the pattern when it is shown above the filled background; 0-100
+        std::int64_t intensity;
+
+        // Optional. True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only
+        std::optional<bool> is_inverted;
+
+        // Optional. True, if the background moves slightly when the device is tilted
+        std::optional<bool> is_moving;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["document"] = document->to_json();
+            j["fill"] = fill->to_json();
+            j["intensity"] = intensity;
+            if (is_inverted.has_value()) {
+                j["is_inverted"] = is_inverted.value();
+            }
+            if (is_moving.has_value()) {
+                j["is_moving"] = is_moving.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * The background is taken directly from a built-in chat theme.
+     *
+     * @param type Type of the background, always “chat_theme”
+     * @param theme_name Name of the chat theme, which is usually an emoji
+     */
+
+    struct BackgroundTypeChatTheme : public BackgroundType {
+        virtual ~BackgroundTypeChatTheme() = default;
+        // Type of the background, always “chat_theme”
+        std::string type_;
+
+        // Name of the chat theme, which is usually an emoji
+        std::string theme_name;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["theme_name"] = theme_name;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a service message about the creation of a scheduled giveaway.
+     *
+     * @param prize_star_count Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+     */
+
+    struct GiveawayCreated : public TelegramModel {
+        virtual ~GiveawayCreated() = default;
+        // Optional. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only
+        std::optional<std::int64_t> prize_star_count;
+
+        json to_json() const override {
+            json j;
+            if (prize_star_count.has_value()) {
+                j["prize_star_count"] = prize_star_count.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Contains parameters of a post that is being suggested by the bot.
+     *
+     * @param price Optional. Proposed price for the post. If the field is omitted, then the post is unpaid.
+     * @param send_date Optional. Proposed send date of the post. If specified, then the date must be between 300 second and 2678400 seconds (30 days) in the future. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user who approves it.
+     */
+
+    struct SuggestedPostParameters : public TelegramModel {
+        virtual ~SuggestedPostParameters() = default;
+        // Optional. Proposed price for the post. If the field is omitted, then the post is unpaid.
+        std::optional<SuggestedPostPrice> price;
+
+        // Optional. Proposed send date of the post. If specified, then the date must be between 300 second and 2678400 seconds (30 days) in the future. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user who approves it.
+        std::optional<std::int64_t> send_date;
+
+        json to_json() const override {
+            json j;
+            if (price.has_value()) {
+                j["price"] = price.value().to_json();
+            }
+            if (send_date.has_value()) {
+                j["send_date"] = send_date.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represent a user's profile pictures.
+     *
+     * @param total_count Total number of profile pictures the target user has
+     * @param photos Requested profile pictures (in up to 4 sizes each)
+     */
+
+    struct UserProfilePhotos : public TelegramModel {
+        virtual ~UserProfilePhotos() = default;
+        // Total number of profile pictures the target user has
+        std::int64_t total_count;
+
+        // Requested profile pictures (in up to 4 sizes each)
+        std::vector<std::vector<PhotoSize>> photos;
+
+        json to_json() const override {
+            json j;
+            j["total_count"] = total_count;
+            std::vector<json> photos_values;
+            photos_values.reserve(photos.size());
+            for (auto& e : photos) {
+                photos_values.push_back(e.to_json());
+            }
+            j["photos"] = photos_values;
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. More about requesting users »
+     *
+     * @param request_id Signed 32-bit identifier of the request that will be received back in the UsersShared object. Must be unique within the message
+     * @param user_is_bot Optional. Pass True to request bots, pass False to request regular users. If not specified, no additional restrictions are applied.
+     * @param user_is_premium Optional. Pass True to request premium users, pass False to request non-premium users. If not specified, no additional restrictions are applied.
+     * @param max_quantity Optional. The maximum number of users to be selected; 1-10. Defaults to 1.
+     * @param request_name Optional. Pass True to request the users' first and last names
+     * @param request_username Optional. Pass True to request the users' usernames
+     * @param request_photo Optional. Pass True to request the users' photos
+     */
+
+    struct KeyboardButtonRequestUsers : public TelegramModel {
+        virtual ~KeyboardButtonRequestUsers() = default;
+        // Signed 32-bit identifier of the request that will be received back in the UsersShared object. Must be unique within the message
+        std::int64_t request_id;
+
+        // Optional. Pass True to request bots, pass False to request regular users. If not specified, no additional restrictions are applied.
+        std::optional<bool> user_is_bot;
+
+        // Optional. Pass True to request premium users, pass False to request non-premium users. If not specified, no additional restrictions are applied.
+        std::optional<bool> user_is_premium;
+
+        // Optional. The maximum number of users to be selected; 1-10. Defaults to 1.
+        std::optional<std::int64_t> max_quantity;
+
+        // Optional. Pass True to request the users' first and last names
+        std::optional<bool> request_name;
+
+        // Optional. Pass True to request the users' usernames
+        std::optional<bool> request_username;
+
+        // Optional. Pass True to request the users' photos
+        std::optional<bool> request_photo;
+
+        json to_json() const override {
+            json j;
+            j["request_id"] = request_id;
+            if (user_is_bot.has_value()) {
+                j["user_is_bot"] = user_is_bot.value();
+            }
+            if (user_is_premium.has_value()) {
+                j["user_is_premium"] = user_is_premium.value();
+            }
+            if (max_quantity.has_value()) {
+                j["max_quantity"] = max_quantity.value();
+            }
+            if (request_name.has_value()) {
+                j["request_name"] = request_name.value();
+            }
+            if (request_username.has_value()) {
+                j["request_username"] = request_username.value();
+            }
+            if (request_photo.has_value()) {
+                j["request_photo"] = request_photo.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3114,7 +7650,8 @@ namespace telegram {
      * @param can_manage_direct_messages Optional. True, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only
      */
 
-    struct ChatAdministratorRights {
+    struct ChatAdministratorRights : public TelegramModel {
+        virtual ~ChatAdministratorRights() = default;
         // True, if the user's presence in the chat is hidden
         bool is_anonymous;
 
@@ -3162,45 +7699,324 @@ namespace telegram {
 
         // Optional. True, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only
         std::optional<bool> can_manage_direct_messages;
+
+        json to_json() const override {
+            json j;
+            j["is_anonymous"] = is_anonymous;
+            j["can_manage_chat"] = can_manage_chat;
+            j["can_delete_messages"] = can_delete_messages;
+            j["can_manage_video_chats"] = can_manage_video_chats;
+            j["can_restrict_members"] = can_restrict_members;
+            j["can_promote_members"] = can_promote_members;
+            j["can_change_info"] = can_change_info;
+            j["can_invite_users"] = can_invite_users;
+            j["can_post_stories"] = can_post_stories;
+            j["can_edit_stories"] = can_edit_stories;
+            j["can_delete_stories"] = can_delete_stories;
+            if (can_post_messages.has_value()) {
+                j["can_post_messages"] = can_post_messages.value();
+            }
+            if (can_edit_messages.has_value()) {
+                j["can_edit_messages"] = can_edit_messages.value();
+            }
+            if (can_pin_messages.has_value()) {
+                j["can_pin_messages"] = can_pin_messages.value();
+            }
+            if (can_manage_topics.has_value()) {
+                j["can_manage_topics"] = can_manage_topics.value();
+            }
+            if (can_manage_direct_messages.has_value()) {
+                j["can_manage_direct_messages"] = can_manage_direct_messages.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
-     * This object represents changes in the status of a chat member.
+     * This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. More about requesting chats ».
      *
-     * @param chat Chat the user belongs to
-     * @param from Performer of the action, which resulted in the change
-     * @param date Date the change was done in Unix time
-     * @param old_chat_member Previous information about the chat member
-     * @param new_chat_member New information about the chat member
-     * @param invite_link Optional. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
-     * @param via_join_request Optional. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
-     * @param via_chat_folder_invite_link Optional. True, if the user joined the chat via a chat folder invite link
+     * @param request_id Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message
+     * @param chat_is_channel Pass True to request a channel chat, pass False to request a group or a supergroup chat.
+     * @param chat_is_forum Optional. Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.
+     * @param chat_has_username Optional. Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.
+     * @param chat_is_created Optional. Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.
+     * @param user_administrator_rights Optional. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.
+     * @param bot_administrator_rights Optional. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.
+     * @param bot_is_member Optional. Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.
+     * @param request_title Optional. Pass True to request the chat's title
+     * @param request_username Optional. Pass True to request the chat's username
+     * @param request_photo Optional. Pass True to request the chat's photo
      */
 
-    struct ChatMemberUpdated {
-        // Chat the user belongs to
-        Chat chat;
+    struct KeyboardButtonRequestChat : public TelegramModel {
+        virtual ~KeyboardButtonRequestChat() = default;
+        // Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message
+        std::int64_t request_id;
 
-        // Performer of the action, which resulted in the change
-        User from;
+        // Pass True to request a channel chat, pass False to request a group or a supergroup chat.
+        bool chat_is_channel;
 
-        // Date the change was done in Unix time
-        std::int64_t date;
+        // Optional. Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.
+        std::optional<bool> chat_is_forum;
 
-        // Previous information about the chat member
-        ChatMember old_chat_member;
+        // Optional. Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.
+        std::optional<bool> chat_has_username;
 
-        // New information about the chat member
-        ChatMember new_chat_member;
+        // Optional. Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.
+        std::optional<bool> chat_is_created;
 
-        // Optional. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.
-        std::optional<ChatInviteLink> invite_link;
+        // Optional. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.
+        std::optional<ChatAdministratorRights> user_administrator_rights;
 
-        // Optional. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator
-        std::optional<bool> via_join_request;
+        // Optional. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.
+        std::optional<ChatAdministratorRights> bot_administrator_rights;
 
-        // Optional. True, if the user joined the chat via a chat folder invite link
-        std::optional<bool> via_chat_folder_invite_link;
+        // Optional. Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.
+        std::optional<bool> bot_is_member;
+
+        // Optional. Pass True to request the chat's title
+        std::optional<bool> request_title;
+
+        // Optional. Pass True to request the chat's username
+        std::optional<bool> request_username;
+
+        // Optional. Pass True to request the chat's photo
+        std::optional<bool> request_photo;
+
+        json to_json() const override {
+            json j;
+            j["request_id"] = request_id;
+            j["chat_is_channel"] = chat_is_channel;
+            if (chat_is_forum.has_value()) {
+                j["chat_is_forum"] = chat_is_forum.value();
+            }
+            if (chat_has_username.has_value()) {
+                j["chat_has_username"] = chat_has_username.value();
+            }
+            if (chat_is_created.has_value()) {
+                j["chat_is_created"] = chat_is_created.value();
+            }
+            if (user_administrator_rights.has_value()) {
+                j["user_administrator_rights"] = user_administrator_rights.value().to_json();
+            }
+            if (bot_administrator_rights.has_value()) {
+                j["bot_administrator_rights"] = bot_administrator_rights.value().to_json();
+            }
+            if (bot_is_member.has_value()) {
+                j["bot_is_member"] = bot_is_member.value();
+            }
+            if (request_title.has_value()) {
+                j["request_title"] = request_title.value();
+            }
+            if (request_username.has_value()) {
+                j["request_username"] = request_username.value();
+            }
+            if (request_photo.has_value()) {
+                j["request_photo"] = request_photo.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.
+     *
+     * @param type Optional. If quiz is passed, the user will be allowed to create only polls in the quiz mode. If regular is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.
+     */
+
+    struct KeyboardButtonPollType : public TelegramModel {
+        virtual ~KeyboardButtonPollType() = default;
+        // Optional. If quiz is passed, the user will be allowed to create only polls in the quiz mode. If regular is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.
+        std::optional<std::string> type_;
+
+        json to_json() const override {
+            json j;
+            if (type_.has_value()) {
+                j["type"] = type_.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, String can be used instead of this object to specify the button text.Note: request_users and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.
+     *
+     * @param text Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed
+     * @param request_users Optional. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a “users_shared” service message. Available in private chats only.
+     * @param request_chat Optional. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a “chat_shared” service message. Available in private chats only.
+     * @param request_contact Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.
+     * @param request_location Optional. If True, the user's current location will be sent when the button is pressed. Available in private chats only.
+     * @param request_poll Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.
+     * @param web_app Optional. If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.
+     */
+
+    struct KeyboardButton : public TelegramModel {
+        virtual ~KeyboardButton() = default;
+        // Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed
+        std::string text;
+
+        // Optional. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a “users_shared” service message. Available in private chats only.
+        std::optional<KeyboardButtonRequestUsers> request_users;
+
+        // Optional. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a “chat_shared” service message. Available in private chats only.
+        std::optional<KeyboardButtonRequestChat> request_chat;
+
+        // Optional. If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.
+        std::optional<bool> request_contact;
+
+        // Optional. If True, the user's current location will be sent when the button is pressed. Available in private chats only.
+        std::optional<bool> request_location;
+
+        // Optional. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.
+        std::optional<KeyboardButtonPollType> request_poll;
+
+        // Optional. If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.
+        std::optional<WebAppInfo> web_app;
+
+        json to_json() const override {
+            json j;
+            j["text"] = text;
+            if (request_users.has_value()) {
+                j["request_users"] = request_users.value().to_json();
+            }
+            if (request_chat.has_value()) {
+                j["request_chat"] = request_chat.value().to_json();
+            }
+            if (request_contact.has_value()) {
+                j["request_contact"] = request_contact.value();
+            }
+            if (request_location.has_value()) {
+                j["request_location"] = request_location.value();
+            }
+            if (request_poll.has_value()) {
+                j["request_poll"] = request_poll.value().to_json();
+            }
+            if (web_app.has_value()) {
+                j["web_app"] = web_app.value().to_json();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * This object represents a custom keyboard with reply options (see Introduction to bots for details and examples). Not supported in channels and for messages sent on behalf of a Telegram Business account.
+     *
+     * @param keyboard Array of button rows, each represented by an Array of KeyboardButton objects
+     * @param is_persistent Optional. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to false, in which case the custom keyboard can be hidden and opened with a keyboard icon.
+     * @param resize_keyboard Optional. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.
+     * @param one_time_keyboard Optional. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat - the user can press a special button in the input field to see the custom keyboard again. Defaults to false.
+     * @param input_field_placeholder Optional. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
+     * @param selective Optional. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
+     */
+
+    struct ReplyKeyboardMarkup : public KeyboardOption {
+        virtual ~ReplyKeyboardMarkup() = default;
+        // Array of button rows, each represented by an Array of KeyboardButton objects
+        std::vector<std::vector<KeyboardButton>> keyboard;
+
+        // Optional. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to false, in which case the custom keyboard can be hidden and opened with a keyboard icon.
+        std::optional<bool> is_persistent;
+
+        // Optional. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.
+        std::optional<bool> resize_keyboard;
+
+        // Optional. Requests clients to hide the keyboard as soon as it's been used. The keyboard will still be available, but clients will automatically display the usual letter-keyboard in the chat - the user can press a special button in the input field to see the custom keyboard again. Defaults to false.
+        std::optional<bool> one_time_keyboard;
+
+        // Optional. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters
+        std::optional<std::string> input_field_placeholder;
+
+        // Optional. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.
+        std::optional<bool> selective;
+
+        json to_json() const override {
+            json j;
+            std::vector<json> keyboard_values;
+            keyboard_values.reserve(keyboard.size());
+            for (auto& e : keyboard) {
+                keyboard_values.push_back(e.to_json());
+            }
+            j["keyboard"] = keyboard_values;
+            if (is_persistent.has_value()) {
+                j["is_persistent"] = is_persistent.value();
+            }
+            if (resize_keyboard.has_value()) {
+                j["resize_keyboard"] = resize_keyboard.value();
+            }
+            if (one_time_keyboard.has_value()) {
+                j["one_time_keyboard"] = one_time_keyboard.value();
+            }
+            if (input_field_placeholder.has_value()) {
+                j["input_field_placeholder"] = input_field_placeholder.value();
+            }
+            if (selective.has_value()) {
+                j["selective"] = selective.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see ReplyKeyboardMarkup). Not supported in channels and for messages sent on behalf of a Telegram Business account.
+     *
+     * @param remove_keyboard Requests clients to remove the custom keyboard (user will not be able to summon this keyboard; if you want to hide the keyboard from sight but keep it accessible, use one_time_keyboard in ReplyKeyboardMarkup)
+     * @param selective Optional. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.
+     */
+
+    struct ReplyKeyboardRemove : public KeyboardOption {
+        virtual ~ReplyKeyboardRemove() = default;
+        // Requests clients to remove the custom keyboard (user will not be able to summon this keyboard; if you want to hide the keyboard from sight but keep it accessible, use one_time_keyboard in ReplyKeyboardMarkup)
+        bool remove_keyboard;
+
+        // Optional. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.Example: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.
+        std::optional<bool> selective;
+
+        json to_json() const override {
+            json j;
+            j["remove_keyboard"] = remove_keyboard;
+            if (selective.has_value()) {
+                j["selective"] = selective.value();
+            }
+            return j.dump();
+        }
+    };
+
+    /**
+     * Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice privacy mode. Not supported in channels and for messages sent on behalf of a Telegram Business account.
+     *  Example: A poll bot for groups runs in privacy mode (only receives commands, replies to its messages and mentions). There could be two ways to create a new poll:
+     *  
+     *   Explain the user how to send a command with parameters (e.g. /newpoll question answer1 answer2). May be appealing for hardcore users but lacks modern day polish.
+     *   Guide the user through a step-by-step process. 'Please send me your question', 'Cool, now let's add the first answer option', 'Great. Keep adding answer options, then send /done when you're ready'.
+     *  
+     *  The last option is definitely more attractive. And if you use ForceReply in your bot's questions, it will receive the user's answers even if it only receives replies, commands and mentions - without any extra work for the user.
+     *
+     * @param force_reply Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
+     * @param input_field_placeholder Optional. The placeholder to be shown in the input field when the reply is active; 1-64 characters
+     * @param selective Optional. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.
+     */
+
+    struct ForceReply : public KeyboardOption {
+        virtual ~ForceReply() = default;
+        // Shows reply interface to the user, as if they manually selected the bot's message and tapped 'Reply'
+        bool force_reply;
+
+        // Optional. The placeholder to be shown in the input field when the reply is active; 1-64 characters
+        std::optional<std::string> input_field_placeholder;
+
+        // Optional. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.
+        std::optional<bool> selective;
+
+        json to_json() const override {
+            json j;
+            j["force_reply"] = force_reply;
+            if (input_field_placeholder.has_value()) {
+                j["input_field_placeholder"] = input_field_placeholder.value();
+            }
+            if (selective.has_value()) {
+                j["selective"] = selective.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3212,18 +8028,30 @@ namespace telegram {
      * @param custom_title Optional. Custom title for this user
      */
 
-    struct ChatMemberOwner {
+    struct ChatMemberOwner : public ChatMember {
+        virtual ~ChatMemberOwner() = default;
         // The member's status in the chat, always “creator”
         std::string status;
 
         // Information about the user
-        User user;
+        std::shared_ptr<User> user;
 
         // True, if the user's presence in the chat is hidden
         bool is_anonymous;
 
         // Optional. Custom title for this user
         std::optional<std::string> custom_title;
+
+        json to_json() const override {
+            json j;
+            j["status"] = status;
+            j["user"] = user->to_json();
+            j["is_anonymous"] = is_anonymous;
+            if (custom_title.has_value()) {
+                j["custom_title"] = custom_title.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3251,12 +8079,13 @@ namespace telegram {
      * @param custom_title Optional. Custom title for this user
      */
 
-    struct ChatMemberAdministrator {
+    struct ChatMemberAdministrator : public ChatMember {
+        virtual ~ChatMemberAdministrator() = default;
         // The member's status in the chat, always “administrator”
         std::string status;
 
         // Information about the user
-        User user;
+        std::shared_ptr<User> user;
 
         // True, if the bot is allowed to edit administrator privileges of that user
         bool can_be_edited;
@@ -3311,6 +8140,43 @@ namespace telegram {
 
         // Optional. Custom title for this user
         std::optional<std::string> custom_title;
+
+        json to_json() const override {
+            json j;
+            j["status"] = status;
+            j["user"] = user->to_json();
+            j["can_be_edited"] = can_be_edited;
+            j["is_anonymous"] = is_anonymous;
+            j["can_manage_chat"] = can_manage_chat;
+            j["can_delete_messages"] = can_delete_messages;
+            j["can_manage_video_chats"] = can_manage_video_chats;
+            j["can_restrict_members"] = can_restrict_members;
+            j["can_promote_members"] = can_promote_members;
+            j["can_change_info"] = can_change_info;
+            j["can_invite_users"] = can_invite_users;
+            j["can_post_stories"] = can_post_stories;
+            j["can_edit_stories"] = can_edit_stories;
+            j["can_delete_stories"] = can_delete_stories;
+            if (can_post_messages.has_value()) {
+                j["can_post_messages"] = can_post_messages.value();
+            }
+            if (can_edit_messages.has_value()) {
+                j["can_edit_messages"] = can_edit_messages.value();
+            }
+            if (can_pin_messages.has_value()) {
+                j["can_pin_messages"] = can_pin_messages.value();
+            }
+            if (can_manage_topics.has_value()) {
+                j["can_manage_topics"] = can_manage_topics.value();
+            }
+            if (can_manage_direct_messages.has_value()) {
+                j["can_manage_direct_messages"] = can_manage_direct_messages.value();
+            }
+            if (custom_title.has_value()) {
+                j["custom_title"] = custom_title.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3321,15 +8187,26 @@ namespace telegram {
      * @param until_date Optional. Date when the user's subscription will expire; Unix time
      */
 
-    struct ChatMemberMember {
+    struct ChatMemberMember : public ChatMember {
+        virtual ~ChatMemberMember() = default;
         // The member's status in the chat, always “member”
         std::string status;
 
         // Information about the user
-        User user;
+        std::shared_ptr<User> user;
 
         // Optional. Date when the user's subscription will expire; Unix time
         std::optional<std::int64_t> until_date;
+
+        json to_json() const override {
+            json j;
+            j["status"] = status;
+            j["user"] = user->to_json();
+            if (until_date.has_value()) {
+                j["until_date"] = until_date.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3355,12 +8232,13 @@ namespace telegram {
      * @param until_date Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever
      */
 
-    struct ChatMemberRestricted {
+    struct ChatMemberRestricted : public ChatMember {
+        virtual ~ChatMemberRestricted() = default;
         // The member's status in the chat, always “restricted”
         std::string status;
 
         // Information about the user
-        User user;
+        std::shared_ptr<User> user;
 
         // True, if the user is a member of the chat at the moment of the request
         bool is_member;
@@ -3409,6 +8287,29 @@ namespace telegram {
 
         // Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever
         std::int64_t until_date;
+
+        json to_json() const override {
+            json j;
+            j["status"] = status;
+            j["user"] = user->to_json();
+            j["is_member"] = is_member;
+            j["can_send_messages"] = can_send_messages;
+            j["can_send_audios"] = can_send_audios;
+            j["can_send_documents"] = can_send_documents;
+            j["can_send_photos"] = can_send_photos;
+            j["can_send_videos"] = can_send_videos;
+            j["can_send_video_notes"] = can_send_video_notes;
+            j["can_send_voice_notes"] = can_send_voice_notes;
+            j["can_send_polls"] = can_send_polls;
+            j["can_send_other_messages"] = can_send_other_messages;
+            j["can_add_web_page_previews"] = can_add_web_page_previews;
+            j["can_change_info"] = can_change_info;
+            j["can_invite_users"] = can_invite_users;
+            j["can_pin_messages"] = can_pin_messages;
+            j["can_manage_topics"] = can_manage_topics;
+            j["until_date"] = until_date;
+            return j.dump();
+        }
     };
 
     /**
@@ -3418,12 +8319,20 @@ namespace telegram {
      * @param user Information about the user
      */
 
-    struct ChatMemberLeft {
+    struct ChatMemberLeft : public ChatMember {
+        virtual ~ChatMemberLeft() = default;
         // The member's status in the chat, always “left”
         std::string status;
 
         // Information about the user
-        User user;
+        std::shared_ptr<User> user;
+
+        json to_json() const override {
+            json j;
+            j["status"] = status;
+            j["user"] = user->to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -3434,192 +8343,24 @@ namespace telegram {
      * @param until_date Date when restrictions will be lifted for this user; Unix time. If 0, then the user is banned forever
      */
 
-    struct ChatMemberBanned {
+    struct ChatMemberBanned : public ChatMember {
+        virtual ~ChatMemberBanned() = default;
         // The member's status in the chat, always “kicked”
         std::string status;
 
         // Information about the user
-        User user;
+        std::shared_ptr<User> user;
 
         // Date when restrictions will be lifted for this user; Unix time. If 0, then the user is banned forever
         std::int64_t until_date;
-    };
 
-    /**
-     * Represents a join request sent to a chat.
-     *
-     * @param chat Chat to which the request was sent
-     * @param from User that sent the join request
-     * @param user_chat_id Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user.
-     * @param date Date the request was sent in Unix time
-     * @param bio Optional. Bio of the user.
-     * @param invite_link Optional. Chat invite link that was used by the user to send the join request
-     */
-
-    struct ChatJoinRequest {
-        // Chat to which the request was sent
-        Chat chat;
-
-        // User that sent the join request
-        User from;
-
-        // Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user.
-        std::int64_t user_chat_id;
-
-        // Date the request was sent in Unix time
-        std::int64_t date;
-
-        // Optional. Bio of the user.
-        std::optional<std::string> bio;
-
-        // Optional. Chat invite link that was used by the user to send the join request
-        std::optional<ChatInviteLink> invite_link;
-    };
-
-    /**
-     * Describes actions that a non-administrator user is allowed to take in a chat.
-     *
-     * @param can_send_messages Optional. True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues
-     * @param can_send_audios Optional. True, if the user is allowed to send audios
-     * @param can_send_documents Optional. True, if the user is allowed to send documents
-     * @param can_send_photos Optional. True, if the user is allowed to send photos
-     * @param can_send_videos Optional. True, if the user is allowed to send videos
-     * @param can_send_video_notes Optional. True, if the user is allowed to send video notes
-     * @param can_send_voice_notes Optional. True, if the user is allowed to send voice notes
-     * @param can_send_polls Optional. True, if the user is allowed to send polls and checklists
-     * @param can_send_other_messages Optional. True, if the user is allowed to send animations, games, stickers and use inline bots
-     * @param can_add_web_page_previews Optional. True, if the user is allowed to add web page previews to their messages
-     * @param can_change_info Optional. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
-     * @param can_invite_users Optional. True, if the user is allowed to invite new users to the chat
-     * @param can_pin_messages Optional. True, if the user is allowed to pin messages. Ignored in public supergroups
-     * @param can_manage_topics Optional. True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages
-     */
-
-    struct ChatPermissions {
-        // Optional. True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues
-        std::optional<bool> can_send_messages;
-
-        // Optional. True, if the user is allowed to send audios
-        std::optional<bool> can_send_audios;
-
-        // Optional. True, if the user is allowed to send documents
-        std::optional<bool> can_send_documents;
-
-        // Optional. True, if the user is allowed to send photos
-        std::optional<bool> can_send_photos;
-
-        // Optional. True, if the user is allowed to send videos
-        std::optional<bool> can_send_videos;
-
-        // Optional. True, if the user is allowed to send video notes
-        std::optional<bool> can_send_video_notes;
-
-        // Optional. True, if the user is allowed to send voice notes
-        std::optional<bool> can_send_voice_notes;
-
-        // Optional. True, if the user is allowed to send polls and checklists
-        std::optional<bool> can_send_polls;
-
-        // Optional. True, if the user is allowed to send animations, games, stickers and use inline bots
-        std::optional<bool> can_send_other_messages;
-
-        // Optional. True, if the user is allowed to add web page previews to their messages
-        std::optional<bool> can_add_web_page_previews;
-
-        // Optional. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
-        std::optional<bool> can_change_info;
-
-        // Optional. True, if the user is allowed to invite new users to the chat
-        std::optional<bool> can_invite_users;
-
-        // Optional. True, if the user is allowed to pin messages. Ignored in public supergroups
-        std::optional<bool> can_pin_messages;
-
-        // Optional. True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages
-        std::optional<bool> can_manage_topics;
-    };
-
-    /**
-     * Describes the birthdate of a user.
-     *
-     * @param day Day of the user's birth; 1-31
-     * @param month Month of the user's birth; 1-12
-     * @param year Optional. Year of the user's birth
-     */
-
-    struct Birthdate {
-        // Day of the user's birth; 1-31
-        std::int64_t day;
-
-        // Month of the user's birth; 1-12
-        std::int64_t month;
-
-        // Optional. Year of the user's birth
-        std::optional<std::int64_t> year;
-    };
-
-    /**
-     * Contains information about the start page settings of a Telegram Business account.
-     *
-     * @param title Optional. Title text of the business intro
-     * @param message Optional. Message text of the business intro
-     * @param sticker Optional. Sticker of the business intro
-     */
-
-    struct BusinessIntro {
-        // Optional. Title text of the business intro
-        std::optional<std::string> title;
-
-        // Optional. Message text of the business intro
-        std::optional<std::string> message;
-
-        // Optional. Sticker of the business intro
-        std::optional<Sticker> sticker;
-    };
-
-    /**
-     * Contains information about the location of a Telegram Business account.
-     *
-     * @param address Address of the business
-     * @param location Optional. Location of the business
-     */
-
-    struct BusinessLocation {
-        // Address of the business
-        std::string address;
-
-        // Optional. Location of the business
-        std::optional<Location> location;
-    };
-
-    /**
-     * Describes an interval of time during which a business is open.
-     *
-     * @param opening_minute The minute's sequence number in a week, starting on Monday, marking the start of the time interval during which the business is open; 0 - 7 * 24 * 60
-     * @param closing_minute The minute's sequence number in a week, starting on Monday, marking the end of the time interval during which the business is open; 0 - 8 * 24 * 60
-     */
-
-    struct BusinessOpeningHoursInterval {
-        // The minute's sequence number in a week, starting on Monday, marking the start of the time interval during which the business is open; 0 - 7 * 24 * 60
-        std::int64_t opening_minute;
-
-        // The minute's sequence number in a week, starting on Monday, marking the end of the time interval during which the business is open; 0 - 8 * 24 * 60
-        std::int64_t closing_minute;
-    };
-
-    /**
-     * Describes the opening hours of a business.
-     *
-     * @param time_zone_name Unique name of the time zone for which the opening hours are defined
-     * @param opening_hours List of time intervals describing business opening hours
-     */
-
-    struct BusinessOpeningHours {
-        // Unique name of the time zone for which the opening hours are defined
-        std::string time_zone_name;
-
-        // List of time intervals describing business opening hours
-        std::vector<BusinessOpeningHoursInterval> opening_hours;
+        json to_json() const override {
+            json j;
+            j["status"] = status;
+            j["user"] = user->to_json();
+            j["until_date"] = until_date;
+            return j.dump();
+        }
     };
 
     /**
@@ -3633,7 +8374,8 @@ namespace telegram {
      * @param corner_radius_percentage The radius of the rectangle corner rounding, as a percentage of the media width
      */
 
-    struct StoryAreaPosition {
+    struct StoryAreaPosition : public TelegramModel {
+        virtual ~StoryAreaPosition() = default;
         // The abscissa of the area's center, as a percentage of the media width
         double x_percentage;
 
@@ -3651,6 +8393,17 @@ namespace telegram {
 
         // The radius of the rectangle corner rounding, as a percentage of the media width
         double corner_radius_percentage;
+
+        json to_json() const override {
+            json j;
+            j["x_percentage"] = x_percentage;
+            j["y_percentage"] = y_percentage;
+            j["width_percentage"] = width_percentage;
+            j["height_percentage"] = height_percentage;
+            j["rotation_angle"] = rotation_angle;
+            j["corner_radius_percentage"] = corner_radius_percentage;
+            return j.dump();
+        }
     };
 
     /**
@@ -3662,7 +8415,8 @@ namespace telegram {
      * @param street Optional. Street address of the location
      */
 
-    struct LocationAddress {
+    struct LocationAddress : public TelegramModel {
+        virtual ~LocationAddress() = default;
         // The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located
         std::string country_code;
 
@@ -3674,6 +8428,21 @@ namespace telegram {
 
         // Optional. Street address of the location
         std::optional<std::string> street;
+
+        json to_json() const override {
+            json j;
+            j["country_code"] = country_code;
+            if (state.has_value()) {
+                j["state"] = state.value();
+            }
+            if (city.has_value()) {
+                j["city"] = city.value();
+            }
+            if (street.has_value()) {
+                j["street"] = street.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3685,7 +8454,8 @@ namespace telegram {
      * @param address Optional. Address of the location
      */
 
-    struct StoryAreaTypeLocation {
+    struct StoryAreaTypeLocation : public StoryAreaType {
+        virtual ~StoryAreaTypeLocation() = default;
         // Type of the area, always “location”
         std::string type_;
 
@@ -3697,6 +8467,17 @@ namespace telegram {
 
         // Optional. Address of the location
         std::optional<LocationAddress> address;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["latitude"] = latitude;
+            j["longitude"] = longitude;
+            if (address.has_value()) {
+                j["address"] = address.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3708,18 +8489,32 @@ namespace telegram {
      * @param is_flipped Optional. Pass True if reaction area corner is flipped
      */
 
-    struct StoryAreaTypeSuggestedReaction {
+    struct StoryAreaTypeSuggestedReaction : public StoryAreaType {
+        virtual ~StoryAreaTypeSuggestedReaction() = default;
         // Type of the area, always “suggested_reaction”
         std::string type_;
 
         // Type of the reaction
-        ReactionType reaction_type;
+        std::shared_ptr<ReactionType> reaction_type;
 
         // Optional. Pass True if the reaction area has a dark background
         std::optional<bool> is_dark;
 
         // Optional. Pass True if reaction area corner is flipped
         std::optional<bool> is_flipped;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["reaction_type"] = reaction_type->to_json();
+            if (is_dark.has_value()) {
+                j["is_dark"] = is_dark.value();
+            }
+            if (is_flipped.has_value()) {
+                j["is_flipped"] = is_flipped.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3729,12 +8524,20 @@ namespace telegram {
      * @param url HTTP or tg:// URL to be opened when the area is clicked
      */
 
-    struct StoryAreaTypeLink {
+    struct StoryAreaTypeLink : public StoryAreaType {
+        virtual ~StoryAreaTypeLink() = default;
         // Type of the area, always “link”
         std::string type_;
 
         // HTTP or tg:// URL to be opened when the area is clicked
         std::string url;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["url"] = url;
+            return j.dump();
+        }
     };
 
     /**
@@ -3746,7 +8549,8 @@ namespace telegram {
      * @param background_color A color of the area background in the ARGB format
      */
 
-    struct StoryAreaTypeWeather {
+    struct StoryAreaTypeWeather : public StoryAreaType {
+        virtual ~StoryAreaTypeWeather() = default;
         // Type of the area, always “weather”
         std::string type_;
 
@@ -3758,6 +8562,15 @@ namespace telegram {
 
         // A color of the area background in the ARGB format
         std::int64_t background_color;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["temperature"] = temperature;
+            j["emoji"] = emoji;
+            j["background_color"] = background_color;
+            return j.dump();
+        }
     };
 
     /**
@@ -3767,12 +8580,20 @@ namespace telegram {
      * @param name Unique name of the gift
      */
 
-    struct StoryAreaTypeUniqueGift {
+    struct StoryAreaTypeUniqueGift : public StoryAreaType {
+        virtual ~StoryAreaTypeUniqueGift() = default;
         // Type of the area, always “unique_gift”
         std::string type_;
 
         // Unique name of the gift
         std::string name;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["name"] = name;
+            return j.dump();
+        }
     };
 
     /**
@@ -3782,27 +8603,20 @@ namespace telegram {
      * @param type Type of the area
      */
 
-    struct StoryArea {
+    struct StoryArea : public TelegramModel {
+        virtual ~StoryArea() = default;
         // Position of the area
-        StoryAreaPosition position;
+        std::shared_ptr<StoryAreaPosition> position;
 
         // Type of the area
-        StoryAreaType type_;
-    };
+        std::shared_ptr<StoryAreaType> type_;
 
-    /**
-     * Represents a location to which a chat is connected.
-     *
-     * @param location The location to which the supergroup is connected. Can't be a live location.
-     * @param address Location address; 1-64 characters, as defined by the chat owner
-     */
-
-    struct ChatLocation {
-        // The location to which the supergroup is connected. Can't be a live location.
-        Location location;
-
-        // Location address; 1-64 characters, as defined by the chat owner
-        std::string address;
+        json to_json() const override {
+            json j;
+            j["position"] = position->to_json();
+            j["type"] = type_->to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -3812,12 +8626,20 @@ namespace telegram {
      * @param emoji Reaction emoji. Currently, it can be one of "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
      */
 
-    struct ReactionTypeEmoji {
+    struct ReactionTypeEmoji : public ReactionType {
+        virtual ~ReactionTypeEmoji() = default;
         // Type of the reaction, always “emoji”
         std::string type_;
 
         // Reaction emoji. Currently, it can be one of "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
         std::string emoji;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["emoji"] = emoji;
+            return j.dump();
+        }
     };
 
     /**
@@ -3827,12 +8649,20 @@ namespace telegram {
      * @param custom_emoji_id Custom emoji identifier
      */
 
-    struct ReactionTypeCustomEmoji {
+    struct ReactionTypeCustomEmoji : public ReactionType {
+        virtual ~ReactionTypeCustomEmoji() = default;
         // Type of the reaction, always “custom_emoji”
         std::string type_;
 
         // Custom emoji identifier
         std::string custom_emoji_id;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["custom_emoji_id"] = custom_emoji_id;
+            return j.dump();
+        }
     };
 
     /**
@@ -3841,82 +8671,16 @@ namespace telegram {
      * @param type Type of the reaction, always “paid”
      */
 
-    struct ReactionTypePaid {
+    struct ReactionTypePaid : public ReactionType {
+        virtual ~ReactionTypePaid() = default;
         // Type of the reaction, always “paid”
         std::string type_;
-    };
 
-    /**
-     * Represents a reaction added to a message along with the number of times it was added.
-     *
-     * @param type Type of the reaction
-     * @param total_count Number of times the reaction was added
-     */
-
-    struct ReactionCount {
-        // Type of the reaction
-        ReactionType type_;
-
-        // Number of times the reaction was added
-        std::int64_t total_count;
-    };
-
-    /**
-     * This object represents a change of a reaction on a message performed by a user.
-     *
-     * @param chat The chat containing the message the user reacted to
-     * @param message_id Unique identifier of the message inside the chat
-     * @param user Optional. The user that changed the reaction, if the user isn't anonymous
-     * @param actor_chat Optional. The chat on behalf of which the reaction was changed, if the user is anonymous
-     * @param date Date of the change in Unix time
-     * @param old_reaction Previous list of reaction types that were set by the user
-     * @param new_reaction New list of reaction types that have been set by the user
-     */
-
-    struct MessageReactionUpdated {
-        // The chat containing the message the user reacted to
-        Chat chat;
-
-        // Unique identifier of the message inside the chat
-        std::int64_t message_id;
-
-        // Optional. The user that changed the reaction, if the user isn't anonymous
-        std::optional<User> user;
-
-        // Optional. The chat on behalf of which the reaction was changed, if the user is anonymous
-        std::optional<Chat> actor_chat;
-
-        // Date of the change in Unix time
-        std::int64_t date;
-
-        // Previous list of reaction types that were set by the user
-        std::vector<ReactionType> old_reaction;
-
-        // New list of reaction types that have been set by the user
-        std::vector<ReactionType> new_reaction;
-    };
-
-    /**
-     * This object represents reaction changes on a message with anonymous reactions.
-     *
-     * @param chat The chat containing the message
-     * @param message_id Unique message identifier inside the chat
-     * @param date Date of the change in Unix time
-     * @param reactions List of reactions that are present on the message
-     */
-
-    struct MessageReactionCountUpdated {
-        // The chat containing the message
-        Chat chat;
-
-        // Unique message identifier inside the chat
-        std::int64_t message_id;
-
-        // Date of the change in Unix time
-        std::int64_t date;
-
-        // List of reactions that are present on the message
-        std::vector<ReactionCount> reactions;
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -3928,9 +8692,10 @@ namespace telegram {
      * @param icon_custom_emoji_id Optional. Unique identifier of the custom emoji shown as the topic icon
      */
 
-    struct ForumTopic {
+    struct ForumTopic : public TelegramModel {
+        virtual ~ForumTopic() = default;
         // Unique identifier of the forum topic
-        std::int64_t message_thread_id;
+        MessageThreadId message_thread_id;
 
         // Name of the topic
         std::string name;
@@ -3940,41 +8705,17 @@ namespace telegram {
 
         // Optional. Unique identifier of the custom emoji shown as the topic icon
         std::optional<std::string> icon_custom_emoji_id;
-    };
 
-    /**
-     * This object represents a gift that can be sent by the bot.
-     *
-     * @param id Unique identifier of the gift
-     * @param sticker The sticker that represents the gift
-     * @param star_count The number of Telegram Stars that must be paid to send the sticker
-     * @param upgrade_star_count Optional. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
-     * @param total_count Optional. The total number of the gifts of this type that can be sent; for limited gifts only
-     * @param remaining_count Optional. The number of remaining gifts of this type that can be sent; for limited gifts only
-     * @param publisher_chat Optional. Information about the chat that published the gift
-     */
-
-    struct Gift {
-        // Unique identifier of the gift
-        std::string id;
-
-        // The sticker that represents the gift
-        Sticker sticker;
-
-        // The number of Telegram Stars that must be paid to send the sticker
-        std::int64_t star_count;
-
-        // Optional. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
-        std::optional<std::int64_t> upgrade_star_count;
-
-        // Optional. The total number of the gifts of this type that can be sent; for limited gifts only
-        std::optional<std::int64_t> total_count;
-
-        // Optional. The number of remaining gifts of this type that can be sent; for limited gifts only
-        std::optional<std::int64_t> remaining_count;
-
-        // Optional. Information about the chat that published the gift
-        std::optional<Chat> publisher_chat;
+        json to_json() const override {
+            json j;
+            j["message_thread_id"] = message_thread_id.to_json();
+            j["name"] = name;
+            j["icon_color"] = icon_color;
+            if (icon_custom_emoji_id.has_value()) {
+                j["icon_custom_emoji_id"] = icon_custom_emoji_id.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -3983,194 +8724,21 @@ namespace telegram {
      * @param gifts The list of gifts
      */
 
-    struct Gifts {
+    struct Gifts : public TelegramModel {
+        virtual ~Gifts() = default;
         // The list of gifts
         std::vector<Gift> gifts;
-    };
 
-    /**
-     * This object describes the model of a unique gift.
-     *
-     * @param name Name of the model
-     * @param sticker The sticker that represents the unique gift
-     * @param rarity_per_mille The number of unique gifts that receive this model for every 1000 gifts upgraded
-     */
-
-    struct UniqueGiftModel {
-        // Name of the model
-        std::string name;
-
-        // The sticker that represents the unique gift
-        Sticker sticker;
-
-        // The number of unique gifts that receive this model for every 1000 gifts upgraded
-        std::int64_t rarity_per_mille;
-    };
-
-    /**
-     * This object describes the symbol shown on the pattern of a unique gift.
-     *
-     * @param name Name of the symbol
-     * @param sticker The sticker that represents the unique gift
-     * @param rarity_per_mille The number of unique gifts that receive this model for every 1000 gifts upgraded
-     */
-
-    struct UniqueGiftSymbol {
-        // Name of the symbol
-        std::string name;
-
-        // The sticker that represents the unique gift
-        Sticker sticker;
-
-        // The number of unique gifts that receive this model for every 1000 gifts upgraded
-        std::int64_t rarity_per_mille;
-    };
-
-    /**
-     * This object describes the colors of the backdrop of a unique gift.
-     *
-     * @param center_color The color in the center of the backdrop in RGB format
-     * @param edge_color The color on the edges of the backdrop in RGB format
-     * @param symbol_color The color to be applied to the symbol in RGB format
-     * @param text_color The color for the text on the backdrop in RGB format
-     */
-
-    struct UniqueGiftBackdropColors {
-        // The color in the center of the backdrop in RGB format
-        std::int64_t center_color;
-
-        // The color on the edges of the backdrop in RGB format
-        std::int64_t edge_color;
-
-        // The color to be applied to the symbol in RGB format
-        std::int64_t symbol_color;
-
-        // The color for the text on the backdrop in RGB format
-        std::int64_t text_color;
-    };
-
-    /**
-     * This object describes the backdrop of a unique gift.
-     *
-     * @param name Name of the backdrop
-     * @param colors Colors of the backdrop
-     * @param rarity_per_mille The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
-     */
-
-    struct UniqueGiftBackdrop {
-        // Name of the backdrop
-        std::string name;
-
-        // Colors of the backdrop
-        UniqueGiftBackdropColors colors;
-
-        // The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
-        std::int64_t rarity_per_mille;
-    };
-
-    /**
-     * This object describes a unique gift that was upgraded from a regular gift.
-     *
-     * @param base_name Human-readable name of the regular gift from which this unique gift was upgraded
-     * @param name Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas
-     * @param number Unique number of the upgraded gift among gifts upgraded from the same regular gift
-     * @param model Model of the gift
-     * @param symbol Symbol of the gift
-     * @param backdrop Backdrop of the gift
-     * @param publisher_chat Optional. Information about the chat that published the gift
-     */
-
-    struct UniqueGift {
-        // Human-readable name of the regular gift from which this unique gift was upgraded
-        std::string base_name;
-
-        // Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas
-        std::string name;
-
-        // Unique number of the upgraded gift among gifts upgraded from the same regular gift
-        std::int64_t number;
-
-        // Model of the gift
-        UniqueGiftModel model;
-
-        // Symbol of the gift
-        UniqueGiftSymbol symbol;
-
-        // Backdrop of the gift
-        UniqueGiftBackdrop backdrop;
-
-        // Optional. Information about the chat that published the gift
-        std::optional<Chat> publisher_chat;
-    };
-
-    /**
-     * Describes a service message about a regular gift that was sent or received.
-     *
-     * @param gift Information about the gift
-     * @param owned_gift_id Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
-     * @param convert_star_count Optional. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
-     * @param prepaid_upgrade_star_count Optional. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
-     * @param can_be_upgraded Optional. True, if the gift can be upgraded to a unique gift
-     * @param text Optional. Text of the message that was added to the gift
-     * @param entities Optional. Special entities that appear in the text
-     * @param is_private Optional. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
-     */
-
-    struct GiftInfo {
-        // Information about the gift
-        Gift gift;
-
-        // Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
-        std::optional<std::string> owned_gift_id;
-
-        // Optional. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
-        std::optional<std::int64_t> convert_star_count;
-
-        // Optional. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
-        std::optional<std::int64_t> prepaid_upgrade_star_count;
-
-        // Optional. True, if the gift can be upgraded to a unique gift
-        std::optional<bool> can_be_upgraded;
-
-        // Optional. Text of the message that was added to the gift
-        std::optional<std::string> text;
-
-        // Optional. Special entities that appear in the text
-        std::optional<std::vector<MessageEntity>> entities;
-
-        // Optional. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
-        std::optional<bool> is_private;
-    };
-
-    /**
-     * Describes a service message about a unique gift that was sent or received.
-     *
-     * @param gift Information about the gift
-     * @param origin Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
-     * @param last_resale_star_count Optional. For gifts bought from other users, the price paid for the gift
-     * @param owned_gift_id Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
-     * @param transfer_star_count Optional. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
-     * @param next_transfer_date Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
-     */
-
-    struct UniqueGiftInfo {
-        // Information about the gift
-        UniqueGift gift;
-
-        // Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
-        std::string origin;
-
-        // Optional. For gifts bought from other users, the price paid for the gift
-        std::optional<std::int64_t> last_resale_star_count;
-
-        // Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
-        std::optional<std::string> owned_gift_id;
-
-        // Optional. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
-        std::optional<std::int64_t> transfer_star_count;
-
-        // Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
-        std::optional<std::int64_t> next_transfer_date;
+        json to_json() const override {
+            json j;
+            std::vector<json> gifts_values;
+            gifts_values.reserve(gifts.size());
+            for (auto& e : gifts) {
+                gifts_values.push_back(e.to_json());
+            }
+            j["gifts"] = gifts_values;
+            return j.dump();
+        }
     };
 
     /**
@@ -4191,12 +8759,13 @@ namespace telegram {
      * @param prepaid_upgrade_star_count Optional. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift
      */
 
-    struct OwnedGiftRegular {
+    struct OwnedGiftRegular : public OwnedGift {
+        virtual ~OwnedGiftRegular() = default;
         // Type of the gift, always “regular”
         std::string type_;
 
         // Information about the regular gift
-        Gift gift;
+        std::shared_ptr<Gift> gift;
 
         // Optional. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only
         std::optional<std::string> owned_gift_id;
@@ -4230,6 +8799,49 @@ namespace telegram {
 
         // Optional. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift
         std::optional<std::int64_t> prepaid_upgrade_star_count;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["gift"] = gift->to_json();
+            if (owned_gift_id.has_value()) {
+                j["owned_gift_id"] = owned_gift_id.value();
+            }
+            if (sender_user.has_value()) {
+                j["sender_user"] = sender_user.value().to_json();
+            }
+            j["send_date"] = send_date;
+            if (text.has_value()) {
+                j["text"] = text.value();
+            }
+            if (entities.has_value()) {
+                std::vector<json> entities_values;
+                entities_values.reserve(entities.value().size());
+                for (auto& e : entities.value()) {
+                    entities_values.push_back(e.to_json());
+                }
+                j["entities"] = entities_values;
+            }
+            if (is_private.has_value()) {
+                j["is_private"] = is_private.value();
+            }
+            if (is_saved.has_value()) {
+                j["is_saved"] = is_saved.value();
+            }
+            if (can_be_upgraded.has_value()) {
+                j["can_be_upgraded"] = can_be_upgraded.value();
+            }
+            if (was_refunded.has_value()) {
+                j["was_refunded"] = was_refunded.value();
+            }
+            if (convert_star_count.has_value()) {
+                j["convert_star_count"] = convert_star_count.value();
+            }
+            if (prepaid_upgrade_star_count.has_value()) {
+                j["prepaid_upgrade_star_count"] = prepaid_upgrade_star_count.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4246,12 +8858,13 @@ namespace telegram {
      * @param next_transfer_date Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
      */
 
-    struct OwnedGiftUnique {
+    struct OwnedGiftUnique : public OwnedGift {
+        virtual ~OwnedGiftUnique() = default;
         // Type of the gift, always “unique”
         std::string type_;
 
         // Information about the unique gift
-        UniqueGift gift;
+        std::shared_ptr<UniqueGift> gift;
 
         // Optional. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only
         std::optional<std::string> owned_gift_id;
@@ -4273,6 +8886,32 @@ namespace telegram {
 
         // Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
         std::optional<std::int64_t> next_transfer_date;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["gift"] = gift->to_json();
+            if (owned_gift_id.has_value()) {
+                j["owned_gift_id"] = owned_gift_id.value();
+            }
+            if (sender_user.has_value()) {
+                j["sender_user"] = sender_user.value().to_json();
+            }
+            j["send_date"] = send_date;
+            if (is_saved.has_value()) {
+                j["is_saved"] = is_saved.value();
+            }
+            if (can_be_transferred.has_value()) {
+                j["can_be_transferred"] = can_be_transferred.value();
+            }
+            if (transfer_star_count.has_value()) {
+                j["transfer_star_count"] = transfer_star_count.value();
+            }
+            if (next_transfer_date.has_value()) {
+                j["next_transfer_date"] = next_transfer_date.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4283,7 +8922,8 @@ namespace telegram {
      * @param next_offset Optional. Offset for the next request. If empty, then there are no more results
      */
 
-    struct OwnedGifts {
+    struct OwnedGifts : public TelegramModel {
+        virtual ~OwnedGifts() = default;
         // The total number of gifts owned by the user or the chat
         std::int64_t total_count;
 
@@ -4292,44 +8932,21 @@ namespace telegram {
 
         // Optional. Offset for the next request. If empty, then there are no more results
         std::optional<std::string> next_offset;
-    };
 
-    /**
-     * This object describes the types of gifts that can be gifted to a user or a chat.
-     *
-     * @param unlimited_gifts True, if unlimited regular gifts are accepted
-     * @param limited_gifts True, if limited regular gifts are accepted
-     * @param unique_gifts True, if unique gifts or gifts that can be upgraded to unique for free are accepted
-     * @param premium_subscription True, if a Telegram Premium subscription is accepted
-     */
-
-    struct AcceptedGiftTypes {
-        // True, if unlimited regular gifts are accepted
-        bool unlimited_gifts;
-
-        // True, if limited regular gifts are accepted
-        bool limited_gifts;
-
-        // True, if unique gifts or gifts that can be upgraded to unique for free are accepted
-        bool unique_gifts;
-
-        // True, if a Telegram Premium subscription is accepted
-        bool premium_subscription;
-    };
-
-    /**
-     * Describes an amount of Telegram Stars.
-     *
-     * @param amount Integer amount of Telegram Stars, rounded to 0; can be negative
-     * @param nanostar_amount Optional. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if amount is non-positive
-     */
-
-    struct StarAmount {
-        // Integer amount of Telegram Stars, rounded to 0; can be negative
-        std::int64_t amount;
-
-        // Optional. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if amount is non-positive
-        std::optional<std::int64_t> nanostar_amount;
+        json to_json() const override {
+            json j;
+            j["total_count"] = total_count;
+            std::vector<json> gifts_values;
+            gifts_values.reserve(gifts.size());
+            for (auto& e : gifts) {
+                gifts_values.push_back(e.to_json());
+            }
+            j["gifts"] = gifts_values;
+            if (next_offset.has_value()) {
+                j["next_offset"] = next_offset.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4339,12 +8956,20 @@ namespace telegram {
      * @param description Description of the command; 1-256 characters.
      */
 
-    struct BotCommand {
+    struct BotCommand : public TelegramModel {
+        virtual ~BotCommand() = default;
         // Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores.
         std::string command;
 
         // Description of the command; 1-256 characters.
         std::string description;
+
+        json to_json() const override {
+            json j;
+            j["command"] = command;
+            j["description"] = description;
+            return j.dump();
+        }
     };
 
     /**
@@ -4353,9 +8978,16 @@ namespace telegram {
      * @param type Scope type, must be default
      */
 
-    struct BotCommandScopeDefault {
+    struct BotCommandScopeDefault : public BotCommandScope {
+        virtual ~BotCommandScopeDefault() = default;
         // Scope type, must be default
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -4364,9 +8996,16 @@ namespace telegram {
      * @param type Scope type, must be all_private_chats
      */
 
-    struct BotCommandScopeAllPrivateChats {
+    struct BotCommandScopeAllPrivateChats : public BotCommandScope {
+        virtual ~BotCommandScopeAllPrivateChats() = default;
         // Scope type, must be all_private_chats
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -4375,9 +9014,16 @@ namespace telegram {
      * @param type Scope type, must be all_group_chats
      */
 
-    struct BotCommandScopeAllGroupChats {
+    struct BotCommandScopeAllGroupChats : public BotCommandScope {
+        virtual ~BotCommandScopeAllGroupChats() = default;
         // Scope type, must be all_group_chats
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -4386,9 +9032,16 @@ namespace telegram {
      * @param type Scope type, must be all_chat_administrators
      */
 
-    struct BotCommandScopeAllChatAdministrators {
+    struct BotCommandScopeAllChatAdministrators : public BotCommandScope {
+        virtual ~BotCommandScopeAllChatAdministrators() = default;
         // Scope type, must be all_chat_administrators
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -4398,12 +9051,20 @@ namespace telegram {
      * @param chat_id Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername). Channel direct messages chats and channel chats aren't supported.
      */
 
-    struct BotCommandScopeChat {
+    struct BotCommandScopeChat : public BotCommandScope {
+        virtual ~BotCommandScopeChat() = default;
         // Scope type, must be chat
         std::string type_;
 
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername). Channel direct messages chats and channel chats aren't supported.
-        std::string chat_id;
+        ChatId chat_id;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["chat_id"] = chat_id.to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -4413,12 +9074,20 @@ namespace telegram {
      * @param chat_id Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername). Channel direct messages chats and channel chats aren't supported.
      */
 
-    struct BotCommandScopeChatAdministrators {
+    struct BotCommandScopeChatAdministrators : public BotCommandScope {
+        virtual ~BotCommandScopeChatAdministrators() = default;
         // Scope type, must be chat_administrators
         std::string type_;
 
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername). Channel direct messages chats and channel chats aren't supported.
-        std::string chat_id;
+        ChatId chat_id;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["chat_id"] = chat_id.to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -4429,15 +9098,24 @@ namespace telegram {
      * @param user_id Unique identifier of the target user
      */
 
-    struct BotCommandScopeChatMember {
+    struct BotCommandScopeChatMember : public BotCommandScope {
+        virtual ~BotCommandScopeChatMember() = default;
         // Scope type, must be chat_member
         std::string type_;
 
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername). Channel direct messages chats and channel chats aren't supported.
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["chat_id"] = chat_id.to_json();
+            j["user_id"] = user_id.to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -4446,9 +9124,16 @@ namespace telegram {
      * @param name The bot's name
      */
 
-    struct BotName {
+    struct BotName : public TelegramModel {
+        virtual ~BotName() = default;
         // The bot's name
         std::string name;
+
+        json to_json() const override {
+            json j;
+            j["name"] = name;
+            return j.dump();
+        }
     };
 
     /**
@@ -4457,9 +9142,16 @@ namespace telegram {
      * @param description The bot's description
      */
 
-    struct BotDescription {
+    struct BotDescription : public TelegramModel {
+        virtual ~BotDescription() = default;
         // The bot's description
         std::string description;
+
+        json to_json() const override {
+            json j;
+            j["description"] = description;
+            return j.dump();
+        }
     };
 
     /**
@@ -4468,9 +9160,16 @@ namespace telegram {
      * @param short_description The bot's short description
      */
 
-    struct BotShortDescription {
+    struct BotShortDescription : public TelegramModel {
+        virtual ~BotShortDescription() = default;
         // The bot's short description
         std::string short_description;
+
+        json to_json() const override {
+            json j;
+            j["short_description"] = short_description;
+            return j.dump();
+        }
     };
 
     /**
@@ -4479,9 +9178,16 @@ namespace telegram {
      * @param type Type of the button, must be commands
      */
 
-    struct MenuButtonCommands {
+    struct MenuButtonCommands : public MenuButton {
+        virtual ~MenuButtonCommands() = default;
         // Type of the button, must be commands
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -4492,7 +9198,8 @@ namespace telegram {
      * @param web_app Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Alternatively, a t.me link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.
      */
 
-    struct MenuButtonWebApp {
+    struct MenuButtonWebApp : public MenuButton {
+        virtual ~MenuButtonWebApp() = default;
         // Type of the button, must be web_app
         std::string type_;
 
@@ -4500,7 +9207,15 @@ namespace telegram {
         std::string text;
 
         // Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Alternatively, a t.me link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.
-        WebAppInfo web_app;
+        std::shared_ptr<WebAppInfo> web_app;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["text"] = text;
+            j["web_app"] = web_app->to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -4509,9 +9224,16 @@ namespace telegram {
      * @param type Type of the button, must be default
      */
 
-    struct MenuButtonDefault {
+    struct MenuButtonDefault : public MenuButton {
+        virtual ~MenuButtonDefault() = default;
         // Type of the button, must be default
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -4521,12 +9243,20 @@ namespace telegram {
      * @param user User that boosted the chat
      */
 
-    struct ChatBoostSourcePremium {
+    struct ChatBoostSourcePremium : public ChatBoostSource {
+        virtual ~ChatBoostSourcePremium() = default;
         // Source of the boost, always “premium”
         std::string source;
 
         // User that boosted the chat
-        User user;
+        std::shared_ptr<User> user;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["user"] = user->to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -4536,12 +9266,20 @@ namespace telegram {
      * @param user User for which the gift code was created
      */
 
-    struct ChatBoostSourceGiftCode {
+    struct ChatBoostSourceGiftCode : public ChatBoostSource {
+        virtual ~ChatBoostSourceGiftCode() = default;
         // Source of the boost, always “gift_code”
         std::string source;
 
         // User for which the gift code was created
-        User user;
+        std::shared_ptr<User> user;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["user"] = user->to_json();
+            return j.dump();
+        }
     };
 
     /**
@@ -4554,7 +9292,8 @@ namespace telegram {
      * @param is_unclaimed Optional. True, if the giveaway was completed, but there was no user to win the prize
      */
 
-    struct ChatBoostSourceGiveaway {
+    struct ChatBoostSourceGiveaway : public ChatBoostSource {
+        virtual ~ChatBoostSourceGiveaway() = default;
         // Source of the boost, always “giveaway”
         std::string source;
 
@@ -4569,67 +9308,22 @@ namespace telegram {
 
         // Optional. True, if the giveaway was completed, but there was no user to win the prize
         std::optional<bool> is_unclaimed;
-    };
 
-    /**
-     * This object contains information about a chat boost.
-     *
-     * @param boost_id Unique identifier of the boost
-     * @param add_date Point in time (Unix timestamp) when the chat was boosted
-     * @param expiration_date Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged
-     * @param source Source of the added boost
-     */
-
-    struct ChatBoost {
-        // Unique identifier of the boost
-        std::string boost_id;
-
-        // Point in time (Unix timestamp) when the chat was boosted
-        std::int64_t add_date;
-
-        // Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged
-        std::int64_t expiration_date;
-
-        // Source of the added boost
-        ChatBoostSource source;
-    };
-
-    /**
-     * This object represents a boost added to a chat or changed.
-     *
-     * @param chat Chat which was boosted
-     * @param boost Information about the chat boost
-     */
-
-    struct ChatBoostUpdated {
-        // Chat which was boosted
-        Chat chat;
-
-        // Information about the chat boost
-        ChatBoost boost;
-    };
-
-    /**
-     * This object represents a boost removed from a chat.
-     *
-     * @param chat Chat which was boosted
-     * @param boost_id Unique identifier of the boost
-     * @param remove_date Point in time (Unix timestamp) when the boost was removed
-     * @param source Source of the removed boost
-     */
-
-    struct ChatBoostRemoved {
-        // Chat which was boosted
-        Chat chat;
-
-        // Unique identifier of the boost
-        std::string boost_id;
-
-        // Point in time (Unix timestamp) when the boost was removed
-        std::int64_t remove_date;
-
-        // Source of the removed boost
-        ChatBoostSource source;
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["giveaway_message_id"] = giveaway_message_id;
+            if (user.has_value()) {
+                j["user"] = user.value().to_json();
+            }
+            if (prize_star_count.has_value()) {
+                j["prize_star_count"] = prize_star_count.value();
+            }
+            if (is_unclaimed.has_value()) {
+                j["is_unclaimed"] = is_unclaimed.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4638,122 +9332,21 @@ namespace telegram {
      * @param boosts The list of boosts added to the chat by the user
      */
 
-    struct UserChatBoosts {
+    struct UserChatBoosts : public TelegramModel {
+        virtual ~UserChatBoosts() = default;
         // The list of boosts added to the chat by the user
         std::vector<ChatBoost> boosts;
-    };
 
-    /**
-     * Represents the rights of a business bot.
-     *
-     * @param can_reply Optional. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours
-     * @param can_read_messages Optional. True, if the bot can mark incoming private messages as read
-     * @param can_delete_sent_messages Optional. True, if the bot can delete messages sent by the bot
-     * @param can_delete_all_messages Optional. True, if the bot can delete all private messages in managed chats
-     * @param can_edit_name Optional. True, if the bot can edit the first and last name of the business account
-     * @param can_edit_bio Optional. True, if the bot can edit the bio of the business account
-     * @param can_edit_profile_photo Optional. True, if the bot can edit the profile photo of the business account
-     * @param can_edit_username Optional. True, if the bot can edit the username of the business account
-     * @param can_change_gift_settings Optional. True, if the bot can change the privacy settings pertaining to gifts for the business account
-     * @param can_view_gifts_and_stars Optional. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account
-     * @param can_convert_gifts_to_stars Optional. True, if the bot can convert regular gifts owned by the business account to Telegram Stars
-     * @param can_transfer_and_upgrade_gifts Optional. True, if the bot can transfer and upgrade gifts owned by the business account
-     * @param can_transfer_stars Optional. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts
-     * @param can_manage_stories Optional. True, if the bot can post, edit and delete stories on behalf of the business account
-     */
-
-    struct BusinessBotRights {
-        // Optional. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours
-        std::optional<bool> can_reply;
-
-        // Optional. True, if the bot can mark incoming private messages as read
-        std::optional<bool> can_read_messages;
-
-        // Optional. True, if the bot can delete messages sent by the bot
-        std::optional<bool> can_delete_sent_messages;
-
-        // Optional. True, if the bot can delete all private messages in managed chats
-        std::optional<bool> can_delete_all_messages;
-
-        // Optional. True, if the bot can edit the first and last name of the business account
-        std::optional<bool> can_edit_name;
-
-        // Optional. True, if the bot can edit the bio of the business account
-        std::optional<bool> can_edit_bio;
-
-        // Optional. True, if the bot can edit the profile photo of the business account
-        std::optional<bool> can_edit_profile_photo;
-
-        // Optional. True, if the bot can edit the username of the business account
-        std::optional<bool> can_edit_username;
-
-        // Optional. True, if the bot can change the privacy settings pertaining to gifts for the business account
-        std::optional<bool> can_change_gift_settings;
-
-        // Optional. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account
-        std::optional<bool> can_view_gifts_and_stars;
-
-        // Optional. True, if the bot can convert regular gifts owned by the business account to Telegram Stars
-        std::optional<bool> can_convert_gifts_to_stars;
-
-        // Optional. True, if the bot can transfer and upgrade gifts owned by the business account
-        std::optional<bool> can_transfer_and_upgrade_gifts;
-
-        // Optional. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts
-        std::optional<bool> can_transfer_stars;
-
-        // Optional. True, if the bot can post, edit and delete stories on behalf of the business account
-        std::optional<bool> can_manage_stories;
-    };
-
-    /**
-     * Describes the connection of the bot with a business account.
-     *
-     * @param id Unique identifier of the business connection
-     * @param user Business account user that created the business connection
-     * @param user_chat_id Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
-     * @param date Date the connection was established in Unix time
-     * @param rights Optional. Rights of the business bot
-     * @param is_enabled True, if the connection is active
-     */
-
-    struct BusinessConnection {
-        // Unique identifier of the business connection
-        std::string id;
-
-        // Business account user that created the business connection
-        User user;
-
-        // Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::int64_t user_chat_id;
-
-        // Date the connection was established in Unix time
-        std::int64_t date;
-
-        // Optional. Rights of the business bot
-        std::optional<BusinessBotRights> rights;
-
-        // True, if the connection is active
-        bool is_enabled;
-    };
-
-    /**
-     * This object is received when messages are deleted from a connected business account.
-     *
-     * @param business_connection_id Unique identifier of the business connection
-     * @param chat Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.
-     * @param message_ids The list of identifiers of deleted messages in the chat of the business account
-     */
-
-    struct BusinessMessagesDeleted {
-        // Unique identifier of the business connection
-        std::string business_connection_id;
-
-        // Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.
-        Chat chat;
-
-        // The list of identifiers of deleted messages in the chat of the business account
-        std::vector<std::int64_t> message_ids;
+        json to_json() const override {
+            json j;
+            std::vector<json> boosts_values;
+            boosts_values.reserve(boosts.size());
+            for (auto& e : boosts) {
+                boosts_values.push_back(e.to_json());
+            }
+            j["boosts"] = boosts_values;
+            return j.dump();
+        }
     };
 
     /**
@@ -4763,12 +9356,24 @@ namespace telegram {
      * @param retry_after Optional. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated
      */
 
-    struct ResponseParameters {
+    struct ResponseParameters : public TelegramModel {
+        virtual ~ResponseParameters() = default;
         // Optional. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.
-        std::optional<std::int64_t> migrate_to_chat_id;
+        std::optional<ChatId> migrate_to_chat_id;
 
         // Optional. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated
         std::optional<std::int64_t> retry_after;
+
+        json to_json() const override {
+            json j;
+            if (migrate_to_chat_id.has_value()) {
+                j["migrate_to_chat_id"] = migrate_to_chat_id.value().to_json();
+            }
+            if (retry_after.has_value()) {
+                j["retry_after"] = retry_after.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4783,7 +9388,8 @@ namespace telegram {
      * @param has_spoiler Optional. Pass True if the photo needs to be covered with a spoiler animation
      */
 
-    struct InputMediaPhoto {
+    struct InputMediaPhoto : public InputMedia {
+        virtual ~InputMediaPhoto() = default;
         // Type of the result, must be photo
         std::string type_;
 
@@ -4804,6 +9410,33 @@ namespace telegram {
 
         // Optional. Pass True if the photo needs to be covered with a spoiler animation
         std::optional<bool> has_spoiler;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["media"] = media;
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (has_spoiler.has_value()) {
+                j["has_spoiler"] = has_spoiler.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4825,7 +9458,8 @@ namespace telegram {
      * @param has_spoiler Optional. Pass True if the video needs to be covered with a spoiler animation
      */
 
-    struct InputMediaVideo {
+    struct InputMediaVideo : public InputMedia {
+        virtual ~InputMediaVideo() = default;
         // Type of the result, must be video
         std::string type_;
 
@@ -4867,6 +9501,54 @@ namespace telegram {
 
         // Optional. Pass True if the video needs to be covered with a spoiler animation
         std::optional<bool> has_spoiler;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["media"] = media;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value();
+            }
+            if (cover.has_value()) {
+                j["cover"] = cover.value();
+            }
+            if (start_timestamp.has_value()) {
+                j["start_timestamp"] = start_timestamp.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (width.has_value()) {
+                j["width"] = width.value();
+            }
+            if (height.has_value()) {
+                j["height"] = height.value();
+            }
+            if (duration.has_value()) {
+                j["duration"] = duration.value();
+            }
+            if (supports_streaming.has_value()) {
+                j["supports_streaming"] = supports_streaming.value();
+            }
+            if (has_spoiler.has_value()) {
+                j["has_spoiler"] = has_spoiler.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4885,7 +9567,8 @@ namespace telegram {
      * @param has_spoiler Optional. Pass True if the animation needs to be covered with a spoiler animation
      */
 
-    struct InputMediaAnimation {
+    struct InputMediaAnimation : public InputMedia {
+        virtual ~InputMediaAnimation() = default;
         // Type of the result, must be animation
         std::string type_;
 
@@ -4918,6 +9601,45 @@ namespace telegram {
 
         // Optional. Pass True if the animation needs to be covered with a spoiler animation
         std::optional<bool> has_spoiler;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["media"] = media;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (width.has_value()) {
+                j["width"] = width.value();
+            }
+            if (height.has_value()) {
+                j["height"] = height.value();
+            }
+            if (duration.has_value()) {
+                j["duration"] = duration.value();
+            }
+            if (has_spoiler.has_value()) {
+                j["has_spoiler"] = has_spoiler.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4934,7 +9656,8 @@ namespace telegram {
      * @param title Optional. Title of the audio
      */
 
-    struct InputMediaAudio {
+    struct InputMediaAudio : public InputMedia {
+        virtual ~InputMediaAudio() = default;
         // Type of the result, must be audio
         std::string type_;
 
@@ -4961,6 +9684,39 @@ namespace telegram {
 
         // Optional. Title of the audio
         std::optional<std::string> title;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["media"] = media;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (duration.has_value()) {
+                j["duration"] = duration.value();
+            }
+            if (performer.has_value()) {
+                j["performer"] = performer.value();
+            }
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -4975,7 +9731,8 @@ namespace telegram {
      * @param disable_content_type_detection Optional. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always True, if the document is sent as part of an album.
      */
 
-    struct InputMediaDocument {
+    struct InputMediaDocument : public InputMedia {
+        virtual ~InputMediaDocument() = default;
         // Type of the result, must be document
         std::string type_;
 
@@ -4996,6 +9753,33 @@ namespace telegram {
 
         // Optional. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always True, if the document is sent as part of an album.
         std::optional<bool> disable_content_type_detection;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["media"] = media;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (disable_content_type_detection.has_value()) {
+                j["disable_content_type_detection"] = disable_content_type_detection.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5005,12 +9789,20 @@ namespace telegram {
      * @param media File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://<file_attach_name>” to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files »
      */
 
-    struct InputPaidMediaPhoto {
+    struct InputPaidMediaPhoto : public InputPaidMedia {
+        virtual ~InputPaidMediaPhoto() = default;
         // Type of the media, must be photo
         std::string type_;
 
         // File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass “attach://<file_attach_name>” to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files »
         std::string media;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["media"] = media;
+            return j.dump();
+        }
     };
 
     /**
@@ -5027,7 +9819,8 @@ namespace telegram {
      * @param supports_streaming Optional. Pass True if the uploaded video is suitable for streaming
      */
 
-    struct InputPaidMediaVideo {
+    struct InputPaidMediaVideo : public InputPaidMedia {
+        virtual ~InputPaidMediaVideo() = default;
         // Type of the media, must be video
         std::string type_;
 
@@ -5054,6 +9847,34 @@ namespace telegram {
 
         // Optional. Pass True if the uploaded video is suitable for streaming
         std::optional<bool> supports_streaming;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["media"] = media;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value();
+            }
+            if (cover.has_value()) {
+                j["cover"] = cover.value();
+            }
+            if (start_timestamp.has_value()) {
+                j["start_timestamp"] = start_timestamp.value();
+            }
+            if (width.has_value()) {
+                j["width"] = width.value();
+            }
+            if (height.has_value()) {
+                j["height"] = height.value();
+            }
+            if (duration.has_value()) {
+                j["duration"] = duration.value();
+            }
+            if (supports_streaming.has_value()) {
+                j["supports_streaming"] = supports_streaming.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5063,12 +9884,20 @@ namespace telegram {
      * @param photo The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://<file_attach_name>” if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »
      */
 
-    struct InputProfilePhotoStatic {
+    struct InputProfilePhotoStatic : public InputProfilePhoto {
+        virtual ~InputProfilePhotoStatic() = default;
         // Type of the profile photo, must be static
         std::string type_;
 
         // The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass “attach://<file_attach_name>” if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »
         std::string photo;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["photo"] = photo;
+            return j.dump();
+        }
     };
 
     /**
@@ -5079,7 +9908,8 @@ namespace telegram {
      * @param main_frame_timestamp Optional. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.
      */
 
-    struct InputProfilePhotoAnimated {
+    struct InputProfilePhotoAnimated : public InputProfilePhoto {
+        virtual ~InputProfilePhotoAnimated() = default;
         // Type of the profile photo, must be animated
         std::string type_;
 
@@ -5088,6 +9918,16 @@ namespace telegram {
 
         // Optional. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.
         std::optional<double> main_frame_timestamp;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["animation"] = animation;
+            if (main_frame_timestamp.has_value()) {
+                j["main_frame_timestamp"] = main_frame_timestamp.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5097,12 +9937,20 @@ namespace telegram {
      * @param photo The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass “attach://<file_attach_name>” if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »
      */
 
-    struct InputStoryContentPhoto {
+    struct InputStoryContentPhoto : public InputStoryContent {
+        virtual ~InputStoryContentPhoto() = default;
         // Type of the content, must be photo
         std::string type_;
 
         // The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass “attach://<file_attach_name>” if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files »
         std::string photo;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["photo"] = photo;
+            return j.dump();
+        }
     };
 
     /**
@@ -5115,7 +9963,8 @@ namespace telegram {
      * @param is_animation Optional. Pass True if the video has no sound
      */
 
-    struct InputStoryContentVideo {
+    struct InputStoryContentVideo : public InputStoryContent {
+        virtual ~InputStoryContentVideo() = default;
         // Type of the content, must be video
         std::string type_;
 
@@ -5130,77 +9979,26 @@ namespace telegram {
 
         // Optional. Pass True if the video has no sound
         std::optional<bool> is_animation;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["video"] = video;
+            if (duration.has_value()) {
+                j["duration"] = duration.value();
+            }
+            if (cover_frame_timestamp.has_value()) {
+                j["cover_frame_timestamp"] = cover_frame_timestamp.value();
+            }
+            if (is_animation.has_value()) {
+                j["is_animation"] = is_animation.value();
+            }
+            return j.dump();
+        }
     };
 
 
     // Stickers
-
-    /**
-     * This object represents a sticker.
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param type Type of the sticker, currently one of “regular”, “mask”, “custom_emoji”. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.
-     * @param width Sticker width
-     * @param height Sticker height
-     * @param is_animated True, if the sticker is animated
-     * @param is_video True, if the sticker is a video sticker
-     * @param thumbnail Optional. Sticker thumbnail in the .WEBP or .JPG format
-     * @param emoji Optional. Emoji associated with the sticker
-     * @param set_name Optional. Name of the sticker set to which the sticker belongs
-     * @param premium_animation Optional. For premium regular stickers, premium animation for the sticker
-     * @param mask_position Optional. For mask stickers, the position where the mask should be placed
-     * @param custom_emoji_id Optional. For custom emoji stickers, unique identifier of the custom emoji
-     * @param needs_repainting Optional. True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places
-     * @param file_size Optional. File size in bytes
-     */
-
-    struct Sticker {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // Type of the sticker, currently one of “regular”, “mask”, “custom_emoji”. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.
-        std::string type_;
-
-        // Sticker width
-        std::int64_t width;
-
-        // Sticker height
-        std::int64_t height;
-
-        // True, if the sticker is animated
-        bool is_animated;
-
-        // True, if the sticker is a video sticker
-        bool is_video;
-
-        // Optional. Sticker thumbnail in the .WEBP or .JPG format
-        std::optional<PhotoSize> thumbnail;
-
-        // Optional. Emoji associated with the sticker
-        std::optional<std::string> emoji;
-
-        // Optional. Name of the sticker set to which the sticker belongs
-        std::optional<std::string> set_name;
-
-        // Optional. For premium regular stickers, premium animation for the sticker
-        std::optional<File> premium_animation;
-
-        // Optional. For mask stickers, the position where the mask should be placed
-        std::optional<MaskPosition> mask_position;
-
-        // Optional. For custom emoji stickers, unique identifier of the custom emoji
-        std::optional<std::string> custom_emoji_id;
-
-        // Optional. True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places
-        std::optional<bool> needs_repainting;
-
-        // Optional. File size in bytes
-        std::optional<std::int64_t> file_size;
-    };
 
     /**
      * This object represents a sticker set.
@@ -5212,7 +10010,8 @@ namespace telegram {
      * @param thumbnail Optional. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format
      */
 
-    struct StickerSet {
+    struct StickerSet : public TelegramModel {
+        virtual ~StickerSet() = default;
         // Sticker set name
         std::string name;
 
@@ -5227,29 +10026,23 @@ namespace telegram {
 
         // Optional. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format
         std::optional<PhotoSize> thumbnail;
-    };
 
-    /**
-     * This object describes the position on faces where a mask should be placed by default.
-     *
-     * @param point The part of the face relative to which the mask should be placed. One of “forehead”, “eyes”, “mouth”, or “chin”.
-     * @param x_shift Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.
-     * @param y_shift Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.
-     * @param scale Mask scaling coefficient. For example, 2.0 means double size.
-     */
-
-    struct MaskPosition {
-        // The part of the face relative to which the mask should be placed. One of “forehead”, “eyes”, “mouth”, or “chin”.
-        std::string point;
-
-        // Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.
-        double x_shift;
-
-        // Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.
-        double y_shift;
-
-        // Mask scaling coefficient. For example, 2.0 means double size.
-        double scale;
+        json to_json() const override {
+            json j;
+            j["name"] = name;
+            j["title"] = title;
+            j["sticker_type"] = sticker_type;
+            std::vector<json> stickers_values;
+            stickers_values.reserve(stickers.size());
+            for (auto& e : stickers) {
+                stickers_values.push_back(e.to_json());
+            }
+            j["stickers"] = stickers_values;
+            if (thumbnail.has_value()) {
+                j["thumbnail"] = thumbnail.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5262,7 +10055,8 @@ namespace telegram {
      * @param keywords Optional. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For “regular” and “custom_emoji” stickers only.
      */
 
-    struct InputSticker {
+    struct InputSticker : public TelegramModel {
+        virtual ~InputSticker() = default;
         // The added sticker. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass “attach://<file_attach_name>” to upload a new file using multipart/form-data under <file_attach_name> name. Animated and video stickers can't be uploaded via HTTP URL. More information on Sending Files »
         std::string sticker;
 
@@ -5277,41 +10071,24 @@ namespace telegram {
 
         // Optional. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For “regular” and “custom_emoji” stickers only.
         std::optional<std::vector<std::string>> keywords;
+
+        json to_json() const override {
+            json j;
+            j["sticker"] = sticker;
+            j["format"] = format;
+            j["emoji_list"] = emoji_list;
+            if (mask_position.has_value()) {
+                j["mask_position"] = mask_position.value().to_json();
+            }
+            if (keywords.has_value()) {
+                j["keywords"] = keywords.value();
+            }
+            return j.dump();
+        }
     };
 
 
     // Inline mode
-
-    /**
-     * This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.
-     *
-     * @param id Unique identifier for this query
-     * @param from Sender
-     * @param query Text of the query (up to 256 characters)
-     * @param offset Offset of the results to be returned, can be controlled by the bot
-     * @param chat_type Optional. Type of the chat from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat
-     * @param location Optional. Sender location, only for bots that request user location
-     */
-
-    struct InlineQuery {
-        // Unique identifier for this query
-        std::string id;
-
-        // Sender
-        User from;
-
-        // Text of the query (up to 256 characters)
-        std::string query;
-
-        // Offset of the results to be returned, can be controlled by the bot
-        std::string offset;
-
-        // Optional. Type of the chat from which the inline query was sent. Can be either “sender” for a private chat with the inline query sender, “private”, “group”, “supergroup”, or “channel”. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat
-        std::optional<std::string> chat_type;
-
-        // Optional. Sender location, only for bots that request user location
-        std::optional<Location> location;
-    };
 
     /**
      * This object represents a button to be shown above inline query results. You must use exactly one of the optional fields.
@@ -5321,7 +10098,8 @@ namespace telegram {
      * @param start_parameter Optional. Deep-linking parameter for the /start message sent to the bot when a user presses the button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.Example: An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a switch_inline button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
      */
 
-    struct InlineQueryResultsButton {
+    struct InlineQueryResultsButton : public TelegramModel {
+        virtual ~InlineQueryResultsButton() = default;
         // Label text on the button
         std::string text;
 
@@ -5330,6 +10108,18 @@ namespace telegram {
 
         // Optional. Deep-linking parameter for the /start message sent to the bot when a user presses the button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.Example: An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a switch_inline button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.
         std::optional<std::string> start_parameter;
+
+        json to_json() const override {
+            json j;
+            j["text"] = text;
+            if (web_app.has_value()) {
+                j["web_app"] = web_app.value().to_json();
+            }
+            if (start_parameter.has_value()) {
+                j["start_parameter"] = start_parameter.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5347,7 +10137,8 @@ namespace telegram {
      * @param thumbnail_height Optional. Thumbnail height
      */
 
-    struct InlineQueryResultArticle {
+    struct InlineQueryResultArticle : public InlineQueryResult {
+        virtual ~InlineQueryResultArticle() = default;
         // Type of the result, must be article
         std::string type_;
 
@@ -5358,7 +10149,7 @@ namespace telegram {
         std::string title;
 
         // Content of the message to be sent
-        InputMessageContent input_message_content;
+        std::shared_ptr<InputMessageContent> input_message_content;
 
         // Optional. Inline keyboard attached to the message
         std::optional<InlineKeyboardMarkup> reply_markup;
@@ -5377,6 +10168,33 @@ namespace telegram {
 
         // Optional. Thumbnail height
         std::optional<std::int64_t> thumbnail_height;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["title"] = title;
+            j["input_message_content"] = input_message_content->to_json();
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (url.has_value()) {
+                j["url"] = url.value();
+            }
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (thumbnail_url.has_value()) {
+                j["thumbnail_url"] = thumbnail_url.value();
+            }
+            if (thumbnail_width.has_value()) {
+                j["thumbnail_width"] = thumbnail_width.value();
+            }
+            if (thumbnail_height.has_value()) {
+                j["thumbnail_height"] = thumbnail_height.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5398,7 +10216,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the photo
      */
 
-    struct InlineQueryResultPhoto {
+    struct InlineQueryResultPhoto : public InlineQueryResult {
+        virtual ~InlineQueryResultPhoto() = default;
         // Type of the result, must be photo
         std::string type_;
 
@@ -5440,6 +10259,50 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the photo
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["photo_url"] = photo_url;
+            j["thumbnail_url"] = thumbnail_url;
+            if (photo_width.has_value()) {
+                j["photo_width"] = photo_width.value();
+            }
+            if (photo_height.has_value()) {
+                j["photo_height"] = photo_height.value();
+            }
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5462,7 +10325,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the GIF animation
      */
 
-    struct InlineQueryResultGif {
+    struct InlineQueryResultGif : public InlineQueryResult {
+        virtual ~InlineQueryResultGif() = default;
         // Type of the result, must be gif
         std::string type_;
 
@@ -5507,6 +10371,53 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the GIF animation
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["gif_url"] = gif_url;
+            if (gif_width.has_value()) {
+                j["gif_width"] = gif_width.value();
+            }
+            if (gif_height.has_value()) {
+                j["gif_height"] = gif_height.value();
+            }
+            if (gif_duration.has_value()) {
+                j["gif_duration"] = gif_duration.value();
+            }
+            j["thumbnail_url"] = thumbnail_url;
+            if (thumbnail_mime_type.has_value()) {
+                j["thumbnail_mime_type"] = thumbnail_mime_type.value();
+            }
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5529,7 +10440,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the video animation
      */
 
-    struct InlineQueryResultMpeg4Gif {
+    struct InlineQueryResultMpeg4Gif : public InlineQueryResult {
+        virtual ~InlineQueryResultMpeg4Gif() = default;
         // Type of the result, must be mpeg4_gif
         std::string type_;
 
@@ -5574,6 +10486,53 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the video animation
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["mpeg4_url"] = mpeg4_url;
+            if (mpeg4_width.has_value()) {
+                j["mpeg4_width"] = mpeg4_width.value();
+            }
+            if (mpeg4_height.has_value()) {
+                j["mpeg4_height"] = mpeg4_height.value();
+            }
+            if (mpeg4_duration.has_value()) {
+                j["mpeg4_duration"] = mpeg4_duration.value();
+            }
+            j["thumbnail_url"] = thumbnail_url;
+            if (thumbnail_mime_type.has_value()) {
+                j["thumbnail_mime_type"] = thumbnail_mime_type.value();
+            }
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5598,7 +10557,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the video. This field is required if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video).
      */
 
-    struct InlineQueryResultVideo {
+    struct InlineQueryResultVideo : public InlineQueryResult {
+        virtual ~InlineQueryResultVideo() = default;
         // Type of the result, must be video
         std::string type_;
 
@@ -5646,6 +10606,52 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the video. This field is required if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video).
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["video_url"] = video_url;
+            j["mime_type"] = mime_type;
+            j["thumbnail_url"] = thumbnail_url;
+            j["title"] = title;
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (video_width.has_value()) {
+                j["video_width"] = video_width.value();
+            }
+            if (video_height.has_value()) {
+                j["video_height"] = video_height.value();
+            }
+            if (video_duration.has_value()) {
+                j["video_duration"] = video_duration.value();
+            }
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5664,7 +10670,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the audio
      */
 
-    struct InlineQueryResultAudio {
+    struct InlineQueryResultAudio : public InlineQueryResult {
+        virtual ~InlineQueryResultAudio() = default;
         // Type of the result, must be audio
         std::string type_;
 
@@ -5697,6 +10704,41 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the audio
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["audio_url"] = audio_url;
+            j["title"] = title;
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (performer.has_value()) {
+                j["performer"] = performer.value();
+            }
+            if (audio_duration.has_value()) {
+                j["audio_duration"] = audio_duration.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5714,7 +10756,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the voice recording
      */
 
-    struct InlineQueryResultVoice {
+    struct InlineQueryResultVoice : public InlineQueryResult {
+        virtual ~InlineQueryResultVoice() = default;
         // Type of the result, must be voice
         std::string type_;
 
@@ -5744,6 +10787,38 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the voice recording
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["voice_url"] = voice_url;
+            j["title"] = title;
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (voice_duration.has_value()) {
+                j["voice_duration"] = voice_duration.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5765,7 +10840,8 @@ namespace telegram {
      * @param thumbnail_height Optional. Thumbnail height
      */
 
-    struct InlineQueryResultDocument {
+    struct InlineQueryResultDocument : public InlineQueryResult {
+        virtual ~InlineQueryResultDocument() = default;
         // Type of the result, must be document
         std::string type_;
 
@@ -5807,6 +10883,48 @@ namespace telegram {
 
         // Optional. Thumbnail height
         std::optional<std::int64_t> thumbnail_height;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["title"] = title;
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            j["document_url"] = document_url;
+            j["mime_type"] = mime_type;
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            if (thumbnail_url.has_value()) {
+                j["thumbnail_url"] = thumbnail_url.value();
+            }
+            if (thumbnail_width.has_value()) {
+                j["thumbnail_width"] = thumbnail_width.value();
+            }
+            if (thumbnail_height.has_value()) {
+                j["thumbnail_height"] = thumbnail_height.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5828,7 +10946,8 @@ namespace telegram {
      * @param thumbnail_height Optional. Thumbnail height
      */
 
-    struct InlineQueryResultLocation {
+    struct InlineQueryResultLocation : public InlineQueryResult {
+        virtual ~InlineQueryResultLocation() = default;
         // Type of the result, must be location
         std::string type_;
 
@@ -5870,6 +10989,43 @@ namespace telegram {
 
         // Optional. Thumbnail height
         std::optional<std::int64_t> thumbnail_height;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["latitude"] = latitude;
+            j["longitude"] = longitude;
+            j["title"] = title;
+            if (horizontal_accuracy.has_value()) {
+                j["horizontal_accuracy"] = horizontal_accuracy.value();
+            }
+            if (live_period.has_value()) {
+                j["live_period"] = live_period.value();
+            }
+            if (heading.has_value()) {
+                j["heading"] = heading.value();
+            }
+            if (proximity_alert_radius.has_value()) {
+                j["proximity_alert_radius"] = proximity_alert_radius.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            if (thumbnail_url.has_value()) {
+                j["thumbnail_url"] = thumbnail_url.value();
+            }
+            if (thumbnail_width.has_value()) {
+                j["thumbnail_width"] = thumbnail_width.value();
+            }
+            if (thumbnail_height.has_value()) {
+                j["thumbnail_height"] = thumbnail_height.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5892,7 +11048,8 @@ namespace telegram {
      * @param thumbnail_height Optional. Thumbnail height
      */
 
-    struct InlineQueryResultVenue {
+    struct InlineQueryResultVenue : public InlineQueryResult {
+        virtual ~InlineQueryResultVenue() = default;
         // Type of the result, must be venue
         std::string type_;
 
@@ -5937,6 +11094,44 @@ namespace telegram {
 
         // Optional. Thumbnail height
         std::optional<std::int64_t> thumbnail_height;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["latitude"] = latitude;
+            j["longitude"] = longitude;
+            j["title"] = title;
+            j["address"] = address;
+            if (foursquare_id.has_value()) {
+                j["foursquare_id"] = foursquare_id.value();
+            }
+            if (foursquare_type.has_value()) {
+                j["foursquare_type"] = foursquare_type.value();
+            }
+            if (google_place_id.has_value()) {
+                j["google_place_id"] = google_place_id.value();
+            }
+            if (google_place_type.has_value()) {
+                j["google_place_type"] = google_place_type.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            if (thumbnail_url.has_value()) {
+                j["thumbnail_url"] = thumbnail_url.value();
+            }
+            if (thumbnail_width.has_value()) {
+                j["thumbnail_width"] = thumbnail_width.value();
+            }
+            if (thumbnail_height.has_value()) {
+                j["thumbnail_height"] = thumbnail_height.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5955,7 +11150,8 @@ namespace telegram {
      * @param thumbnail_height Optional. Thumbnail height
      */
 
-    struct InlineQueryResultContact {
+    struct InlineQueryResultContact : public InlineQueryResult {
+        virtual ~InlineQueryResultContact() = default;
         // Type of the result, must be contact
         std::string type_;
 
@@ -5988,6 +11184,36 @@ namespace telegram {
 
         // Optional. Thumbnail height
         std::optional<std::int64_t> thumbnail_height;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["phone_number"] = phone_number;
+            j["first_name"] = first_name;
+            if (last_name.has_value()) {
+                j["last_name"] = last_name.value();
+            }
+            if (vcard.has_value()) {
+                j["vcard"] = vcard.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            if (thumbnail_url.has_value()) {
+                j["thumbnail_url"] = thumbnail_url.value();
+            }
+            if (thumbnail_width.has_value()) {
+                j["thumbnail_width"] = thumbnail_width.value();
+            }
+            if (thumbnail_height.has_value()) {
+                j["thumbnail_height"] = thumbnail_height.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -5999,7 +11225,8 @@ namespace telegram {
      * @param reply_markup Optional. Inline keyboard attached to the message
      */
 
-    struct InlineQueryResultGame {
+    struct InlineQueryResultGame : public InlineQueryResult {
+        virtual ~InlineQueryResultGame() = default;
         // Type of the result, must be game
         std::string type_;
 
@@ -6011,6 +11238,17 @@ namespace telegram {
 
         // Optional. Inline keyboard attached to the message
         std::optional<InlineKeyboardMarkup> reply_markup;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["game_short_name"] = game_short_name;
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6029,7 +11267,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the photo
      */
 
-    struct InlineQueryResultCachedPhoto {
+    struct InlineQueryResultCachedPhoto : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedPhoto() = default;
         // Type of the result, must be photo
         std::string type_;
 
@@ -6062,6 +11301,43 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the photo
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["photo_file_id"] = photo_file_id;
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6079,7 +11355,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the GIF animation
      */
 
-    struct InlineQueryResultCachedGif {
+    struct InlineQueryResultCachedGif : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedGif() = default;
         // Type of the result, must be gif
         std::string type_;
 
@@ -6109,6 +11386,40 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the GIF animation
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["gif_file_id"] = gif_file_id;
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6126,7 +11437,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the video animation
      */
 
-    struct InlineQueryResultCachedMpeg4Gif {
+    struct InlineQueryResultCachedMpeg4Gif : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedMpeg4Gif() = default;
         // Type of the result, must be mpeg4_gif
         std::string type_;
 
@@ -6156,6 +11468,40 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the video animation
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["mpeg4_file_id"] = mpeg4_file_id;
+            if (title.has_value()) {
+                j["title"] = title.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6168,7 +11514,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the sticker
      */
 
-    struct InlineQueryResultCachedSticker {
+    struct InlineQueryResultCachedSticker : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedSticker() = default;
         // Type of the result, must be sticker
         std::string type_;
 
@@ -6183,6 +11530,20 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the sticker
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["sticker_file_id"] = sticker_file_id;
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6200,7 +11561,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the file
      */
 
-    struct InlineQueryResultCachedDocument {
+    struct InlineQueryResultCachedDocument : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedDocument() = default;
         // Type of the result, must be document
         std::string type_;
 
@@ -6230,6 +11592,38 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the file
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["title"] = title;
+            j["document_file_id"] = document_file_id;
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6248,7 +11642,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the video
      */
 
-    struct InlineQueryResultCachedVideo {
+    struct InlineQueryResultCachedVideo : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedVideo() = default;
         // Type of the result, must be video
         std::string type_;
 
@@ -6281,6 +11676,41 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the video
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["video_file_id"] = video_file_id;
+            j["title"] = title;
+            if (description.has_value()) {
+                j["description"] = description.value();
+            }
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (show_caption_above_media.has_value()) {
+                j["show_caption_above_media"] = show_caption_above_media.value();
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6297,7 +11727,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the voice message
      */
 
-    struct InlineQueryResultCachedVoice {
+    struct InlineQueryResultCachedVoice : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedVoice() = default;
         // Type of the result, must be voice
         std::string type_;
 
@@ -6324,6 +11755,35 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the voice message
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["voice_file_id"] = voice_file_id;
+            j["title"] = title;
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6339,7 +11799,8 @@ namespace telegram {
      * @param input_message_content Optional. Content of the message to be sent instead of the audio
      */
 
-    struct InlineQueryResultCachedAudio {
+    struct InlineQueryResultCachedAudio : public InlineQueryResult {
+        virtual ~InlineQueryResultCachedAudio() = default;
         // Type of the result, must be audio
         std::string type_;
 
@@ -6363,6 +11824,34 @@ namespace telegram {
 
         // Optional. Content of the message to be sent instead of the audio
         std::optional<InputMessageContent> input_message_content;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["id"] = id;
+            j["audio_file_id"] = audio_file_id;
+            if (caption.has_value()) {
+                j["caption"] = caption.value();
+            }
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (caption_entities.has_value()) {
+                std::vector<json> caption_entities_values;
+                caption_entities_values.reserve(caption_entities.value().size());
+                for (auto& e : caption_entities.value()) {
+                    caption_entities_values.push_back(e.to_json());
+                }
+                j["caption_entities"] = caption_entities_values;
+            }
+            if (reply_markup.has_value()) {
+                j["reply_markup"] = reply_markup.value().to_json();
+            }
+            if (input_message_content.has_value()) {
+                j["input_message_content"] = input_message_content.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6374,7 +11863,8 @@ namespace telegram {
      * @param link_preview_options Optional. Link preview generation options for the message
      */
 
-    struct InputTextMessageContent {
+    struct InputTextMessageContent : public InputMessageContent {
+        virtual ~InputTextMessageContent() = default;
         // Text of the message to be sent, 1-4096 characters
         std::string message_text;
 
@@ -6386,6 +11876,26 @@ namespace telegram {
 
         // Optional. Link preview generation options for the message
         std::optional<LinkPreviewOptions> link_preview_options;
+
+        json to_json() const override {
+            json j;
+            j["message_text"] = message_text;
+            if (parse_mode.has_value()) {
+                j["parse_mode"] = parse_mode.value().to_json();
+            }
+            if (entities.has_value()) {
+                std::vector<json> entities_values;
+                entities_values.reserve(entities.value().size());
+                for (auto& e : entities.value()) {
+                    entities_values.push_back(e.to_json());
+                }
+                j["entities"] = entities_values;
+            }
+            if (link_preview_options.has_value()) {
+                j["link_preview_options"] = link_preview_options.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6399,7 +11909,8 @@ namespace telegram {
      * @param proximity_alert_radius Optional. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
      */
 
-    struct InputLocationMessageContent {
+    struct InputLocationMessageContent : public InputMessageContent {
+        virtual ~InputLocationMessageContent() = default;
         // Latitude of the location in degrees
         double latitude;
 
@@ -6417,6 +11928,25 @@ namespace telegram {
 
         // Optional. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         std::optional<std::int64_t> proximity_alert_radius;
+
+        json to_json() const override {
+            json j;
+            j["latitude"] = latitude;
+            j["longitude"] = longitude;
+            if (horizontal_accuracy.has_value()) {
+                j["horizontal_accuracy"] = horizontal_accuracy.value();
+            }
+            if (live_period.has_value()) {
+                j["live_period"] = live_period.value();
+            }
+            if (heading.has_value()) {
+                j["heading"] = heading.value();
+            }
+            if (proximity_alert_radius.has_value()) {
+                j["proximity_alert_radius"] = proximity_alert_radius.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6432,7 +11962,8 @@ namespace telegram {
      * @param google_place_type Optional. Google Places type of the venue. (See supported types.)
      */
 
-    struct InputVenueMessageContent {
+    struct InputVenueMessageContent : public InputMessageContent {
+        virtual ~InputVenueMessageContent() = default;
         // Latitude of the venue in degrees
         double latitude;
 
@@ -6456,6 +11987,27 @@ namespace telegram {
 
         // Optional. Google Places type of the venue. (See supported types.)
         std::optional<std::string> google_place_type;
+
+        json to_json() const override {
+            json j;
+            j["latitude"] = latitude;
+            j["longitude"] = longitude;
+            j["title"] = title;
+            j["address"] = address;
+            if (foursquare_id.has_value()) {
+                j["foursquare_id"] = foursquare_id.value();
+            }
+            if (foursquare_type.has_value()) {
+                j["foursquare_type"] = foursquare_type.value();
+            }
+            if (google_place_id.has_value()) {
+                j["google_place_id"] = google_place_id.value();
+            }
+            if (google_place_type.has_value()) {
+                j["google_place_type"] = google_place_type.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6467,7 +12019,8 @@ namespace telegram {
      * @param vcard Optional. Additional data about the contact in the form of a vCard, 0-2048 bytes
      */
 
-    struct InputContactMessageContent {
+    struct InputContactMessageContent : public InputMessageContent {
+        virtual ~InputContactMessageContent() = default;
         // Contact's phone number
         std::string phone_number;
 
@@ -6479,7 +12032,49 @@ namespace telegram {
 
         // Optional. Additional data about the contact in the form of a vCard, 0-2048 bytes
         std::optional<std::string> vcard;
+
+        json to_json() const override {
+            json j;
+            j["phone_number"] = phone_number;
+            j["first_name"] = first_name;
+            if (last_name.has_value()) {
+                j["last_name"] = last_name.value();
+            }
+            if (vcard.has_value()) {
+                j["vcard"] = vcard.value();
+            }
+            return j.dump();
+        }
     };
+
+
+    // Payments
+
+    /**
+     * This object represents a portion of the price for goods or services.
+     *
+     * @param label Portion label
+     * @param amount Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+     */
+
+    struct LabeledPrice : public TelegramModel {
+        virtual ~LabeledPrice() = default;
+        // Portion label
+        std::string label;
+
+        // Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
+        std::int64_t amount;
+
+        json to_json() const override {
+            json j;
+            j["label"] = label;
+            j["amount"] = amount;
+            return j.dump();
+        }
+    };
+
+
+    // Inline mode
 
     /**
      * Represents the content of an invoice message to be sent as the result of an inline query.
@@ -6506,7 +12101,8 @@ namespace telegram {
      * @param is_flexible Optional. Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.
      */
 
-    struct InputInvoiceMessageContent {
+    struct InputInvoiceMessageContent : public InputMessageContent {
+        virtual ~InputInvoiceMessageContent() = default;
         // Product name, 1-32 characters
         std::string title;
 
@@ -6566,33 +12162,66 @@ namespace telegram {
 
         // Optional. Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.
         std::optional<bool> is_flexible;
-    };
 
-    /**
-     * Represents a result of an inline query that was chosen by the user and sent to their chat partner.Note: It is necessary to enable inline feedback via @BotFather in order to receive these objects in updates.
-     *
-     * @param result_id The unique identifier for the result that was chosen
-     * @param from The user that chose the result
-     * @param location Optional. Sender location, only for bots that require user location
-     * @param inline_message_id Optional. Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message. Will be also received in callback queries and can be used to edit the message.
-     * @param query The query that was used to obtain the result
-     */
-
-    struct ChosenInlineResult {
-        // The unique identifier for the result that was chosen
-        std::string result_id;
-
-        // The user that chose the result
-        User from;
-
-        // Optional. Sender location, only for bots that require user location
-        std::optional<Location> location;
-
-        // Optional. Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message. Will be also received in callback queries and can be used to edit the message.
-        std::optional<std::string> inline_message_id;
-
-        // The query that was used to obtain the result
-        std::string query;
+        json to_json() const override {
+            json j;
+            j["title"] = title;
+            j["description"] = description;
+            j["payload"] = payload;
+            if (provider_token.has_value()) {
+                j["provider_token"] = provider_token.value();
+            }
+            j["currency"] = currency;
+            std::vector<json> prices_values;
+            prices_values.reserve(prices.size());
+            for (auto& e : prices) {
+                prices_values.push_back(e.to_json());
+            }
+            j["prices"] = prices_values;
+            if (max_tip_amount.has_value()) {
+                j["max_tip_amount"] = max_tip_amount.value();
+            }
+            if (suggested_tip_amounts.has_value()) {
+                j["suggested_tip_amounts"] = suggested_tip_amounts.value();
+            }
+            if (provider_data.has_value()) {
+                j["provider_data"] = provider_data.value();
+            }
+            if (photo_url.has_value()) {
+                j["photo_url"] = photo_url.value();
+            }
+            if (photo_size.has_value()) {
+                j["photo_size"] = photo_size.value();
+            }
+            if (photo_width.has_value()) {
+                j["photo_width"] = photo_width.value();
+            }
+            if (photo_height.has_value()) {
+                j["photo_height"] = photo_height.value();
+            }
+            if (need_name.has_value()) {
+                j["need_name"] = need_name.value();
+            }
+            if (need_phone_number.has_value()) {
+                j["need_phone_number"] = need_phone_number.value();
+            }
+            if (need_email.has_value()) {
+                j["need_email"] = need_email.value();
+            }
+            if (need_shipping_address.has_value()) {
+                j["need_shipping_address"] = need_shipping_address.value();
+            }
+            if (send_phone_number_to_provider.has_value()) {
+                j["send_phone_number_to_provider"] = send_phone_number_to_provider.value();
+            }
+            if (send_email_to_provider.has_value()) {
+                j["send_email_to_provider"] = send_email_to_provider.value();
+            }
+            if (is_flexible.has_value()) {
+                j["is_flexible"] = is_flexible.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6601,9 +12230,18 @@ namespace telegram {
      * @param inline_message_id Optional. Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message.
      */
 
-    struct SentWebAppMessage {
+    struct SentWebAppMessage : public TelegramModel {
+        virtual ~SentWebAppMessage() = default;
         // Optional. Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message.
         std::optional<std::string> inline_message_id;
+
+        json to_json() const override {
+            json j;
+            if (inline_message_id.has_value()) {
+                j["inline_message_id"] = inline_message_id.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6613,112 +12251,24 @@ namespace telegram {
      * @param expiration_date Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used
      */
 
-    struct PreparedInlineMessage {
+    struct PreparedInlineMessage : public TelegramModel {
+        virtual ~PreparedInlineMessage() = default;
         // Unique identifier of the prepared message
         std::string id;
 
         // Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used
         std::int64_t expiration_date;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["expiration_date"] = expiration_date;
+            return j.dump();
+        }
     };
 
 
     // Payments
-
-    /**
-     * This object represents a portion of the price for goods or services.
-     *
-     * @param label Portion label
-     * @param amount Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-     */
-
-    struct LabeledPrice {
-        // Portion label
-        std::string label;
-
-        // Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-        std::int64_t amount;
-    };
-
-    /**
-     * This object contains basic information about an invoice.
-     *
-     * @param title Product name
-     * @param description Product description
-     * @param start_parameter Unique bot deep-linking parameter that can be used to generate this invoice
-     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
-     * @param total_amount Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-     */
-
-    struct Invoice {
-        // Product name
-        std::string title;
-
-        // Product description
-        std::string description;
-
-        // Unique bot deep-linking parameter that can be used to generate this invoice
-        std::string start_parameter;
-
-        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
-        std::string currency;
-
-        // Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-        std::int64_t total_amount;
-    };
-
-    /**
-     * This object represents a shipping address.
-     *
-     * @param country_code Two-letter ISO 3166-1 alpha-2 country code
-     * @param state State, if applicable
-     * @param city City
-     * @param street_line1 First line for the address
-     * @param street_line2 Second line for the address
-     * @param post_code Address post code
-     */
-
-    struct ShippingAddress {
-        // Two-letter ISO 3166-1 alpha-2 country code
-        std::string country_code;
-
-        // State, if applicable
-        std::string state;
-
-        // City
-        std::string city;
-
-        // First line for the address
-        std::string street_line1;
-
-        // Second line for the address
-        std::string street_line2;
-
-        // Address post code
-        std::string post_code;
-    };
-
-    /**
-     * This object represents information about an order.
-     *
-     * @param name Optional. User name
-     * @param phone_number Optional. User's phone number
-     * @param email Optional. User email
-     * @param shipping_address Optional. User shipping address
-     */
-
-    struct OrderInfo {
-        // Optional. User name
-        std::optional<std::string> name;
-
-        // Optional. User's phone number
-        std::optional<std::string> phone_number;
-
-        // Optional. User email
-        std::optional<std::string> email;
-
-        // Optional. User shipping address
-        std::optional<ShippingAddress> shipping_address;
-    };
 
     /**
      * This object represents one shipping option.
@@ -6728,7 +12278,8 @@ namespace telegram {
      * @param prices List of price portions
      */
 
-    struct ShippingOption {
+    struct ShippingOption : public TelegramModel {
+        virtual ~ShippingOption() = default;
         // Shipping option identifier
         std::string id;
 
@@ -6737,153 +12288,19 @@ namespace telegram {
 
         // List of price portions
         std::vector<LabeledPrice> prices;
-    };
 
-    /**
-     * This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.
-     *
-     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
-     * @param total_amount Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-     * @param invoice_payload Bot-specified invoice payload
-     * @param subscription_expiration_date Optional. Expiration date of the subscription, in Unix time; for recurring payments only
-     * @param is_recurring Optional. True, if the payment is a recurring payment for a subscription
-     * @param is_first_recurring Optional. True, if the payment is the first payment for a subscription
-     * @param shipping_option_id Optional. Identifier of the shipping option chosen by the user
-     * @param order_info Optional. Order information provided by the user
-     * @param telegram_payment_charge_id Telegram payment identifier
-     * @param provider_payment_charge_id Provider payment identifier
-     */
-
-    struct SuccessfulPayment {
-        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
-        std::string currency;
-
-        // Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-        std::int64_t total_amount;
-
-        // Bot-specified invoice payload
-        std::string invoice_payload;
-
-        // Optional. Expiration date of the subscription, in Unix time; for recurring payments only
-        std::optional<std::int64_t> subscription_expiration_date;
-
-        // Optional. True, if the payment is a recurring payment for a subscription
-        std::optional<bool> is_recurring;
-
-        // Optional. True, if the payment is the first payment for a subscription
-        std::optional<bool> is_first_recurring;
-
-        // Optional. Identifier of the shipping option chosen by the user
-        std::optional<std::string> shipping_option_id;
-
-        // Optional. Order information provided by the user
-        std::optional<OrderInfo> order_info;
-
-        // Telegram payment identifier
-        std::string telegram_payment_charge_id;
-
-        // Provider payment identifier
-        std::string provider_payment_charge_id;
-    };
-
-    /**
-     * This object contains basic information about a refunded payment.
-     *
-     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars. Currently, always “XTR”
-     * @param total_amount Total refunded price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45, total_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-     * @param invoice_payload Bot-specified invoice payload
-     * @param telegram_payment_charge_id Telegram payment identifier
-     * @param provider_payment_charge_id Optional. Provider payment identifier
-     */
-
-    struct RefundedPayment {
-        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars. Currently, always “XTR”
-        std::string currency;
-
-        // Total refunded price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45, total_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-        std::int64_t total_amount;
-
-        // Bot-specified invoice payload
-        std::string invoice_payload;
-
-        // Telegram payment identifier
-        std::string telegram_payment_charge_id;
-
-        // Optional. Provider payment identifier
-        std::optional<std::string> provider_payment_charge_id;
-    };
-
-    /**
-     * This object contains information about an incoming shipping query.
-     *
-     * @param id Unique query identifier
-     * @param from User who sent the query
-     * @param invoice_payload Bot-specified invoice payload
-     * @param shipping_address User specified shipping address
-     */
-
-    struct ShippingQuery {
-        // Unique query identifier
-        std::string id;
-
-        // User who sent the query
-        User from;
-
-        // Bot-specified invoice payload
-        std::string invoice_payload;
-
-        // User specified shipping address
-        ShippingAddress shipping_address;
-    };
-
-    /**
-     * This object contains information about an incoming pre-checkout query.
-     *
-     * @param id Unique query identifier
-     * @param from User who sent the query
-     * @param currency Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
-     * @param total_amount Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-     * @param invoice_payload Bot-specified invoice payload
-     * @param shipping_option_id Optional. Identifier of the shipping option chosen by the user
-     * @param order_info Optional. Order information provided by the user
-     */
-
-    struct PreCheckoutQuery {
-        // Unique query identifier
-        std::string id;
-
-        // User who sent the query
-        User from;
-
-        // Three-letter ISO 4217 currency code, or “XTR” for payments in Telegram Stars
-        std::string currency;
-
-        // Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).
-        std::int64_t total_amount;
-
-        // Bot-specified invoice payload
-        std::string invoice_payload;
-
-        // Optional. Identifier of the shipping option chosen by the user
-        std::optional<std::string> shipping_option_id;
-
-        // Optional. Order information provided by the user
-        std::optional<OrderInfo> order_info;
-    };
-
-    /**
-     * This object contains information about a paid media purchase.
-     *
-     * @param from User who purchased the media
-     * @param paid_media_payload Bot-specified paid media payload
-     */
-
-    struct PaidMediaPurchased {
-        // User who purchased the media
-        User from;
-
-        // Bot-specified paid media payload
-        std::string paid_media_payload;
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["title"] = title;
+            std::vector<json> prices_values;
+            prices_values.reserve(prices.size());
+            for (auto& e : prices) {
+                prices_values.push_back(e.to_json());
+            }
+            j["prices"] = prices_values;
+            return j.dump();
+        }
     };
 
     /**
@@ -6892,9 +12309,16 @@ namespace telegram {
      * @param type Type of the state, always “pending”
      */
 
-    struct RevenueWithdrawalStatePending {
+    struct RevenueWithdrawalStatePending : public RevenueWithdrawalState {
+        virtual ~RevenueWithdrawalStatePending() = default;
         // Type of the state, always “pending”
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -6905,7 +12329,8 @@ namespace telegram {
      * @param url An HTTPS URL that can be used to see transaction details
      */
 
-    struct RevenueWithdrawalStateSucceeded {
+    struct RevenueWithdrawalStateSucceeded : public RevenueWithdrawalState {
+        virtual ~RevenueWithdrawalStateSucceeded() = default;
         // Type of the state, always “succeeded”
         std::string type_;
 
@@ -6914,6 +12339,14 @@ namespace telegram {
 
         // An HTTPS URL that can be used to see transaction details
         std::string url;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["date"] = date;
+            j["url"] = url;
+            return j.dump();
+        }
     };
 
     /**
@@ -6922,9 +12355,16 @@ namespace telegram {
      * @param type Type of the state, always “failed”
      */
 
-    struct RevenueWithdrawalStateFailed {
+    struct RevenueWithdrawalStateFailed : public RevenueWithdrawalState {
+        virtual ~RevenueWithdrawalStateFailed() = default;
         // Type of the state, always “failed”
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -6937,7 +12377,8 @@ namespace telegram {
      * @param nanostar_amount Optional. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds
      */
 
-    struct AffiliateInfo {
+    struct AffiliateInfo : public TelegramModel {
+        virtual ~AffiliateInfo() = default;
         // Optional. The bot or the user that received an affiliate commission if it was received by a bot or a user
         std::optional<User> affiliate_user;
 
@@ -6952,6 +12393,22 @@ namespace telegram {
 
         // Optional. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds
         std::optional<std::int64_t> nanostar_amount;
+
+        json to_json() const override {
+            json j;
+            if (affiliate_user.has_value()) {
+                j["affiliate_user"] = affiliate_user.value().to_json();
+            }
+            if (affiliate_chat.has_value()) {
+                j["affiliate_chat"] = affiliate_chat.value().to_json();
+            }
+            j["commission_per_mille"] = commission_per_mille;
+            j["amount"] = amount;
+            if (nanostar_amount.has_value()) {
+                j["nanostar_amount"] = nanostar_amount.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -6969,7 +12426,8 @@ namespace telegram {
      * @param premium_subscription_duration Optional. Number of months the gifted Telegram Premium subscription will be active for; for “premium_purchase” transactions only
      */
 
-    struct TransactionPartnerUser {
+    struct TransactionPartnerUser : public TransactionPartner {
+        virtual ~TransactionPartnerUser() = default;
         // Type of the transaction partner, always “user”
         std::string type_;
 
@@ -6977,7 +12435,7 @@ namespace telegram {
         std::string transaction_type;
 
         // Information about the user
-        User user;
+        std::shared_ptr<User> user;
 
         // Optional. Information about the affiliate that received a commission via this transaction. Can be available only for “invoice_payment” and “paid_media_payment” transactions.
         std::optional<AffiliateInfo> affiliate;
@@ -6999,6 +12457,40 @@ namespace telegram {
 
         // Optional. Number of months the gifted Telegram Premium subscription will be active for; for “premium_purchase” transactions only
         std::optional<std::int64_t> premium_subscription_duration;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["transaction_type"] = transaction_type;
+            j["user"] = user->to_json();
+            if (affiliate.has_value()) {
+                j["affiliate"] = affiliate.value().to_json();
+            }
+            if (invoice_payload.has_value()) {
+                j["invoice_payload"] = invoice_payload.value();
+            }
+            if (subscription_period.has_value()) {
+                j["subscription_period"] = subscription_period.value();
+            }
+            if (paid_media.has_value()) {
+                std::vector<json> paid_media_values;
+                paid_media_values.reserve(paid_media.value().size());
+                for (auto& e : paid_media.value()) {
+                    paid_media_values.push_back(e.to_json());
+                }
+                j["paid_media"] = paid_media_values;
+            }
+            if (paid_media_payload.has_value()) {
+                j["paid_media_payload"] = paid_media_payload.value();
+            }
+            if (gift.has_value()) {
+                j["gift"] = gift.value().to_json();
+            }
+            if (premium_subscription_duration.has_value()) {
+                j["premium_subscription_duration"] = premium_subscription_duration.value();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -7009,15 +12501,26 @@ namespace telegram {
      * @param gift Optional. The gift sent to the chat by the bot
      */
 
-    struct TransactionPartnerChat {
+    struct TransactionPartnerChat : public TransactionPartner {
+        virtual ~TransactionPartnerChat() = default;
         // Type of the transaction partner, always “chat”
         std::string type_;
 
         // Information about the chat
-        Chat chat;
+        std::shared_ptr<Chat> chat;
 
         // Optional. The gift sent to the chat by the bot
         std::optional<Gift> gift;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["chat"] = chat->to_json();
+            if (gift.has_value()) {
+                j["gift"] = gift.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -7028,7 +12531,8 @@ namespace telegram {
      * @param commission_per_mille The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users
      */
 
-    struct TransactionPartnerAffiliateProgram {
+    struct TransactionPartnerAffiliateProgram : public TransactionPartner {
+        virtual ~TransactionPartnerAffiliateProgram() = default;
         // Type of the transaction partner, always “affiliate_program”
         std::string type_;
 
@@ -7037,6 +12541,16 @@ namespace telegram {
 
         // The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users
         std::int64_t commission_per_mille;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            if (sponsor_user.has_value()) {
+                j["sponsor_user"] = sponsor_user.value().to_json();
+            }
+            j["commission_per_mille"] = commission_per_mille;
+            return j.dump();
+        }
     };
 
     /**
@@ -7046,12 +12560,22 @@ namespace telegram {
      * @param withdrawal_state Optional. State of the transaction if the transaction is outgoing
      */
 
-    struct TransactionPartnerFragment {
+    struct TransactionPartnerFragment : public TransactionPartner {
+        virtual ~TransactionPartnerFragment() = default;
         // Type of the transaction partner, always “fragment”
         std::string type_;
 
         // Optional. State of the transaction if the transaction is outgoing
         std::optional<RevenueWithdrawalState> withdrawal_state;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            if (withdrawal_state.has_value()) {
+                j["withdrawal_state"] = withdrawal_state.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -7060,9 +12584,16 @@ namespace telegram {
      * @param type Type of the transaction partner, always “telegram_ads”
      */
 
-    struct TransactionPartnerTelegramAds {
+    struct TransactionPartnerTelegramAds : public TransactionPartner {
+        virtual ~TransactionPartnerTelegramAds() = default;
         // Type of the transaction partner, always “telegram_ads”
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -7072,12 +12603,20 @@ namespace telegram {
      * @param request_count The number of successful requests that exceeded regular limits and were therefore billed
      */
 
-    struct TransactionPartnerTelegramApi {
+    struct TransactionPartnerTelegramApi : public TransactionPartner {
+        virtual ~TransactionPartnerTelegramApi() = default;
         // Type of the transaction partner, always “telegram_api”
         std::string type_;
 
         // The number of successful requests that exceeded regular limits and were therefore billed
         std::int64_t request_count;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            j["request_count"] = request_count;
+            return j.dump();
+        }
     };
 
     /**
@@ -7086,9 +12625,16 @@ namespace telegram {
      * @param type Type of the transaction partner, always “other”
      */
 
-    struct TransactionPartnerOther {
+    struct TransactionPartnerOther : public TransactionPartner {
+        virtual ~TransactionPartnerOther() = default;
         // Type of the transaction partner, always “other”
         std::string type_;
+
+        json to_json() const override {
+            json j;
+            j["type"] = type_;
+            return j.dump();
+        }
     };
 
     /**
@@ -7102,7 +12648,8 @@ namespace telegram {
      * @param receiver Optional. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
      */
 
-    struct StarTransaction {
+    struct StarTransaction : public TelegramModel {
+        virtual ~StarTransaction() = default;
         // Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with SuccessfulPayment.telegram_payment_charge_id for successful incoming payments from users.
         std::string id;
 
@@ -7120,6 +12667,23 @@ namespace telegram {
 
         // Optional. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
         std::optional<TransactionPartner> receiver;
+
+        json to_json() const override {
+            json j;
+            j["id"] = id;
+            j["amount"] = amount;
+            if (nanostar_amount.has_value()) {
+                j["nanostar_amount"] = nanostar_amount.value();
+            }
+            j["date"] = date;
+            if (source.has_value()) {
+                j["source"] = source.value().to_json();
+            }
+            if (receiver.has_value()) {
+                j["receiver"] = receiver.value().to_json();
+            }
+            return j.dump();
+        }
     };
 
     /**
@@ -7128,117 +12692,25 @@ namespace telegram {
      * @param transactions The list of transactions
      */
 
-    struct StarTransactions {
+    struct StarTransactions : public TelegramModel {
+        virtual ~StarTransactions() = default;
         // The list of transactions
         std::vector<StarTransaction> transactions;
+
+        json to_json() const override {
+            json j;
+            std::vector<json> transactions_values;
+            transactions_values.reserve(transactions.size());
+            for (auto& e : transactions) {
+                transactions_values.push_back(e.to_json());
+            }
+            j["transactions"] = transactions_values;
+            return j.dump();
+        }
     };
 
 
     // Telegram Passport
-
-    /**
-     * Describes Telegram Passport data shared with the bot by the user.
-     *
-     * @param data Array with information about documents and other Telegram Passport elements that was shared with the bot
-     * @param credentials Encrypted credentials required to decrypt the data
-     */
-
-    struct PassportData {
-        // Array with information about documents and other Telegram Passport elements that was shared with the bot
-        std::vector<EncryptedPassportElement> data;
-
-        // Encrypted credentials required to decrypt the data
-        EncryptedCredentials credentials;
-    };
-
-    /**
-     * This object represents a file uploaded to Telegram Passport. Currently all Telegram Passport files are in JPEG format when decrypted and don't exceed 10MB.
-     *
-     * @param file_id Identifier for this file, which can be used to download or reuse the file
-     * @param file_unique_id Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-     * @param file_size File size in bytes
-     * @param file_date Unix time when the file was uploaded
-     */
-
-    struct PassportFile {
-        // Identifier for this file, which can be used to download or reuse the file
-        std::string file_id;
-
-        // Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
-        std::string file_unique_id;
-
-        // File size in bytes
-        std::int64_t file_size;
-
-        // Unix time when the file was uploaded
-        std::int64_t file_date;
-    };
-
-    /**
-     * Describes documents or other Telegram Passport elements shared with the bot by the user.
-     *
-     * @param type Element type. One of “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport”, “address”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”, “phone_number”, “email”.
-     * @param data Optional. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport” and “address” types. Can be decrypted and verified using the accompanying EncryptedCredentials.
-     * @param phone_number Optional. User's verified phone number; available only for “phone_number” type
-     * @param email Optional. User's verified email address; available only for “email” type
-     * @param files Optional. Array of encrypted files with documents provided by the user; available only for “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
-     * @param front_side Optional. Encrypted file with the front side of the document, provided by the user; available only for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
-     * @param reverse_side Optional. Encrypted file with the reverse side of the document, provided by the user; available only for “driver_license” and “identity_card”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
-     * @param selfie Optional. Encrypted file with the selfie of the user holding a document, provided by the user; available if requested for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
-     * @param translation Optional. Array of encrypted files with translated versions of documents provided by the user; available if requested for “passport”, “driver_license”, “identity_card”, “internal_passport”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
-     * @param hash Base64-encoded element hash for using in PassportElementErrorUnspecified
-     */
-
-    struct EncryptedPassportElement {
-        // Element type. One of “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport”, “address”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”, “phone_number”, “email”.
-        std::string type_;
-
-        // Optional. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport” and “address” types. Can be decrypted and verified using the accompanying EncryptedCredentials.
-        std::optional<std::string> data;
-
-        // Optional. User's verified phone number; available only for “phone_number” type
-        std::optional<std::string> phone_number;
-
-        // Optional. User's verified email address; available only for “email” type
-        std::optional<std::string> email;
-
-        // Optional. Array of encrypted files with documents provided by the user; available only for “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
-        std::optional<std::vector<PassportFile>> files;
-
-        // Optional. Encrypted file with the front side of the document, provided by the user; available only for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
-        std::optional<PassportFile> front_side;
-
-        // Optional. Encrypted file with the reverse side of the document, provided by the user; available only for “driver_license” and “identity_card”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
-        std::optional<PassportFile> reverse_side;
-
-        // Optional. Encrypted file with the selfie of the user holding a document, provided by the user; available if requested for “passport”, “driver_license”, “identity_card” and “internal_passport”. The file can be decrypted and verified using the accompanying EncryptedCredentials.
-        std::optional<PassportFile> selfie;
-
-        // Optional. Array of encrypted files with translated versions of documents provided by the user; available if requested for “passport”, “driver_license”, “identity_card”, “internal_passport”, “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration” and “temporary_registration” types. Files can be decrypted and verified using the accompanying EncryptedCredentials.
-        std::optional<std::vector<PassportFile>> translation;
-
-        // Base64-encoded element hash for using in PassportElementErrorUnspecified
-        std::string hash;
-    };
-
-    /**
-     * Describes data required for decrypting and authenticating EncryptedPassportElement. See the Telegram Passport Documentation for a complete description of the data decryption and authentication processes.
-     *
-     * @param data Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for EncryptedPassportElement decryption and authentication
-     * @param hash Base64-encoded data hash for data authentication
-     * @param secret Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption
-     */
-
-    struct EncryptedCredentials {
-        // Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for EncryptedPassportElement decryption and authentication
-        std::string data;
-
-        // Base64-encoded data hash for data authentication
-        std::string hash;
-
-        // Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption
-        std::string secret;
-    };
 
     /**
      * Represents an issue in one of the data fields that was provided by the user. The error is considered resolved when the field's value changes.
@@ -7250,7 +12722,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorDataField {
+    struct PassportElementErrorDataField : public PassportElementError {
+        virtual ~PassportElementErrorDataField() = default;
         // Error source, must be data
         std::string source;
 
@@ -7265,6 +12738,16 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["field_name"] = field_name;
+            j["data_hash"] = data_hash;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7276,7 +12759,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorFrontSide {
+    struct PassportElementErrorFrontSide : public PassportElementError {
+        virtual ~PassportElementErrorFrontSide() = default;
         // Error source, must be front_side
         std::string source;
 
@@ -7288,6 +12772,15 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["file_hash"] = file_hash;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7299,7 +12792,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorReverseSide {
+    struct PassportElementErrorReverseSide : public PassportElementError {
+        virtual ~PassportElementErrorReverseSide() = default;
         // Error source, must be reverse_side
         std::string source;
 
@@ -7311,6 +12805,15 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["file_hash"] = file_hash;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7322,7 +12825,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorSelfie {
+    struct PassportElementErrorSelfie : public PassportElementError {
+        virtual ~PassportElementErrorSelfie() = default;
         // Error source, must be selfie
         std::string source;
 
@@ -7334,6 +12838,15 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["file_hash"] = file_hash;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7345,7 +12858,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorFile {
+    struct PassportElementErrorFile : public PassportElementError {
+        virtual ~PassportElementErrorFile() = default;
         // Error source, must be file
         std::string source;
 
@@ -7357,6 +12871,15 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["file_hash"] = file_hash;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7368,7 +12891,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorFiles {
+    struct PassportElementErrorFiles : public PassportElementError {
+        virtual ~PassportElementErrorFiles() = default;
         // Error source, must be files
         std::string source;
 
@@ -7380,6 +12904,15 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["file_hashes"] = file_hashes;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7391,7 +12924,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorTranslationFile {
+    struct PassportElementErrorTranslationFile : public PassportElementError {
+        virtual ~PassportElementErrorTranslationFile() = default;
         // Error source, must be translation_file
         std::string source;
 
@@ -7403,6 +12937,15 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["file_hash"] = file_hash;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7414,7 +12957,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorTranslationFiles {
+    struct PassportElementErrorTranslationFiles : public PassportElementError {
+        virtual ~PassportElementErrorTranslationFiles() = default;
         // Error source, must be translation_files
         std::string source;
 
@@ -7426,6 +12970,15 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["file_hashes"] = file_hashes;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
     /**
@@ -7437,7 +12990,8 @@ namespace telegram {
      * @param message Error message
      */
 
-    struct PassportElementErrorUnspecified {
+    struct PassportElementErrorUnspecified : public PassportElementError {
+        virtual ~PassportElementErrorUnspecified() = default;
         // Error source, must be unspecified
         std::string source;
 
@@ -7449,41 +13003,19 @@ namespace telegram {
 
         // Error message
         std::string message;
+
+        json to_json() const override {
+            json j;
+            j["source"] = source;
+            j["type"] = type_;
+            j["element_hash"] = element_hash;
+            j["message"] = message;
+            return j.dump();
+        }
     };
 
 
     // Games
-
-    /**
-     * This object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.
-     *
-     * @param title Title of the game
-     * @param description Description of the game
-     * @param photo Photo that will be displayed in the game message in chats.
-     * @param text Optional. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls setGameScore, or manually edited using editMessageText. 0-4096 characters.
-     * @param text_entities Optional. Special entities that appear in text, such as usernames, URLs, bot commands, etc.
-     * @param animation Optional. Animation that will be displayed in the game message in chats. Upload via BotFather
-     */
-
-    struct Game {
-        // Title of the game
-        std::string title;
-
-        // Description of the game
-        std::string description;
-
-        // Photo that will be displayed in the game message in chats.
-        std::vector<PhotoSize> photo;
-
-        // Optional. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls setGameScore, or manually edited using editMessageText. 0-4096 characters.
-        std::optional<std::string> text;
-
-        // Optional. Special entities that appear in text, such as usernames, URLs, bot commands, etc.
-        std::optional<std::vector<MessageEntity>> text_entities;
-
-        // Optional. Animation that will be displayed in the game message in chats. Upload via BotFather
-        std::optional<Animation> animation;
-    };
 
     /**
      * This object represents one row of the high scores table for a game.And that's about all we've got for now.If you've got any questions, please check out our Bot FAQ »
@@ -7493,15 +13025,24 @@ namespace telegram {
      * @param score Score
      */
 
-    struct GameHighScore {
+    struct GameHighScore : public TelegramModel {
+        virtual ~GameHighScore() = default;
         // Position in high score table for the game
         std::int64_t position;
 
         // User
-        User user;
+        std::shared_ptr<User> user;
 
         // Score
         std::int64_t score;
+
+        json to_json() const override {
+            json j;
+            j["position"] = position;
+            j["user"] = user->to_json();
+            j["score"] = score;
+            return j.dump();
+        }
     };
 
 
@@ -7603,13 +13144,13 @@ namespace telegram {
      */
     struct SendMessageRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -7636,7 +13177,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -7663,16 +13204,16 @@ namespace telegram {
      */
     struct ForwardMessageRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
 
         // Unique identifier for the chat where the original message was sent (or channel username in the format @channelusername)
-        std::string from_chat_id;
+        ChatId from_chat_id;
 
         // New start timestamp for the forwarded video in the message
         std::optional<std::int64_t> video_start_timestamp;
@@ -7687,7 +13228,7 @@ namespace telegram {
         std::optional<SuggestedPostParameters> suggested_post_parameters;
 
         // Message identifier in the chat specified in from_chat_id
-        std::int64_t message_id;
+        MessageId message_id;
     };
 
     /**
@@ -7703,19 +13244,19 @@ namespace telegram {
      */
     struct ForwardMessagesRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the messages will be forwarded; required if the messages are forwarded to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
 
         // Unique identifier for the chat where the original messages were sent (or channel username in the format @channelusername)
-        std::string from_chat_id;
+        ChatId from_chat_id;
 
         // A JSON-serialized list of 1-100 identifiers of messages in the chat from_chat_id to forward. The identifiers must be specified in a strictly increasing order.
-        std::vector<std::int64_t> message_ids;
+        std::vector<MessageId> message_ids;
 
         // Sends the messages silently. Users will receive a notification with no sound.
         std::optional<bool> disable_notification;
@@ -7746,19 +13287,19 @@ namespace telegram {
      */
     struct CopyMessageRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
 
         // Unique identifier for the chat where the original message was sent (or channel username in the format @channelusername)
-        std::string from_chat_id;
+        ChatId from_chat_id;
 
         // Message identifier in the chat specified in from_chat_id
-        std::int64_t message_id;
+        MessageId message_id;
 
         // New start timestamp for the copied video in the message
         std::optional<std::int64_t> video_start_timestamp;
@@ -7808,19 +13349,19 @@ namespace telegram {
      */
     struct CopyMessagesRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
 
         // Unique identifier for the chat where the original messages were sent (or channel username in the format @channelusername)
-        std::string from_chat_id;
+        ChatId from_chat_id;
 
         // A JSON-serialized list of 1-100 identifiers of messages in the chat from_chat_id to copy. The identifiers must be specified in a strictly increasing order.
-        std::vector<std::int64_t> message_ids;
+        std::vector<MessageId> message_ids;
 
         // Sends the messages silently. Users will receive a notification with no sound.
         std::optional<bool> disable_notification;
@@ -7855,13 +13396,13 @@ namespace telegram {
      */
     struct SendPhotoRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -7894,7 +13435,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -7931,13 +13472,13 @@ namespace telegram {
      */
     struct SendAudioRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -7976,7 +13517,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8011,13 +13552,13 @@ namespace telegram {
      */
     struct SendDocumentRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8050,7 +13591,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8092,13 +13633,13 @@ namespace telegram {
      */
     struct SendVideoRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8152,7 +13693,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8191,13 +13732,13 @@ namespace telegram {
      */
     struct SendAnimationRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8242,7 +13783,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8276,13 +13817,13 @@ namespace telegram {
      */
     struct SendVoiceRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8312,7 +13853,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8345,13 +13886,13 @@ namespace telegram {
      */
     struct SendVideoNoteRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8378,7 +13919,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8413,13 +13954,13 @@ namespace telegram {
      */
     struct SendPaidMediaRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8480,13 +14021,13 @@ namespace telegram {
      */
     struct SendMediaGroupRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8504,7 +14045,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // Description of the message to reply to
         std::optional<ReplyParameters> reply_parameters;
@@ -8533,13 +14074,13 @@ namespace telegram {
      */
     struct SendLocationRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8572,7 +14113,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8609,13 +14150,13 @@ namespace telegram {
      */
     struct SendVenueRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8654,7 +14195,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8687,13 +14228,13 @@ namespace telegram {
      */
     struct SendContactRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8720,7 +14261,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8761,13 +14302,13 @@ namespace telegram {
      */
     struct SendPollRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername). Polls can't be sent to channel direct messages chats.
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Poll question, 1-300 characters
         std::string question;
@@ -8821,7 +14362,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // Description of the message to reply to
         std::optional<ReplyParameters> reply_parameters;
@@ -8844,10 +14385,10 @@ namespace telegram {
      */
     struct SendChecklistRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier for the target chat
-        std::int64_t chat_id;
+        ChatId chat_id;
 
         // A JSON-serialized object for the checklist to send
         InputChecklist checklist;
@@ -8859,7 +14400,7 @@ namespace telegram {
         std::optional<bool> protect_content;
 
         // Unique identifier of the message effect to be added to the message
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object for description of the message to reply to
         std::optional<ReplyParameters> reply_parameters;
@@ -8886,13 +14427,13 @@ namespace telegram {
      */
     struct SendDiceRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -8910,7 +14451,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -8934,13 +14475,13 @@ namespace telegram {
      */
     struct SendChatActionRequest {
         // Unique identifier of the business connection on behalf of which the action will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername). Channel chats and channel direct messages chats aren't supported.
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread; for supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.
         std::string action;
@@ -8956,10 +14497,10 @@ namespace telegram {
      */
     struct SetMessageReactionRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
-        std::int64_t message_id;
+        MessageId message_id;
 
         // A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
         std::optional<std::vector<ReactionType>> reaction;
@@ -8977,7 +14518,7 @@ namespace telegram {
      */
     struct GetUserProfilePhotosRequest {
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // Sequential number of the first photo to be returned. By default, all photos are returned.
         std::optional<std::int64_t> offset;
@@ -8995,7 +14536,7 @@ namespace telegram {
      */
     struct SetUserEmojiStatusRequest {
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.
         std::optional<std::string> emoji_status_custom_emoji_id;
@@ -9024,10 +14565,10 @@ namespace telegram {
      */
     struct BanChatMemberRequest {
         // Unique identifier for the target group or username of the target supergroup or channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
         std::optional<std::int64_t> until_date;
@@ -9045,10 +14586,10 @@ namespace telegram {
      */
     struct UnbanChatMemberRequest {
         // Unique identifier for the target group or username of the target supergroup or channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // Do nothing if the user is not banned
         std::optional<bool> only_if_banned;
@@ -9065,10 +14606,10 @@ namespace telegram {
      */
     struct RestrictChatMemberRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // A JSON-serialized object for new user permissions
         ChatPermissions permissions;
@@ -9104,10 +14645,10 @@ namespace telegram {
      */
     struct PromoteChatMemberRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // Pass True if the administrator's presence in the chat is hidden
         std::optional<bool> is_anonymous;
@@ -9167,10 +14708,10 @@ namespace telegram {
      */
     struct SetChatAdministratorCustomTitleRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // New custom title for the administrator; 0-16 characters, emoji are not allowed
         std::string custom_title;
@@ -9184,10 +14725,10 @@ namespace telegram {
      */
     struct BanChatSenderChatRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target sender chat
-        std::int64_t sender_chat_id;
+        ChatId sender_chat_id;
     };
 
     /**
@@ -9198,10 +14739,10 @@ namespace telegram {
      */
     struct UnbanChatSenderChatRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target sender chat
-        std::int64_t sender_chat_id;
+        ChatId sender_chat_id;
     };
 
     /**
@@ -9213,7 +14754,7 @@ namespace telegram {
      */
     struct SetChatPermissionsRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // A JSON-serialized object for new default chat permissions
         ChatPermissions permissions;
@@ -9230,7 +14771,7 @@ namespace telegram {
      */
     struct ExportChatInviteLinkRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9244,7 +14785,7 @@ namespace telegram {
      */
     struct CreateChatInviteLinkRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Invite link name; 0-32 characters
         std::optional<std::string> name;
@@ -9271,7 +14812,7 @@ namespace telegram {
      */
     struct EditChatInviteLinkRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // The invite link to edit
         std::string invite_link;
@@ -9299,7 +14840,7 @@ namespace telegram {
      */
     struct CreateChatSubscriptionInviteLinkRequest {
         // Unique identifier for the target channel chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Invite link name; 0-32 characters
         std::optional<std::string> name;
@@ -9320,7 +14861,7 @@ namespace telegram {
      */
     struct EditChatSubscriptionInviteLinkRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // The invite link to edit
         std::string invite_link;
@@ -9337,7 +14878,7 @@ namespace telegram {
      */
     struct RevokeChatInviteLinkRequest {
         // Unique identifier of the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // The invite link to revoke
         std::string invite_link;
@@ -9351,10 +14892,10 @@ namespace telegram {
      */
     struct ApproveChatJoinRequestRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
     };
 
     /**
@@ -9365,10 +14906,10 @@ namespace telegram {
      */
     struct DeclineChatJoinRequestRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
     };
 
     /**
@@ -9379,7 +14920,7 @@ namespace telegram {
      */
     struct SetChatPhotoRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // New chat photo, uploaded using multipart/form-data
         InputFile photo;
@@ -9392,7 +14933,7 @@ namespace telegram {
      */
     struct DeleteChatPhotoRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9403,7 +14944,7 @@ namespace telegram {
      */
     struct SetChatTitleRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // New chat title, 1-128 characters
         std::string title;
@@ -9417,7 +14958,7 @@ namespace telegram {
      */
     struct SetChatDescriptionRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // New chat description, 0-255 characters
         std::optional<std::string> description;
@@ -9433,13 +14974,13 @@ namespace telegram {
      */
     struct PinChatMessageRequest {
         // Unique identifier of the business connection on behalf of which the message will be pinned
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Identifier of a message to pin
-        std::int64_t message_id;
+        MessageId message_id;
 
         // Pass True if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         std::optional<bool> disable_notification;
@@ -9454,13 +14995,13 @@ namespace telegram {
      */
     struct UnpinChatMessageRequest {
         // Unique identifier of the business connection on behalf of which the message will be unpinned
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Identifier of the message to unpin. Required if business_connection_id is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
     };
 
     /**
@@ -9470,7 +15011,7 @@ namespace telegram {
      */
     struct UnpinAllChatMessagesRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9480,7 +15021,7 @@ namespace telegram {
      */
     struct LeaveChatRequest {
         // Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername). Channel direct messages chats aren't supported; leave the corresponding channel instead.
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9490,7 +15031,7 @@ namespace telegram {
      */
     struct GetChatRequest {
         // Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9500,7 +15041,7 @@ namespace telegram {
      */
     struct GetChatAdministratorsRequest {
         // Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9510,7 +15051,7 @@ namespace telegram {
      */
     struct GetChatMemberCountRequest {
         // Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9521,10 +15062,10 @@ namespace telegram {
      */
     struct GetChatMemberRequest {
         // Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
     };
 
     /**
@@ -9535,7 +15076,7 @@ namespace telegram {
      */
     struct SetChatStickerSetRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Name of the sticker set to be set as the group sticker set
         std::string sticker_set_name;
@@ -9548,7 +15089,7 @@ namespace telegram {
      */
     struct DeleteChatStickerSetRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9561,7 +15102,7 @@ namespace telegram {
      */
     struct CreateForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Topic name, 1-128 characters
         std::string name;
@@ -9583,10 +15124,10 @@ namespace telegram {
      */
     struct EditForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread of the forum topic
-        std::int64_t message_thread_id;
+        MessageThreadId message_thread_id;
 
         // New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept
         std::optional<std::string> name;
@@ -9603,10 +15144,10 @@ namespace telegram {
      */
     struct CloseForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread of the forum topic
-        std::int64_t message_thread_id;
+        MessageThreadId message_thread_id;
     };
 
     /**
@@ -9617,10 +15158,10 @@ namespace telegram {
      */
     struct ReopenForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread of the forum topic
-        std::int64_t message_thread_id;
+        MessageThreadId message_thread_id;
     };
 
     /**
@@ -9631,10 +15172,10 @@ namespace telegram {
      */
     struct DeleteForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread of the forum topic
-        std::int64_t message_thread_id;
+        MessageThreadId message_thread_id;
     };
 
     /**
@@ -9645,10 +15186,10 @@ namespace telegram {
      */
     struct UnpinAllForumTopicMessagesRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread of the forum topic
-        std::int64_t message_thread_id;
+        MessageThreadId message_thread_id;
     };
 
     /**
@@ -9659,7 +15200,7 @@ namespace telegram {
      */
     struct EditGeneralForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // New topic name, 1-128 characters
         std::string name;
@@ -9672,7 +15213,7 @@ namespace telegram {
      */
     struct CloseGeneralForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9682,7 +15223,7 @@ namespace telegram {
      */
     struct ReopenGeneralForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9692,7 +15233,7 @@ namespace telegram {
      */
     struct HideGeneralForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9702,7 +15243,7 @@ namespace telegram {
      */
     struct UnhideGeneralForumTopicRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9712,7 +15253,7 @@ namespace telegram {
      */
     struct UnpinAllGeneralForumTopicMessagesRequest {
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -9750,10 +15291,10 @@ namespace telegram {
      */
     struct GetUserChatBoostsRequest {
         // Unique identifier for the chat or username of the channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
     };
 
     /**
@@ -9763,7 +15304,7 @@ namespace telegram {
      */
     struct GetBusinessConnectionRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
     };
 
     /**
@@ -9892,7 +15433,7 @@ namespace telegram {
      */
     struct SetChatMenuButtonRequest {
         // Unique identifier for the target private chat. If not specified, default bot's menu button will be changed
-        std::optional<std::int64_t> chat_id;
+        std::optional<ChatId> chat_id;
 
         // A JSON-serialized object for the bot's new menu button. Defaults to MenuButtonDefault
         std::optional<MenuButton> menu_button;
@@ -9905,7 +15446,7 @@ namespace telegram {
      */
     struct GetChatMenuButtonRequest {
         // Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
-        std::optional<std::int64_t> chat_id;
+        std::optional<ChatId> chat_id;
     };
 
     /**
@@ -9945,10 +15486,10 @@ namespace telegram {
      */
     struct SendGiftRequest {
         // Required if chat_id is not specified. Unique identifier of the target user who will receive the gift.
-        std::optional<std::int64_t> user_id;
+        std::optional<UserId> user_id;
 
         // Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @channelusername) that will receive the gift.
-        std::optional<std::string> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Identifier of the gift
         std::string gift_id;
@@ -9978,7 +15519,7 @@ namespace telegram {
      */
     struct GiftPremiumSubscriptionRequest {
         // Unique identifier of the target user who will receive a Telegram Premium subscription
-        std::int64_t user_id;
+        UserId user_id;
 
         // Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12
         std::int64_t month_count;
@@ -10004,7 +15545,7 @@ namespace telegram {
      */
     struct VerifyUserRequest {
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
 
         // Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
         std::optional<std::string> custom_description;
@@ -10018,7 +15559,7 @@ namespace telegram {
      */
     struct VerifyChatRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername). Channel direct messages chats can't be verified.
-        std::string chat_id;
+        ChatId chat_id;
 
         // Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
         std::optional<std::string> custom_description;
@@ -10031,7 +15572,7 @@ namespace telegram {
      */
     struct RemoveUserVerificationRequest {
         // Unique identifier of the target user
-        std::int64_t user_id;
+        UserId user_id;
     };
 
     /**
@@ -10041,7 +15582,7 @@ namespace telegram {
      */
     struct RemoveChatVerificationRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
     };
 
     /**
@@ -10053,13 +15594,13 @@ namespace telegram {
      */
     struct ReadBusinessMessageRequest {
         // Unique identifier of the business connection on behalf of which to read the message
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.
-        std::int64_t chat_id;
+        ChatId chat_id;
 
         // Unique identifier of the message to mark as read
-        std::int64_t message_id;
+        MessageId message_id;
     };
 
     /**
@@ -10070,10 +15611,10 @@ namespace telegram {
      */
     struct DeleteBusinessMessagesRequest {
         // Unique identifier of the business connection on behalf of which to delete the messages
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See deleteMessage for limitations on which messages can be deleted
-        std::vector<std::int64_t> message_ids;
+        std::vector<MessageId> message_ids;
     };
 
     /**
@@ -10085,7 +15626,7 @@ namespace telegram {
      */
     struct SetBusinessAccountNameRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // The new value of the first name for the business account; 1-64 characters
         std::string first_name;
@@ -10102,7 +15643,7 @@ namespace telegram {
      */
     struct SetBusinessAccountUsernameRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // The new value of the username for the business account; 0-32 characters
         std::optional<std::string> username;
@@ -10116,7 +15657,7 @@ namespace telegram {
      */
     struct SetBusinessAccountBioRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // The new value of the bio for the business account; 0-140 characters
         std::optional<std::string> bio;
@@ -10131,7 +15672,7 @@ namespace telegram {
      */
     struct SetBusinessAccountProfilePhotoRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // The new profile photo to set
         InputProfilePhoto photo;
@@ -10148,7 +15689,7 @@ namespace telegram {
      */
     struct RemoveBusinessAccountProfilePhotoRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.
         std::optional<bool> is_public;
@@ -10163,7 +15704,7 @@ namespace telegram {
      */
     struct SetBusinessAccountGiftSettingsRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field
         bool show_gift_button;
@@ -10179,7 +15720,7 @@ namespace telegram {
      */
     struct GetBusinessAccountStarBalanceRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
     };
 
     /**
@@ -10190,7 +15731,7 @@ namespace telegram {
      */
     struct TransferBusinessAccountStarsRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Number of Telegram Stars to transfer; 1-10000
         std::int64_t star_count;
@@ -10211,7 +15752,7 @@ namespace telegram {
      */
     struct GetBusinessAccountGiftsRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Pass True to exclude gifts that aren't saved to the account's profile page
         std::optional<bool> exclude_unsaved;
@@ -10246,7 +15787,7 @@ namespace telegram {
      */
     struct ConvertGiftToStarsRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier of the regular gift that should be converted to Telegram Stars
         std::string owned_gift_id;
@@ -10262,7 +15803,7 @@ namespace telegram {
      */
     struct UpgradeGiftRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier of the regular gift that should be upgraded to a unique one
         std::string owned_gift_id;
@@ -10284,13 +15825,13 @@ namespace telegram {
      */
     struct TransferGiftRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier of the regular gift that should be transferred
         std::string owned_gift_id;
 
         // Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours.
-        std::int64_t new_owner_chat_id;
+        ChatId new_owner_chat_id;
 
         // The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the can_transfer_stars business bot right is required.
         std::optional<std::int64_t> star_count;
@@ -10311,7 +15852,7 @@ namespace telegram {
      */
     struct PostStoryRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Content of the story
         InputStoryContent content;
@@ -10351,7 +15892,7 @@ namespace telegram {
      */
     struct EditStoryRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier of the story to edit
         std::int64_t story_id;
@@ -10380,7 +15921,7 @@ namespace telegram {
      */
     struct DeleteStoryRequest {
         // Unique identifier of the business connection
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier of the story to delete
         std::int64_t story_id;
@@ -10404,13 +15945,13 @@ namespace telegram {
      */
     struct EditMessageTextRequest {
         // Unique identifier of the business connection on behalf of which the message to be edited was sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::optional<std::string> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the message to edit
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
@@ -10446,13 +15987,13 @@ namespace telegram {
      */
     struct EditMessageCaptionRequest {
         // Unique identifier of the business connection on behalf of which the message to be edited was sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::optional<std::string> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the message to edit
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
@@ -10485,13 +16026,13 @@ namespace telegram {
      */
     struct EditMessageMediaRequest {
         // Unique identifier of the business connection on behalf of which the message to be edited was sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::optional<std::string> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the message to edit
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
@@ -10520,13 +16061,13 @@ namespace telegram {
      */
     struct EditMessageLiveLocationRequest {
         // Unique identifier of the business connection on behalf of which the message to be edited was sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::optional<std::string> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the message to edit
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
@@ -10564,13 +16105,13 @@ namespace telegram {
      */
     struct StopMessageLiveLocationRequest {
         // Unique identifier of the business connection on behalf of which the message to be edited was sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::optional<std::string> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the message with live location to stop
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
@@ -10590,13 +16131,13 @@ namespace telegram {
      */
     struct EditMessageChecklistRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::string business_connection_id;
+        BusinessConnectionId business_connection_id;
 
         // Unique identifier for the target chat
-        std::int64_t chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message
-        std::int64_t message_id;
+        MessageId message_id;
 
         // A JSON-serialized object for the new checklist
         InputChecklist checklist;
@@ -10616,13 +16157,13 @@ namespace telegram {
      */
     struct EditMessageReplyMarkupRequest {
         // Unique identifier of the business connection on behalf of which the message to be edited was sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::optional<std::string> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the message to edit
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
@@ -10641,13 +16182,13 @@ namespace telegram {
      */
     struct StopPollRequest {
         // Unique identifier of the business connection on behalf of which the message to be edited was sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Identifier of the original message with the poll
-        std::int64_t message_id;
+        MessageId message_id;
 
         // A JSON-serialized object for a new message inline keyboard.
         std::optional<InlineKeyboardMarkup> reply_markup;
@@ -10662,10 +16203,10 @@ namespace telegram {
      */
     struct ApproveSuggestedPostRequest {
         // Unique identifier for the target direct messages chat
-        std::int64_t chat_id;
+        ChatId chat_id;
 
         // Identifier of a suggested post message to approve
-        std::int64_t message_id;
+        MessageId message_id;
 
         // Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future
         std::optional<std::int64_t> send_date;
@@ -10680,10 +16221,10 @@ namespace telegram {
      */
     struct DeclineSuggestedPostRequest {
         // Unique identifier for the target direct messages chat
-        std::int64_t chat_id;
+        ChatId chat_id;
 
         // Identifier of a suggested post message to decline
-        std::int64_t message_id;
+        MessageId message_id;
 
         // Comment for the creator of the suggested post; 0-128 characters
         std::optional<std::string> comment;
@@ -10697,10 +16238,10 @@ namespace telegram {
      */
     struct DeleteMessageRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Identifier of the message to delete
-        std::int64_t message_id;
+        MessageId message_id;
     };
 
     /**
@@ -10711,10 +16252,10 @@ namespace telegram {
      */
     struct DeleteMessagesRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // A JSON-serialized list of 1-100 identifiers of messages to delete. See deleteMessage for limitations on which messages can be deleted
-        std::vector<std::int64_t> message_ids;
+        std::vector<MessageId> message_ids;
     };
 
 
@@ -10739,13 +16280,13 @@ namespace telegram {
      */
     struct SendStickerRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -10766,7 +16307,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -10807,7 +16348,7 @@ namespace telegram {
      */
     struct UploadStickerFileRequest {
         // User identifier of sticker file owner
-        std::int64_t user_id;
+        UserId user_id;
 
         // A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See https://core.telegram.org/stickers for technical requirements. More information on Sending Files »
         InputFile sticker;
@@ -10828,7 +16369,7 @@ namespace telegram {
      */
     struct CreateNewStickerSetRequest {
         // User identifier of created sticker set owner
-        std::int64_t user_id;
+        UserId user_id;
 
         // Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g., animals). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in "_by_<bot_username>". <bot_username> is case insensitive. 1-64 characters.
         std::string name;
@@ -10855,7 +16396,7 @@ namespace telegram {
      */
     struct AddStickerToSetRequest {
         // User identifier of sticker set owner
-        std::int64_t user_id;
+        UserId user_id;
 
         // Sticker set name
         std::string name;
@@ -10898,7 +16439,7 @@ namespace telegram {
      */
     struct ReplaceStickerInSetRequest {
         // User identifier of the sticker set owner
-        std::int64_t user_id;
+        UserId user_id;
 
         // Sticker set name
         std::string name;
@@ -10979,7 +16520,7 @@ namespace telegram {
         std::string name;
 
         // User identifier of the sticker set owner
-        std::int64_t user_id;
+        UserId user_id;
 
         // A .WEBP or .PNG image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a .TGS animation with a thumbnail up to 32 kilobytes in size (see https://core.telegram.org/stickers#animation-requirements for animated sticker technical requirements), or a .WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files ». Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
         std::optional<std::string> thumbnail;
@@ -11071,7 +16612,7 @@ namespace telegram {
      */
     struct SavePreparedInlineMessageRequest {
         // Unique identifier of the target user that can use the prepared message
-        std::int64_t user_id;
+        UserId user_id;
 
         // A JSON-serialized object describing the message to be sent
         InlineQueryResult result;
@@ -11129,10 +16670,10 @@ namespace telegram {
      */
     struct SendInvoiceRequest {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-        std::string chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::optional<std::int64_t> direct_messages_topic_id;
@@ -11210,7 +16751,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::optional<SuggestedPostParameters> suggested_post_parameters;
@@ -11250,7 +16791,7 @@ namespace telegram {
      */
     struct CreateInvoiceLinkRequest {
         // Unique identifier of the business connection on behalf of which the link will be created. For payments in Telegram Stars only.
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Product name, 1-32 characters
         std::string title;
@@ -11378,7 +16919,7 @@ namespace telegram {
      */
     struct RefundStarPaymentRequest {
         // Identifier of the user whose payment will be refunded
-        std::int64_t user_id;
+        UserId user_id;
 
         // Telegram payment identifier
         std::string telegram_payment_charge_id;
@@ -11393,7 +16934,7 @@ namespace telegram {
      */
     struct EditUserStarSubscriptionRequest {
         // Identifier of the user whose subscription will be edited
-        std::int64_t user_id;
+        UserId user_id;
 
         // Telegram payment identifier for the subscription
         std::string telegram_payment_charge_id;
@@ -11413,7 +16954,7 @@ namespace telegram {
      */
     struct SetPassportDataErrorsRequest {
         // User identifier
-        std::int64_t user_id;
+        UserId user_id;
 
         // A JSON-serialized array describing the errors
         std::vector<PassportElementError> errors;
@@ -11438,13 +16979,13 @@ namespace telegram {
      */
     struct SendGameRequest {
         // Unique identifier of the business connection on behalf of which the message will be sent
-        std::optional<std::string> business_connection_id;
+        std::optional<BusinessConnectionId> business_connection_id;
 
         // Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats.
-        std::int64_t chat_id;
+        ChatId chat_id;
 
         // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
-        std::optional<std::int64_t> message_thread_id;
+        std::optional<MessageThreadId> message_thread_id;
 
         // Short name of the game, serves as the unique identifier for the game. Set up your games via @BotFather.
         std::string game_short_name;
@@ -11459,7 +17000,7 @@ namespace telegram {
         std::optional<bool> allow_paid_broadcast;
 
         // Unique identifier of the message effect to be added to the message; for private chats only
-        std::optional<std::string> message_effect_id;
+        std::optional<MessageEffectId> message_effect_id;
 
         // Description of the message to reply to
         std::optional<ReplyParameters> reply_parameters;
@@ -11481,7 +17022,7 @@ namespace telegram {
      */
     struct SetGameScoreRequest {
         // User identifier
-        std::int64_t user_id;
+        UserId user_id;
 
         // New score, must be non-negative
         std::int64_t score;
@@ -11493,10 +17034,10 @@ namespace telegram {
         std::optional<bool> disable_edit_message;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat
-        std::optional<std::int64_t> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the sent message
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
@@ -11513,16 +17054,751 @@ namespace telegram {
      */
     struct GetGameHighScoresRequest {
         // Target user id
-        std::int64_t user_id;
+        UserId user_id;
 
         // Required if inline_message_id is not specified. Unique identifier for the target chat
-        std::optional<std::int64_t> chat_id;
+        std::optional<ChatId> chat_id;
 
         // Required if inline_message_id is not specified. Identifier of the sent message
-        std::optional<std::int64_t> message_id;
+        std::optional<MessageId> message_id;
 
         // Required if chat_id and message_id are not specified. Identifier of the inline message
         std::optional<std::string> inline_message_id;
     };
 
-} // namespace telegram
+
+    // --- Super Types Serialization ---
+
+
+    std::shared_ptr<InputMedia> InputMedia::fromJson(const json& j) {
+        
+            std::string type = j.at("type");
+            
+            if (type == "photo")    return InputMediaPhoto::fromJson(j);
+            if (type == "video")    return InputMediaVideo::fromJson(j);
+            if (type == "animation")return InputMediaAnimation::fromJson(j);
+            if (type == "audio")    return InputMediaAudio::fromJson(j);
+            if (type == "document") return InputMediaDocument::fromJson(j);
+
+            throw std::runtime_error("Unknown InputMedia type: " + type);
+            
+    }
+
+
+    std::shared_ptr<InputMessageContent> InputMessageContent::fromJson(const json& j) {
+        try {
+            InputTextMessageContent value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            InputLocationMessageContent value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InputVenueMessageContent value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InputContactMessageContent value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InputInvoiceMessageContent value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize InputMessageContent");
+    }
+
+
+    std::shared_ptr<InlineQueryResult> InlineQueryResult::fromJson(const json& j) {
+        try {
+            InlineQueryResultArticle value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            InlineQueryResultPhoto value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultGif value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultMpeg4Gif value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultVideo value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultAudio value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultVoice value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultDocument value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultLocation value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultVenue value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultContact value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultGame value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedPhoto value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedGif value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedMpeg4Gif value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedSticker value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedDocument value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedVideo value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedVoice value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineQueryResultCachedAudio value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize InlineQueryResult");
+    }
+
+
+    std::shared_ptr<PassportElementError> PassportElementError::fromJson(const json& j) {
+        try {
+            PassportElementErrorDataField value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            PassportElementErrorFrontSide value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PassportElementErrorReverseSide value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PassportElementErrorSelfie value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PassportElementErrorFile value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PassportElementErrorFiles value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PassportElementErrorTranslationFile value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PassportElementErrorTranslationFiles value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PassportElementErrorUnspecified value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize PassportElementError");
+    }
+
+
+    std::shared_ptr<ChatMember> ChatMember::fromJson(const json& j) {
+        try {
+            ChatMemberUpdated value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            ChatMemberOwner value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ChatMemberAdministrator value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ChatMemberMember value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ChatMemberRestricted value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ChatMemberLeft value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ChatMemberBanned value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize ChatMember");
+    }
+
+
+    std::shared_ptr<BotCommandScope> BotCommandScope::fromJson(const json& j) {
+        try {
+            BotCommandScopeDefault value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            BotCommandScopeAllPrivateChats value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BotCommandScopeAllGroupChats value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BotCommandScopeAllChatAdministrators value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BotCommandScopeChat value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BotCommandScopeChatAdministrators value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BotCommandScopeChatMember value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize BotCommandScope");
+    }
+
+
+    std::shared_ptr<ReactionType> ReactionType::fromJson(const json& j) {
+        try {
+            ReactionTypeEmoji value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            ReactionTypeCustomEmoji value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ReactionTypePaid value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize ReactionType");
+    }
+
+
+    std::shared_ptr<MessageOrigin> MessageOrigin::fromJson(const json& j) {
+        try {
+            MessageOriginUser value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            MessageOriginHiddenUser value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            MessageOriginChat value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            MessageOriginChannel value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize MessageOrigin");
+    }
+
+
+    std::shared_ptr<ChatBoostSource> ChatBoostSource::fromJson(const json& j) {
+        try {
+            ChatBoostSourcePremium value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            ChatBoostSourceGiftCode value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ChatBoostSourceGiveaway value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize ChatBoostSource");
+    }
+
+
+    std::shared_ptr<MenuButton> MenuButton::fromJson(const json& j) {
+        try {
+            MenuButtonCommands value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            MenuButtonWebApp value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            MenuButtonDefault value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize MenuButton");
+    }
+
+
+    std::shared_ptr<BackgroundFill> BackgroundFill::fromJson(const json& j) {
+        try {
+            BackgroundFillSolid value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            BackgroundFillGradient value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BackgroundFillFreeformGradient value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize BackgroundFill");
+    }
+
+
+    std::shared_ptr<BackgroundType> BackgroundType::fromJson(const json& j) {
+        try {
+            BackgroundTypeFill value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            BackgroundTypeWallpaper value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BackgroundTypePattern value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            BackgroundTypeChatTheme value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize BackgroundType");
+    }
+
+
+    std::shared_ptr<RevenueWithdrawalState> RevenueWithdrawalState::fromJson(const json& j) {
+        try {
+            RevenueWithdrawalStatePending value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            RevenueWithdrawalStateSucceeded value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            RevenueWithdrawalStateFailed value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize RevenueWithdrawalState");
+    }
+
+
+    std::shared_ptr<TransactionPartner> TransactionPartner::fromJson(const json& j) {
+        try {
+            TransactionPartnerUser value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            TransactionPartnerChat value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            TransactionPartnerAffiliateProgram value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            TransactionPartnerFragment value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            TransactionPartnerTelegramAds value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            TransactionPartnerTelegramApi value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            TransactionPartnerOther value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize TransactionPartner");
+    }
+
+
+    std::shared_ptr<PaidMedia> PaidMedia::fromJson(const json& j) {
+        try {
+            PaidMediaInfo value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            PaidMediaPreview value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PaidMediaPhoto value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PaidMediaVideo value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            PaidMediaPurchased value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize PaidMedia");
+    }
+
+
+    std::shared_ptr<InputPaidMedia> InputPaidMedia::fromJson(const json& j) {
+        try {
+            InputPaidMediaPhoto value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            InputPaidMediaVideo value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize InputPaidMedia");
+    }
+
+
+    std::shared_ptr<KeyboardOption> KeyboardOption::fromJson(const json& j) {
+        try {
+            ReplyKeyboardMarkup value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            ReplyKeyboardRemove value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            InlineKeyboardMarkup value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            ForceReply value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize KeyboardOption");
+    }
+
+
+    std::shared_ptr<MaybeInaccessibleMessage> MaybeInaccessibleMessage::fromJson(const json& j) {
+        
+                long date = j.at("date").get<long>();
+
+                if (date == 0) {
+                    // соответствие InaccessibleMessage.serializer()
+                    return InaccessibleMessage::fromJson(j);
+                } else {
+                    // соответствие Message.serializer()
+                    return Message::fromJson(j);
+                }
+            
+    }
+
+
+    std::shared_ptr<StoryAreaType> StoryAreaType::fromJson(const json& j) {
+        try {
+            StoryAreaTypeLocation value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            StoryAreaTypeSuggestedReaction value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            StoryAreaTypeLink value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            StoryAreaTypeWeather value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+            try {
+            StoryAreaTypeUniqueGift value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize StoryAreaType");
+    }
+
+
+    std::shared_ptr<OwnedGift> OwnedGift::fromJson(const json& j) {
+        try {
+            OwnedGiftRegular value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            OwnedGiftUnique value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize OwnedGift");
+    }
+
+
+    std::shared_ptr<InputProfilePhoto> InputProfilePhoto::fromJson(const json& j) {
+        try {
+            InputProfilePhotoStatic value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            InputProfilePhotoAnimated value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize InputProfilePhoto");
+    }
+
+
+    std::shared_ptr<InputStoryContent> InputStoryContent::fromJson(const json& j) {
+        try {
+            InputStoryContentPhoto value;
+            from_json(j, value);
+            return value;
+        } catch (...) {
+            try {
+            InputStoryContentVideo value;
+            from_json(j, value);
+            return value;
+            }
+        } catch (...) {
+        }
+        throw std::runtime_error("Failed to deserialize InputStoryContent");
+    }
+
+
+
+} // namespace tgbot

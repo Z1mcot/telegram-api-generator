@@ -23,6 +23,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -36,6 +37,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -49,6 +51,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -62,6 +65,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -83,6 +87,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -96,6 +101,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -173,6 +179,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "PaidMedia"
               }
             },
@@ -202,6 +209,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "ChatMember"
               }
             },
@@ -215,6 +223,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "ChatMember"
               }
             },
@@ -813,6 +822,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -923,6 +933,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -1140,6 +1151,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "MessageOrigin"
             },
             "required": false
@@ -1168,6 +1180,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -1344,6 +1357,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "PaidMedia"
               }
             },
@@ -1591,6 +1605,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+              "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
               "name": "MaybeInaccessibleMessage"
             },
             "required": false
@@ -1899,6 +1914,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -2063,6 +2079,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "MessageOrigin"
             },
             "required": true
@@ -2123,6 +2140,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "PaidMedia"
               }
             },
@@ -2988,6 +3006,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "PaidMedia"
               },
               "name": "List\u003cPaidMedia\u003e"
@@ -3597,6 +3616,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -3638,6 +3658,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -3955,6 +3976,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "BackgroundFill"
             },
             "required": true
@@ -4041,6 +4063,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "BackgroundFill"
             },
             "required": true
@@ -4103,6 +4126,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "BackgroundType"
             },
             "required": true
@@ -4407,6 +4431,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -4442,6 +4467,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -4469,6 +4495,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -4496,6 +4523,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -4539,6 +4567,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -4785,6 +4814,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+                "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
                 "name": "MaybeInaccessibleMessage"
               }
             },
@@ -5574,6 +5604,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+              "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
               "name": "MaybeInaccessibleMessage"
             },
             "required": false
@@ -5942,6 +5973,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "ChatMember"
             },
             "required": true
@@ -5952,6 +5984,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "ChatMember"
             },
             "required": true
@@ -6867,6 +6900,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "ReactionType"
             },
             "required": true
@@ -6989,6 +7023,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "StoryAreaType"
             },
             "required": true
@@ -7085,6 +7120,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "ReactionType"
             },
             "required": true
@@ -7150,6 +7186,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -7163,6 +7200,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -7856,6 +7894,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "OwnedGift"
               },
               "name": "List\u003cOwnedGift\u003e"
@@ -8332,6 +8371,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "ChatBoostSource"
             },
             "required": true
@@ -8394,6 +8434,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "ChatBoostSource"
             },
             "required": true
@@ -9450,6 +9491,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -9460,6 +9502,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -9562,6 +9605,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -9802,6 +9846,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -10063,6 +10108,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -10073,6 +10119,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -10258,6 +10305,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -10268,6 +10316,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -10437,6 +10486,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -10447,6 +10497,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -10680,6 +10731,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -10690,6 +10742,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -10891,6 +10944,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -10901,6 +10955,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11054,6 +11109,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -11064,6 +11120,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11214,6 +11271,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -11224,6 +11282,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11287,6 +11346,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "InputPaidMedia"
               },
               "name": "List\u003cInputPaidMedia\u003e"
@@ -11382,6 +11442,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -11392,6 +11453,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11447,6 +11509,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "\n            when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                \"photo\" -\u003e InputMediaPhoto.serializer()\n                \"video\" -\u003e InputMediaVideo.serializer()\n                \"animation\" -\u003e InputMediaAnimation.serializer()\n                \"audio\" -\u003e InputMediaAudio.serializer()\n                \"document\" -\u003e InputMediaDocument.serializer()\n               else -\u003e error(\"unknown type: \" + type)\n            }\n            ",
+                "deserializerCpp": "\n            std::string type \u003d j.at(\"type\");\n            \n            if (type \u003d\u003d \"photo\")    return InputMediaPhoto::fromJson(j);\n            if (type \u003d\u003d \"video\")    return InputMediaVideo::fromJson(j);\n            if (type \u003d\u003d \"animation\")return InputMediaAnimation::fromJson(j);\n            if (type \u003d\u003d \"audio\")    return InputMediaAudio::fromJson(j);\n            if (type \u003d\u003d \"document\") return InputMediaDocument::fromJson(j);\n\n            throw std::runtime_error(\"Unknown InputMedia type: \" + type);\n            ",
                 "name": "InputMedia"
               },
               "name": "List\u003cInputMedia\u003e"
@@ -11500,6 +11563,7 @@
             "superType": {
               "subclasses": {},
               "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+              "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
               "name": "MaybeInaccessibleMessage"
             }
           },
@@ -11652,6 +11716,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -11662,6 +11727,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11828,6 +11894,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -11838,6 +11905,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -11972,6 +12040,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -11982,6 +12051,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -12189,6 +12259,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -12199,6 +12270,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -12271,6 +12343,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -12282,6 +12355,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -12392,6 +12466,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -12402,6 +12477,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -12490,6 +12566,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "ReactionType"
               },
               "name": "List\u003cReactionType\u003e"
@@ -13698,6 +13775,7 @@
           "elementType": {
             "subclasses": {},
             "deserializer": "",
+            "deserializerCpp": "",
             "name": "ChatMember"
           },
           "name": "List\u003cChatMember\u003e"
@@ -13760,6 +13838,7 @@
         "returns": {
           "subclasses": {},
           "deserializer": "",
+          "deserializerCpp": "",
           "name": "ChatMember"
         }
       },
@@ -14340,6 +14419,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "BotCommandScope"
             },
             "required": false
@@ -14367,6 +14447,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "BotCommandScope"
             },
             "required": false
@@ -14394,6 +14475,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "BotCommandScope"
             },
             "required": false
@@ -14558,6 +14640,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "MenuButton"
             },
             "required": false
@@ -14583,6 +14666,7 @@
         "returns": {
           "subclasses": {},
           "deserializer": "",
+          "deserializerCpp": "",
           "name": "MenuButton"
         }
       },
@@ -15026,6 +15110,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputProfilePhoto"
             },
             "required": true
@@ -15349,6 +15434,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputStoryContent"
             },
             "required": true
@@ -15446,6 +15532,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputStoryContent"
             },
             "required": true
@@ -15612,6 +15699,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -15623,6 +15711,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -15714,6 +15803,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -15725,6 +15815,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -15779,6 +15870,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "\n            when (val type \u003d jsonElement.jsonObject.getValue(\"type\").jsonPrimitive.content) {\n                \"photo\" -\u003e InputMediaPhoto.serializer()\n                \"video\" -\u003e InputMediaVideo.serializer()\n                \"animation\" -\u003e InputMediaAnimation.serializer()\n                \"audio\" -\u003e InputMediaAudio.serializer()\n                \"document\" -\u003e InputMediaDocument.serializer()\n               else -\u003e error(\"unknown type: \" + type)\n            }\n            ",
+              "deserializerCpp": "\n            std::string type \u003d j.at(\"type\");\n            \n            if (type \u003d\u003d \"photo\")    return InputMediaPhoto::fromJson(j);\n            if (type \u003d\u003d \"video\")    return InputMediaVideo::fromJson(j);\n            if (type \u003d\u003d \"animation\")return InputMediaAnimation::fromJson(j);\n            if (type \u003d\u003d \"audio\")    return InputMediaAudio::fromJson(j);\n            if (type \u003d\u003d \"document\") return InputMediaDocument::fromJson(j);\n\n            throw std::runtime_error(\"Unknown InputMedia type: \" + type);\n            ",
               "name": "InputMedia"
             },
             "required": true
@@ -15791,6 +15883,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -15802,6 +15895,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -15906,6 +16000,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -15917,6 +16012,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -15973,6 +16069,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -15984,6 +16081,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -16032,6 +16130,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -16043,6 +16142,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -16099,6 +16199,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -16110,6 +16211,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -16158,6 +16260,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -16698,6 +16801,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "KeyboardOption"
             },
             "required": false
@@ -16708,6 +16812,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -17282,6 +17387,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": true
@@ -17294,6 +17400,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -17452,6 +17559,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -17463,6 +17571,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -17588,6 +17697,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -17599,6 +17709,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -17724,6 +17835,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -17735,6 +17847,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -17868,6 +17981,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -17879,6 +17993,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -17972,6 +18087,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -17983,6 +18099,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18068,6 +18185,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18079,6 +18197,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18172,6 +18291,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18183,6 +18303,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18297,6 +18418,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18308,6 +18430,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18430,6 +18553,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18441,6 +18565,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18531,6 +18656,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18542,6 +18668,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18608,6 +18735,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18702,6 +18830,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18713,6 +18842,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18798,6 +18928,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18809,6 +18940,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18894,6 +19026,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18905,6 +19038,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -18947,6 +19081,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -18958,6 +19093,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -19043,6 +19179,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -19054,6 +19191,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -19147,6 +19285,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -19158,6 +19297,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -19235,6 +19375,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -19246,6 +19387,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -19315,6 +19457,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -19326,6 +19469,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InputMessageContent"
             },
             "required": false
@@ -19810,6 +19954,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "InlineQueryResult"
               },
               "name": "List\u003cInlineQueryResult\u003e"
@@ -19871,6 +20016,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InlineQueryResult"
             },
             "required": true
@@ -19898,6 +20044,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "InlineQueryResult"
             },
             "required": true
@@ -20555,6 +20702,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "PaidMedia"
               },
               "name": "List\u003cPaidMedia\u003e"
@@ -20665,6 +20813,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "RevenueWithdrawalState"
             },
             "required": false
@@ -20763,6 +20912,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "TransactionPartner"
             },
             "required": false
@@ -20773,6 +20923,7 @@
             "type": {
               "subclasses": {},
               "deserializer": "",
+              "deserializerCpp": "",
               "name": "TransactionPartner"
             },
             "required": false
@@ -21064,6 +21215,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -21075,6 +21227,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -21998,6 +22151,7 @@
               "elementType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "PassportElementError"
               },
               "name": "List\u003cPassportElementError\u003e"
@@ -22191,6 +22345,7 @@
               "superType": {
                 "subclasses": {},
                 "deserializer": "",
+                "deserializerCpp": "",
                 "name": "KeyboardOption"
               }
             },
@@ -22202,6 +22357,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }
@@ -22272,6 +22428,7 @@
           "superType": {
             "subclasses": {},
             "deserializer": "if (jsonElement.jsonObject.getValue(\"date\").jsonPrimitive.long \u003d\u003d 0L) {\n                                    InaccessibleMessage.serializer()\n                                } else {\n                                    Message.serializer()\n                                }",
+            "deserializerCpp": "\n                long date \u003d j.at(\"date\").get\u003clong\u003e();\n\n                if (date \u003d\u003d 0) {\n                    // соответствие InaccessibleMessage.serializer()\n                    return InaccessibleMessage::fromJson(j);\n                } else {\n                    // соответствие Message.serializer()\n                    return Message::fromJson(j);\n                }\n            ",
             "name": "MaybeInaccessibleMessage"
           }
         }

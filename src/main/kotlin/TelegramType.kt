@@ -23,25 +23,28 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         name: String,
         val subclasses: (String) -> kotlin.Boolean,
         val deserializer: String,
+        val deserializerCpp: String,
     ) : TelegramType(name, superType = null) {
 
         object InputMessageContent : Super(
             name = "InputMessageContent",
             subclasses = { it.startsWith("Input") && it.endsWith("MessageContent") },
-            deserializer = ""
-
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object InlineQueryResult : Super(
             name = "InlineQueryResult",
             subclasses = { it.startsWith("InlineQueryResult") && "Results" !in it },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object PassportElementError : Super(
             name = "PassportElementError",
             subclasses = { it.startsWith("PassportElementError") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object InputMedia : Super(
@@ -56,79 +59,102 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                 "document" -> InputMediaDocument.serializer()
                else -> error("unknown type: " + type)
             }
+            """,
+            deserializerCpp = """
+            std::string type = j.at("type");
+            
+            if (type == "photo")    return InputMediaPhoto::fromJson(j);
+            if (type == "video")    return InputMediaVideo::fromJson(j);
+            if (type == "animation")return InputMediaAnimation::fromJson(j);
+            if (type == "audio")    return InputMediaAudio::fromJson(j);
+            if (type == "document") return InputMediaDocument::fromJson(j);
+
+            throw std::runtime_error("Unknown InputMedia type: " + type);
             """
         )
 
         object ChatMember : Super(
             name = "ChatMember",
             subclasses = { it.startsWith("ChatMember") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object BotCommandScope : Super(
             name = "BotCommandScope",
             subclasses = { it.startsWith("BotCommandScope") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object ReactionType : Super(
             name = "ReactionType",
             subclasses = { it.startsWith("ReactionType") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object MessageOrigin : Super(
             name = "MessageOrigin",
             subclasses = { it.startsWith("MessageOrigin") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object ChatBoostSource : Super(
             name = "ChatBoostSource",
             subclasses = { it.startsWith("ChatBoostSource") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object MenuButton : Super(
             name = "MenuButton",
             subclasses = { it.startsWith("MenuButton") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object BackgroundFill : Super(
             name = "BackgroundFill",
             subclasses = { it.startsWith("BackgroundFill") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object BackgroundType : Super(
             name = "BackgroundType",
             subclasses = { it.startsWith("BackgroundType") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object RevenueWithdrawalState : Super(
             name = "RevenueWithdrawalState",
             subclasses = { it.startsWith("RevenueWithdrawalState") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object TransactionPartner : Super(
             name = "TransactionPartner",
             subclasses = { it.startsWith("TransactionPartner") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object PaidMedia : Super(
             name = "PaidMedia",
             subclasses = { it.startsWith("PaidMedia") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object InputPaidMedia : Super(
             name = "InputPaidMedia",
             subclasses = { it.startsWith("InputPaidMedia") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object KeyboardOption : Super(
@@ -141,7 +167,8 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                     "ForceReply"
                 )
             },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object MaybeInaccessibleMessage : Super(
@@ -151,31 +178,46 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                                     InaccessibleMessage.serializer()
                                 } else {
                                     Message.serializer()
-                                }"""
+                                }""",
+            deserializerCpp = """
+                long date = j.at("date").get<long>();
+
+                if (date == 0) {
+                    // соответствие InaccessibleMessage.serializer()
+                    return InaccessibleMessage::fromJson(j);
+                } else {
+                    // соответствие Message.serializer()
+                    return Message::fromJson(j);
+                }
+            """
         )
 
         object StoryAreaType : Super(
             name = "StoryAreaType",
             subclasses = { it.startsWith("StoryAreaType") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object OwnedGift : Super(
             name = "OwnedGift",
             subclasses = { it.startsWith("OwnedGift") && it != "OwnedGifts" },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object InputProfilePhoto : Super(
             name = "InputProfilePhoto",
             subclasses = { it.startsWith("InputProfilePhoto") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
 
         object InputStoryContent : Super(
             name = "InputStoryContent",
             subclasses = { it.startsWith("InputStoryContent") },
-            deserializer = ""
+            deserializer = "",
+            deserializerCpp = ""
         )
     }
 

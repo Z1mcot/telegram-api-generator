@@ -1,3 +1,5 @@
+import java.io.File
+
 val BASIC_JSON_TYPES_IN_CPP: Set<String> = setOf(
     "std::int64_t",
     "bool",
@@ -15,195 +17,669 @@ val BASIC_TG_TYPES: Set<String> = setOf(
     "MessageEffectId"
 )
 
-fun List<DocSection>.toCppModels() = buildString {
-    append(generateIncludes())
-    appendLine("namespace tgbot {")
-    appendLine("using json = nlohmann::json;")
-    appendLine("struct TelegramModel { virtual json to_json() const = 0; virtual ~TelegramModel(); };")
-    appendLine()
-    val forwardDeclarations = buildForwardDeclarations()
-    if (forwardDeclarations.isNotEmpty()) {
-        appendLine(comment("--- Forward Declarations ---", prefix = "    "))
-        forwardDeclarations.forEach {
-            appendLine("    $it")
-        }
-    }
-    append(generateValueClasses())
-    appendLine()
+private val CPP_BASE_INCLUDES = listOf(
+    "#include <cstdint>",
+    "#include <optional>",
+    "#include <string>",
+    "#include <vector>",
+    "#include <memory>",
+    "#include <nlohmann/json.hpp>",
+    "#include <stdexcept>"
+)
 
-    appendLine(comment("--- Super Types (Polymorphic Base Classes) ---", prefix = "    "))
-    TelegramType.allSuper.forEach { superType ->
-        val parentSuperType = TelegramType.from(superType.name).superType
-        val parentName = when (parentSuperType) {
-            null -> "TelegramModel"
-            else -> parentSuperType.name
-        }
-        appendLine("    struct ${superType.name} : public $parentName {")
-        appendLine("        virtual ~${superType.name}() = default;")
-        appendLine()
-        appendLine("        static std::shared_ptr<${superType.name}> fromJson(const nlohmann::json& j);")
-        appendLine("    };")
-        appendLine()
-    }
+private data class CppModelFile(
+    val name: String,
+    val headerContent: String,
+    val sourceContent: String? = null
+)
 
-    val allType = this@toCppModels.flatMap { section ->
-        section.docTypes.map { TelegramType.from(it.name) }
-    }
-    
-    val sortedDocTypes = sortedDocTypes()
-    if (sortedDocTypes.isNotEmpty()) {
-        appendLine(comment("--- Parameters & Responses ---", prefix = "    "))
-        var currentSection: String? = null
-        sortedDocTypes.forEach { docTypeWithSection ->
-            val sectionName = docTypeWithSection.sectionName
-            if (sectionName != null && sectionName != currentSection) {
-                appendLine(comment(sectionName, prefix = "    "))
-                currentSection = sectionName
-            }
-            val docType = docTypeWithSection.docType
-            appendLine(withIndent(docType.toCppDoc(), "    "))
-            appendLine(withIndent(docType.toCppStruct(), "    "))
-            appendLine()
-        }
-    }
-    appendLine(comment("--- Requests ---", prefix = "    "))
-    this@toCppModels.forEach { section ->
-        if (section.docMethods.isNotEmpty()) {
-            appendLine(comment(section.name, prefix = "    "))
-            section.docMethods.forEach { method ->
-                if (method.docParameters.isNotEmpty()) {
-                    appendLine(withIndent(method.toCppDoc(showReturn = false), "    "))
-                    appendLine(withIndent(method.toCppStruct(), "    "))
-                    appendLine()
-                }
-            }
-        }
-    }
-
-    appendLine(comment("--- Super Types Serialization ---", prefix = "    "))
-
-    TelegramType.allSuper.forEach { superType ->
-        appendLine()
-        val allSubtype = allType.filter { it.superType?.name == superType.name }
-        // Generate polymorphic JSON serialization using std::variant
-        if (allSubtype.isNotEmpty()) {
-            appendLine("    std::shared_ptr<${superType.name}> ${superType.name}::fromJson(const json& j) {")
-
-            when (superType) {
-                is TelegramType.Super -> {
-                    if (superType.deserializer.isEmpty()) {
-                        // Try all subtypes until one succeeds
-                        allSubtype.forEachIndexed { index, subtype ->
-                            if (index == 0) {
-                                appendLine("        try {")
-                            } else {
-                                appendLine("        } catch (...) {")
-                                appendLine("            try {")
-                            }
-                            appendLine("            ${subtype.name} value;")
-                            appendLine("            from_json(j, value);")
-                            appendLine("            return value;")
-                            if (index != 0) {
-                                appendLine("            }")
-                            }
-                        }
-                        if (allSubtype.size > 1) {
-                            appendLine("        } catch (...) {")
-                        }
-                        if (allSubtype.size > 1) {
-                            appendLine("        }")
-                        }
-                        appendLine("        throw std::runtime_error(\"Failed to deserialize ${superType.name}\");")
-                    } else {
-                        // Has custom deserializer - use type field
-                        appendLine("        ${superType.deserializerCpp}")
-                    }
-                }
-                else -> {
-                    appendLine("        // Not a Super type")
-                    appendLine("        (void)j;")
-                    appendLine("        (void)value;")
-                }
-            }
-            appendLine("    }")
-            appendLine()
-        }
-    }
-    appendLine("} // namespace tgbot")
-}
-
-private fun generateIncludes() = buildString {
+private fun buildCppHeader(
+    forwardDeclarations: Collection<String>,
+    includes: Collection<String>,
+    body: String
+): String = buildString {
     appendLine("// Auto-generated Telegram Bot API models for C++")
     appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
     appendLine("#pragma once")
-    appendLine("#include <cstdint>")
-    appendLine("#include <optional>")
-    appendLine("#include <string>")
-    appendLine("#include <vector>")
-    appendLine("#include <memory>")
-    appendLine("#include <nlohmann/json.hpp>\n")
+    includes.distinct().forEach { appendLine(it) }
+    appendLine()
+    appendLine("namespace tgbot {")
+    if (forwardDeclarations.isNotEmpty()) {
+        appendLine()
+        forwardDeclarations.distinct().forEach { appendLine("    $it") }
+    }
+    appendLine()
+    if (includes.any { it.contains("nlohmann/json.hpp") }) {
+        appendLine("    using json = nlohmann::json;")
+        appendLine()
+    }
+    appendLine(withIndent(body.trimEnd(), "    "))
+    appendLine("}")
 }
 
-// TODO: either remove or add to telegramtype and build the same
-private fun generateValueClasses() = buildString {
-    appendLine(comment("--- Value Classes ---", prefix = "    "))
-    appendLine("    // chat_id")
-    appendLine("    struct ChatId {")
-    appendLine("        std::string stringValue;")
-    appendLine("        std::int64_t longValue() const { return std::stoll(stringValue); }")
+private fun buildCppSource(
+    headerName: String,
+    includes: Collection<String>,
+    body: String
+): String = buildString {
+    appendLine("// Auto-generated Telegram Bot API models for C++")
+    appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
+    appendLine("#include \"$headerName.hpp\"")
+    includes.distinct().forEach { appendLine(it) }
     appendLine()
-    appendLine("        json to_json() const { return stringValue; }")
-    appendLine("        static void from_json(const json& j, ChatId& value) { value.stringValue = j.get<std::string>(); }")
-    appendLine("    };")
-    appendLine()
-    appendLine("    // user_id")
-    appendLine("    struct UserId {")
-    appendLine("        std::int64_t longValue;")
-    appendLine("        ChatId toChatId() const { return ChatId{std::to_string(longValue)}; }")
-    appendLine()
-    appendLine("        json to_json() const { return longValue; }")
-    appendLine("        static void from_json(const json& j, UserId& value) { value.longValue = j.get<std::int64_t>(); }")
-    appendLine("    };")
-    appendLine()
-    appendLine("    // message_id")
-    appendLine("    struct MessageId {")
-    appendLine("        std::int64_t longValue;")
-    appendLine()
-    appendLine("        json to_json() const { return longValue; }")
-    appendLine("        static void from_json(const json& j, MessageId& value) { value.longValue = j.get<std::int64_t>(); }")
-    appendLine("    };")
-    appendLine()
-    appendLine("    // business_connection_id")
-    appendLine("    struct BusinessConnectionId {")
-    appendLine("        std::string stringValue;")
-    appendLine()
-    appendLine("        json to_json() const { return stringValue; }")
-    appendLine("        static void from_json(const json& j, BusinessConnectionId& value) { value.stringValue = j.get<std::string>(); }")
-    appendLine("    };")
-    appendLine()
-    appendLine("    // message_thread_id")
-    appendLine("    struct MessageThreadId {")
-    appendLine("        std::int64_t longValue;")
-    appendLine()
-    appendLine("        json to_json() const { return longValue; }")
-    appendLine("        static void from_json(const json& j, MessageThreadId& value) { value.longValue = j.get<std::int64_t>(); }")
-    appendLine("    };")
-    appendLine()
-    appendLine("    // message_effect_id")
-    appendLine("    struct MessageEffectId {")
-    appendLine("        std::string stringValue;")
-    appendLine()
-    appendLine("        json to_json() const { return stringValue; }")
-    appendLine("        static void from_json(const json& j, MessageEffectId& value) { value.stringValue = j.get<std::string>(); }")
-    appendLine("    };")
-    appendLine("    // parse_mode")
-    appendLine("    struct ParseMode {")
-    appendLine("        std::string stringValue;")
-    appendLine()
-    appendLine("        json to_json() const { return stringValue; }")
-    appendLine("        static void from_json(const json& j, ParseMode& value) { value.stringValue = j.get<std::string>(); }")
-    appendLine("    };")
+    appendLine("namespace tgbot {")
+    appendLine(withIndent(body.trimEnd(), "    "))
+    appendLine("}")
 }
+
+private fun stripCppWrappers(type: String): String {
+    var result = type.trim()
+    var changed: Boolean
+    do {
+        changed = false
+        listOf("std::vector<", "std::shared_ptr<", "std::optional<").forEach { prefix ->
+            if (result.startsWith(prefix) && result.endsWith(">")) {
+                result = result.removePrefix(prefix).removeSuffix(">")
+                changed = true
+            }
+        }
+    } while (changed)
+    return result
+}
+
+private fun extractCustomTypes(
+    cppType: String,
+    customTypeNames: Set<String>,
+    currentName: String? = null
+): Set<String> {
+    val baseType = stripCppWrappers(cppType)
+    return buildSet {
+        if (baseType in customTypeNames && baseType != currentName) {
+            add(baseType)
+        }
+    }
+}
+
+private fun collectCustomTypes(
+    fields: List<DocField>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = fields.flatMap { field ->
+    extractCustomTypes(field.toCppFieldType(className), customTypeNames, className)
+}.toSet()
+
+private fun collectPointerTypes(
+    fields: List<DocField>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = fields.mapNotNull { field ->
+    val fieldType = field.toCppFieldType(className)
+    if (fieldType.startsWith("std::shared_ptr<")) {
+        val baseType = stripCppWrappers(fieldType)
+        if (baseType in customTypeNames && baseType != className) {
+            baseType
+        } else null
+    } else null
+}.toSet()
+
+private fun collectValueTypes(
+    fields: List<DocField>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = fields.mapNotNull { field ->
+    val fieldType = field.toCppFieldType(className)
+    if (!fieldType.startsWith("std::shared_ptr<") && 
+        !fieldType.startsWith("std::vector<") &&
+        !BASIC_JSON_TYPES_IN_CPP.contains(fieldType) &&
+        !BASIC_TG_TYPES.contains(fieldType)) {
+        val baseType = stripCppWrappers(fieldType)
+        if (baseType in customTypeNames && baseType != className) {
+            baseType
+        } else null
+    } else null
+}.toSet()
+
+private fun collectVectorElementTypes(
+    fields: List<DocField>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = fields.mapNotNull { field ->
+    val fieldType = field.toCppFieldType(className)
+    if (fieldType.startsWith("std::vector<")) {
+        val elementType = stripCppWrappers(fieldType)
+        if (elementType in customTypeNames && elementType != className) {
+            elementType
+        } else null
+    } else null
+}.toSet()
+
+private fun collectCustomTypesFromParameters(
+    parameters: List<DocParameter>,
+    customTypeNames: Set<String>
+): Set<String> = parameters.flatMap { parameter ->
+    extractCustomTypes(parameter.toCppFieldType(null), customTypeNames)
+}.toSet()
+
+private fun collectPointerTypesFromParameters(
+    parameters: List<DocParameter>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = parameters.mapNotNull { param ->
+    val fieldType = param.toCppFieldType(null)
+    if (fieldType.startsWith("std::shared_ptr<")) {
+        val baseType = stripCppWrappers(fieldType)
+        if (baseType in customTypeNames && baseType != className) {
+            baseType
+        } else null
+    } else null
+}.toSet()
+
+private fun collectValueTypesFromParameters(
+    parameters: List<DocParameter>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = parameters.mapNotNull { param ->
+    val fieldType = param.toCppFieldType(null)
+    if (!fieldType.startsWith("std::shared_ptr<") && 
+        !fieldType.startsWith("std::vector<") &&
+        !BASIC_JSON_TYPES_IN_CPP.contains(fieldType) &&
+        !BASIC_TG_TYPES.contains(fieldType)) {
+        val baseType = stripCppWrappers(fieldType)
+        if (baseType in customTypeNames && baseType != className) {
+            baseType
+        } else null
+    } else null
+}.toSet()
+
+private fun collectVectorElementTypesFromParameters(
+    parameters: List<DocParameter>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = parameters.mapNotNull { param ->
+    val fieldType = param.toCppFieldType(null)
+    if (fieldType.startsWith("std::vector<")) {
+        val elementType = stripCppWrappers(fieldType)
+        if (elementType in customTypeNames && elementType != className) {
+            elementType
+        } else null
+    } else null
+}.toSet()
+
+private fun generateTelegramModelFile(): CppModelFile {
+    val valueClasses = listOf(
+        """
+struct ChatId {
+    std::string stringValue;
+    std::int64_t longValue() const { return std::stoll(stringValue); }
+
+    json to_json() const { return stringValue; }
+    static void from_json(const json& j, ChatId& value) { value.stringValue = j.get<std::string>(); }
+};
+""".trimIndent(),
+        """
+struct UserId {
+    std::int64_t longValue;
+    ChatId toChatId() const { return ChatId{std::to_string(longValue)}; }
+
+    json to_json() const { return longValue; }
+    static void from_json(const json& j, UserId& value) { value.longValue = j.get<std::int64_t>(); }
+};
+""".trimIndent(),
+        """
+struct MessageId {
+    std::int64_t longValue;
+
+    json to_json() const { return longValue; }
+    static void from_json(const json& j, MessageId& value) { value.longValue = j.get<std::int64_t>(); }
+};
+""".trimIndent(),
+        """
+struct BusinessConnectionId {
+    std::string stringValue;
+
+    json to_json() const { return stringValue; }
+    static void from_json(const json& j, BusinessConnectionId& value) { value.stringValue = j.get<std::string>(); }
+};
+""".trimIndent(),
+        """
+struct MessageThreadId {
+    std::int64_t longValue;
+
+    json to_json() const { return longValue; }
+    static void from_json(const json& j, MessageThreadId& value) { value.longValue = j.get<std::int64_t>(); }
+};
+""".trimIndent(),
+        """
+struct MessageEffectId {
+    std::string stringValue;
+
+    json to_json() const { return stringValue; }
+    static void from_json(const json& j, MessageEffectId& value) { value.stringValue = j.get<std::string>(); }
+};
+""".trimIndent(),
+        """
+struct ParseMode {
+    std::string stringValue;
+
+    json to_json() const { return stringValue; }
+    static void from_json(const json& j, ParseMode& value) { value.stringValue = j.get<std::string>(); }
+};
+""".trimIndent()
+    )
+
+    val body = buildString {
+        appendLine(
+            """
+struct TelegramModel {
+    virtual json to_json() const = 0;
+    virtual ~TelegramModel() = default;
+};
+""".trimIndent()
+        )
+        appendLine()
+        valueClasses.forEachIndexed { index, valueClass ->
+            appendLine(valueClass)
+            if (index != valueClasses.lastIndex) {
+                appendLine()
+            }
+        }
+    }.trimEnd()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = CPP_BASE_INCLUDES,
+        body = buildString {
+            appendLine("using json = nlohmann::json;")
+            appendLine()
+            appendLine(body)
+        }
+    )
+    return CppModelFile(name = "TelegramModel", headerContent = headerContent, sourceContent = null)
+}
+
+private fun TelegramType.superTypeNameOrBase(): String =
+    when (val parent = superType) {
+        null -> "TelegramModel"
+        else -> parent.name
+    }
+
+private fun generateSuperTypeFiles(
+    customTypeNames: Set<String>,
+    allTypes: List<TelegramType>
+): List<CppModelFile> {
+    return TelegramType.allSuper.map { superType ->
+        val parentName = superType.superTypeNameOrBase()
+        val subtypes = allTypes.filter { it.superType?.name == superType.name }
+
+        // Header: forward declare subtypes, include only base class
+        val forwardDeclarations = subtypes.map { "struct ${it.name};" }
+        val headerIncludes = CPP_BASE_INCLUDES + listOf("#include \"$parentName.hpp\"")
+
+        val headerBody = buildString {
+            appendLine("struct ${superType.name} : public $parentName {")
+            appendLine("    virtual ~${superType.name}() = default;")
+            // appendLine()
+            // appendLine("    static std::shared_ptr<${superType.name}> fromJson(const json& j);")
+            appendLine("};")
+        }
+
+        // Source: include all subtype headers and implement fromJson
+        // val sourceIncludes = subtypes.map { "#include \"${it.name}.hpp\"" } + listOf("#include <nlohmann/json.hpp>")
+        
+        // val sourceBody = buildString {
+        //     appendLine("std::shared_ptr<${superType.name}> ${superType.name}::fromJson(const json& j) {")
+        //     if (subtypes.isEmpty()) {
+        //         appendLine("    throw std::runtime_error(\"No subtypes registered for ${superType.name}\");")
+        //     } else {
+        //         when (superType) {
+        //             is TelegramType.Super -> {
+        //                 if (superType.deserializer.isEmpty()) {
+        //                     subtypes.forEachIndexed { index, subtype ->
+        //                         if (index == 0) {
+        //                             appendLine("    try {")
+        //                         } else {
+        //                             appendLine("    } catch (...) {")
+        //                             appendLine("        try {")
+        //                         }
+        //                         appendLine("        ${subtype.name} value;")
+        //                         appendLine("        from_json(j, value);")
+        //                         appendLine("        return std::make_shared<${subtype.name}>(std::move(value));")
+        //                         if (index != 0) {
+        //                             appendLine("        }")
+        //                         }
+        //                     }
+        //                     if (subtypes.size > 1) {
+        //                         appendLine("    } catch (...) {")
+        //                         appendLine("    }")
+        //                     }
+        //                     appendLine("    throw std::runtime_error(\"Failed to deserialize ${superType.name}\");")
+        //                 } else {
+        //                     superType.deserializerCpp.trimIndent().lines().forEach { line ->
+        //                         appendLine("    $line")
+        //                     }
+        //                 }
+        //             }
+
+        //             else -> {
+        //                 appendLine("    (void)j;")
+        //                 appendLine("    throw std::runtime_error(\"${superType.name} does not support deserialization\");")
+        //             }
+        //         }
+        //     }
+        //     appendLine("}")
+        // }
+
+        CppModelFile(
+            name = superType.name,
+            headerContent = buildCppHeader(
+                forwardDeclarations = forwardDeclarations,
+                includes = headerIncludes,
+                body = headerBody
+            ),
+            sourceContent = null
+        )
+    }
+}
+
+private fun DocType.toCppFile(
+    customTypeNames: Set<String>,
+    valueClassNames: Set<String>
+): CppModelFile {
+    val superType = TelegramType.from(name).superType
+    val superTypeName = superType?.name ?: "TelegramModel"
+    
+    // Header: forward declare pointer types, include base class and value types
+    val pointerTypes = collectPointerTypes(docFields, name, customTypeNames)
+    val valueTypes = collectValueTypes(docFields, name, customTypeNames)
+    val vectorElementTypes = collectVectorElementTypes(docFields, name, customTypeNames)
+    
+    val forwardDeclarations = pointerTypes.map { "struct $it;" }
+    val includeTelegramModel = superTypeName == "TelegramModel" ||
+        valueTypes.any { it in valueClassNames } ||
+        vectorElementTypes.any { it in valueClassNames }
+    val headerIncludes = buildList {
+        addAll(CPP_BASE_INCLUDES)
+        add("#include \"$superTypeName.hpp\"")
+        if (includeTelegramModel && superTypeName != "TelegramModel") {
+            add("#include \"TelegramModel.hpp\"")
+        }
+        addAll(valueTypes.filterNot { it in valueClassNames }.map { "#include \"$it.hpp\"" })
+        addAll(vectorElementTypes.filterNot { it in valueClassNames }.map { "#include \"$it.hpp\"" })
+    }
+
+    val headerBody = buildString {
+        appendLine(toCppDoc().trimEnd())
+        appendLine(toCppStructDeclaration().trimEnd())
+    }
+
+    // Source: include all full definitions and implement to_json()
+    val sourceIncludes = pointerTypes.map { "#include \"$it.hpp\"" } +
+        listOf("#include <nlohmann/json.hpp>")
+
+    val sourceBody = buildString {
+        appendLine(toCppStructImplementation())
+    }
+
+    return CppModelFile(
+        name = name,
+        headerContent = buildCppHeader(
+            forwardDeclarations = forwardDeclarations,
+            includes = headerIncludes,
+            body = headerBody
+        ),
+        sourceContent = buildCppSource(
+            headerName = name,
+            includes = sourceIncludes,
+            body = sourceBody
+        )
+    )
+}
+
+private fun DocMethod.toCppRequestStructDeclaration() = buildString {
+    val structName = requestStructName()
+    appendLine("struct $structName {")
+    if (docParameters.isEmpty()) {
+        appendLine("    // Empty struct")
+    } else {
+        docParameters.forEachIndexed { index, parameter ->
+            val fieldName = parameter.cppFieldName()
+            val comment = parameter.description.cleanHtml().takeIf { it.isNotBlank() }
+            if (comment != null) {
+                appendLine("    // ${comment.replace("\n", " ")}")
+            }
+
+            val fieldType = parameter.toCppFieldType(null)
+            appendLine("    ${fieldType} $fieldName;")
+
+            if (index != docParameters.lastIndex) appendLine()
+        }
+    }
+    append("};")
+}
+
+private fun DocMethod.toCppRequestFile(
+    customTypeNames: Set<String>,
+    valueClassNames: Set<String>
+): CppModelFile? {
+    if (docParameters.isEmpty()) return null
+    val structName = requestStructName()
+    
+    val pointerTypes = collectPointerTypesFromParameters(docParameters, structName, customTypeNames)
+    val valueTypes = collectValueTypesFromParameters(docParameters, structName, customTypeNames)
+    val vectorElementTypes = collectVectorElementTypesFromParameters(docParameters, structName, customTypeNames)
+
+    val forwardDeclarations = pointerTypes.map { "struct $it;" }
+    val headerIncludes = buildList {
+        addAll(CPP_BASE_INCLUDES)
+        if (valueTypes.any { it in valueClassNames }) {
+            add("#include \"TelegramModel.hpp\"")
+        }
+        addAll(valueTypes.filterNot { it in valueClassNames }.map { "#include \"$it.hpp\"" })
+        addAll(vectorElementTypes.filterNot { it in valueClassNames }.map { "#include \"$it.hpp\"" })
+    }
+
+    val headerBody = buildString {
+        appendLine(toCppDoc(showReturn = false))
+        appendLine(toCppRequestStructDeclaration().trimEnd())
+    }
+
+    return CppModelFile(
+        name = structName,
+        headerContent = buildCppHeader(
+            forwardDeclarations = forwardDeclarations,
+            includes = headerIncludes,
+            body = headerBody
+        ),
+        sourceContent = null
+    )
+}
+
+private fun List<DocSection>.toCppModelFiles(): List<CppModelFile> {
+    val docTypes = sortedDocTypes()
+    val docTypeNames = docTypes.map { it.docType.name }.toSet()
+
+    val requestStructNames = flatMap { section ->
+        section.docMethods
+            .filter { it.docParameters.isNotEmpty() }
+            .map { it.requestStructName() }
+    }.toSet()
+
+    val superTypeNames = TelegramType.allSuper.map { it.name }.toSet()
+    val valueClassNames = setOf(
+        "ChatId",
+        "UserId",
+        "MessageId",
+        "BusinessConnectionId",
+        "MessageThreadId",
+        "MessageEffectId",
+        "ParseMode"
+    )
+
+    val customTypeNames = docTypeNames + requestStructNames + superTypeNames + valueClassNames + setOf("TelegramModel")
+
+    val allTypes = flatMap { section ->
+        section.docTypes.map { TelegramType.from(it.name) }
+    }
+
+    val files = mutableListOf<CppModelFile>()
+    files += generateTelegramModelFile()
+    files += generateSuperTypeFiles(customTypeNames, allTypes)
+    files += docTypes.map { it.docType.toCppFile(customTypeNames, valueClassNames) }
+    files += flatMap { section ->
+        section.docMethods.mapNotNull { it.toCppRequestFile(customTypeNames, valueClassNames) }
+    }
+
+    return files
+}
+
+fun List<DocSection>.writeCppModelFiles(outputDir: File) {
+    if (outputDir.exists()) {
+        outputDir.listFiles { _, name -> name.endsWith(".hpp") || name.endsWith(".cpp") }?.forEach { it.delete() }
+    }
+    outputDir.mkdirs()
+    val files = toCppModelFiles()
+    files.forEach { file ->
+        File(outputDir, "${file.name}.hpp").writeText(file.headerContent)
+        if (file.sourceContent != null) {
+            File(outputDir, "${file.name}.cpp").writeText(file.sourceContent)
+        }
+    }
+    // Generate CMakeLists.txt
+    File(outputDir, "CMakeLists.txt").writeText(generateCppCMakeLists(files))
+}
+
+private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildString {
+    appendLine("# Auto-generated CMakeLists.txt for Telegram Bot API C++ models")
+    appendLine("# Generated by telegram-api-generator. Do not edit manually.")
+    appendLine()
+    appendLine("cmake_minimum_required(VERSION 3.15)")
+    appendLine()
+    appendLine("project(TelegramBotAPI_Models")
+    appendLine("    VERSION 1.0.0")
+    appendLine("    LANGUAGES CXX")
+    appendLine("    DESCRIPTION \"Telegram Bot API C++ models\"")
+    appendLine(")")
+    appendLine()
+    appendLine("set(CMAKE_CXX_STANDARD 17)")
+    appendLine("set(CMAKE_CXX_STANDARD_REQUIRED ON)")
+    appendLine("set(CMAKE_CXX_EXTENSIONS OFF)")
+    appendLine()
+    appendLine("# Find or include nlohmann/json")
+    appendLine("# Option 1: If nlohmann/json is installed system-wide or via find_package")
+    appendLine("if(NOT TARGET nlohmann_json::nlohmann_json)")
+    appendLine("    find_package(nlohmann_json QUIET)")
+    appendLine("endif()")
+    appendLine()
+    appendLine("# Option 2: Use FetchContent to download nlohmann/json if not found")
+    appendLine("if(NOT TARGET nlohmann_json::nlohmann_json)")
+    appendLine("    include(FetchContent)")
+    appendLine("    FetchContent_Declare(")
+    appendLine("        json")
+    appendLine("        GIT_REPOSITORY https://github.com/nlohmann/json.git")
+    appendLine("        GIT_TAG v3.11.2")
+    appendLine("    )")
+    appendLine("    FetchContent_MakeAvailable(json)")
+    appendLine("endif()")
+    appendLine()
+    appendLine("# Collect all source files")
+    val headerFiles = files.map { "${it.name}.hpp" }.sorted()
+    val sourceFiles = files.filter { it.sourceContent != null }.map { "${it.name}.cpp" }.sorted()
+    
+    appendLine("set(TELEGRAM_MODELS_HEADERS")
+    headerFiles.forEach { appendLine("    $it") }
+    appendLine(")")
+    appendLine()
+    
+    if (sourceFiles.isNotEmpty()) {
+        appendLine("set(TELEGRAM_MODELS_SOURCES")
+        sourceFiles.forEach { appendLine("    $it") }
+        appendLine(")")
+        appendLine()
+    }
+    
+    appendLine("# Create library target")
+    if (sourceFiles.isNotEmpty()) {
+        appendLine("add_library(TelegramBotAPI_Models STATIC")
+        appendLine("    ${'$'}{TELEGRAM_MODELS_SOURCES}")
+        appendLine(")")
+        appendLine()
+        appendLine("target_include_directories(TelegramBotAPI_Models")
+        appendLine("    PUBLIC")
+        appendLine("        ${'$'}{CMAKE_CURRENT_SOURCE_DIR}")
+        appendLine(")")
+        appendLine()
+        appendLine("target_link_libraries(TelegramBotAPI_Models")
+        appendLine("    PUBLIC")
+        appendLine("        nlohmann_json::nlohmann_json")
+        appendLine(")")
+    } else {
+        appendLine("# Header-only library")
+        appendLine("add_library(TelegramBotAPI_Models INTERFACE)")
+        appendLine()
+        appendLine("target_include_directories(TelegramBotAPI_Models")
+        appendLine("    INTERFACE")
+        appendLine("        ${'$'}{CMAKE_CURRENT_SOURCE_DIR}")
+        appendLine(")")
+        appendLine()
+        appendLine("target_link_libraries(TelegramBotAPI_Models")
+        appendLine("    INTERFACE")
+        appendLine("        nlohmann_json::nlohmann_json")
+        appendLine(")")
+    }
+    appendLine()
+    appendLine("# Install rules (optional)")
+    appendLine("install(TARGETS TelegramBotAPI_Models")
+    appendLine("    EXPORT TelegramBotAPI_ModelsTargets")
+    appendLine("    LIBRARY DESTINATION ${'$'}{CMAKE_INSTALL_LIBDIR}")
+    appendLine("    ARCHIVE DESTINATION ${'$'}{CMAKE_INSTALL_LIBDIR}")
+    appendLine("    RUNTIME DESTINATION ${'$'}{CMAKE_INSTALL_BINDIR}")
+    appendLine("    INCLUDES DESTINATION ${'$'}{CMAKE_INSTALL_INCLUDEDIR}/telegram")
+    appendLine(")")
+    appendLine()
+    appendLine("install(FILES ${'$'}{TELEGRAM_MODELS_HEADERS}")
+    appendLine("    DESTINATION ${'$'}{CMAKE_INSTALL_INCLUDEDIR}/telegram")
+    appendLine(")")
+    appendLine()
+    appendLine("install(EXPORT TelegramBotAPI_ModelsTargets")
+    appendLine("    FILE TelegramBotAPI_ModelsTargets.cmake")
+    appendLine("    NAMESPACE TelegramBotAPI::")
+    appendLine("    DESTINATION ${'$'}{CMAKE_INSTALL_LIBDIR}/cmake/TelegramBotAPI_Models")
+    appendLine(")")
+    appendLine()
+    appendLine("# Usage in other projects:")
+    appendLine("#   add_subdirectory(path/to/telegram-api-generator/example/cpp)")
+    appendLine("#   target_link_libraries(your_target PRIVATE TelegramBotAPI_Models)")
+}
+
+private fun List<DocSection>.collectCppClientModelIncludes(): Set<String> {
+    val docTypeNames = flatMap { it.docTypes.map { type -> type.name } }.toSet()
+    val superTypeNames = TelegramType.allSuper.map { it.name }.toSet()
+    val valueClassNames = setOf(
+        "ChatId",
+        "UserId",
+        "MessageId",
+        "BusinessConnectionId",
+        "MessageThreadId",
+        "MessageEffectId",
+        "ParseMode"
+    )
+
+    val customTypeNames = docTypeNames + superTypeNames + valueClassNames + setOf("TelegramModel")
+
+    val includes = mutableSetOf<String>()
+
+    forEach { section ->
+        section.docMethods.forEach { method ->
+            includes.addAll(extractCustomTypes(method.returns.toCppType(), customTypeNames))
+            method.docParameters.forEach { parameter ->
+                includes.addAll(extractCustomTypes(parameter.toCppFieldType(null), customTypeNames))
+            }
+        }
+    }
+
+    return includes
+}
+
 
 private fun comment(text: String, prefix: String = "") = buildString {
     appendLine()
@@ -258,32 +734,68 @@ private fun generateVectorSerialization(
         else -> "->to_json()"
     }
 
-    if (BASIC_JSON_TYPES_IN_CPP.contains(elementType)) {
-        // Direct assignment, no conversion needed
-        appendLine("        j[\"$jsonFieldName\"] = $fieldName;")
-    } else {
-        // Complex type - call to_json on each element
-        val tempVarName = "${fieldName}_values"
-        appendLine("        std::vector<json> $tempVarName;")
-        appendLine("        $tempVarName.reserve($fieldName.size());")
-        appendLine("        for (auto& e : $fieldName) {")
-        appendLine("            $tempVarName.push_back(e$jsonPostfix);")
-        appendLine("        }")
-        appendLine("        j[\"$jsonFieldName\"] = $tempVarName;")
-    }
+    val tempVarName = "${fieldName}_values"
+
+    appendLine("        std::vector<json> $tempVarName;")
+    appendLine("        $tempVarName.reserve($fieldName.size());")
+    appendLine("        for (auto& e : $fieldName) {")
+    appendLine("            $tempVarName.push_back(e$jsonPostfix);")
+    appendLine("        }")
+    appendLine("        j[\"$jsonFieldName\"] = $tempVarName;")
+
+    // if (BASIC_JSON_TYPES_IN_CPP.contains(elementType)) {
+    //     // Direct assignment, no conversion needed
+    //     appendLine("        j[\"$jsonFieldName\"] = $fieldName;")
+    // } else {
+    //     // Complex type - call to_json on each element
+    //     val tempVarName = "${fieldName}_values"
+    //     appendLine("        std::vector<json> $tempVarName;")
+    //     appendLine("        $tempVarName.reserve($fieldName.size());")
+    //     appendLine("        for (auto& e : $fieldName) {")
+    //     appendLine("            $tempVarName.push_back(e$jsonPostfix);")
+    //     appendLine("        }")
+    //     appendLine("        j[\"$jsonFieldName\"] = $tempVarName;")
+    // }
 }
 
-private fun DocType.toCppStruct() = buildString {
+private fun generateVectorDeserialization(
+    fieldType: String,
+    fieldName: String,
+    jsonFieldName: String
+): String = buildString {
+    // Extract element type from std::vector<ElementType>
+    if (!fieldType.startsWith("std::vector<")) {
+        return@buildString
+    }
+
+    val elementType = fieldType.removePrefix("std::vector<").removeSuffix(">")
+
+    val jsonPostfix = when {
+        BASIC_JSON_TYPES_IN_CPP.contains(elementType) -> ""
+        BASIC_TG_TYPES.contains(elementType) -> ".to_json()"
+        else -> "->to_json()"
+    }
+
+    val tempVarName = "${fieldName}_values"
+    appendLine("        std::vector<$fieldType> $tempVarName;")
+    appendLine("        $tempVarName.reserve($fieldName.size());")
+    appendLine("        for (auto& e : data[\"$fieldName\"]) {")
+    if (!BASIC_JSON_TYPES_IN_CPP.contains(fieldName)) {
+        appendLine("            $tempVarName.push_back($fieldType::from_json(e));")
+    } else {
+        appendLine("            $tempVarName.push_back(e.get<$fieldType>());")
+    }
+    appendLine("        }")
+    appendLine("        result->$fieldName = $tempVarName;")
+}
+
+private fun DocType.toCppStructDeclaration() = buildString {
     val telegramType = TelegramType.from(name)
     val superType = telegramType.superType
     val superTypeName = when (superType) {
         null -> "TelegramModel"
         else -> superType.name
     }
-
-    val explicitlySerializedFields: MutableSet<String> = mutableSetOf()
-    val vectors: MutableSet<String> = mutableSetOf()
-    val ptrs: MutableSet<String> = mutableSetOf()
 
     appendLine("struct $name : public $superTypeName {")
     appendLine("    virtual ~$name() = default;")
@@ -298,37 +810,53 @@ private fun DocType.toCppStruct() = buildString {
             }
 
             val fieldType = field.toCppFieldType(name)
-            if (fieldType.contains("std::vector")) {
-                vectors.add(fieldName)
-            }
-            
-            if (!BASIC_JSON_TYPES_IN_CPP.contains(fieldType)) {
-                explicitlySerializedFields.add(fieldName)
-            }
-
             appendLine("    ${fieldType} $fieldName;")
-
-            if (!BASIC_JSON_TYPES_IN_CPP.contains(fieldType) &&
-                !BASIC_TG_TYPES.contains(fieldType) &&
-                !vectors.contains(fieldName)
-            ) {
-                ptrs.add(fieldName)
-            }
 
             if (index != docFields.lastIndex) appendLine()
         }
     }
     appendLine()
-    appendLine("    json to_json() const override {")
-    appendLine("        json j;")
+    appendLine("    json to_json() const override;")
+    appendLine("    static std::shared_ptr<$name> from_json(const json& data);")
+    append("};")
+}
+
+
+private fun DocType.toCppStructImplementation() = buildString {
+    val explicitlySerializedFields: MutableSet<String> = mutableSetOf()
+    val vectors: MutableSet<String> = mutableSetOf()
+    val ptrs: MutableSet<String> = mutableSetOf()
+
+    docFields.forEach { field ->
+        val fieldName = field.cppFieldName()
+        val fieldType = field.toCppFieldType(name)
+        if (fieldType.contains("std::vector")) {
+            vectors.add(fieldName)
+        }
+        
+        if (!BASIC_JSON_TYPES_IN_CPP.contains(fieldType)) {
+            explicitlySerializedFields.add(fieldName)
+        }
+
+        if (!BASIC_JSON_TYPES_IN_CPP.contains(fieldType) &&
+            !BASIC_TG_TYPES.contains(fieldType) &&
+            !vectors.contains(fieldName)
+        ) {
+            ptrs.add(fieldName)
+        }
+    }
+
+    appendLine("json $name::to_json() const {")
+    appendLine("    json j;")
     if (docFields.isEmpty()) {
-        appendLine("        j = json::object();")
+        appendLine("    j = json::object();")
     } else {
         docFields.forEach { field ->
             val fieldName = field.cppFieldName()
             val jsonFieldName = field.name
             val fieldType = field.toCppFieldType(name)
             
+            // TODO maybe remove explicitlySerializedFileds check in first match
             val toJsonPostfix = when {
                 ptrs.contains(fieldName) && explicitlySerializedFields.contains(fieldName) -> "->to_json()"
                 explicitlySerializedFields.contains(fieldName) -> ".to_json()"
@@ -336,35 +864,37 @@ private fun DocType.toCppStruct() = buildString {
             }
 
             if (vectors.contains(fieldName)) {
-                append(generateVectorSerialization(fieldType, fieldName, jsonFieldName))
+                append(generateVectorSerialization(fieldType, fieldName, jsonFieldName).replace("        ", "    "))
             } else {
-                appendLine("        j[\"$jsonFieldName\"] = $fieldName$toJsonPostfix;")
+                appendLine("    j[\"$jsonFieldName\"] = $fieldName$toJsonPostfix;")
             }
         }
     }
-    appendLine("        return j.dump();")
-    appendLine("    }")
-    append("};")
+    appendLine("    return j.dump();")
+    appendLine("}")
+
+    appendLine("std::shared_ptr<$name> $name::from_json(const json& data) {")
+    appendLine("    auto result(std::make_shared<$name>());")
+    if (!docFields.isEmpty()) {
+        docFields.forEach { field ->
+            val fieldName = field.cppFieldName()
+            val jsonFieldName = field.name
+            val fieldType = field.toCppFieldType(name)
+
+            if (vectors.contains(fieldName)) {
+                // TODO deserialisation
+                append(generateVectorDeserialization(fieldType, fieldName, jsonFieldName).replace("        ", "    "))
+            } else if (explicitlySerializedFields.contains(fieldName)) {
+                appendLine("    result->$fieldName = $fieldType::from_json(data[\"$fieldName\"]);")
+            } else {
+                appendLine("    result->$fieldName = data[\"$fieldName\"].get<$fieldType>();")
+            }
+        }   
+    }
+    appendLine("    return result;")
+    appendLine("}")
 }
 
-private fun DocMethod.toCppStruct() = buildString {
-    val structName = requestStructName()
-    appendLine("struct $structName {")
-    if (docParameters.isEmpty()) {
-        appendLine("    // Empty struct")
-    } else {
-        docParameters.forEachIndexed { index, parameter ->
-            val fieldName = parameter.cppFieldName()
-            val comment = parameter.description.cleanHtml().takeIf { it.isNotBlank() }
-            if (comment != null) {
-                appendLine("    // ${comment.replace("\n", " ")}")
-            }
-            appendLine("    ${parameter.toCppFieldType(name)} $fieldName;")
-            if (index != docParameters.lastIndex) appendLine()
-        }
-    }
-    append("};")
-}
 
 private fun DocField.cppFieldName() = if (name == "type") "type_" else name
 
@@ -436,7 +966,9 @@ fun List<DocSection>.toCppClient() = buildString {
     appendLine("// Auto-generated Telegram Bot API client for C++")
     appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
     appendLine("#pragma once")
-    appendLine("#include \"TelegramModels.hpp\"")
+    collectCppClientModelIncludes().sorted().forEach { model ->
+        appendLine("#include \"cpp/$model.hpp\"")
+    }
     appendLine("#include <boost/beast/core.hpp>")
     appendLine("#include <boost/beast/http.hpp>")
     appendLine("#include <boost/beast/ssl.hpp>")
@@ -445,6 +977,7 @@ fun List<DocSection>.toCppClient() = buildString {
     appendLine("#include <boost/asio/ip/tcp.hpp>")
     appendLine("#include <boost/asio/ssl/stream.hpp>")
     appendLine("#include <nlohmann/json.hpp>")
+    appendLine("#include <optional>")
     appendLine("#include <iostream>")
     appendLine("#include <string>\n")
     appendLine("namespace telegram {")
@@ -574,24 +1107,6 @@ private fun DocMethod.toCppClientMethod() = buildString {
 private fun DocMethod.requestStructName() =
     name.replaceFirstChar { it.uppercaseChar() } + "Request"
 
-private fun List<DocSection>.buildForwardDeclarations(): List<String> {
-    val typeDeclarations = flatMap { section ->
-        section.docTypes.map { docType ->
-            "struct ${docType.name};"
-        }
-    }
-    val requestDeclarations = flatMap { section ->
-        section.docMethods
-            .filter { it.docParameters.isNotEmpty() }
-            .map { method ->
-                "struct ${method.requestStructName()};"
-            }
-    }
-    val superTypeDeclarations = TelegramType.allSuper.map { superType ->
-        "struct ${superType.name};"
-    }
-    return (typeDeclarations + requestDeclarations + superTypeDeclarations).distinct()
-}
 
 private data class DocTypeWithSection(
     val docType: DocType,

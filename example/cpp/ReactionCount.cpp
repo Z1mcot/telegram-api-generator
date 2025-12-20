@@ -14,7 +14,7 @@ namespace tgbot {
     }
     std::shared_ptr<ReactionCount> ReactionCount::from_json(const json& data) {
         auto result(std::make_shared<ReactionCount>());
-        result->type_ = std::shared_ptr<ReactionType>::from_json(data["type_"]);
+        result->type_ = ReactionType::from_json(data["type_"]);
         result->total_count = data["total_count"].get<std::int64_t>();
         return result;
     }

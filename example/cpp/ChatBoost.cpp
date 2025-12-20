@@ -19,7 +19,7 @@ namespace tgbot {
         result->boost_id = data["boost_id"].get<std::string>();
         result->add_date = data["add_date"].get<std::int64_t>();
         result->expiration_date = data["expiration_date"].get<std::int64_t>();
-        result->source = std::shared_ptr<ChatBoostSource>::from_json(data["source"]);
+        result->source = ChatBoostSource::from_json(data["source"]);
         return result;
     }
 }

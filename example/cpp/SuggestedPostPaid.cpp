@@ -17,10 +17,10 @@ namespace tgbot {
     }
     std::shared_ptr<SuggestedPostPaid> SuggestedPostPaid::from_json(const json& data) {
         auto result(std::make_shared<SuggestedPostPaid>());
-        result->suggested_post_message = std::shared_ptr<Message>::from_json(data["suggested_post_message"]);
+        result->suggested_post_message = Message::from_json(data["suggested_post_message"]);
         result->currency = data["currency"].get<std::string>();
         result->amount = data["amount"].get<std::int64_t>();
-        result->star_amount = std::shared_ptr<StarAmount>::from_json(data["star_amount"]);
+        result->star_amount = StarAmount::from_json(data["star_amount"]);
         return result;
     }
 }

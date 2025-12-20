@@ -23,7 +23,7 @@ namespace tgbot {
         result->offset = data["offset"].get<std::int64_t>();
         result->length = data["length"].get<std::int64_t>();
         result->url = data["url"].get<std::string>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->language = data["language"].get<std::string>();
         result->custom_emoji_id = data["custom_emoji_id"].get<std::string>();
         return result;

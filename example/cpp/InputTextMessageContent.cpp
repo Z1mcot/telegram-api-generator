@@ -29,7 +29,7 @@ namespace tgbot {
             entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
         }
         result->entities = entities_values;
-        result->link_preview_options = std::shared_ptr<LinkPreviewOptions>::from_json(data["link_preview_options"]);
+        result->link_preview_options = LinkPreviewOptions::from_json(data["link_preview_options"]);
         return result;
     }
 }

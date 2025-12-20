@@ -16,7 +16,7 @@ namespace tgbot {
     std::shared_ptr<UniqueGiftModel> UniqueGiftModel::from_json(const json& data) {
         auto result(std::make_shared<UniqueGiftModel>());
         result->name = data["name"].get<std::string>();
-        result->sticker = std::shared_ptr<Sticker>::from_json(data["sticker"]);
+        result->sticker = Sticker::from_json(data["sticker"]);
         result->rarity_per_mille = data["rarity_per_mille"].get<std::int64_t>();
         return result;
     }

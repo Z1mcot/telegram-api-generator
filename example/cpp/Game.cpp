@@ -43,7 +43,7 @@ namespace tgbot {
             text_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
         }
         result->text_entities = text_entities_values;
-        result->animation = std::shared_ptr<Animation>::from_json(data["animation"]);
+        result->animation = Animation::from_json(data["animation"]);
         return result;
     }
 }

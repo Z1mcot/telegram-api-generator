@@ -39,8 +39,8 @@ namespace tgbot {
             caption_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
         }
         result->caption_entities = caption_entities_values;
-        result->reply_markup = std::shared_ptr<InlineKeyboardMarkup>::from_json(data["reply_markup"]);
-        result->input_message_content = std::shared_ptr<InputMessageContent>::from_json(data["input_message_content"]);
+        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
+        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
         return result;
     }
 }

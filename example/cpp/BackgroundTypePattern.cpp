@@ -20,8 +20,8 @@ namespace tgbot {
     std::shared_ptr<BackgroundTypePattern> BackgroundTypePattern::from_json(const json& data) {
         auto result(std::make_shared<BackgroundTypePattern>());
         result->type_ = data["type_"].get<std::string>();
-        result->document = std::shared_ptr<Document>::from_json(data["document"]);
-        result->fill = std::shared_ptr<BackgroundFill>::from_json(data["fill"]);
+        result->document = Document::from_json(data["document"]);
+        result->fill = BackgroundFill::from_json(data["fill"]);
         result->intensity = data["intensity"].get<std::int64_t>();
         result->is_inverted = data["is_inverted"].get<bool>();
         result->is_moving = data["is_moving"].get<bool>();

@@ -22,7 +22,7 @@ namespace tgbot {
         result->file_unique_id = data["file_unique_id"].get<std::string>();
         result->length = data["length"].get<std::int64_t>();
         result->duration = data["duration"].get<std::int64_t>();
-        result->thumbnail = std::shared_ptr<PhotoSize>::from_json(data["thumbnail"]);
+        result->thumbnail = PhotoSize::from_json(data["thumbnail"]);
         result->file_size = data["file_size"].get<std::int64_t>();
         return result;
     }

@@ -36,8 +36,8 @@ namespace tgbot {
         result->live_period = data["live_period"].get<std::int64_t>();
         result->heading = data["heading"].get<std::int64_t>();
         result->proximity_alert_radius = data["proximity_alert_radius"].get<std::int64_t>();
-        result->reply_markup = std::shared_ptr<InlineKeyboardMarkup>::from_json(data["reply_markup"]);
-        result->input_message_content = std::shared_ptr<InputMessageContent>::from_json(data["input_message_content"]);
+        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
+        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
         result->thumbnail_url = data["thumbnail_url"].get<std::string>();
         result->thumbnail_width = data["thumbnail_width"].get<std::int64_t>();
         result->thumbnail_height = data["thumbnail_height"].get<std::int64_t>();

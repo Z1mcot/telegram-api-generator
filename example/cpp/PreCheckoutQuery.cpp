@@ -21,12 +21,12 @@ namespace tgbot {
     std::shared_ptr<PreCheckoutQuery> PreCheckoutQuery::from_json(const json& data) {
         auto result(std::make_shared<PreCheckoutQuery>());
         result->id = data["id"].get<std::string>();
-        result->from = std::shared_ptr<User>::from_json(data["from"]);
+        result->from = User::from_json(data["from"]);
         result->currency = data["currency"].get<std::string>();
         result->total_amount = data["total_amount"].get<std::int64_t>();
         result->invoice_payload = data["invoice_payload"].get<std::string>();
         result->shipping_option_id = data["shipping_option_id"].get<std::string>();
-        result->order_info = std::shared_ptr<OrderInfo>::from_json(data["order_info"]);
+        result->order_info = OrderInfo::from_json(data["order_info"]);
         return result;
     }
 }

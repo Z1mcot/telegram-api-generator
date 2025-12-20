@@ -19,8 +19,8 @@ namespace tgbot {
     std::shared_ptr<ChosenInlineResult> ChosenInlineResult::from_json(const json& data) {
         auto result(std::make_shared<ChosenInlineResult>());
         result->result_id = data["result_id"].get<std::string>();
-        result->from = std::shared_ptr<User>::from_json(data["from"]);
-        result->location = std::shared_ptr<Location>::from_json(data["location"]);
+        result->from = User::from_json(data["from"]);
+        result->location = Location::from_json(data["location"]);
         result->inline_message_id = data["inline_message_id"].get<std::string>();
         result->query = data["query"].get<std::string>();
         return result;

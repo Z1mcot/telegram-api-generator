@@ -21,8 +21,8 @@ namespace tgbot {
         result->type_ = data["type_"].get<std::string>();
         result->id = data["id"].get<std::string>();
         result->sticker_file_id = data["sticker_file_id"].get<std::string>();
-        result->reply_markup = std::shared_ptr<InlineKeyboardMarkup>::from_json(data["reply_markup"]);
-        result->input_message_content = std::shared_ptr<InputMessageContent>::from_json(data["input_message_content"]);
+        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
+        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
         return result;
     }
 }

@@ -18,7 +18,7 @@ namespace tgbot {
     std::shared_ptr<BackgroundTypeWallpaper> BackgroundTypeWallpaper::from_json(const json& data) {
         auto result(std::make_shared<BackgroundTypeWallpaper>());
         result->type_ = data["type_"].get<std::string>();
-        result->document = std::shared_ptr<Document>::from_json(data["document"]);
+        result->document = Document::from_json(data["document"]);
         result->dark_theme_dimming = data["dark_theme_dimming"].get<std::int64_t>();
         result->is_blurred = data["is_blurred"].get<bool>();
         result->is_moving = data["is_moving"].get<bool>();

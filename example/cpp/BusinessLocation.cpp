@@ -15,7 +15,7 @@ namespace tgbot {
     std::shared_ptr<BusinessLocation> BusinessLocation::from_json(const json& data) {
         auto result(std::make_shared<BusinessLocation>());
         result->address = data["address"].get<std::string>();
-        result->location = std::shared_ptr<Location>::from_json(data["location"]);
+        result->location = Location::from_json(data["location"]);
         return result;
     }
 }

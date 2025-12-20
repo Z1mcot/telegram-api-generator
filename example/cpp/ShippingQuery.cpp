@@ -18,9 +18,9 @@ namespace tgbot {
     std::shared_ptr<ShippingQuery> ShippingQuery::from_json(const json& data) {
         auto result(std::make_shared<ShippingQuery>());
         result->id = data["id"].get<std::string>();
-        result->from = std::shared_ptr<User>::from_json(data["from"]);
+        result->from = User::from_json(data["from"]);
         result->invoice_payload = data["invoice_payload"].get<std::string>();
-        result->shipping_address = std::shared_ptr<ShippingAddress>::from_json(data["shipping_address"]);
+        result->shipping_address = ShippingAddress::from_json(data["shipping_address"]);
         return result;
     }
 }

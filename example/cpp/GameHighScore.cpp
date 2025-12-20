@@ -16,7 +16,7 @@ namespace tgbot {
     std::shared_ptr<GameHighScore> GameHighScore::from_json(const json& data) {
         auto result(std::make_shared<GameHighScore>());
         result->position = data["position"].get<std::int64_t>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->score = data["score"].get<std::int64_t>();
         return result;
     }

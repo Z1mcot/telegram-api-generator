@@ -38,8 +38,8 @@ namespace tgbot {
         result->foursquare_type = data["foursquare_type"].get<std::string>();
         result->google_place_id = data["google_place_id"].get<std::string>();
         result->google_place_type = data["google_place_type"].get<std::string>();
-        result->reply_markup = std::shared_ptr<InlineKeyboardMarkup>::from_json(data["reply_markup"]);
-        result->input_message_content = std::shared_ptr<InputMessageContent>::from_json(data["input_message_content"]);
+        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
+        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
         result->thumbnail_url = data["thumbnail_url"].get<std::string>();
         result->thumbnail_width = data["thumbnail_width"].get<std::int64_t>();
         result->thumbnail_height = data["thumbnail_height"].get<std::int64_t>();

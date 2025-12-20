@@ -21,7 +21,7 @@ namespace tgbot {
     }
     std::shared_ptr<MessageReactionCountUpdated> MessageReactionCountUpdated::from_json(const json& data) {
         auto result(std::make_shared<MessageReactionCountUpdated>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->message_id = MessageId::from_json(data["message_id"]);
         result->date = data["date"].get<std::int64_t>();
         std::vector<std::vector<std::shared_ptr<ReactionCount>>> reactions_values;

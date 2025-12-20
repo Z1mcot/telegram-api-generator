@@ -42,9 +42,9 @@ namespace tgbot {
             files_values.push_back(std::vector<std::shared_ptr<PassportFile>>::from_json(e));
         }
         result->files = files_values;
-        result->front_side = std::shared_ptr<PassportFile>::from_json(data["front_side"]);
-        result->reverse_side = std::shared_ptr<PassportFile>::from_json(data["reverse_side"]);
-        result->selfie = std::shared_ptr<PassportFile>::from_json(data["selfie"]);
+        result->front_side = PassportFile::from_json(data["front_side"]);
+        result->reverse_side = PassportFile::from_json(data["reverse_side"]);
+        result->selfie = PassportFile::from_json(data["selfie"]);
         std::vector<std::vector<std::shared_ptr<PassportFile>>> translation_values;
         translation_values.reserve(translation.size());
         for (auto& e : data["translation"]) {

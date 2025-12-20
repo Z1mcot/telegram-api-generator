@@ -15,7 +15,7 @@ namespace tgbot {
     std::shared_ptr<ChatBoostSourceGiftCode> ChatBoostSourceGiftCode::from_json(const json& data) {
         auto result(std::make_shared<ChatBoostSourceGiftCode>());
         result->source = data["source"].get<std::string>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         return result;
     }
 }

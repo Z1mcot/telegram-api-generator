@@ -16,7 +16,7 @@ namespace tgbot {
     std::shared_ptr<UniqueGiftBackdrop> UniqueGiftBackdrop::from_json(const json& data) {
         auto result(std::make_shared<UniqueGiftBackdrop>());
         result->name = data["name"].get<std::string>();
-        result->colors = std::shared_ptr<UniqueGiftBackdropColors>::from_json(data["colors"]);
+        result->colors = UniqueGiftBackdropColors::from_json(data["colors"]);
         result->rarity_per_mille = data["rarity_per_mille"].get<std::int64_t>();
         return result;
     }

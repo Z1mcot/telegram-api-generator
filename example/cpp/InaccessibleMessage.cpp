@@ -15,7 +15,7 @@ namespace tgbot {
     }
     std::shared_ptr<InaccessibleMessage> InaccessibleMessage::from_json(const json& data) {
         auto result(std::make_shared<InaccessibleMessage>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->message_id = MessageId::from_json(data["message_id"]);
         result->date = data["date"].get<std::int64_t>();
         return result;

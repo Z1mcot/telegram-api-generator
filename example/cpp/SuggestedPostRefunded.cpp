@@ -14,7 +14,7 @@ namespace tgbot {
     }
     std::shared_ptr<SuggestedPostRefunded> SuggestedPostRefunded::from_json(const json& data) {
         auto result(std::make_shared<SuggestedPostRefunded>());
-        result->suggested_post_message = std::shared_ptr<Message>::from_json(data["suggested_post_message"]);
+        result->suggested_post_message = Message::from_json(data["suggested_post_message"]);
         result->reason = data["reason"].get<std::string>();
         return result;
     }

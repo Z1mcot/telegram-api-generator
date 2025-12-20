@@ -19,7 +19,7 @@ namespace tgbot {
         result->name = data["name"].get<std::string>();
         result->phone_number = data["phone_number"].get<std::string>();
         result->email = data["email"].get<std::string>();
-        result->shipping_address = std::shared_ptr<ShippingAddress>::from_json(data["shipping_address"]);
+        result->shipping_address = ShippingAddress::from_json(data["shipping_address"]);
         return result;
     }
 }

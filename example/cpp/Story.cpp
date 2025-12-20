@@ -14,7 +14,7 @@ namespace tgbot {
     }
     std::shared_ptr<Story> Story::from_json(const json& data) {
         auto result(std::make_shared<Story>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->id = data["id"].get<std::int64_t>();
         return result;
     }

@@ -21,12 +21,12 @@ namespace tgbot {
     std::shared_ptr<Gift> Gift::from_json(const json& data) {
         auto result(std::make_shared<Gift>());
         result->id = data["id"].get<std::string>();
-        result->sticker = std::shared_ptr<Sticker>::from_json(data["sticker"]);
+        result->sticker = Sticker::from_json(data["sticker"]);
         result->star_count = data["star_count"].get<std::int64_t>();
         result->upgrade_star_count = data["upgrade_star_count"].get<std::int64_t>();
         result->total_count = data["total_count"].get<std::int64_t>();
         result->remaining_count = data["remaining_count"].get<std::int64_t>();
-        result->publisher_chat = std::shared_ptr<Chat>::from_json(data["publisher_chat"]);
+        result->publisher_chat = Chat::from_json(data["publisher_chat"]);
         return result;
     }
 }

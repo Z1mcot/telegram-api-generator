@@ -25,7 +25,7 @@ namespace tgbot {
             data_values.push_back(std::vector<std::shared_ptr<EncryptedPassportElement>>::from_json(e));
         }
         result->data = data_values;
-        result->credentials = std::shared_ptr<EncryptedCredentials>::from_json(data["credentials"]);
+        result->credentials = EncryptedCredentials::from_json(data["credentials"]);
         return result;
     }
 }

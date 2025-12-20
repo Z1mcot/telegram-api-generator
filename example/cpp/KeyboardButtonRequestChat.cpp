@@ -28,8 +28,8 @@ namespace tgbot {
         result->chat_is_forum = data["chat_is_forum"].get<bool>();
         result->chat_has_username = data["chat_has_username"].get<bool>();
         result->chat_is_created = data["chat_is_created"].get<bool>();
-        result->user_administrator_rights = std::shared_ptr<ChatAdministratorRights>::from_json(data["user_administrator_rights"]);
-        result->bot_administrator_rights = std::shared_ptr<ChatAdministratorRights>::from_json(data["bot_administrator_rights"]);
+        result->user_administrator_rights = ChatAdministratorRights::from_json(data["user_administrator_rights"]);
+        result->bot_administrator_rights = ChatAdministratorRights::from_json(data["bot_administrator_rights"]);
         result->bot_is_member = data["bot_is_member"].get<bool>();
         result->request_title = data["request_title"].get<bool>();
         result->request_username = data["request_username"].get<bool>();

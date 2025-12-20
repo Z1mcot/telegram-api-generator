@@ -16,7 +16,7 @@ namespace tgbot {
     std::shared_ptr<InlineQueryResultsButton> InlineQueryResultsButton::from_json(const json& data) {
         auto result(std::make_shared<InlineQueryResultsButton>());
         result->text = data["text"].get<std::string>();
-        result->web_app = std::shared_ptr<WebAppInfo>::from_json(data["web_app"]);
+        result->web_app = WebAppInfo::from_json(data["web_app"]);
         result->start_parameter = data["start_parameter"].get<std::string>();
         return result;
     }

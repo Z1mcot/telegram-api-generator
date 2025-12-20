@@ -30,10 +30,10 @@ namespace tgbot {
     }
     std::shared_ptr<MessageReactionUpdated> MessageReactionUpdated::from_json(const json& data) {
         auto result(std::make_shared<MessageReactionUpdated>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->message_id = MessageId::from_json(data["message_id"]);
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
-        result->actor_chat = std::shared_ptr<Chat>::from_json(data["actor_chat"]);
+        result->user = User::from_json(data["user"]);
+        result->actor_chat = Chat::from_json(data["actor_chat"]);
         result->date = data["date"].get<std::int64_t>();
         std::vector<std::vector<std::shared_ptr<ReactionType>>> old_reaction_values;
         old_reaction_values.reserve(old_reaction.size());

@@ -18,7 +18,7 @@ namespace tgbot {
     }
     std::shared_ptr<UniqueGiftInfo> UniqueGiftInfo::from_json(const json& data) {
         auto result(std::make_shared<UniqueGiftInfo>());
-        result->gift = std::shared_ptr<UniqueGift>::from_json(data["gift"]);
+        result->gift = UniqueGift::from_json(data["gift"]);
         result->origin = data["origin"].get<std::string>();
         result->last_resale_star_count = data["last_resale_star_count"].get<std::int64_t>();
         result->owned_gift_id = data["owned_gift_id"].get<std::string>();

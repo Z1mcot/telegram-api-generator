@@ -20,10 +20,10 @@ namespace tgbot {
     std::shared_ptr<BusinessConnection> BusinessConnection::from_json(const json& data) {
         auto result(std::make_shared<BusinessConnection>());
         result->id = BusinessConnectionId::from_json(data["id"]);
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->user_chat_id = ChatId::from_json(data["user_chat_id"]);
         result->date = data["date"].get<std::int64_t>();
-        result->rights = std::shared_ptr<BusinessBotRights>::from_json(data["rights"]);
+        result->rights = BusinessBotRights::from_json(data["rights"]);
         result->is_enabled = data["is_enabled"].get<bool>();
         return result;
     }

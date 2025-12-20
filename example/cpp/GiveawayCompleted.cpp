@@ -18,7 +18,7 @@ namespace tgbot {
         auto result(std::make_shared<GiveawayCompleted>());
         result->winner_count = data["winner_count"].get<std::int64_t>();
         result->unclaimed_prize_count = data["unclaimed_prize_count"].get<std::int64_t>();
-        result->giveaway_message = std::shared_ptr<Message>::from_json(data["giveaway_message"]);
+        result->giveaway_message = Message::from_json(data["giveaway_message"]);
         result->is_star_giveaway = data["is_star_giveaway"].get<bool>();
         return result;
     }

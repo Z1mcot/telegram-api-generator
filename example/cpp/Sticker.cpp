@@ -36,11 +36,11 @@ namespace tgbot {
         result->height = data["height"].get<std::int64_t>();
         result->is_animated = data["is_animated"].get<bool>();
         result->is_video = data["is_video"].get<bool>();
-        result->thumbnail = std::shared_ptr<PhotoSize>::from_json(data["thumbnail"]);
+        result->thumbnail = PhotoSize::from_json(data["thumbnail"]);
         result->emoji = data["emoji"].get<std::string>();
         result->set_name = data["set_name"].get<std::string>();
-        result->premium_animation = std::shared_ptr<File>::from_json(data["premium_animation"]);
-        result->mask_position = std::shared_ptr<MaskPosition>::from_json(data["mask_position"]);
+        result->premium_animation = File::from_json(data["premium_animation"]);
+        result->mask_position = MaskPosition::from_json(data["mask_position"]);
         result->custom_emoji_id = data["custom_emoji_id"].get<std::string>();
         result->needs_repainting = data["needs_repainting"].get<bool>();
         result->file_size = data["file_size"].get<std::int64_t>();

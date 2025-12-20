@@ -31,7 +31,7 @@ namespace tgbot {
     std::shared_ptr<ChatMemberRestricted> ChatMemberRestricted::from_json(const json& data) {
         auto result(std::make_shared<ChatMemberRestricted>());
         result->status = data["status"].get<std::string>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->is_member = data["is_member"].get<bool>();
         result->can_send_messages = data["can_send_messages"].get<bool>();
         result->can_send_audios = data["can_send_audios"].get<bool>();

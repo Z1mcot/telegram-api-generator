@@ -15,8 +15,8 @@ namespace tgbot {
     }
     std::shared_ptr<ProximityAlertTriggered> ProximityAlertTriggered::from_json(const json& data) {
         auto result(std::make_shared<ProximityAlertTriggered>());
-        result->traveler = std::shared_ptr<User>::from_json(data["traveler"]);
-        result->watcher = std::shared_ptr<User>::from_json(data["watcher"]);
+        result->traveler = User::from_json(data["traveler"]);
+        result->watcher = User::from_json(data["watcher"]);
         result->distance = data["distance"].get<std::int64_t>();
         return result;
     }

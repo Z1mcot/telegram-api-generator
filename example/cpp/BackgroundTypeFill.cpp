@@ -16,7 +16,7 @@ namespace tgbot {
     std::shared_ptr<BackgroundTypeFill> BackgroundTypeFill::from_json(const json& data) {
         auto result(std::make_shared<BackgroundTypeFill>());
         result->type_ = data["type_"].get<std::string>();
-        result->fill = std::shared_ptr<BackgroundFill>::from_json(data["fill"]);
+        result->fill = BackgroundFill::from_json(data["fill"]);
         result->dark_theme_dimming = data["dark_theme_dimming"].get<std::int64_t>();
         return result;
     }

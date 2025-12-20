@@ -24,7 +24,7 @@ namespace tgbot {
     std::shared_ptr<ChatInviteLink> ChatInviteLink::from_json(const json& data) {
         auto result(std::make_shared<ChatInviteLink>());
         result->invite_link = data["invite_link"].get<std::string>();
-        result->creator = std::shared_ptr<User>::from_json(data["creator"]);
+        result->creator = User::from_json(data["creator"]);
         result->creates_join_request = data["creates_join_request"].get<bool>();
         result->is_primary = data["is_primary"].get<bool>();
         result->is_revoked = data["is_revoked"].get<bool>();

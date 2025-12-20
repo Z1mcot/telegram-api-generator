@@ -23,8 +23,8 @@ namespace tgbot {
     std::shared_ptr<PollAnswer> PollAnswer::from_json(const json& data) {
         auto result(std::make_shared<PollAnswer>());
         result->poll_id = data["poll_id"].get<std::string>();
-        result->voter_chat = std::shared_ptr<Chat>::from_json(data["voter_chat"]);
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->voter_chat = Chat::from_json(data["voter_chat"]);
+        result->user = User::from_json(data["user"]);
         std::vector<std::vector<std::int64_t>> option_ids_values;
         option_ids_values.reserve(option_ids.size());
         for (auto& e : data["option_ids"]) {

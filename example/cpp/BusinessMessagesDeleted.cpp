@@ -21,7 +21,7 @@ namespace tgbot {
     std::shared_ptr<BusinessMessagesDeleted> BusinessMessagesDeleted::from_json(const json& data) {
         auto result(std::make_shared<BusinessMessagesDeleted>());
         result->business_connection_id = BusinessConnectionId::from_json(data["business_connection_id"]);
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         std::vector<std::vector<MessageId>> message_ids_values;
         message_ids_values.reserve(message_ids.size());
         for (auto& e : data["message_ids"]) {

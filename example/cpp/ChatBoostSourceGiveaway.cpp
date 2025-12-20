@@ -19,7 +19,7 @@ namespace tgbot {
         auto result(std::make_shared<ChatBoostSourceGiveaway>());
         result->source = data["source"].get<std::string>();
         result->giveaway_message_id = data["giveaway_message_id"].get<std::int64_t>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->prize_star_count = data["prize_star_count"].get<std::int64_t>();
         result->is_unclaimed = data["is_unclaimed"].get<bool>();
         return result;

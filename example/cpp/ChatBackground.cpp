@@ -13,7 +13,7 @@ namespace tgbot {
     }
     std::shared_ptr<ChatBackground> ChatBackground::from_json(const json& data) {
         auto result(std::make_shared<ChatBackground>());
-        result->type_ = std::shared_ptr<BackgroundType>::from_json(data["type_"]);
+        result->type_ = BackgroundType::from_json(data["type_"]);
         return result;
     }
 }

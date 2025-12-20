@@ -23,12 +23,12 @@ namespace tgbot {
     std::shared_ptr<KeyboardButton> KeyboardButton::from_json(const json& data) {
         auto result(std::make_shared<KeyboardButton>());
         result->text = data["text"].get<std::string>();
-        result->request_users = std::shared_ptr<KeyboardButtonRequestUsers>::from_json(data["request_users"]);
-        result->request_chat = std::shared_ptr<KeyboardButtonRequestChat>::from_json(data["request_chat"]);
+        result->request_users = KeyboardButtonRequestUsers::from_json(data["request_users"]);
+        result->request_chat = KeyboardButtonRequestChat::from_json(data["request_chat"]);
         result->request_contact = data["request_contact"].get<bool>();
         result->request_location = data["request_location"].get<bool>();
-        result->request_poll = std::shared_ptr<KeyboardButtonPollType>::from_json(data["request_poll"]);
-        result->web_app = std::shared_ptr<WebAppInfo>::from_json(data["web_app"]);
+        result->request_poll = KeyboardButtonPollType::from_json(data["request_poll"]);
+        result->web_app = WebAppInfo::from_json(data["web_app"]);
         return result;
     }
 }

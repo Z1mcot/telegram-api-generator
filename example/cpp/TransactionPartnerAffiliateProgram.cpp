@@ -16,7 +16,7 @@ namespace tgbot {
     std::shared_ptr<TransactionPartnerAffiliateProgram> TransactionPartnerAffiliateProgram::from_json(const json& data) {
         auto result(std::make_shared<TransactionPartnerAffiliateProgram>());
         result->type_ = data["type_"].get<std::string>();
-        result->sponsor_user = std::shared_ptr<User>::from_json(data["sponsor_user"]);
+        result->sponsor_user = User::from_json(data["sponsor_user"]);
         result->commission_per_mille = data["commission_per_mille"].get<std::int64_t>();
         return result;
     }

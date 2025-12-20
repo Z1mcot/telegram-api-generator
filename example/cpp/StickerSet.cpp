@@ -31,7 +31,7 @@ namespace tgbot {
             stickers_values.push_back(std::vector<std::shared_ptr<Sticker>>::from_json(e));
         }
         result->stickers = stickers_values;
-        result->thumbnail = std::shared_ptr<PhotoSize>::from_json(data["thumbnail"]);
+        result->thumbnail = PhotoSize::from_json(data["thumbnail"]);
         return result;
     }
 }

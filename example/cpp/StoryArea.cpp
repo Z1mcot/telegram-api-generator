@@ -15,8 +15,8 @@ namespace tgbot {
     }
     std::shared_ptr<StoryArea> StoryArea::from_json(const json& data) {
         auto result(std::make_shared<StoryArea>());
-        result->position = std::shared_ptr<StoryAreaPosition>::from_json(data["position"]);
-        result->type_ = std::shared_ptr<StoryAreaType>::from_json(data["type_"]);
+        result->position = StoryAreaPosition::from_json(data["position"]);
+        result->type_ = StoryAreaType::from_json(data["type_"]);
         return result;
     }
 }

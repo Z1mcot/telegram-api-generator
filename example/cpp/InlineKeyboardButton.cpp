@@ -29,13 +29,13 @@ namespace tgbot {
         result->text = data["text"].get<std::string>();
         result->url = data["url"].get<std::string>();
         result->callback_data = data["callback_data"].get<std::string>();
-        result->web_app = std::shared_ptr<WebAppInfo>::from_json(data["web_app"]);
-        result->login_url = std::shared_ptr<LoginUrl>::from_json(data["login_url"]);
+        result->web_app = WebAppInfo::from_json(data["web_app"]);
+        result->login_url = LoginUrl::from_json(data["login_url"]);
         result->switch_inline_query = data["switch_inline_query"].get<std::string>();
         result->switch_inline_query_current_chat = data["switch_inline_query_current_chat"].get<std::string>();
-        result->switch_inline_query_chosen_chat = std::shared_ptr<SwitchInlineQueryChosenChat>::from_json(data["switch_inline_query_chosen_chat"]);
-        result->copy_text = std::shared_ptr<CopyTextButton>::from_json(data["copy_text"]);
-        result->callback_game = std::shared_ptr<CallbackGame>::from_json(data["callback_game"]);
+        result->switch_inline_query_chosen_chat = SwitchInlineQueryChosenChat::from_json(data["switch_inline_query_chosen_chat"]);
+        result->copy_text = CopyTextButton::from_json(data["copy_text"]);
+        result->callback_game = CallbackGame::from_json(data["callback_game"]);
         result->pay = data["pay"].get<bool>();
         return result;
     }

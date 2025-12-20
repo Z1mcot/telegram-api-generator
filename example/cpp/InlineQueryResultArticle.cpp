@@ -26,8 +26,8 @@ namespace tgbot {
         result->type_ = data["type_"].get<std::string>();
         result->id = data["id"].get<std::string>();
         result->title = data["title"].get<std::string>();
-        result->input_message_content = std::shared_ptr<InputMessageContent>::from_json(data["input_message_content"]);
-        result->reply_markup = std::shared_ptr<InlineKeyboardMarkup>::from_json(data["reply_markup"]);
+        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
+        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
         result->url = data["url"].get<std::string>();
         result->description = data["description"].get<std::string>();
         result->thumbnail_url = data["thumbnail_url"].get<std::string>();

@@ -17,7 +17,7 @@ namespace tgbot {
         auto result(std::make_shared<MenuButtonWebApp>());
         result->type_ = data["type_"].get<std::string>();
         result->text = data["text"].get<std::string>();
-        result->web_app = std::shared_ptr<WebAppInfo>::from_json(data["web_app"]);
+        result->web_app = WebAppInfo::from_json(data["web_app"]);
         return result;
     }
 }

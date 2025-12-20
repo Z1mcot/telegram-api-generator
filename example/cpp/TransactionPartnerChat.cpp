@@ -17,8 +17,8 @@ namespace tgbot {
     std::shared_ptr<TransactionPartnerChat> TransactionPartnerChat::from_json(const json& data) {
         auto result(std::make_shared<TransactionPartnerChat>());
         result->type_ = data["type_"].get<std::string>();
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
-        result->gift = std::shared_ptr<Gift>::from_json(data["gift"]);
+        result->chat = Chat::from_json(data["chat"]);
+        result->gift = Gift::from_json(data["gift"]);
         return result;
     }
 }

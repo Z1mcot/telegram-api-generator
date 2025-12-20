@@ -17,10 +17,10 @@ namespace tgbot {
     }
     std::shared_ptr<ChatBoostRemoved> ChatBoostRemoved::from_json(const json& data) {
         auto result(std::make_shared<ChatBoostRemoved>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->boost_id = data["boost_id"].get<std::string>();
         result->remove_date = data["remove_date"].get<std::int64_t>();
-        result->source = std::shared_ptr<ChatBoostSource>::from_json(data["source"]);
+        result->source = ChatBoostSource::from_json(data["source"]);
         return result;
     }
 }

@@ -19,7 +19,7 @@ namespace tgbot {
         result->type_ = data["type_"].get<std::string>();
         result->latitude = data["latitude"].get<double>();
         result->longitude = data["longitude"].get<double>();
-        result->address = std::shared_ptr<LocationAddress>::from_json(data["address"]);
+        result->address = LocationAddress::from_json(data["address"]);
         return result;
     }
 }

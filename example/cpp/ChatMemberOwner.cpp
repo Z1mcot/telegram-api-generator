@@ -17,7 +17,7 @@ namespace tgbot {
     std::shared_ptr<ChatMemberOwner> ChatMemberOwner::from_json(const json& data) {
         auto result(std::make_shared<ChatMemberOwner>());
         result->status = data["status"].get<std::string>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->is_anonymous = data["is_anonymous"].get<bool>();
         result->custom_title = data["custom_title"].get<std::string>();
         return result;

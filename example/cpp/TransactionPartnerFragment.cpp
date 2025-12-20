@@ -15,7 +15,7 @@ namespace tgbot {
     std::shared_ptr<TransactionPartnerFragment> TransactionPartnerFragment::from_json(const json& data) {
         auto result(std::make_shared<TransactionPartnerFragment>());
         result->type_ = data["type_"].get<std::string>();
-        result->withdrawal_state = std::shared_ptr<RevenueWithdrawalState>::from_json(data["withdrawal_state"]);
+        result->withdrawal_state = RevenueWithdrawalState::from_json(data["withdrawal_state"]);
         return result;
     }
 }

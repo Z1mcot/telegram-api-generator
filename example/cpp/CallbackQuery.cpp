@@ -21,8 +21,8 @@ namespace tgbot {
     std::shared_ptr<CallbackQuery> CallbackQuery::from_json(const json& data) {
         auto result(std::make_shared<CallbackQuery>());
         result->id = data["id"].get<std::string>();
-        result->from = std::shared_ptr<User>::from_json(data["from"]);
-        result->message = std::shared_ptr<MaybeInaccessibleMessage>::from_json(data["message"]);
+        result->from = User::from_json(data["from"]);
+        result->message = MaybeInaccessibleMessage::from_json(data["message"]);
         result->inline_message_id = data["inline_message_id"].get<std::string>();
         result->chat_instance = data["chat_instance"].get<std::string>();
         result->data = data["data"].get<std::string>();

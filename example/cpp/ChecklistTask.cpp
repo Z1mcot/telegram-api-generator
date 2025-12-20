@@ -30,7 +30,7 @@ namespace tgbot {
             text_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
         }
         result->text_entities = text_entities_values;
-        result->completed_by_user = std::shared_ptr<User>::from_json(data["completed_by_user"]);
+        result->completed_by_user = User::from_json(data["completed_by_user"]);
         result->completion_date = data["completion_date"].get<std::int64_t>();
         return result;
     }

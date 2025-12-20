@@ -23,9 +23,9 @@ namespace tgbot {
     std::shared_ptr<OwnedGiftUnique> OwnedGiftUnique::from_json(const json& data) {
         auto result(std::make_shared<OwnedGiftUnique>());
         result->type_ = data["type_"].get<std::string>();
-        result->gift = std::shared_ptr<UniqueGift>::from_json(data["gift"]);
+        result->gift = UniqueGift::from_json(data["gift"]);
         result->owned_gift_id = data["owned_gift_id"].get<std::string>();
-        result->sender_user = std::shared_ptr<User>::from_json(data["sender_user"]);
+        result->sender_user = User::from_json(data["sender_user"]);
         result->send_date = data["send_date"].get<std::int64_t>();
         result->is_saved = data["is_saved"].get<bool>();
         result->can_be_transferred = data["can_be_transferred"].get<bool>();

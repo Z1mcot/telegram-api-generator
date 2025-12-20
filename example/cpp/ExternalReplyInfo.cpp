@@ -63,36 +63,36 @@ namespace tgbot {
     }
     std::shared_ptr<ExternalReplyInfo> ExternalReplyInfo::from_json(const json& data) {
         auto result(std::make_shared<ExternalReplyInfo>());
-        result->origin = std::shared_ptr<MessageOrigin>::from_json(data["origin"]);
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->origin = MessageOrigin::from_json(data["origin"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->message_id = MessageId::from_json(data["message_id"]);
-        result->link_preview_options = std::shared_ptr<LinkPreviewOptions>::from_json(data["link_preview_options"]);
-        result->animation = std::shared_ptr<Animation>::from_json(data["animation"]);
-        result->audio = std::shared_ptr<Audio>::from_json(data["audio"]);
-        result->document = std::shared_ptr<Document>::from_json(data["document"]);
-        result->paid_media = std::shared_ptr<PaidMediaInfo>::from_json(data["paid_media"]);
+        result->link_preview_options = LinkPreviewOptions::from_json(data["link_preview_options"]);
+        result->animation = Animation::from_json(data["animation"]);
+        result->audio = Audio::from_json(data["audio"]);
+        result->document = Document::from_json(data["document"]);
+        result->paid_media = PaidMediaInfo::from_json(data["paid_media"]);
         std::vector<std::vector<std::shared_ptr<PhotoSize>>> photo_values;
         photo_values.reserve(photo.size());
         for (auto& e : data["photo"]) {
             photo_values.push_back(std::vector<std::shared_ptr<PhotoSize>>::from_json(e));
         }
         result->photo = photo_values;
-        result->sticker = std::shared_ptr<Sticker>::from_json(data["sticker"]);
-        result->story = std::shared_ptr<Story>::from_json(data["story"]);
-        result->video = std::shared_ptr<Video>::from_json(data["video"]);
-        result->video_note = std::shared_ptr<VideoNote>::from_json(data["video_note"]);
-        result->voice = std::shared_ptr<Voice>::from_json(data["voice"]);
+        result->sticker = Sticker::from_json(data["sticker"]);
+        result->story = Story::from_json(data["story"]);
+        result->video = Video::from_json(data["video"]);
+        result->video_note = VideoNote::from_json(data["video_note"]);
+        result->voice = Voice::from_json(data["voice"]);
         result->has_media_spoiler = data["has_media_spoiler"].get<bool>();
-        result->checklist = std::shared_ptr<Checklist>::from_json(data["checklist"]);
-        result->contact = std::shared_ptr<Contact>::from_json(data["contact"]);
-        result->dice = std::shared_ptr<Dice>::from_json(data["dice"]);
-        result->game = std::shared_ptr<Game>::from_json(data["game"]);
-        result->giveaway = std::shared_ptr<Giveaway>::from_json(data["giveaway"]);
-        result->giveaway_winners = std::shared_ptr<GiveawayWinners>::from_json(data["giveaway_winners"]);
-        result->invoice = std::shared_ptr<Invoice>::from_json(data["invoice"]);
-        result->location = std::shared_ptr<Location>::from_json(data["location"]);
-        result->poll = std::shared_ptr<Poll>::from_json(data["poll"]);
-        result->venue = std::shared_ptr<Venue>::from_json(data["venue"]);
+        result->checklist = Checklist::from_json(data["checklist"]);
+        result->contact = Contact::from_json(data["contact"]);
+        result->dice = Dice::from_json(data["dice"]);
+        result->game = Game::from_json(data["game"]);
+        result->giveaway = Giveaway::from_json(data["giveaway"]);
+        result->giveaway_winners = GiveawayWinners::from_json(data["giveaway_winners"]);
+        result->invoice = Invoice::from_json(data["invoice"]);
+        result->location = Location::from_json(data["location"]);
+        result->poll = Poll::from_json(data["poll"]);
+        result->venue = Venue::from_json(data["venue"]);
         return result;
     }
 }

@@ -19,7 +19,7 @@ namespace tgbot {
     }
     std::shared_ptr<ChecklistTasksAdded> ChecklistTasksAdded::from_json(const json& data) {
         auto result(std::make_shared<ChecklistTasksAdded>());
-        result->checklist_message = std::shared_ptr<Message>::from_json(data["checklist_message"]);
+        result->checklist_message = Message::from_json(data["checklist_message"]);
         std::vector<std::vector<std::shared_ptr<ChecklistTask>>> tasks_values;
         tasks_values.reserve(tasks.size());
         for (auto& e : data["tasks"]) {

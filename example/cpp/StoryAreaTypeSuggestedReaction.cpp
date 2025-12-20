@@ -17,7 +17,7 @@ namespace tgbot {
     std::shared_ptr<StoryAreaTypeSuggestedReaction> StoryAreaTypeSuggestedReaction::from_json(const json& data) {
         auto result(std::make_shared<StoryAreaTypeSuggestedReaction>());
         result->type_ = data["type_"].get<std::string>();
-        result->reaction_type = std::shared_ptr<ReactionType>::from_json(data["reaction_type"]);
+        result->reaction_type = ReactionType::from_json(data["reaction_type"]);
         result->is_dark = data["is_dark"].get<bool>();
         result->is_flipped = data["is_flipped"].get<bool>();
         return result;

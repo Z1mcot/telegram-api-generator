@@ -29,7 +29,7 @@ namespace tgbot {
     }
     std::shared_ptr<GiveawayWinners> GiveawayWinners::from_json(const json& data) {
         auto result(std::make_shared<GiveawayWinners>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->giveaway_message_id = data["giveaway_message_id"].get<std::int64_t>();
         result->winners_selection_date = data["winners_selection_date"].get<std::int64_t>();
         result->winner_count = data["winner_count"].get<std::int64_t>();

@@ -19,7 +19,7 @@ namespace tgbot {
         auto result(std::make_shared<MessageOriginChannel>());
         result->type_ = data["type_"].get<std::string>();
         result->date = data["date"].get<std::int64_t>();
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
+        result->chat = Chat::from_json(data["chat"]);
         result->message_id = MessageId::from_json(data["message_id"]);
         result->author_signature = data["author_signature"].get<std::string>();
         return result;

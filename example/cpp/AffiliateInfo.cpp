@@ -18,8 +18,8 @@ namespace tgbot {
     }
     std::shared_ptr<AffiliateInfo> AffiliateInfo::from_json(const json& data) {
         auto result(std::make_shared<AffiliateInfo>());
-        result->affiliate_user = std::shared_ptr<User>::from_json(data["affiliate_user"]);
-        result->affiliate_chat = std::shared_ptr<Chat>::from_json(data["affiliate_chat"]);
+        result->affiliate_user = User::from_json(data["affiliate_user"]);
+        result->affiliate_chat = Chat::from_json(data["affiliate_chat"]);
         result->commission_per_mille = data["commission_per_mille"].get<std::int64_t>();
         result->amount = data["amount"].get<std::int64_t>();
         result->nanostar_amount = data["nanostar_amount"].get<std::int64_t>();

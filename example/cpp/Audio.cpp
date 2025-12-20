@@ -29,7 +29,7 @@ namespace tgbot {
         result->file_name = data["file_name"].get<std::string>();
         result->mime_type = data["mime_type"].get<std::string>();
         result->file_size = data["file_size"].get<std::int64_t>();
-        result->thumbnail = std::shared_ptr<PhotoSize>::from_json(data["thumbnail"]);
+        result->thumbnail = PhotoSize::from_json(data["thumbnail"]);
         return result;
     }
 }

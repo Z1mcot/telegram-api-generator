@@ -35,7 +35,7 @@ namespace tgbot {
             emoji_list_values.push_back(std::vector<std::string>::from_json(e));
         }
         result->emoji_list = emoji_list_values;
-        result->mask_position = std::shared_ptr<MaskPosition>::from_json(data["mask_position"]);
+        result->mask_position = MaskPosition::from_json(data["mask_position"]);
         std::vector<std::vector<std::string>> keywords_values;
         keywords_values.reserve(keywords.size());
         for (auto& e : data["keywords"]) {

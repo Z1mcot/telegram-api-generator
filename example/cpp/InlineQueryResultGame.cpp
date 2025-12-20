@@ -19,7 +19,7 @@ namespace tgbot {
         result->type_ = data["type_"].get<std::string>();
         result->id = data["id"].get<std::string>();
         result->game_short_name = data["game_short_name"].get<std::string>();
-        result->reply_markup = std::shared_ptr<InlineKeyboardMarkup>::from_json(data["reply_markup"]);
+        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
         return result;
     }
 }

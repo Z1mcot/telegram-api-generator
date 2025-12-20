@@ -23,12 +23,12 @@ namespace tgbot {
     }
     std::shared_ptr<ChatMemberUpdated> ChatMemberUpdated::from_json(const json& data) {
         auto result(std::make_shared<ChatMemberUpdated>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
-        result->from = std::shared_ptr<User>::from_json(data["from"]);
+        result->chat = Chat::from_json(data["chat"]);
+        result->from = User::from_json(data["from"]);
         result->date = data["date"].get<std::int64_t>();
-        result->old_chat_member = std::shared_ptr<ChatMember>::from_json(data["old_chat_member"]);
-        result->new_chat_member = std::shared_ptr<ChatMember>::from_json(data["new_chat_member"]);
-        result->invite_link = std::shared_ptr<ChatInviteLink>::from_json(data["invite_link"]);
+        result->old_chat_member = ChatMember::from_json(data["old_chat_member"]);
+        result->new_chat_member = ChatMember::from_json(data["new_chat_member"]);
+        result->invite_link = ChatInviteLink::from_json(data["invite_link"]);
         result->via_join_request = data["via_join_request"].get<bool>();
         result->via_chat_folder_invite_link = data["via_chat_folder_invite_link"].get<bool>();
         return result;

@@ -20,11 +20,11 @@ namespace tgbot {
     std::shared_ptr<InlineQuery> InlineQuery::from_json(const json& data) {
         auto result(std::make_shared<InlineQuery>());
         result->id = data["id"].get<std::string>();
-        result->from = std::shared_ptr<User>::from_json(data["from"]);
+        result->from = User::from_json(data["from"]);
         result->query = data["query"].get<std::string>();
         result->offset = data["offset"].get<std::string>();
         result->chat_type = data["chat_type"].get<std::string>();
-        result->location = std::shared_ptr<Location>::from_json(data["location"]);
+        result->location = Location::from_json(data["location"]);
         return result;
     }
 }

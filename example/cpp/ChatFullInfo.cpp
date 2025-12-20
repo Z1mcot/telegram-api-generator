@@ -88,19 +88,19 @@ namespace tgbot {
         result->is_direct_messages = data["is_direct_messages"].get<bool>();
         result->accent_color_id = data["accent_color_id"].get<std::int64_t>();
         result->max_reaction_count = data["max_reaction_count"].get<std::int64_t>();
-        result->photo = std::shared_ptr<ChatPhoto>::from_json(data["photo"]);
+        result->photo = ChatPhoto::from_json(data["photo"]);
         std::vector<std::vector<std::string>> active_usernames_values;
         active_usernames_values.reserve(active_usernames.size());
         for (auto& e : data["active_usernames"]) {
             active_usernames_values.push_back(std::vector<std::string>::from_json(e));
         }
         result->active_usernames = active_usernames_values;
-        result->birthdate = std::shared_ptr<Birthdate>::from_json(data["birthdate"]);
-        result->business_intro = std::shared_ptr<BusinessIntro>::from_json(data["business_intro"]);
-        result->business_location = std::shared_ptr<BusinessLocation>::from_json(data["business_location"]);
-        result->business_opening_hours = std::shared_ptr<BusinessOpeningHours>::from_json(data["business_opening_hours"]);
-        result->personal_chat = std::shared_ptr<Chat>::from_json(data["personal_chat"]);
-        result->parent_chat = std::shared_ptr<Chat>::from_json(data["parent_chat"]);
+        result->birthdate = Birthdate::from_json(data["birthdate"]);
+        result->business_intro = BusinessIntro::from_json(data["business_intro"]);
+        result->business_location = BusinessLocation::from_json(data["business_location"]);
+        result->business_opening_hours = BusinessOpeningHours::from_json(data["business_opening_hours"]);
+        result->personal_chat = Chat::from_json(data["personal_chat"]);
+        result->parent_chat = Chat::from_json(data["parent_chat"]);
         std::vector<std::vector<std::shared_ptr<ReactionType>>> available_reactions_values;
         available_reactions_values.reserve(available_reactions.size());
         for (auto& e : data["available_reactions"]) {
@@ -119,9 +119,9 @@ namespace tgbot {
         result->join_by_request = data["join_by_request"].get<bool>();
         result->description = data["description"].get<std::string>();
         result->invite_link = data["invite_link"].get<std::string>();
-        result->pinned_message = std::shared_ptr<Message>::from_json(data["pinned_message"]);
-        result->permissions = std::shared_ptr<ChatPermissions>::from_json(data["permissions"]);
-        result->accepted_gift_types = std::shared_ptr<AcceptedGiftTypes>::from_json(data["accepted_gift_types"]);
+        result->pinned_message = Message::from_json(data["pinned_message"]);
+        result->permissions = ChatPermissions::from_json(data["permissions"]);
+        result->accepted_gift_types = AcceptedGiftTypes::from_json(data["accepted_gift_types"]);
         result->can_send_paid_media = data["can_send_paid_media"].get<bool>();
         result->slow_mode_delay = data["slow_mode_delay"].get<std::int64_t>();
         result->unrestrict_boost_count = data["unrestrict_boost_count"].get<std::int64_t>();
@@ -134,7 +134,7 @@ namespace tgbot {
         result->can_set_sticker_set = data["can_set_sticker_set"].get<bool>();
         result->custom_emoji_sticker_set_name = data["custom_emoji_sticker_set_name"].get<std::string>();
         result->linked_chat_id = ChatId::from_json(data["linked_chat_id"]);
-        result->location = std::shared_ptr<ChatLocation>::from_json(data["location"]);
+        result->location = ChatLocation::from_json(data["location"]);
         return result;
     }
 }

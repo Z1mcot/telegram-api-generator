@@ -15,8 +15,8 @@ namespace tgbot {
     }
     std::shared_ptr<SuggestedPostApprovalFailed> SuggestedPostApprovalFailed::from_json(const json& data) {
         auto result(std::make_shared<SuggestedPostApprovalFailed>());
-        result->suggested_post_message = std::shared_ptr<Message>::from_json(data["suggested_post_message"]);
-        result->price = std::shared_ptr<SuggestedPostPrice>::from_json(data["price"]);
+        result->suggested_post_message = Message::from_json(data["suggested_post_message"]);
+        result->price = SuggestedPostPrice::from_json(data["price"]);
         return result;
     }
 }

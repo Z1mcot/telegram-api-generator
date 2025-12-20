@@ -33,7 +33,7 @@ namespace tgbot {
     std::shared_ptr<ChatMemberAdministrator> ChatMemberAdministrator::from_json(const json& data) {
         auto result(std::make_shared<ChatMemberAdministrator>());
         result->status = data["status"].get<std::string>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->can_be_edited = data["can_be_edited"].get<bool>();
         result->is_anonymous = data["is_anonymous"].get<bool>();
         result->can_manage_chat = data["can_manage_chat"].get<bool>();

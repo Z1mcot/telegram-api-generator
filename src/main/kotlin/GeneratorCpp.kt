@@ -318,56 +318,8 @@ private fun generateSuperTypeFiles(
         val headerBody = buildString {
             appendLine("struct ${superType.name} : public $parentName {")
             appendLine("    virtual ~${superType.name}() = default;")
-            // appendLine()
-            // appendLine("    static std::shared_ptr<${superType.name}> fromJson(const json& j);")
             appendLine("};")
         }
-
-        // Source: include all subtype headers and implement fromJson
-        // val sourceIncludes = subtypes.map { "#include \"${it.name}.hpp\"" } + listOf("#include <nlohmann/json.hpp>")
-        
-        // val sourceBody = buildString {
-        //     appendLine("std::shared_ptr<${superType.name}> ${superType.name}::fromJson(const json& j) {")
-        //     if (subtypes.isEmpty()) {
-        //         appendLine("    throw std::runtime_error(\"No subtypes registered for ${superType.name}\");")
-        //     } else {
-        //         when (superType) {
-        //             is TelegramType.Super -> {
-        //                 if (superType.deserializer.isEmpty()) {
-        //                     subtypes.forEachIndexed { index, subtype ->
-        //                         if (index == 0) {
-        //                             appendLine("    try {")
-        //                         } else {
-        //                             appendLine("    } catch (...) {")
-        //                             appendLine("        try {")
-        //                         }
-        //                         appendLine("        ${subtype.name} value;")
-        //                         appendLine("        from_json(j, value);")
-        //                         appendLine("        return std::make_shared<${subtype.name}>(std::move(value));")
-        //                         if (index != 0) {
-        //                             appendLine("        }")
-        //                         }
-        //                     }
-        //                     if (subtypes.size > 1) {
-        //                         appendLine("    } catch (...) {")
-        //                         appendLine("    }")
-        //                     }
-        //                     appendLine("    throw std::runtime_error(\"Failed to deserialize ${superType.name}\");")
-        //                 } else {
-        //                     superType.deserializerCpp.trimIndent().lines().forEach { line ->
-        //                         appendLine("    $line")
-        //                     }
-        //                 }
-        //             }
-
-        //             else -> {
-        //                 appendLine("    (void)j;")
-        //                 appendLine("    throw std::runtime_error(\"${superType.name} does not support deserialization\");")
-        //             }
-        //         }
-        //     }
-        //     appendLine("}")
-        // }
 
         CppModelFile(
             name = superType.name,
@@ -742,20 +694,6 @@ private fun generateVectorSerialization(
     appendLine("            $tempVarName.push_back(e$jsonPostfix);")
     appendLine("        }")
     appendLine("        j[\"$jsonFieldName\"] = $tempVarName;")
-
-    // if (BASIC_JSON_TYPES_IN_CPP.contains(elementType)) {
-    //     // Direct assignment, no conversion needed
-    //     appendLine("        j[\"$jsonFieldName\"] = $fieldName;")
-    // } else {
-    //     // Complex type - call to_json on each element
-    //     val tempVarName = "${fieldName}_values"
-    //     appendLine("        std::vector<json> $tempVarName;")
-    //     appendLine("        $tempVarName.reserve($fieldName.size());")
-    //     appendLine("        for (auto& e : $fieldName) {")
-    //     appendLine("            $tempVarName.push_back(e$jsonPostfix);")
-    //     appendLine("        }")
-    //     appendLine("        j[\"$jsonFieldName\"] = $tempVarName;")
-    // }
 }
 
 private fun generateVectorDeserialization(
@@ -885,7 +823,8 @@ private fun DocType.toCppStructImplementation() = buildString {
                 // TODO deserialisation
                 append(generateVectorDeserialization(fieldType, fieldName, jsonFieldName).replace("        ", "    "))
             } else if (explicitlySerializedFields.contains(fieldName)) {
-                appendLine("    result->$fieldName = $fieldType::from_json(data[\"$fieldName\"]);")
+                val elementType = fieldType.removePrefix("std::shared_ptr<").removeSuffix(">")
+                appendLine("    result->$fieldName = $elementType::from_json(data[\"$fieldName\"]);")
             } else {
                 appendLine("    result->$fieldName = data[\"$fieldName\"].get<$fieldType>();")
             }

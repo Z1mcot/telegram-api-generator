@@ -15,7 +15,7 @@ namespace tgbot {
     std::shared_ptr<PaidMediaVideo> PaidMediaVideo::from_json(const json& data) {
         auto result(std::make_shared<PaidMediaVideo>());
         result->type_ = data["type_"].get<std::string>();
-        result->video = std::shared_ptr<Video>::from_json(data["video"]);
+        result->video = Video::from_json(data["video"]);
         return result;
     }
 }

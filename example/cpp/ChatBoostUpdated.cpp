@@ -15,8 +15,8 @@ namespace tgbot {
     }
     std::shared_ptr<ChatBoostUpdated> ChatBoostUpdated::from_json(const json& data) {
         auto result(std::make_shared<ChatBoostUpdated>());
-        result->chat = std::shared_ptr<Chat>::from_json(data["chat"]);
-        result->boost = std::shared_ptr<ChatBoost>::from_json(data["boost"]);
+        result->chat = Chat::from_json(data["chat"]);
+        result->boost = ChatBoost::from_json(data["boost"]);
         return result;
     }
 }

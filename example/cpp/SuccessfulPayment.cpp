@@ -29,7 +29,7 @@ namespace tgbot {
         result->is_recurring = data["is_recurring"].get<bool>();
         result->is_first_recurring = data["is_first_recurring"].get<bool>();
         result->shipping_option_id = data["shipping_option_id"].get<std::string>();
-        result->order_info = std::shared_ptr<OrderInfo>::from_json(data["order_info"]);
+        result->order_info = OrderInfo::from_json(data["order_info"]);
         result->telegram_payment_charge_id = data["telegram_payment_charge_id"].get<std::string>();
         result->provider_payment_charge_id = data["provider_payment_charge_id"].get<std::string>();
         return result;

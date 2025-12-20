@@ -41,8 +41,8 @@ namespace tgbot {
         }
         result->caption_entities = caption_entities_values;
         result->show_caption_above_media = data["show_caption_above_media"].get<bool>();
-        result->reply_markup = std::shared_ptr<InlineKeyboardMarkup>::from_json(data["reply_markup"]);
-        result->input_message_content = std::shared_ptr<InputMessageContent>::from_json(data["input_message_content"]);
+        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
+        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
         return result;
     }
 }

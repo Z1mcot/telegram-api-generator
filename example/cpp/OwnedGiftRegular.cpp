@@ -32,9 +32,9 @@ namespace tgbot {
     std::shared_ptr<OwnedGiftRegular> OwnedGiftRegular::from_json(const json& data) {
         auto result(std::make_shared<OwnedGiftRegular>());
         result->type_ = data["type_"].get<std::string>();
-        result->gift = std::shared_ptr<Gift>::from_json(data["gift"]);
+        result->gift = Gift::from_json(data["gift"]);
         result->owned_gift_id = data["owned_gift_id"].get<std::string>();
-        result->sender_user = std::shared_ptr<User>::from_json(data["sender_user"]);
+        result->sender_user = User::from_json(data["sender_user"]);
         result->send_date = data["send_date"].get<std::int64_t>();
         result->text = data["text"].get<std::string>();
         std::vector<std::vector<std::shared_ptr<MessageEntity>>> entities_values;

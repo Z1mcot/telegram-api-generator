@@ -25,10 +25,10 @@ namespace tgbot {
         result->base_name = data["base_name"].get<std::string>();
         result->name = data["name"].get<std::string>();
         result->number = data["number"].get<std::int64_t>();
-        result->model = std::shared_ptr<UniqueGiftModel>::from_json(data["model"]);
-        result->symbol = std::shared_ptr<UniqueGiftSymbol>::from_json(data["symbol"]);
-        result->backdrop = std::shared_ptr<UniqueGiftBackdrop>::from_json(data["backdrop"]);
-        result->publisher_chat = std::shared_ptr<Chat>::from_json(data["publisher_chat"]);
+        result->model = UniqueGiftModel::from_json(data["model"]);
+        result->symbol = UniqueGiftSymbol::from_json(data["symbol"]);
+        result->backdrop = UniqueGiftBackdrop::from_json(data["backdrop"]);
+        result->publisher_chat = Chat::from_json(data["publisher_chat"]);
         return result;
     }
 }

@@ -15,7 +15,7 @@ namespace tgbot {
     std::shared_ptr<DirectMessagesTopic> DirectMessagesTopic::from_json(const json& data) {
         auto result(std::make_shared<DirectMessagesTopic>());
         result->topic_id = data["topic_id"].get<std::int64_t>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         return result;
     }
 }

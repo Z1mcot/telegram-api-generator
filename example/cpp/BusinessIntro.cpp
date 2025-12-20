@@ -17,7 +17,7 @@ namespace tgbot {
         auto result(std::make_shared<BusinessIntro>());
         result->title = data["title"].get<std::string>();
         result->message = data["message"].get<std::string>();
-        result->sticker = std::shared_ptr<Sticker>::from_json(data["sticker"]);
+        result->sticker = Sticker::from_json(data["sticker"]);
         return result;
     }
 }

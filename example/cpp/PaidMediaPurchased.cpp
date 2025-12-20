@@ -14,7 +14,7 @@ namespace tgbot {
     }
     std::shared_ptr<PaidMediaPurchased> PaidMediaPurchased::from_json(const json& data) {
         auto result(std::make_shared<PaidMediaPurchased>());
-        result->from = std::shared_ptr<User>::from_json(data["from"]);
+        result->from = User::from_json(data["from"]);
         result->paid_media_payload = data["paid_media_payload"].get<std::string>();
         return result;
     }

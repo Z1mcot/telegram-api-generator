@@ -17,7 +17,7 @@ namespace tgbot {
         auto result(std::make_shared<MessageOriginUser>());
         result->type_ = data["type_"].get<std::string>();
         result->date = data["date"].get<std::int64_t>();
-        result->sender_user = std::shared_ptr<User>::from_json(data["sender_user"]);
+        result->sender_user = User::from_json(data["sender_user"]);
         return result;
     }
 }

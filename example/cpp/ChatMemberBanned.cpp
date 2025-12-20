@@ -16,7 +16,7 @@ namespace tgbot {
     std::shared_ptr<ChatMemberBanned> ChatMemberBanned::from_json(const json& data) {
         auto result(std::make_shared<ChatMemberBanned>());
         result->status = data["status"].get<std::string>();
-        result->user = std::shared_ptr<User>::from_json(data["user"]);
+        result->user = User::from_json(data["user"]);
         result->until_date = data["until_date"].get<std::int64_t>();
         return result;
     }

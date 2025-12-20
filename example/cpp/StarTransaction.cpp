@@ -22,8 +22,8 @@ namespace tgbot {
         result->amount = data["amount"].get<std::int64_t>();
         result->nanostar_amount = data["nanostar_amount"].get<std::int64_t>();
         result->date = data["date"].get<std::int64_t>();
-        result->source = std::shared_ptr<TransactionPartner>::from_json(data["source"]);
-        result->receiver = std::shared_ptr<TransactionPartner>::from_json(data["receiver"]);
+        result->source = TransactionPartner::from_json(data["source"]);
+        result->receiver = TransactionPartner::from_json(data["receiver"]);
         return result;
     }
 }

@@ -33,7 +33,7 @@ namespace tgbot {
         result->width = data["width"].get<std::int64_t>();
         result->height = data["height"].get<std::int64_t>();
         result->duration = data["duration"].get<std::int64_t>();
-        result->thumbnail = std::shared_ptr<PhotoSize>::from_json(data["thumbnail"]);
+        result->thumbnail = PhotoSize::from_json(data["thumbnail"]);
         std::vector<std::vector<std::shared_ptr<PhotoSize>>> cover_values;
         cover_values.reserve(cover.size());
         for (auto& e : data["cover"]) {

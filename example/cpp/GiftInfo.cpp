@@ -25,7 +25,7 @@ namespace tgbot {
     }
     std::shared_ptr<GiftInfo> GiftInfo::from_json(const json& data) {
         auto result(std::make_shared<GiftInfo>());
-        result->gift = std::shared_ptr<Gift>::from_json(data["gift"]);
+        result->gift = Gift::from_json(data["gift"]);
         result->owned_gift_id = data["owned_gift_id"].get<std::string>();
         result->convert_star_count = data["convert_star_count"].get<std::int64_t>();
         result->prepaid_upgrade_star_count = data["prepaid_upgrade_star_count"].get<std::int64_t>();

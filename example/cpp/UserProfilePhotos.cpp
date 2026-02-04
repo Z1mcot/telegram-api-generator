@@ -5,26 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json UserProfilePhotos::to_json() const {
-        json j;
-        j["total_count"] = total_count;
-        std::vector<json> photos_values;
-        photos_values.reserve(photos.size());
-        for (auto& e : photos) {
-            photos_values.push_back(e->to_json());
-        }
-        j["photos"] = photos_values;
-        return j.dump();
+    void to_json(json& j, const UserProfilePhotos& value) {
+        j = json::object();
+        j["total_count"] = value.total_count;
+        j["photos"] = value.photos;
     }
-    std::shared_ptr<UserProfilePhotos> UserProfilePhotos::from_json(const json& data) {
-        auto result(std::make_shared<UserProfilePhotos>());
-        result->total_count = data["total_count"].get<std::int64_t>();
-        std::vector<std::vector<std::vector<std::shared_ptr<PhotoSize>>>> photos_values;
-        photos_values.reserve(photos.size());
-        for (auto& e : data["photos"]) {
-            photos_values.push_back(std::vector<std::vector<std::shared_ptr<PhotoSize>>>::from_json(e));
+
+    void from_json(const json& j, UserProfilePhotos& value) {
+        if (j.contains("total_count")) {
+            j.at("total_count").get_to(value.total_count);
         }
-        result->photos = photos_values;
-        return result;
+        if (j.contains("photos")) {
+            j.at("photos").get_to(value.photos);
+        }
     }
 }

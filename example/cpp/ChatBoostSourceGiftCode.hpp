@@ -30,8 +30,5 @@ namespace tgbot {
 
         // User for which the gift code was created
         std::shared_ptr<User> user;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatBoostSourceGiftCode> from_json(const json& data);
     };
 }

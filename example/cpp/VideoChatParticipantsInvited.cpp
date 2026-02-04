@@ -5,24 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json VideoChatParticipantsInvited::to_json() const {
-        json j;
-        std::vector<json> users_values;
-        users_values.reserve(users.size());
-        for (auto& e : users) {
-            users_values.push_back(e->to_json());
-        }
-        j["users"] = users_values;
-        return j.dump();
+    void to_json(json& j, const VideoChatParticipantsInvited& value) {
+        j = json::object();
+        j["users"] = value.users;
     }
-    std::shared_ptr<VideoChatParticipantsInvited> VideoChatParticipantsInvited::from_json(const json& data) {
-        auto result(std::make_shared<VideoChatParticipantsInvited>());
-        std::vector<std::vector<std::shared_ptr<User>>> users_values;
-        users_values.reserve(users.size());
-        for (auto& e : data["users"]) {
-            users_values.push_back(std::vector<std::shared_ptr<User>>::from_json(e));
+
+    void from_json(const json& j, VideoChatParticipantsInvited& value) {
+        if (j.contains("users")) {
+            j.at("users").get_to(value.users);
         }
-        result->users = users_values;
-        return result;
     }
 }

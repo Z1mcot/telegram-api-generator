@@ -5,38 +5,66 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json User::to_json() const {
-        json j;
-        j["id"] = id.to_json();
-        j["is_bot"] = is_bot;
-        j["first_name"] = first_name;
-        j["last_name"] = last_name;
-        j["username"] = username;
-        j["language_code"] = language_code;
-        j["is_premium"] = is_premium;
-        j["added_to_attachment_menu"] = added_to_attachment_menu;
-        j["can_join_groups"] = can_join_groups;
-        j["can_read_all_group_messages"] = can_read_all_group_messages;
-        j["supports_inline_queries"] = supports_inline_queries;
-        j["can_connect_to_business"] = can_connect_to_business;
-        j["has_main_web_app"] = has_main_web_app;
-        return j.dump();
+    void to_json(json& j, const User& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["is_bot"] = value.is_bot;
+        j["first_name"] = value.first_name;
+        j["last_name"] = value.last_name;
+        j["username"] = value.username;
+        j["language_code"] = value.language_code;
+        j["is_premium"] = value.is_premium;
+        j["added_to_attachment_menu"] = value.added_to_attachment_menu;
+        j["can_join_groups"] = value.can_join_groups;
+        j["can_read_all_group_messages"] = value.can_read_all_group_messages;
+        j["supports_inline_queries"] = value.supports_inline_queries;
+        j["can_connect_to_business"] = value.can_connect_to_business;
+        j["has_main_web_app"] = value.has_main_web_app;
+        j["has_topics_enabled"] = value.has_topics_enabled;
     }
-    std::shared_ptr<User> User::from_json(const json& data) {
-        auto result(std::make_shared<User>());
-        result->id = UserId::from_json(data["id"]);
-        result->is_bot = data["is_bot"].get<bool>();
-        result->first_name = data["first_name"].get<std::string>();
-        result->last_name = data["last_name"].get<std::string>();
-        result->username = data["username"].get<std::string>();
-        result->language_code = data["language_code"].get<std::string>();
-        result->is_premium = data["is_premium"].get<bool>();
-        result->added_to_attachment_menu = data["added_to_attachment_menu"].get<bool>();
-        result->can_join_groups = data["can_join_groups"].get<bool>();
-        result->can_read_all_group_messages = data["can_read_all_group_messages"].get<bool>();
-        result->supports_inline_queries = data["supports_inline_queries"].get<bool>();
-        result->can_connect_to_business = data["can_connect_to_business"].get<bool>();
-        result->has_main_web_app = data["has_main_web_app"].get<bool>();
-        return result;
+
+    void from_json(const json& j, User& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("is_bot")) {
+            j.at("is_bot").get_to(value.is_bot);
+        }
+        if (j.contains("first_name")) {
+            j.at("first_name").get_to(value.first_name);
+        }
+        if (j.contains("last_name")) {
+            j.at("last_name").get_to(value.last_name);
+        }
+        if (j.contains("username")) {
+            j.at("username").get_to(value.username);
+        }
+        if (j.contains("language_code")) {
+            j.at("language_code").get_to(value.language_code);
+        }
+        if (j.contains("is_premium")) {
+            j.at("is_premium").get_to(value.is_premium);
+        }
+        if (j.contains("added_to_attachment_menu")) {
+            j.at("added_to_attachment_menu").get_to(value.added_to_attachment_menu);
+        }
+        if (j.contains("can_join_groups")) {
+            j.at("can_join_groups").get_to(value.can_join_groups);
+        }
+        if (j.contains("can_read_all_group_messages")) {
+            j.at("can_read_all_group_messages").get_to(value.can_read_all_group_messages);
+        }
+        if (j.contains("supports_inline_queries")) {
+            j.at("supports_inline_queries").get_to(value.supports_inline_queries);
+        }
+        if (j.contains("can_connect_to_business")) {
+            j.at("can_connect_to_business").get_to(value.can_connect_to_business);
+        }
+        if (j.contains("has_main_web_app")) {
+            j.at("has_main_web_app").get_to(value.has_main_web_app);
+        }
+        if (j.contains("has_topics_enabled")) {
+            j.at("has_topics_enabled").get_to(value.has_topics_enabled);
+        }
     }
 }

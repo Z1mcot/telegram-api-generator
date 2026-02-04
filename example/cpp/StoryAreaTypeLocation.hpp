@@ -38,8 +38,5 @@ namespace tgbot {
 
         // Optional. Address of the location
         std::shared_ptr<LocationAddress> address;
-
-        json to_json() const override;
-        static std::shared_ptr<StoryAreaTypeLocation> from_json(const json& data);
     };
 }

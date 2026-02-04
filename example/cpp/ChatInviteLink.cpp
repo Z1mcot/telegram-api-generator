@@ -6,34 +6,54 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatInviteLink::to_json() const {
-        json j;
-        j["invite_link"] = invite_link;
-        j["creator"] = creator->to_json();
-        j["creates_join_request"] = creates_join_request;
-        j["is_primary"] = is_primary;
-        j["is_revoked"] = is_revoked;
-        j["name"] = name;
-        j["expire_date"] = expire_date;
-        j["member_limit"] = member_limit;
-        j["pending_join_request_count"] = pending_join_request_count;
-        j["subscription_period"] = subscription_period;
-        j["subscription_price"] = subscription_price;
-        return j.dump();
+    void to_json(json& j, const ChatInviteLink& value) {
+        j = json::object();
+        j["invite_link"] = value.invite_link;
+        j["creator"] = value.creator;
+        j["creates_join_request"] = value.creates_join_request;
+        j["is_primary"] = value.is_primary;
+        j["is_revoked"] = value.is_revoked;
+        j["name"] = value.name;
+        j["expire_date"] = value.expire_date;
+        j["member_limit"] = value.member_limit;
+        j["pending_join_request_count"] = value.pending_join_request_count;
+        j["subscription_period"] = value.subscription_period;
+        j["subscription_price"] = value.subscription_price;
     }
-    std::shared_ptr<ChatInviteLink> ChatInviteLink::from_json(const json& data) {
-        auto result(std::make_shared<ChatInviteLink>());
-        result->invite_link = data["invite_link"].get<std::string>();
-        result->creator = User::from_json(data["creator"]);
-        result->creates_join_request = data["creates_join_request"].get<bool>();
-        result->is_primary = data["is_primary"].get<bool>();
-        result->is_revoked = data["is_revoked"].get<bool>();
-        result->name = data["name"].get<std::string>();
-        result->expire_date = data["expire_date"].get<std::int64_t>();
-        result->member_limit = data["member_limit"].get<std::int64_t>();
-        result->pending_join_request_count = data["pending_join_request_count"].get<std::int64_t>();
-        result->subscription_period = data["subscription_period"].get<std::int64_t>();
-        result->subscription_price = data["subscription_price"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, ChatInviteLink& value) {
+        if (j.contains("invite_link")) {
+            j.at("invite_link").get_to(value.invite_link);
+        }
+        if (j.contains("creator")) {
+            j.at("creator").get_to(value.creator);
+        }
+        if (j.contains("creates_join_request")) {
+            j.at("creates_join_request").get_to(value.creates_join_request);
+        }
+        if (j.contains("is_primary")) {
+            j.at("is_primary").get_to(value.is_primary);
+        }
+        if (j.contains("is_revoked")) {
+            j.at("is_revoked").get_to(value.is_revoked);
+        }
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
+        }
+        if (j.contains("expire_date")) {
+            j.at("expire_date").get_to(value.expire_date);
+        }
+        if (j.contains("member_limit")) {
+            j.at("member_limit").get_to(value.member_limit);
+        }
+        if (j.contains("pending_join_request_count")) {
+            j.at("pending_join_request_count").get_to(value.pending_join_request_count);
+        }
+        if (j.contains("subscription_period")) {
+            j.at("subscription_period").get_to(value.subscription_period);
+        }
+        if (j.contains("subscription_price")) {
+            j.at("subscription_price").get_to(value.subscription_price);
+        }
     }
 }

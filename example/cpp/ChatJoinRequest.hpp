@@ -48,8 +48,5 @@ namespace tgbot {
 
         // Optional. Chat invite link that was used by the user to send the join request
         std::shared_ptr<ChatInviteLink> invite_link;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatJoinRequest> from_json(const json& data);
     };
 }

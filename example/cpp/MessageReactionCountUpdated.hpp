@@ -39,8 +39,5 @@ namespace tgbot {
 
         // List of reactions that are present on the message
         std::vector<std::shared_ptr<ReactionCount>> reactions;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageReactionCountUpdated> from_json(const json& data);
     };
 }

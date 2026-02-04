@@ -32,8 +32,5 @@ namespace tgbot {
 
         // Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption
         std::string secret;
-
-        json to_json() const override;
-        static std::shared_ptr<EncryptedCredentials> from_json(const json& data);
     };
 }

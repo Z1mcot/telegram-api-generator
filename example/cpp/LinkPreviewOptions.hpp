@@ -40,8 +40,5 @@ namespace tgbot {
 
         // Optional. True, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text
         bool show_above_text;
-
-        json to_json() const override;
-        static std::shared_ptr<LinkPreviewOptions> from_json(const json& data);
     };
 }

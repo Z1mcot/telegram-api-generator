@@ -34,8 +34,5 @@ namespace tgbot {
 
         // Optional. Sticker of the business intro
         std::shared_ptr<Sticker> sticker;
-
-        json to_json() const override;
-        static std::shared_ptr<BusinessIntro> from_json(const json& data);
     };
 }

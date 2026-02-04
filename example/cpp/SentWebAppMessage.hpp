@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~SentWebAppMessage() = default;
         // Optional. Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message.
         std::string inline_message_id;
-
-        json to_json() const override;
-        static std::shared_ptr<SentWebAppMessage> from_json(const json& data);
     };
 }

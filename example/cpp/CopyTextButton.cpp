@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json CopyTextButton::to_json() const {
-        json j;
-        j["text"] = text;
-        return j.dump();
+    void to_json(json& j, const CopyTextButton& value) {
+        j = json::object();
+        j["text"] = value.text;
     }
-    std::shared_ptr<CopyTextButton> CopyTextButton::from_json(const json& data) {
-        auto result(std::make_shared<CopyTextButton>());
-        result->text = data["text"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, CopyTextButton& value) {
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
     }
 }

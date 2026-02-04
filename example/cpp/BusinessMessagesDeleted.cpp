@@ -6,28 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BusinessMessagesDeleted::to_json() const {
-        json j;
-        j["business_connection_id"] = business_connection_id.to_json();
-        j["chat"] = chat->to_json();
-        std::vector<json> message_ids_values;
-        message_ids_values.reserve(message_ids.size());
-        for (auto& e : message_ids) {
-            message_ids_values.push_back(e.to_json());
-        }
-        j["message_ids"] = message_ids_values;
-        return j.dump();
+    void to_json(json& j, const BusinessMessagesDeleted& value) {
+        j = json::object();
+        j["business_connection_id"] = value.business_connection_id;
+        j["chat"] = value.chat;
+        j["message_ids"] = value.message_ids;
     }
-    std::shared_ptr<BusinessMessagesDeleted> BusinessMessagesDeleted::from_json(const json& data) {
-        auto result(std::make_shared<BusinessMessagesDeleted>());
-        result->business_connection_id = BusinessConnectionId::from_json(data["business_connection_id"]);
-        result->chat = Chat::from_json(data["chat"]);
-        std::vector<std::vector<MessageId>> message_ids_values;
-        message_ids_values.reserve(message_ids.size());
-        for (auto& e : data["message_ids"]) {
-            message_ids_values.push_back(std::vector<MessageId>::from_json(e));
+
+    void from_json(const json& j, BusinessMessagesDeleted& value) {
+        if (j.contains("business_connection_id")) {
+            j.at("business_connection_id").get_to(value.business_connection_id);
         }
-        result->message_ids = message_ids_values;
-        return result;
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("message_ids")) {
+            j.at("message_ids").get_to(value.message_ids);
+        }
     }
 }

@@ -25,8 +25,5 @@ namespace tgbot {
         virtual ~Gifts() = default;
         // The list of gifts
         std::vector<std::shared_ptr<Gift>> gifts;
-
-        json to_json() const override;
-        static std::shared_ptr<Gifts> from_json(const json& data);
     };
 }

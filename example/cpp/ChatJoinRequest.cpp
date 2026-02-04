@@ -8,24 +8,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatJoinRequest::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["from"] = from->to_json();
-        j["user_chat_id"] = user_chat_id.to_json();
-        j["date"] = date;
-        j["bio"] = bio;
-        j["invite_link"] = invite_link->to_json();
-        return j.dump();
+    void to_json(json& j, const ChatJoinRequest& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["from"] = value.from;
+        j["user_chat_id"] = value.user_chat_id;
+        j["date"] = value.date;
+        j["bio"] = value.bio;
+        j["invite_link"] = value.invite_link;
     }
-    std::shared_ptr<ChatJoinRequest> ChatJoinRequest::from_json(const json& data) {
-        auto result(std::make_shared<ChatJoinRequest>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->from = User::from_json(data["from"]);
-        result->user_chat_id = ChatId::from_json(data["user_chat_id"]);
-        result->date = data["date"].get<std::int64_t>();
-        result->bio = data["bio"].get<std::string>();
-        result->invite_link = ChatInviteLink::from_json(data["invite_link"]);
-        return result;
+
+    void from_json(const json& j, ChatJoinRequest& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("user_chat_id")) {
+            j.at("user_chat_id").get_to(value.user_chat_id);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("bio")) {
+            j.at("bio").get_to(value.bio);
+        }
+        if (j.contains("invite_link")) {
+            j.at("invite_link").get_to(value.invite_link);
+        }
     }
 }

@@ -43,8 +43,5 @@ namespace tgbot {
 
         // The query that was used to obtain the result
         std::string query;
-
-        json to_json() const override;
-        static std::shared_ptr<ChosenInlineResult> from_json(const json& data);
     };
 }

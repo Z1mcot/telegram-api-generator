@@ -27,72 +27,110 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ExternalReplyInfo::to_json() const {
-        json j;
-        j["origin"] = origin->to_json();
-        j["chat"] = chat->to_json();
-        j["message_id"] = message_id.to_json();
-        j["link_preview_options"] = link_preview_options->to_json();
-        j["animation"] = animation->to_json();
-        j["audio"] = audio->to_json();
-        j["document"] = document->to_json();
-        j["paid_media"] = paid_media->to_json();
-        std::vector<json> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : photo) {
-            photo_values.push_back(e->to_json());
-        }
-        j["photo"] = photo_values;
-        j["sticker"] = sticker->to_json();
-        j["story"] = story->to_json();
-        j["video"] = video->to_json();
-        j["video_note"] = video_note->to_json();
-        j["voice"] = voice->to_json();
-        j["has_media_spoiler"] = has_media_spoiler;
-        j["checklist"] = checklist->to_json();
-        j["contact"] = contact->to_json();
-        j["dice"] = dice->to_json();
-        j["game"] = game->to_json();
-        j["giveaway"] = giveaway->to_json();
-        j["giveaway_winners"] = giveaway_winners->to_json();
-        j["invoice"] = invoice->to_json();
-        j["location"] = location->to_json();
-        j["poll"] = poll->to_json();
-        j["venue"] = venue->to_json();
-        return j.dump();
+    void to_json(json& j, const ExternalReplyInfo& value) {
+        j = json::object();
+        j["origin"] = value.origin;
+        j["chat"] = value.chat;
+        j["message_id"] = value.message_id;
+        j["link_preview_options"] = value.link_preview_options;
+        j["animation"] = value.animation;
+        j["audio"] = value.audio;
+        j["document"] = value.document;
+        j["paid_media"] = value.paid_media;
+        j["photo"] = value.photo;
+        j["sticker"] = value.sticker;
+        j["story"] = value.story;
+        j["video"] = value.video;
+        j["video_note"] = value.video_note;
+        j["voice"] = value.voice;
+        j["has_media_spoiler"] = value.has_media_spoiler;
+        j["checklist"] = value.checklist;
+        j["contact"] = value.contact;
+        j["dice"] = value.dice;
+        j["game"] = value.game;
+        j["giveaway"] = value.giveaway;
+        j["giveaway_winners"] = value.giveaway_winners;
+        j["invoice"] = value.invoice;
+        j["location"] = value.location;
+        j["poll"] = value.poll;
+        j["venue"] = value.venue;
     }
-    std::shared_ptr<ExternalReplyInfo> ExternalReplyInfo::from_json(const json& data) {
-        auto result(std::make_shared<ExternalReplyInfo>());
-        result->origin = MessageOrigin::from_json(data["origin"]);
-        result->chat = Chat::from_json(data["chat"]);
-        result->message_id = MessageId::from_json(data["message_id"]);
-        result->link_preview_options = LinkPreviewOptions::from_json(data["link_preview_options"]);
-        result->animation = Animation::from_json(data["animation"]);
-        result->audio = Audio::from_json(data["audio"]);
-        result->document = Document::from_json(data["document"]);
-        result->paid_media = PaidMediaInfo::from_json(data["paid_media"]);
-        std::vector<std::vector<std::shared_ptr<PhotoSize>>> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : data["photo"]) {
-            photo_values.push_back(std::vector<std::shared_ptr<PhotoSize>>::from_json(e));
+
+    void from_json(const json& j, ExternalReplyInfo& value) {
+        if (j.contains("origin")) {
+            j.at("origin").get_to(value.origin);
         }
-        result->photo = photo_values;
-        result->sticker = Sticker::from_json(data["sticker"]);
-        result->story = Story::from_json(data["story"]);
-        result->video = Video::from_json(data["video"]);
-        result->video_note = VideoNote::from_json(data["video_note"]);
-        result->voice = Voice::from_json(data["voice"]);
-        result->has_media_spoiler = data["has_media_spoiler"].get<bool>();
-        result->checklist = Checklist::from_json(data["checklist"]);
-        result->contact = Contact::from_json(data["contact"]);
-        result->dice = Dice::from_json(data["dice"]);
-        result->game = Game::from_json(data["game"]);
-        result->giveaway = Giveaway::from_json(data["giveaway"]);
-        result->giveaway_winners = GiveawayWinners::from_json(data["giveaway_winners"]);
-        result->invoice = Invoice::from_json(data["invoice"]);
-        result->location = Location::from_json(data["location"]);
-        result->poll = Poll::from_json(data["poll"]);
-        result->venue = Venue::from_json(data["venue"]);
-        return result;
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("message_id")) {
+            j.at("message_id").get_to(value.message_id);
+        }
+        if (j.contains("link_preview_options")) {
+            j.at("link_preview_options").get_to(value.link_preview_options);
+        }
+        if (j.contains("animation")) {
+            j.at("animation").get_to(value.animation);
+        }
+        if (j.contains("audio")) {
+            j.at("audio").get_to(value.audio);
+        }
+        if (j.contains("document")) {
+            j.at("document").get_to(value.document);
+        }
+        if (j.contains("paid_media")) {
+            j.at("paid_media").get_to(value.paid_media);
+        }
+        if (j.contains("photo")) {
+            j.at("photo").get_to(value.photo);
+        }
+        if (j.contains("sticker")) {
+            j.at("sticker").get_to(value.sticker);
+        }
+        if (j.contains("story")) {
+            j.at("story").get_to(value.story);
+        }
+        if (j.contains("video")) {
+            j.at("video").get_to(value.video);
+        }
+        if (j.contains("video_note")) {
+            j.at("video_note").get_to(value.video_note);
+        }
+        if (j.contains("voice")) {
+            j.at("voice").get_to(value.voice);
+        }
+        if (j.contains("has_media_spoiler")) {
+            j.at("has_media_spoiler").get_to(value.has_media_spoiler);
+        }
+        if (j.contains("checklist")) {
+            j.at("checklist").get_to(value.checklist);
+        }
+        if (j.contains("contact")) {
+            j.at("contact").get_to(value.contact);
+        }
+        if (j.contains("dice")) {
+            j.at("dice").get_to(value.dice);
+        }
+        if (j.contains("game")) {
+            j.at("game").get_to(value.game);
+        }
+        if (j.contains("giveaway")) {
+            j.at("giveaway").get_to(value.giveaway);
+        }
+        if (j.contains("giveaway_winners")) {
+            j.at("giveaway_winners").get_to(value.giveaway_winners);
+        }
+        if (j.contains("invoice")) {
+            j.at("invoice").get_to(value.invoice);
+        }
+        if (j.contains("location")) {
+            j.at("location").get_to(value.location);
+        }
+        if (j.contains("poll")) {
+            j.at("poll").get_to(value.poll);
+        }
+        if (j.contains("venue")) {
+            j.at("venue").get_to(value.venue);
+        }
     }
 }

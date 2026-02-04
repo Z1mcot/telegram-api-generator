@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InaccessibleMessage::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["message_id"] = message_id.to_json();
-        j["date"] = date;
-        return j.dump();
+    void to_json(json& j, const InaccessibleMessage& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["message_id"] = value.message_id;
+        j["date"] = value.date;
     }
-    std::shared_ptr<InaccessibleMessage> InaccessibleMessage::from_json(const json& data) {
-        auto result(std::make_shared<InaccessibleMessage>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->message_id = MessageId::from_json(data["message_id"]);
-        result->date = data["date"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, InaccessibleMessage& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("message_id")) {
+            j.at("message_id").get_to(value.message_id);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
     }
 }

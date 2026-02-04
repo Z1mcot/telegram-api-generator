@@ -5,44 +5,54 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputMediaAnimation::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["media"] = media;
-        j["thumbnail"] = thumbnail;
-        j["caption"] = caption;
-        j["parse_mode"] = parse_mode->to_json();
-        std::vector<json> caption_entities_values;
-        caption_entities_values.reserve(caption_entities.size());
-        for (auto& e : caption_entities) {
-            caption_entities_values.push_back(e->to_json());
-        }
-        j["caption_entities"] = caption_entities_values;
-        j["show_caption_above_media"] = show_caption_above_media;
-        j["width"] = width;
-        j["height"] = height;
-        j["duration"] = duration;
-        j["has_spoiler"] = has_spoiler;
-        return j.dump();
+    void to_json(json& j, const InputMediaAnimation& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["media"] = value.media;
+        j["thumbnail"] = value.thumbnail;
+        j["caption"] = value.caption;
+        j["parse_mode"] = value.parse_mode;
+        j["caption_entities"] = value.caption_entities;
+        j["show_caption_above_media"] = value.show_caption_above_media;
+        j["width"] = value.width;
+        j["height"] = value.height;
+        j["duration"] = value.duration;
+        j["has_spoiler"] = value.has_spoiler;
     }
-    std::shared_ptr<InputMediaAnimation> InputMediaAnimation::from_json(const json& data) {
-        auto result(std::make_shared<InputMediaAnimation>());
-        result->type_ = data["type_"].get<std::string>();
-        result->media = data["media"].get<std::string>();
-        result->thumbnail = data["thumbnail"].get<std::string>();
-        result->caption = data["caption"].get<std::string>();
-        result->parse_mode = ParseMode::from_json(data["parse_mode"]);
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> caption_entities_values;
-        caption_entities_values.reserve(caption_entities.size());
-        for (auto& e : data["caption_entities"]) {
-            caption_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, InputMediaAnimation& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->caption_entities = caption_entities_values;
-        result->show_caption_above_media = data["show_caption_above_media"].get<bool>();
-        result->width = data["width"].get<std::int64_t>();
-        result->height = data["height"].get<std::int64_t>();
-        result->duration = data["duration"].get<std::int64_t>();
-        result->has_spoiler = data["has_spoiler"].get<bool>();
-        return result;
+        if (j.contains("media")) {
+            j.at("media").get_to(value.media);
+        }
+        if (j.contains("thumbnail")) {
+            j.at("thumbnail").get_to(value.thumbnail);
+        }
+        if (j.contains("caption")) {
+            j.at("caption").get_to(value.caption);
+        }
+        if (j.contains("parse_mode")) {
+            j.at("parse_mode").get_to(value.parse_mode);
+        }
+        if (j.contains("caption_entities")) {
+            j.at("caption_entities").get_to(value.caption_entities);
+        }
+        if (j.contains("show_caption_above_media")) {
+            j.at("show_caption_above_media").get_to(value.show_caption_above_media);
+        }
+        if (j.contains("width")) {
+            j.at("width").get_to(value.width);
+        }
+        if (j.contains("height")) {
+            j.at("height").get_to(value.height);
+        }
+        if (j.contains("duration")) {
+            j.at("duration").get_to(value.duration);
+        }
+        if (j.contains("has_spoiler")) {
+            j.at("has_spoiler").get_to(value.has_spoiler);
+        }
     }
 }

@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SuggestedPostParameters::to_json() const {
-        json j;
-        j["price"] = price->to_json();
-        j["send_date"] = send_date;
-        return j.dump();
+    void to_json(json& j, const SuggestedPostParameters& value) {
+        j = json::object();
+        j["price"] = value.price;
+        j["send_date"] = value.send_date;
     }
-    std::shared_ptr<SuggestedPostParameters> SuggestedPostParameters::from_json(const json& data) {
-        auto result(std::make_shared<SuggestedPostParameters>());
-        result->price = SuggestedPostPrice::from_json(data["price"]);
-        result->send_date = data["send_date"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, SuggestedPostParameters& value) {
+        if (j.contains("price")) {
+            j.at("price").get_to(value.price);
+        }
+        if (j.contains("send_date")) {
+            j.at("send_date").get_to(value.send_date);
+        }
     }
 }

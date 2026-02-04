@@ -48,8 +48,5 @@ namespace tgbot {
 
         // Optional. Pass True to request the users' photos
         bool request_photo;
-
-        json to_json() const override;
-        static std::shared_ptr<KeyboardButtonRequestUsers> from_json(const json& data);
     };
 }

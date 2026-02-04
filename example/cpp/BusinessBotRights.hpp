@@ -76,8 +76,5 @@ namespace tgbot {
 
         // Optional. True, if the bot can post, edit and delete stories on behalf of the business account
         bool can_manage_stories;
-
-        json to_json() const override;
-        static std::shared_ptr<BusinessBotRights> from_json(const json& data);
     };
 }

@@ -29,8 +29,5 @@ namespace tgbot {
 
         // Information about users shared with the bot.
         std::vector<std::shared_ptr<SharedUser>> users;
-
-        json to_json() const override;
-        static std::shared_ptr<UsersShared> from_json(const json& data);
     };
 }

@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Mask scaling coefficient. For example, 2.0 means double size.
         double scale;
-
-        json to_json() const override;
-        static std::shared_ptr<MaskPosition> from_json(const json& data);
     };
 }

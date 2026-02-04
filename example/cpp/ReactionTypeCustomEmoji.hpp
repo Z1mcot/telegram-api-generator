@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Custom emoji identifier
         std::string custom_emoji_id;
-
-        json to_json() const override;
-        static std::shared_ptr<ReactionTypeCustomEmoji> from_json(const json& data);
     };
 }

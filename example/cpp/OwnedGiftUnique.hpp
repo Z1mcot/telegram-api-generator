@@ -59,8 +59,5 @@ namespace tgbot {
 
         // Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
         std::int64_t next_transfer_date;
-
-        json to_json() const override;
-        static std::shared_ptr<OwnedGiftUnique> from_json(const json& data);
     };
 }

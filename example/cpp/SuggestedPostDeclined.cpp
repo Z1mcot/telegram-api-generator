@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SuggestedPostDeclined::to_json() const {
-        json j;
-        j["suggested_post_message"] = suggested_post_message->to_json();
-        j["comment"] = comment;
-        return j.dump();
+    void to_json(json& j, const SuggestedPostDeclined& value) {
+        j = json::object();
+        j["suggested_post_message"] = value.suggested_post_message;
+        j["comment"] = value.comment;
     }
-    std::shared_ptr<SuggestedPostDeclined> SuggestedPostDeclined::from_json(const json& data) {
-        auto result(std::make_shared<SuggestedPostDeclined>());
-        result->suggested_post_message = Message::from_json(data["suggested_post_message"]);
-        result->comment = data["comment"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, SuggestedPostDeclined& value) {
+        if (j.contains("suggested_post_message")) {
+            j.at("suggested_post_message").get_to(value.suggested_post_message);
+        }
+        if (j.contains("comment")) {
+            j.at("comment").get_to(value.comment);
+        }
     }
 }

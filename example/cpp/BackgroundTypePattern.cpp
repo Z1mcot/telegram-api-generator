@@ -7,24 +7,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BackgroundTypePattern::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["document"] = document->to_json();
-        j["fill"] = fill->to_json();
-        j["intensity"] = intensity;
-        j["is_inverted"] = is_inverted;
-        j["is_moving"] = is_moving;
-        return j.dump();
+    void to_json(json& j, const BackgroundTypePattern& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["document"] = value.document;
+        j["fill"] = value.fill;
+        j["intensity"] = value.intensity;
+        j["is_inverted"] = value.is_inverted;
+        j["is_moving"] = value.is_moving;
     }
-    std::shared_ptr<BackgroundTypePattern> BackgroundTypePattern::from_json(const json& data) {
-        auto result(std::make_shared<BackgroundTypePattern>());
-        result->type_ = data["type_"].get<std::string>();
-        result->document = Document::from_json(data["document"]);
-        result->fill = BackgroundFill::from_json(data["fill"]);
-        result->intensity = data["intensity"].get<std::int64_t>();
-        result->is_inverted = data["is_inverted"].get<bool>();
-        result->is_moving = data["is_moving"].get<bool>();
-        return result;
+
+    void from_json(const json& j, BackgroundTypePattern& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("document")) {
+            j.at("document").get_to(value.document);
+        }
+        if (j.contains("fill")) {
+            j.at("fill").get_to(value.fill);
+        }
+        if (j.contains("intensity")) {
+            j.at("intensity").get_to(value.intensity);
+        }
+        if (j.contains("is_inverted")) {
+            j.at("is_inverted").get_to(value.is_inverted);
+        }
+        if (j.contains("is_moving")) {
+            j.at("is_moving").get_to(value.is_moving);
+        }
     }
 }

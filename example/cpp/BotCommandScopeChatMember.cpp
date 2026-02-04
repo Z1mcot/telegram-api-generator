@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BotCommandScopeChatMember::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["chat_id"] = chat_id.to_json();
-        j["user_id"] = user_id.to_json();
-        return j.dump();
+    void to_json(json& j, const BotCommandScopeChatMember& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["chat_id"] = value.chat_id;
+        j["user_id"] = value.user_id;
     }
-    std::shared_ptr<BotCommandScopeChatMember> BotCommandScopeChatMember::from_json(const json& data) {
-        auto result(std::make_shared<BotCommandScopeChatMember>());
-        result->type_ = data["type_"].get<std::string>();
-        result->chat_id = ChatId::from_json(data["chat_id"]);
-        result->user_id = UserId::from_json(data["user_id"]);
-        return result;
+
+    void from_json(const json& j, BotCommandScopeChatMember& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("chat_id")) {
+            j.at("chat_id").get_to(value.chat_id);
+        }
+        if (j.contains("user_id")) {
+            j.at("user_id").get_to(value.user_id);
+        }
     }
 }

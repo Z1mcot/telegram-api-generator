@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatPhoto::to_json() const {
-        json j;
-        j["small_file_id"] = small_file_id;
-        j["small_file_unique_id"] = small_file_unique_id;
-        j["big_file_id"] = big_file_id;
-        j["big_file_unique_id"] = big_file_unique_id;
-        return j.dump();
+    void to_json(json& j, const ChatPhoto& value) {
+        j = json::object();
+        j["small_file_id"] = value.small_file_id;
+        j["small_file_unique_id"] = value.small_file_unique_id;
+        j["big_file_id"] = value.big_file_id;
+        j["big_file_unique_id"] = value.big_file_unique_id;
     }
-    std::shared_ptr<ChatPhoto> ChatPhoto::from_json(const json& data) {
-        auto result(std::make_shared<ChatPhoto>());
-        result->small_file_id = data["small_file_id"].get<std::string>();
-        result->small_file_unique_id = data["small_file_unique_id"].get<std::string>();
-        result->big_file_id = data["big_file_id"].get<std::string>();
-        result->big_file_unique_id = data["big_file_unique_id"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ChatPhoto& value) {
+        if (j.contains("small_file_id")) {
+            j.at("small_file_id").get_to(value.small_file_id);
+        }
+        if (j.contains("small_file_unique_id")) {
+            j.at("small_file_unique_id").get_to(value.small_file_unique_id);
+        }
+        if (j.contains("big_file_id")) {
+            j.at("big_file_id").get_to(value.big_file_id);
+        }
+        if (j.contains("big_file_unique_id")) {
+            j.at("big_file_unique_id").get_to(value.big_file_unique_id);
+        }
     }
 }

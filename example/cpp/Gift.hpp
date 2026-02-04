@@ -14,6 +14,7 @@
 namespace tgbot {
 
     struct Sticker;
+    struct GiftBackground;
     struct Chat;
 
     using json = nlohmann::json;
@@ -25,8 +26,14 @@ namespace tgbot {
      * @param sticker The sticker that represents the gift
      * @param star_count The number of Telegram Stars that must be paid to send the sticker
      * @param upgrade_star_count Optional. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
-     * @param total_count Optional. The total number of the gifts of this type that can be sent; for limited gifts only
-     * @param remaining_count Optional. The number of remaining gifts of this type that can be sent; for limited gifts only
+     * @param is_premium Optional. True, if the gift can only be purchased by Telegram Premium subscribers
+     * @param has_colors Optional. True, if the gift can be used (after being upgraded) to customize a user's appearance
+     * @param total_count Optional. The total number of gifts of this type that can be sent by all users; for limited gifts only
+     * @param remaining_count Optional. The number of remaining gifts of this type that can be sent by all users; for limited gifts only
+     * @param personal_total_count Optional. The total number of gifts of this type that can be sent by the bot; for limited gifts only
+     * @param personal_remaining_count Optional. The number of remaining gifts of this type that can be sent by the bot; for limited gifts only
+     * @param background Optional. Background of the gift
+     * @param unique_gift_variant_count Optional. The total number of different unique gifts that can be obtained by upgrading the gift
      * @param publisher_chat Optional. Information about the chat that published the gift
      */
     struct Gift : public TelegramModel {
@@ -43,16 +50,31 @@ namespace tgbot {
         // Optional. The number of Telegram Stars that must be paid to upgrade the gift to a unique one
         std::int64_t upgrade_star_count;
 
-        // Optional. The total number of the gifts of this type that can be sent; for limited gifts only
+        // Optional. True, if the gift can only be purchased by Telegram Premium subscribers
+        bool is_premium;
+
+        // Optional. True, if the gift can be used (after being upgraded) to customize a user's appearance
+        bool has_colors;
+
+        // Optional. The total number of gifts of this type that can be sent by all users; for limited gifts only
         std::int64_t total_count;
 
-        // Optional. The number of remaining gifts of this type that can be sent; for limited gifts only
+        // Optional. The number of remaining gifts of this type that can be sent by all users; for limited gifts only
         std::int64_t remaining_count;
+
+        // Optional. The total number of gifts of this type that can be sent by the bot; for limited gifts only
+        std::int64_t personal_total_count;
+
+        // Optional. The number of remaining gifts of this type that can be sent by the bot; for limited gifts only
+        std::int64_t personal_remaining_count;
+
+        // Optional. Background of the gift
+        std::shared_ptr<GiftBackground> background;
+
+        // Optional. The total number of different unique gifts that can be obtained by upgrading the gift
+        std::int64_t unique_gift_variant_count;
 
         // Optional. Information about the chat that published the gift
         std::shared_ptr<Chat> publisher_chat;
-
-        json to_json() const override;
-        static std::shared_ptr<Gift> from_json(const json& data);
     };
 }

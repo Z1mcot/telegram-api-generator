@@ -63,8 +63,5 @@ namespace tgbot {
 
         // Base64-encoded element hash for using in PassportElementErrorUnspecified
         std::string hash;
-
-        json to_json() const override;
-        static std::shared_ptr<EncryptedPassportElement> from_json(const json& data);
     };
 }

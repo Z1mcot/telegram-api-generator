@@ -5,50 +5,46 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Giveaway::to_json() const {
-        json j;
-        std::vector<json> chats_values;
-        chats_values.reserve(chats.size());
-        for (auto& e : chats) {
-            chats_values.push_back(e->to_json());
-        }
-        j["chats"] = chats_values;
-        j["winners_selection_date"] = winners_selection_date;
-        j["winner_count"] = winner_count;
-        j["only_new_members"] = only_new_members;
-        j["has_public_winners"] = has_public_winners;
-        j["prize_description"] = prize_description;
-        std::vector<json> country_codes_values;
-        country_codes_values.reserve(country_codes.size());
-        for (auto& e : country_codes) {
-            country_codes_values.push_back(e);
-        }
-        j["country_codes"] = country_codes_values;
-        j["prize_star_count"] = prize_star_count;
-        j["premium_subscription_month_count"] = premium_subscription_month_count;
-        return j.dump();
+    void to_json(json& j, const Giveaway& value) {
+        j = json::object();
+        j["chats"] = value.chats;
+        j["winners_selection_date"] = value.winners_selection_date;
+        j["winner_count"] = value.winner_count;
+        j["only_new_members"] = value.only_new_members;
+        j["has_public_winners"] = value.has_public_winners;
+        j["prize_description"] = value.prize_description;
+        j["country_codes"] = value.country_codes;
+        j["prize_star_count"] = value.prize_star_count;
+        j["premium_subscription_month_count"] = value.premium_subscription_month_count;
     }
-    std::shared_ptr<Giveaway> Giveaway::from_json(const json& data) {
-        auto result(std::make_shared<Giveaway>());
-        std::vector<std::vector<std::shared_ptr<Chat>>> chats_values;
-        chats_values.reserve(chats.size());
-        for (auto& e : data["chats"]) {
-            chats_values.push_back(std::vector<std::shared_ptr<Chat>>::from_json(e));
+
+    void from_json(const json& j, Giveaway& value) {
+        if (j.contains("chats")) {
+            j.at("chats").get_to(value.chats);
         }
-        result->chats = chats_values;
-        result->winners_selection_date = data["winners_selection_date"].get<std::int64_t>();
-        result->winner_count = data["winner_count"].get<std::int64_t>();
-        result->only_new_members = data["only_new_members"].get<bool>();
-        result->has_public_winners = data["has_public_winners"].get<bool>();
-        result->prize_description = data["prize_description"].get<std::string>();
-        std::vector<std::vector<std::string>> country_codes_values;
-        country_codes_values.reserve(country_codes.size());
-        for (auto& e : data["country_codes"]) {
-            country_codes_values.push_back(std::vector<std::string>::from_json(e));
+        if (j.contains("winners_selection_date")) {
+            j.at("winners_selection_date").get_to(value.winners_selection_date);
         }
-        result->country_codes = country_codes_values;
-        result->prize_star_count = data["prize_star_count"].get<std::int64_t>();
-        result->premium_subscription_month_count = data["premium_subscription_month_count"].get<std::int64_t>();
-        return result;
+        if (j.contains("winner_count")) {
+            j.at("winner_count").get_to(value.winner_count);
+        }
+        if (j.contains("only_new_members")) {
+            j.at("only_new_members").get_to(value.only_new_members);
+        }
+        if (j.contains("has_public_winners")) {
+            j.at("has_public_winners").get_to(value.has_public_winners);
+        }
+        if (j.contains("prize_description")) {
+            j.at("prize_description").get_to(value.prize_description);
+        }
+        if (j.contains("country_codes")) {
+            j.at("country_codes").get_to(value.country_codes);
+        }
+        if (j.contains("prize_star_count")) {
+            j.at("prize_star_count").get_to(value.prize_star_count);
+        }
+        if (j.contains("premium_subscription_month_count")) {
+            j.at("premium_subscription_month_count").get_to(value.premium_subscription_month_count);
+        }
     }
 }

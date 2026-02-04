@@ -32,8 +32,5 @@ namespace tgbot {
 
         // Optional. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.
         double main_frame_timestamp;
-
-        json to_json() const override;
-        static std::shared_ptr<InputProfilePhotoAnimated> from_json(const json& data);
     };
 }

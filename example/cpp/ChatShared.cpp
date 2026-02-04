@@ -5,32 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatShared::to_json() const {
-        json j;
-        j["request_id"] = request_id;
-        j["chat_id"] = chat_id.to_json();
-        j["title"] = title;
-        j["username"] = username;
-        std::vector<json> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : photo) {
-            photo_values.push_back(e->to_json());
-        }
-        j["photo"] = photo_values;
-        return j.dump();
+    void to_json(json& j, const ChatShared& value) {
+        j = json::object();
+        j["request_id"] = value.request_id;
+        j["chat_id"] = value.chat_id;
+        j["title"] = value.title;
+        j["username"] = value.username;
+        j["photo"] = value.photo;
     }
-    std::shared_ptr<ChatShared> ChatShared::from_json(const json& data) {
-        auto result(std::make_shared<ChatShared>());
-        result->request_id = data["request_id"].get<std::int64_t>();
-        result->chat_id = ChatId::from_json(data["chat_id"]);
-        result->title = data["title"].get<std::string>();
-        result->username = data["username"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<PhotoSize>>> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : data["photo"]) {
-            photo_values.push_back(std::vector<std::shared_ptr<PhotoSize>>::from_json(e));
+
+    void from_json(const json& j, ChatShared& value) {
+        if (j.contains("request_id")) {
+            j.at("request_id").get_to(value.request_id);
         }
-        result->photo = photo_values;
-        return result;
+        if (j.contains("chat_id")) {
+            j.at("chat_id").get_to(value.chat_id);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("username")) {
+            j.at("username").get_to(value.username);
+        }
+        if (j.contains("photo")) {
+            j.at("photo").get_to(value.photo);
+        }
     }
 }

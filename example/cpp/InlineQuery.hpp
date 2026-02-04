@@ -47,8 +47,5 @@ namespace tgbot {
 
         // Optional. Sender location, only for bots that request user location
         std::shared_ptr<Location> location;
-
-        json to_json() const override;
-        static std::shared_ptr<InlineQuery> from_json(const json& data);
     };
 }

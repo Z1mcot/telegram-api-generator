@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ReplyKeyboardRemove::to_json() const {
-        json j;
-        j["remove_keyboard"] = remove_keyboard;
-        j["selective"] = selective;
-        return j.dump();
+    void to_json(json& j, const ReplyKeyboardRemove& value) {
+        j = json::object();
+        j["remove_keyboard"] = value.remove_keyboard;
+        j["selective"] = value.selective;
     }
-    std::shared_ptr<ReplyKeyboardRemove> ReplyKeyboardRemove::from_json(const json& data) {
-        auto result(std::make_shared<ReplyKeyboardRemove>());
-        result->remove_keyboard = data["remove_keyboard"].get<bool>();
-        result->selective = data["selective"].get<bool>();
-        return result;
+
+    void from_json(const json& j, ReplyKeyboardRemove& value) {
+        if (j.contains("remove_keyboard")) {
+            j.at("remove_keyboard").get_to(value.remove_keyboard);
+        }
+        if (j.contains("selective")) {
+            j.at("selective").get_to(value.selective);
+        }
     }
 }

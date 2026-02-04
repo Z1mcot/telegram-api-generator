@@ -5,38 +5,42 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ReplyParameters::to_json() const {
-        json j;
-        j["message_id"] = message_id.to_json();
-        j["chat_id"] = chat_id.to_json();
-        j["allow_sending_without_reply"] = allow_sending_without_reply;
-        j["quote"] = quote;
-        j["quote_parse_mode"] = quote_parse_mode;
-        std::vector<json> quote_entities_values;
-        quote_entities_values.reserve(quote_entities.size());
-        for (auto& e : quote_entities) {
-            quote_entities_values.push_back(e->to_json());
-        }
-        j["quote_entities"] = quote_entities_values;
-        j["quote_position"] = quote_position;
-        j["checklist_task_id"] = checklist_task_id;
-        return j.dump();
+    void to_json(json& j, const ReplyParameters& value) {
+        j = json::object();
+        j["message_id"] = value.message_id;
+        j["chat_id"] = value.chat_id;
+        j["allow_sending_without_reply"] = value.allow_sending_without_reply;
+        j["quote"] = value.quote;
+        j["quote_parse_mode"] = value.quote_parse_mode;
+        j["quote_entities"] = value.quote_entities;
+        j["quote_position"] = value.quote_position;
+        j["checklist_task_id"] = value.checklist_task_id;
     }
-    std::shared_ptr<ReplyParameters> ReplyParameters::from_json(const json& data) {
-        auto result(std::make_shared<ReplyParameters>());
-        result->message_id = MessageId::from_json(data["message_id"]);
-        result->chat_id = ChatId::from_json(data["chat_id"]);
-        result->allow_sending_without_reply = data["allow_sending_without_reply"].get<bool>();
-        result->quote = data["quote"].get<std::string>();
-        result->quote_parse_mode = data["quote_parse_mode"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> quote_entities_values;
-        quote_entities_values.reserve(quote_entities.size());
-        for (auto& e : data["quote_entities"]) {
-            quote_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, ReplyParameters& value) {
+        if (j.contains("message_id")) {
+            j.at("message_id").get_to(value.message_id);
         }
-        result->quote_entities = quote_entities_values;
-        result->quote_position = data["quote_position"].get<std::int64_t>();
-        result->checklist_task_id = data["checklist_task_id"].get<std::int64_t>();
-        return result;
+        if (j.contains("chat_id")) {
+            j.at("chat_id").get_to(value.chat_id);
+        }
+        if (j.contains("allow_sending_without_reply")) {
+            j.at("allow_sending_without_reply").get_to(value.allow_sending_without_reply);
+        }
+        if (j.contains("quote")) {
+            j.at("quote").get_to(value.quote);
+        }
+        if (j.contains("quote_parse_mode")) {
+            j.at("quote_parse_mode").get_to(value.quote_parse_mode);
+        }
+        if (j.contains("quote_entities")) {
+            j.at("quote_entities").get_to(value.quote_entities);
+        }
+        if (j.contains("quote_position")) {
+            j.at("quote_position").get_to(value.quote_position);
+        }
+        if (j.contains("checklist_task_id")) {
+            j.at("checklist_task_id").get_to(value.checklist_task_id);
+        }
     }
 }

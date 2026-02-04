@@ -165,6 +165,7 @@ set(TELEGRAM_MODELS_HEADERS
     GetBusinessAccountStarBalanceRequest.hpp
     GetBusinessConnectionRequest.hpp
     GetChatAdministratorsRequest.hpp
+    GetChatGiftsRequest.hpp
     GetChatMemberCountRequest.hpp
     GetChatMemberRequest.hpp
     GetChatMenuButtonRequest.hpp
@@ -181,8 +182,10 @@ set(TELEGRAM_MODELS_HEADERS
     GetStickerSetRequest.hpp
     GetUpdatesRequest.hpp
     GetUserChatBoostsRequest.hpp
+    GetUserGiftsRequest.hpp
     GetUserProfilePhotosRequest.hpp
     Gift.hpp
+    GiftBackground.hpp
     GiftInfo.hpp
     GiftPremiumSubscriptionRequest.hpp
     Gifts.hpp
@@ -324,6 +327,7 @@ set(TELEGRAM_MODELS_HEADERS
     ReplyKeyboardMarkup.hpp
     ReplyKeyboardRemove.hpp
     ReplyParameters.hpp
+    RepostStoryRequest.hpp
     ResponseParameters.hpp
     RestrictChatMemberRequest.hpp
     RevenueWithdrawalState.hpp
@@ -344,6 +348,7 @@ set(TELEGRAM_MODELS_HEADERS
     SendInvoiceRequest.hpp
     SendLocationRequest.hpp
     SendMediaGroupRequest.hpp
+    SendMessageDraftRequest.hpp
     SendMessageRequest.hpp
     SendPaidMediaRequest.hpp
     SendPhotoRequest.hpp
@@ -431,6 +436,7 @@ set(TELEGRAM_MODELS_HEADERS
     UniqueGift.hpp
     UniqueGiftBackdrop.hpp
     UniqueGiftBackdropColors.hpp
+    UniqueGiftColors.hpp
     UniqueGiftInfo.hpp
     UniqueGiftModel.hpp
     UniqueGiftSymbol.hpp
@@ -444,6 +450,7 @@ set(TELEGRAM_MODELS_HEADERS
     User.hpp
     UserChatBoosts.hpp
     UserProfilePhotos.hpp
+    UserRating.hpp
     UsersShared.hpp
     Venue.hpp
     VerifyChatRequest.hpp
@@ -538,6 +545,7 @@ set(TELEGRAM_MODELS_SOURCES
     Game.cpp
     GameHighScore.cpp
     Gift.cpp
+    GiftBackground.cpp
     GiftInfo.cpp
     Gifts.cpp
     Giveaway.cpp
@@ -692,6 +700,7 @@ set(TELEGRAM_MODELS_SOURCES
     UniqueGift.cpp
     UniqueGiftBackdrop.cpp
     UniqueGiftBackdropColors.cpp
+    UniqueGiftColors.cpp
     UniqueGiftInfo.cpp
     UniqueGiftModel.cpp
     UniqueGiftSymbol.cpp
@@ -699,6 +708,7 @@ set(TELEGRAM_MODELS_SOURCES
     User.cpp
     UserChatBoosts.cpp
     UserProfilePhotos.cpp
+    UserRating.cpp
     UsersShared.cpp
     Venue.cpp
     Video.cpp

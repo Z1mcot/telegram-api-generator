@@ -5,32 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SharedUser::to_json() const {
-        json j;
-        j["user_id"] = user_id.to_json();
-        j["first_name"] = first_name;
-        j["last_name"] = last_name;
-        j["username"] = username;
-        std::vector<json> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : photo) {
-            photo_values.push_back(e->to_json());
-        }
-        j["photo"] = photo_values;
-        return j.dump();
+    void to_json(json& j, const SharedUser& value) {
+        j = json::object();
+        j["user_id"] = value.user_id;
+        j["first_name"] = value.first_name;
+        j["last_name"] = value.last_name;
+        j["username"] = value.username;
+        j["photo"] = value.photo;
     }
-    std::shared_ptr<SharedUser> SharedUser::from_json(const json& data) {
-        auto result(std::make_shared<SharedUser>());
-        result->user_id = UserId::from_json(data["user_id"]);
-        result->first_name = data["first_name"].get<std::string>();
-        result->last_name = data["last_name"].get<std::string>();
-        result->username = data["username"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<PhotoSize>>> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : data["photo"]) {
-            photo_values.push_back(std::vector<std::shared_ptr<PhotoSize>>::from_json(e));
+
+    void from_json(const json& j, SharedUser& value) {
+        if (j.contains("user_id")) {
+            j.at("user_id").get_to(value.user_id);
         }
-        result->photo = photo_values;
-        return result;
+        if (j.contains("first_name")) {
+            j.at("first_name").get_to(value.first_name);
+        }
+        if (j.contains("last_name")) {
+            j.at("last_name").get_to(value.last_name);
+        }
+        if (j.contains("username")) {
+            j.at("username").get_to(value.username);
+        }
+        if (j.contains("photo")) {
+            j.at("photo").get_to(value.photo);
+        }
     }
 }

@@ -43,8 +43,5 @@ namespace tgbot {
 
         // Optional. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format
         std::shared_ptr<PhotoSize> thumbnail;
-
-        json to_json() const override;
-        static std::shared_ptr<StickerSet> from_json(const json& data);
     };
 }

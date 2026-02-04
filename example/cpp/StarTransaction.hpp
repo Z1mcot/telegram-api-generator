@@ -46,8 +46,5 @@ namespace tgbot {
 
         // Optional. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions
         std::shared_ptr<TransactionPartner> receiver;
-
-        json to_json() const override;
-        static std::shared_ptr<StarTransaction> from_json(const json& data);
     };
 }

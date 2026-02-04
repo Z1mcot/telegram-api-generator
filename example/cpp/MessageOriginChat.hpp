@@ -38,8 +38,5 @@ namespace tgbot {
 
         // Optional. For messages originally sent by an anonymous chat administrator, original message author signature
         std::string author_signature;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageOriginChat> from_json(const json& data);
     };
 }

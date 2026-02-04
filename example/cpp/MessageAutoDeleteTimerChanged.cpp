@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MessageAutoDeleteTimerChanged::to_json() const {
-        json j;
-        j["message_auto_delete_time"] = message_auto_delete_time;
-        return j.dump();
+    void to_json(json& j, const MessageAutoDeleteTimerChanged& value) {
+        j = json::object();
+        j["message_auto_delete_time"] = value.message_auto_delete_time;
     }
-    std::shared_ptr<MessageAutoDeleteTimerChanged> MessageAutoDeleteTimerChanged::from_json(const json& data) {
-        auto result(std::make_shared<MessageAutoDeleteTimerChanged>());
-        result->message_auto_delete_time = data["message_auto_delete_time"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, MessageAutoDeleteTimerChanged& value) {
+        if (j.contains("message_auto_delete_time")) {
+            j.at("message_auto_delete_time").get_to(value.message_auto_delete_time);
+        }
     }
 }

@@ -42,8 +42,5 @@ namespace tgbot {
 
         // Optional. Signature of the original post author
         std::string author_signature;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageOriginChannel> from_json(const json& data);
     };
 }

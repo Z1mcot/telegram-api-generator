@@ -42,8 +42,5 @@ namespace tgbot {
 
         // Optional. True, if the giveaway was completed, but there was no user to win the prize
         bool is_unclaimed;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatBoostSourceGiveaway> from_json(const json& data);
     };
 }

@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Unique name of the gift
         std::string name;
-
-        json to_json() const override;
-        static std::shared_ptr<StoryAreaTypeUniqueGift> from_json(const json& data);
     };
 }

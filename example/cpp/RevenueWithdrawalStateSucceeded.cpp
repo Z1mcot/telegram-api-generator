@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json RevenueWithdrawalStateSucceeded::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["date"] = date;
-        j["url"] = url;
-        return j.dump();
+    void to_json(json& j, const RevenueWithdrawalStateSucceeded& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["date"] = value.date;
+        j["url"] = value.url;
     }
-    std::shared_ptr<RevenueWithdrawalStateSucceeded> RevenueWithdrawalStateSucceeded::from_json(const json& data) {
-        auto result(std::make_shared<RevenueWithdrawalStateSucceeded>());
-        result->type_ = data["type_"].get<std::string>();
-        result->date = data["date"].get<std::int64_t>();
-        result->url = data["url"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, RevenueWithdrawalStateSucceeded& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
+        }
     }
 }

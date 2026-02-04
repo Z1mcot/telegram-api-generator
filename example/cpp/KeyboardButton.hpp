@@ -53,8 +53,5 @@ namespace tgbot {
 
         // Optional. If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.
         std::shared_ptr<WebAppInfo> web_app;
-
-        json to_json() const override;
-        static std::shared_ptr<KeyboardButton> from_json(const json& data);
     };
 }

@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Bot-specified paid media payload
         std::string paid_media_payload;
-
-        json to_json() const override;
-        static std::shared_ptr<PaidMediaPurchased> from_json(const json& data);
     };
 }

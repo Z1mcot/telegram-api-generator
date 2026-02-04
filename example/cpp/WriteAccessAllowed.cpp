@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json WriteAccessAllowed::to_json() const {
-        json j;
-        j["from_request"] = from_request;
-        j["web_app_name"] = web_app_name;
-        j["from_attachment_menu"] = from_attachment_menu;
-        return j.dump();
+    void to_json(json& j, const WriteAccessAllowed& value) {
+        j = json::object();
+        j["from_request"] = value.from_request;
+        j["web_app_name"] = value.web_app_name;
+        j["from_attachment_menu"] = value.from_attachment_menu;
     }
-    std::shared_ptr<WriteAccessAllowed> WriteAccessAllowed::from_json(const json& data) {
-        auto result(std::make_shared<WriteAccessAllowed>());
-        result->from_request = data["from_request"].get<bool>();
-        result->web_app_name = data["web_app_name"].get<std::string>();
-        result->from_attachment_menu = data["from_attachment_menu"].get<bool>();
-        return result;
+
+    void from_json(const json& j, WriteAccessAllowed& value) {
+        if (j.contains("from_request")) {
+            j.at("from_request").get_to(value.from_request);
+        }
+        if (j.contains("web_app_name")) {
+            j.at("web_app_name").get_to(value.web_app_name);
+        }
+        if (j.contains("from_attachment_menu")) {
+            j.at("from_attachment_menu").get_to(value.from_attachment_menu);
+        }
     }
 }

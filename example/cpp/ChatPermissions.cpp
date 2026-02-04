@@ -5,40 +5,66 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatPermissions::to_json() const {
-        json j;
-        j["can_send_messages"] = can_send_messages;
-        j["can_send_audios"] = can_send_audios;
-        j["can_send_documents"] = can_send_documents;
-        j["can_send_photos"] = can_send_photos;
-        j["can_send_videos"] = can_send_videos;
-        j["can_send_video_notes"] = can_send_video_notes;
-        j["can_send_voice_notes"] = can_send_voice_notes;
-        j["can_send_polls"] = can_send_polls;
-        j["can_send_other_messages"] = can_send_other_messages;
-        j["can_add_web_page_previews"] = can_add_web_page_previews;
-        j["can_change_info"] = can_change_info;
-        j["can_invite_users"] = can_invite_users;
-        j["can_pin_messages"] = can_pin_messages;
-        j["can_manage_topics"] = can_manage_topics;
-        return j.dump();
+    void to_json(json& j, const ChatPermissions& value) {
+        j = json::object();
+        j["can_send_messages"] = value.can_send_messages;
+        j["can_send_audios"] = value.can_send_audios;
+        j["can_send_documents"] = value.can_send_documents;
+        j["can_send_photos"] = value.can_send_photos;
+        j["can_send_videos"] = value.can_send_videos;
+        j["can_send_video_notes"] = value.can_send_video_notes;
+        j["can_send_voice_notes"] = value.can_send_voice_notes;
+        j["can_send_polls"] = value.can_send_polls;
+        j["can_send_other_messages"] = value.can_send_other_messages;
+        j["can_add_web_page_previews"] = value.can_add_web_page_previews;
+        j["can_change_info"] = value.can_change_info;
+        j["can_invite_users"] = value.can_invite_users;
+        j["can_pin_messages"] = value.can_pin_messages;
+        j["can_manage_topics"] = value.can_manage_topics;
     }
-    std::shared_ptr<ChatPermissions> ChatPermissions::from_json(const json& data) {
-        auto result(std::make_shared<ChatPermissions>());
-        result->can_send_messages = data["can_send_messages"].get<bool>();
-        result->can_send_audios = data["can_send_audios"].get<bool>();
-        result->can_send_documents = data["can_send_documents"].get<bool>();
-        result->can_send_photos = data["can_send_photos"].get<bool>();
-        result->can_send_videos = data["can_send_videos"].get<bool>();
-        result->can_send_video_notes = data["can_send_video_notes"].get<bool>();
-        result->can_send_voice_notes = data["can_send_voice_notes"].get<bool>();
-        result->can_send_polls = data["can_send_polls"].get<bool>();
-        result->can_send_other_messages = data["can_send_other_messages"].get<bool>();
-        result->can_add_web_page_previews = data["can_add_web_page_previews"].get<bool>();
-        result->can_change_info = data["can_change_info"].get<bool>();
-        result->can_invite_users = data["can_invite_users"].get<bool>();
-        result->can_pin_messages = data["can_pin_messages"].get<bool>();
-        result->can_manage_topics = data["can_manage_topics"].get<bool>();
-        return result;
+
+    void from_json(const json& j, ChatPermissions& value) {
+        if (j.contains("can_send_messages")) {
+            j.at("can_send_messages").get_to(value.can_send_messages);
+        }
+        if (j.contains("can_send_audios")) {
+            j.at("can_send_audios").get_to(value.can_send_audios);
+        }
+        if (j.contains("can_send_documents")) {
+            j.at("can_send_documents").get_to(value.can_send_documents);
+        }
+        if (j.contains("can_send_photos")) {
+            j.at("can_send_photos").get_to(value.can_send_photos);
+        }
+        if (j.contains("can_send_videos")) {
+            j.at("can_send_videos").get_to(value.can_send_videos);
+        }
+        if (j.contains("can_send_video_notes")) {
+            j.at("can_send_video_notes").get_to(value.can_send_video_notes);
+        }
+        if (j.contains("can_send_voice_notes")) {
+            j.at("can_send_voice_notes").get_to(value.can_send_voice_notes);
+        }
+        if (j.contains("can_send_polls")) {
+            j.at("can_send_polls").get_to(value.can_send_polls);
+        }
+        if (j.contains("can_send_other_messages")) {
+            j.at("can_send_other_messages").get_to(value.can_send_other_messages);
+        }
+        if (j.contains("can_add_web_page_previews")) {
+            j.at("can_add_web_page_previews").get_to(value.can_add_web_page_previews);
+        }
+        if (j.contains("can_change_info")) {
+            j.at("can_change_info").get_to(value.can_change_info);
+        }
+        if (j.contains("can_invite_users")) {
+            j.at("can_invite_users").get_to(value.can_invite_users);
+        }
+        if (j.contains("can_pin_messages")) {
+            j.at("can_pin_messages").get_to(value.can_pin_messages);
+        }
+        if (j.contains("can_manage_topics")) {
+            j.at("can_manage_topics").get_to(value.can_manage_topics);
+        }
     }
 }

@@ -34,8 +34,5 @@ namespace tgbot {
 
         // Optional. Identifiers of the tasks that were marked as not done
         std::vector<std::int64_t> marked_as_not_done_task_ids;
-
-        json to_json() const override;
-        static std::shared_ptr<ChecklistTasksDone> from_json(const json& data);
     };
 }

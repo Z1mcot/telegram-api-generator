@@ -5,22 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputStoryContentVideo::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["video"] = video;
-        j["duration"] = duration;
-        j["cover_frame_timestamp"] = cover_frame_timestamp;
-        j["is_animation"] = is_animation;
-        return j.dump();
+    void to_json(json& j, const InputStoryContentVideo& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["video"] = value.video;
+        j["duration"] = value.duration;
+        j["cover_frame_timestamp"] = value.cover_frame_timestamp;
+        j["is_animation"] = value.is_animation;
     }
-    std::shared_ptr<InputStoryContentVideo> InputStoryContentVideo::from_json(const json& data) {
-        auto result(std::make_shared<InputStoryContentVideo>());
-        result->type_ = data["type_"].get<std::string>();
-        result->video = data["video"].get<std::string>();
-        result->duration = data["duration"].get<double>();
-        result->cover_frame_timestamp = data["cover_frame_timestamp"].get<double>();
-        result->is_animation = data["is_animation"].get<bool>();
-        return result;
+
+    void from_json(const json& j, InputStoryContentVideo& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("video")) {
+            j.at("video").get_to(value.video);
+        }
+        if (j.contains("duration")) {
+            j.at("duration").get_to(value.duration);
+        }
+        if (j.contains("cover_frame_timestamp")) {
+            j.at("cover_frame_timestamp").get_to(value.cover_frame_timestamp);
+        }
+        if (j.contains("is_animation")) {
+            j.at("is_animation").get_to(value.is_animation);
+        }
     }
 }

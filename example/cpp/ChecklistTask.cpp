@@ -3,35 +3,38 @@
 
 #include "ChecklistTask.hpp"
 #include "User.hpp"
+#include "Chat.hpp"
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChecklistTask::to_json() const {
-        json j;
-        j["id"] = id;
-        j["text"] = text;
-        std::vector<json> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : text_entities) {
-            text_entities_values.push_back(e->to_json());
-        }
-        j["text_entities"] = text_entities_values;
-        j["completed_by_user"] = completed_by_user->to_json();
-        j["completion_date"] = completion_date;
-        return j.dump();
+    void to_json(json& j, const ChecklistTask& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["text"] = value.text;
+        j["text_entities"] = value.text_entities;
+        j["completed_by_user"] = value.completed_by_user;
+        j["completed_by_chat"] = value.completed_by_chat;
+        j["completion_date"] = value.completion_date;
     }
-    std::shared_ptr<ChecklistTask> ChecklistTask::from_json(const json& data) {
-        auto result(std::make_shared<ChecklistTask>());
-        result->id = data["id"].get<std::int64_t>();
-        result->text = data["text"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : data["text_entities"]) {
-            text_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, ChecklistTask& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
         }
-        result->text_entities = text_entities_values;
-        result->completed_by_user = User::from_json(data["completed_by_user"]);
-        result->completion_date = data["completion_date"].get<std::int64_t>();
-        return result;
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("text_entities")) {
+            j.at("text_entities").get_to(value.text_entities);
+        }
+        if (j.contains("completed_by_user")) {
+            j.at("completed_by_user").get_to(value.completed_by_user);
+        }
+        if (j.contains("completed_by_chat")) {
+            j.at("completed_by_chat").get_to(value.completed_by_chat);
+        }
+        if (j.contains("completion_date")) {
+            j.at("completion_date").get_to(value.completion_date);
+        }
     }
 }

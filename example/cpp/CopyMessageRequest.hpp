@@ -24,7 +24,7 @@ namespace tgbot {
      * Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.
      *
      * @param chat_id Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-     * @param message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @param message_thread_id Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
      * @param direct_messages_topic_id Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
      * @param from_chat_id Unique identifier for the chat where the original message was sent (or channel username in the format @channelusername)
      * @param message_id Message identifier in the chat specified in from_chat_id
@@ -36,6 +36,7 @@ namespace tgbot {
      * @param disable_notification Sends the message silently. Users will receive a notification with no sound.
      * @param protect_content Protects the contents of the sent message from forwarding and saving
      * @param allow_paid_broadcast Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+     * @param message_effect_id Unique identifier of the message effect to be added to the message; only available when copying to private chats
      * @param suggested_post_parameters A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
      * @param reply_parameters Description of the message to reply to
      * @param reply_markup Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user
@@ -44,7 +45,7 @@ namespace tgbot {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
         ChatId chat_id;
 
-        // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        // Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         MessageThreadId message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
@@ -79,6 +80,9 @@ namespace tgbot {
 
         // Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         bool allow_paid_broadcast;
+
+        // Unique identifier of the message effect to be added to the message; only available when copying to private chats
+        MessageEffectId message_effect_id;
 
         // A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         std::shared_ptr<SuggestedPostParameters> suggested_post_parameters;

@@ -35,8 +35,5 @@ namespace tgbot {
 
         // Date when the post will be published
         std::int64_t send_date;
-
-        json to_json() const override;
-        static std::shared_ptr<SuggestedPostApproved> from_json(const json& data);
     };
 }

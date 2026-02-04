@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputContactMessageContent::to_json() const {
-        json j;
-        j["phone_number"] = phone_number;
-        j["first_name"] = first_name;
-        j["last_name"] = last_name;
-        j["vcard"] = vcard;
-        return j.dump();
+    void to_json(json& j, const InputContactMessageContent& value) {
+        j = json::object();
+        j["phone_number"] = value.phone_number;
+        j["first_name"] = value.first_name;
+        j["last_name"] = value.last_name;
+        j["vcard"] = value.vcard;
     }
-    std::shared_ptr<InputContactMessageContent> InputContactMessageContent::from_json(const json& data) {
-        auto result(std::make_shared<InputContactMessageContent>());
-        result->phone_number = data["phone_number"].get<std::string>();
-        result->first_name = data["first_name"].get<std::string>();
-        result->last_name = data["last_name"].get<std::string>();
-        result->vcard = data["vcard"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, InputContactMessageContent& value) {
+        if (j.contains("phone_number")) {
+            j.at("phone_number").get_to(value.phone_number);
+        }
+        if (j.contains("first_name")) {
+            j.at("first_name").get_to(value.first_name);
+        }
+        if (j.contains("last_name")) {
+            j.at("last_name").get_to(value.last_name);
+        }
+        if (j.contains("vcard")) {
+            j.at("vcard").get_to(value.vcard);
+        }
     }
 }

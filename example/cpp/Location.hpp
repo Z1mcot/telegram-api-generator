@@ -44,8 +44,5 @@ namespace tgbot {
 
         // Optional. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.
         std::int64_t proximity_alert_radius;
-
-        json to_json() const override;
-        static std::shared_ptr<Location> from_json(const json& data);
     };
 }

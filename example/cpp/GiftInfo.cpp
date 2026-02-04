@@ -6,38 +6,50 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json GiftInfo::to_json() const {
-        json j;
-        j["gift"] = gift->to_json();
-        j["owned_gift_id"] = owned_gift_id;
-        j["convert_star_count"] = convert_star_count;
-        j["prepaid_upgrade_star_count"] = prepaid_upgrade_star_count;
-        j["can_be_upgraded"] = can_be_upgraded;
-        j["text"] = text;
-        std::vector<json> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : entities) {
-            entities_values.push_back(e->to_json());
-        }
-        j["entities"] = entities_values;
-        j["is_private"] = is_private;
-        return j.dump();
+    void to_json(json& j, const GiftInfo& value) {
+        j = json::object();
+        j["gift"] = value.gift;
+        j["owned_gift_id"] = value.owned_gift_id;
+        j["convert_star_count"] = value.convert_star_count;
+        j["prepaid_upgrade_star_count"] = value.prepaid_upgrade_star_count;
+        j["is_upgrade_separate"] = value.is_upgrade_separate;
+        j["can_be_upgraded"] = value.can_be_upgraded;
+        j["text"] = value.text;
+        j["entities"] = value.entities;
+        j["is_private"] = value.is_private;
+        j["unique_gift_number"] = value.unique_gift_number;
     }
-    std::shared_ptr<GiftInfo> GiftInfo::from_json(const json& data) {
-        auto result(std::make_shared<GiftInfo>());
-        result->gift = Gift::from_json(data["gift"]);
-        result->owned_gift_id = data["owned_gift_id"].get<std::string>();
-        result->convert_star_count = data["convert_star_count"].get<std::int64_t>();
-        result->prepaid_upgrade_star_count = data["prepaid_upgrade_star_count"].get<std::int64_t>();
-        result->can_be_upgraded = data["can_be_upgraded"].get<bool>();
-        result->text = data["text"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : data["entities"]) {
-            entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, GiftInfo& value) {
+        if (j.contains("gift")) {
+            j.at("gift").get_to(value.gift);
         }
-        result->entities = entities_values;
-        result->is_private = data["is_private"].get<bool>();
-        return result;
+        if (j.contains("owned_gift_id")) {
+            j.at("owned_gift_id").get_to(value.owned_gift_id);
+        }
+        if (j.contains("convert_star_count")) {
+            j.at("convert_star_count").get_to(value.convert_star_count);
+        }
+        if (j.contains("prepaid_upgrade_star_count")) {
+            j.at("prepaid_upgrade_star_count").get_to(value.prepaid_upgrade_star_count);
+        }
+        if (j.contains("is_upgrade_separate")) {
+            j.at("is_upgrade_separate").get_to(value.is_upgrade_separate);
+        }
+        if (j.contains("can_be_upgraded")) {
+            j.at("can_be_upgraded").get_to(value.can_be_upgraded);
+        }
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("entities")) {
+            j.at("entities").get_to(value.entities);
+        }
+        if (j.contains("is_private")) {
+            j.at("is_private").get_to(value.is_private);
+        }
+        if (j.contains("unique_gift_number")) {
+            j.at("unique_gift_number").get_to(value.unique_gift_number);
+        }
     }
 }

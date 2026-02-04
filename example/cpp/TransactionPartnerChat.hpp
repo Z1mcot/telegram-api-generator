@@ -35,8 +35,5 @@ namespace tgbot {
 
         // Optional. The gift sent to the chat by the bot
         std::shared_ptr<Gift> gift;
-
-        json to_json() const override;
-        static std::shared_ptr<TransactionPartnerChat> from_json(const json& data);
     };
 }

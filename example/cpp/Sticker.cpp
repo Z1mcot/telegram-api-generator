@@ -8,42 +8,70 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Sticker::to_json() const {
-        json j;
-        j["file_id"] = file_id;
-        j["file_unique_id"] = file_unique_id;
-        j["type"] = type_;
-        j["width"] = width;
-        j["height"] = height;
-        j["is_animated"] = is_animated;
-        j["is_video"] = is_video;
-        j["thumbnail"] = thumbnail->to_json();
-        j["emoji"] = emoji;
-        j["set_name"] = set_name;
-        j["premium_animation"] = premium_animation->to_json();
-        j["mask_position"] = mask_position->to_json();
-        j["custom_emoji_id"] = custom_emoji_id;
-        j["needs_repainting"] = needs_repainting;
-        j["file_size"] = file_size;
-        return j.dump();
+    void to_json(json& j, const Sticker& value) {
+        j = json::object();
+        j["file_id"] = value.file_id;
+        j["file_unique_id"] = value.file_unique_id;
+        j["type"] = value.type_;
+        j["width"] = value.width;
+        j["height"] = value.height;
+        j["is_animated"] = value.is_animated;
+        j["is_video"] = value.is_video;
+        j["thumbnail"] = value.thumbnail;
+        j["emoji"] = value.emoji;
+        j["set_name"] = value.set_name;
+        j["premium_animation"] = value.premium_animation;
+        j["mask_position"] = value.mask_position;
+        j["custom_emoji_id"] = value.custom_emoji_id;
+        j["needs_repainting"] = value.needs_repainting;
+        j["file_size"] = value.file_size;
     }
-    std::shared_ptr<Sticker> Sticker::from_json(const json& data) {
-        auto result(std::make_shared<Sticker>());
-        result->file_id = data["file_id"].get<std::string>();
-        result->file_unique_id = data["file_unique_id"].get<std::string>();
-        result->type_ = data["type_"].get<std::string>();
-        result->width = data["width"].get<std::int64_t>();
-        result->height = data["height"].get<std::int64_t>();
-        result->is_animated = data["is_animated"].get<bool>();
-        result->is_video = data["is_video"].get<bool>();
-        result->thumbnail = PhotoSize::from_json(data["thumbnail"]);
-        result->emoji = data["emoji"].get<std::string>();
-        result->set_name = data["set_name"].get<std::string>();
-        result->premium_animation = File::from_json(data["premium_animation"]);
-        result->mask_position = MaskPosition::from_json(data["mask_position"]);
-        result->custom_emoji_id = data["custom_emoji_id"].get<std::string>();
-        result->needs_repainting = data["needs_repainting"].get<bool>();
-        result->file_size = data["file_size"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, Sticker& value) {
+        if (j.contains("file_id")) {
+            j.at("file_id").get_to(value.file_id);
+        }
+        if (j.contains("file_unique_id")) {
+            j.at("file_unique_id").get_to(value.file_unique_id);
+        }
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("width")) {
+            j.at("width").get_to(value.width);
+        }
+        if (j.contains("height")) {
+            j.at("height").get_to(value.height);
+        }
+        if (j.contains("is_animated")) {
+            j.at("is_animated").get_to(value.is_animated);
+        }
+        if (j.contains("is_video")) {
+            j.at("is_video").get_to(value.is_video);
+        }
+        if (j.contains("thumbnail")) {
+            j.at("thumbnail").get_to(value.thumbnail);
+        }
+        if (j.contains("emoji")) {
+            j.at("emoji").get_to(value.emoji);
+        }
+        if (j.contains("set_name")) {
+            j.at("set_name").get_to(value.set_name);
+        }
+        if (j.contains("premium_animation")) {
+            j.at("premium_animation").get_to(value.premium_animation);
+        }
+        if (j.contains("mask_position")) {
+            j.at("mask_position").get_to(value.mask_position);
+        }
+        if (j.contains("custom_emoji_id")) {
+            j.at("custom_emoji_id").get_to(value.custom_emoji_id);
+        }
+        if (j.contains("needs_repainting")) {
+            j.at("needs_repainting").get_to(value.needs_repainting);
+        }
+        if (j.contains("file_size")) {
+            j.at("file_size").get_to(value.file_size);
+        }
     }
 }

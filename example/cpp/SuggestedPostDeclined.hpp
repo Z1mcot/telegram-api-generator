@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Optional. Comment with which the post was declined
         std::string comment;
-
-        json to_json() const override;
-        static std::shared_ptr<SuggestedPostDeclined> from_json(const json& data);
     };
 }

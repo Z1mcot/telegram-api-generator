@@ -5,72 +5,90 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputInvoiceMessageContent::to_json() const {
-        json j;
-        j["title"] = title;
-        j["description"] = description;
-        j["payload"] = payload;
-        j["provider_token"] = provider_token;
-        j["currency"] = currency;
-        std::vector<json> prices_values;
-        prices_values.reserve(prices.size());
-        for (auto& e : prices) {
-            prices_values.push_back(e->to_json());
-        }
-        j["prices"] = prices_values;
-        j["max_tip_amount"] = max_tip_amount;
-        std::vector<json> suggested_tip_amounts_values;
-        suggested_tip_amounts_values.reserve(suggested_tip_amounts.size());
-        for (auto& e : suggested_tip_amounts) {
-            suggested_tip_amounts_values.push_back(e);
-        }
-        j["suggested_tip_amounts"] = suggested_tip_amounts_values;
-        j["provider_data"] = provider_data;
-        j["photo_url"] = photo_url;
-        j["photo_size"] = photo_size;
-        j["photo_width"] = photo_width;
-        j["photo_height"] = photo_height;
-        j["need_name"] = need_name;
-        j["need_phone_number"] = need_phone_number;
-        j["need_email"] = need_email;
-        j["need_shipping_address"] = need_shipping_address;
-        j["send_phone_number_to_provider"] = send_phone_number_to_provider;
-        j["send_email_to_provider"] = send_email_to_provider;
-        j["is_flexible"] = is_flexible;
-        return j.dump();
+    void to_json(json& j, const InputInvoiceMessageContent& value) {
+        j = json::object();
+        j["title"] = value.title;
+        j["description"] = value.description;
+        j["payload"] = value.payload;
+        j["provider_token"] = value.provider_token;
+        j["currency"] = value.currency;
+        j["prices"] = value.prices;
+        j["max_tip_amount"] = value.max_tip_amount;
+        j["suggested_tip_amounts"] = value.suggested_tip_amounts;
+        j["provider_data"] = value.provider_data;
+        j["photo_url"] = value.photo_url;
+        j["photo_size"] = value.photo_size;
+        j["photo_width"] = value.photo_width;
+        j["photo_height"] = value.photo_height;
+        j["need_name"] = value.need_name;
+        j["need_phone_number"] = value.need_phone_number;
+        j["need_email"] = value.need_email;
+        j["need_shipping_address"] = value.need_shipping_address;
+        j["send_phone_number_to_provider"] = value.send_phone_number_to_provider;
+        j["send_email_to_provider"] = value.send_email_to_provider;
+        j["is_flexible"] = value.is_flexible;
     }
-    std::shared_ptr<InputInvoiceMessageContent> InputInvoiceMessageContent::from_json(const json& data) {
-        auto result(std::make_shared<InputInvoiceMessageContent>());
-        result->title = data["title"].get<std::string>();
-        result->description = data["description"].get<std::string>();
-        result->payload = data["payload"].get<std::string>();
-        result->provider_token = data["provider_token"].get<std::string>();
-        result->currency = data["currency"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<LabeledPrice>>> prices_values;
-        prices_values.reserve(prices.size());
-        for (auto& e : data["prices"]) {
-            prices_values.push_back(std::vector<std::shared_ptr<LabeledPrice>>::from_json(e));
+
+    void from_json(const json& j, InputInvoiceMessageContent& value) {
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
         }
-        result->prices = prices_values;
-        result->max_tip_amount = data["max_tip_amount"].get<std::int64_t>();
-        std::vector<std::vector<std::int64_t>> suggested_tip_amounts_values;
-        suggested_tip_amounts_values.reserve(suggested_tip_amounts.size());
-        for (auto& e : data["suggested_tip_amounts"]) {
-            suggested_tip_amounts_values.push_back(std::vector<std::int64_t>::from_json(e));
+        if (j.contains("description")) {
+            j.at("description").get_to(value.description);
         }
-        result->suggested_tip_amounts = suggested_tip_amounts_values;
-        result->provider_data = data["provider_data"].get<std::string>();
-        result->photo_url = data["photo_url"].get<std::string>();
-        result->photo_size = data["photo_size"].get<std::int64_t>();
-        result->photo_width = data["photo_width"].get<std::int64_t>();
-        result->photo_height = data["photo_height"].get<std::int64_t>();
-        result->need_name = data["need_name"].get<bool>();
-        result->need_phone_number = data["need_phone_number"].get<bool>();
-        result->need_email = data["need_email"].get<bool>();
-        result->need_shipping_address = data["need_shipping_address"].get<bool>();
-        result->send_phone_number_to_provider = data["send_phone_number_to_provider"].get<bool>();
-        result->send_email_to_provider = data["send_email_to_provider"].get<bool>();
-        result->is_flexible = data["is_flexible"].get<bool>();
-        return result;
+        if (j.contains("payload")) {
+            j.at("payload").get_to(value.payload);
+        }
+        if (j.contains("provider_token")) {
+            j.at("provider_token").get_to(value.provider_token);
+        }
+        if (j.contains("currency")) {
+            j.at("currency").get_to(value.currency);
+        }
+        if (j.contains("prices")) {
+            j.at("prices").get_to(value.prices);
+        }
+        if (j.contains("max_tip_amount")) {
+            j.at("max_tip_amount").get_to(value.max_tip_amount);
+        }
+        if (j.contains("suggested_tip_amounts")) {
+            j.at("suggested_tip_amounts").get_to(value.suggested_tip_amounts);
+        }
+        if (j.contains("provider_data")) {
+            j.at("provider_data").get_to(value.provider_data);
+        }
+        if (j.contains("photo_url")) {
+            j.at("photo_url").get_to(value.photo_url);
+        }
+        if (j.contains("photo_size")) {
+            j.at("photo_size").get_to(value.photo_size);
+        }
+        if (j.contains("photo_width")) {
+            j.at("photo_width").get_to(value.photo_width);
+        }
+        if (j.contains("photo_height")) {
+            j.at("photo_height").get_to(value.photo_height);
+        }
+        if (j.contains("need_name")) {
+            j.at("need_name").get_to(value.need_name);
+        }
+        if (j.contains("need_phone_number")) {
+            j.at("need_phone_number").get_to(value.need_phone_number);
+        }
+        if (j.contains("need_email")) {
+            j.at("need_email").get_to(value.need_email);
+        }
+        if (j.contains("need_shipping_address")) {
+            j.at("need_shipping_address").get_to(value.need_shipping_address);
+        }
+        if (j.contains("send_phone_number_to_provider")) {
+            j.at("send_phone_number_to_provider").get_to(value.send_phone_number_to_provider);
+        }
+        if (j.contains("send_email_to_provider")) {
+            j.at("send_email_to_provider").get_to(value.send_email_to_provider);
+        }
+        if (j.contains("is_flexible")) {
+            j.at("is_flexible").get_to(value.is_flexible);
+        }
     }
 }

@@ -36,8 +36,5 @@ namespace tgbot {
 
         // The color for the text on the backdrop in RGB format
         std::int64_t text_color;
-
-        json to_json() const override;
-        static std::shared_ptr<UniqueGiftBackdropColors> from_json(const json& data);
     };
 }

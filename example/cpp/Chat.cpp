@@ -5,28 +5,42 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Chat::to_json() const {
-        json j;
-        j["id"] = id.to_json();
-        j["type"] = type_;
-        j["title"] = title;
-        j["username"] = username;
-        j["first_name"] = first_name;
-        j["last_name"] = last_name;
-        j["is_forum"] = is_forum;
-        j["is_direct_messages"] = is_direct_messages;
-        return j.dump();
+    void to_json(json& j, const Chat& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["type"] = value.type_;
+        j["title"] = value.title;
+        j["username"] = value.username;
+        j["first_name"] = value.first_name;
+        j["last_name"] = value.last_name;
+        j["is_forum"] = value.is_forum;
+        j["is_direct_messages"] = value.is_direct_messages;
     }
-    std::shared_ptr<Chat> Chat::from_json(const json& data) {
-        auto result(std::make_shared<Chat>());
-        result->id = ChatId::from_json(data["id"]);
-        result->type_ = data["type_"].get<std::string>();
-        result->title = data["title"].get<std::string>();
-        result->username = data["username"].get<std::string>();
-        result->first_name = data["first_name"].get<std::string>();
-        result->last_name = data["last_name"].get<std::string>();
-        result->is_forum = data["is_forum"].get<bool>();
-        result->is_direct_messages = data["is_direct_messages"].get<bool>();
-        return result;
+
+    void from_json(const json& j, Chat& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("username")) {
+            j.at("username").get_to(value.username);
+        }
+        if (j.contains("first_name")) {
+            j.at("first_name").get_to(value.first_name);
+        }
+        if (j.contains("last_name")) {
+            j.at("last_name").get_to(value.last_name);
+        }
+        if (j.contains("is_forum")) {
+            j.at("is_forum").get_to(value.is_forum);
+        }
+        if (j.contains("is_direct_messages")) {
+            j.at("is_direct_messages").get_to(value.is_direct_messages);
+        }
     }
 }

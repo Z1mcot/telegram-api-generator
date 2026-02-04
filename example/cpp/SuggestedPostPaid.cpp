@@ -7,20 +7,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SuggestedPostPaid::to_json() const {
-        json j;
-        j["suggested_post_message"] = suggested_post_message->to_json();
-        j["currency"] = currency;
-        j["amount"] = amount;
-        j["star_amount"] = star_amount->to_json();
-        return j.dump();
+    void to_json(json& j, const SuggestedPostPaid& value) {
+        j = json::object();
+        j["suggested_post_message"] = value.suggested_post_message;
+        j["currency"] = value.currency;
+        j["amount"] = value.amount;
+        j["star_amount"] = value.star_amount;
     }
-    std::shared_ptr<SuggestedPostPaid> SuggestedPostPaid::from_json(const json& data) {
-        auto result(std::make_shared<SuggestedPostPaid>());
-        result->suggested_post_message = Message::from_json(data["suggested_post_message"]);
-        result->currency = data["currency"].get<std::string>();
-        result->amount = data["amount"].get<std::int64_t>();
-        result->star_amount = StarAmount::from_json(data["star_amount"]);
-        return result;
+
+    void from_json(const json& j, SuggestedPostPaid& value) {
+        if (j.contains("suggested_post_message")) {
+            j.at("suggested_post_message").get_to(value.suggested_post_message);
+        }
+        if (j.contains("currency")) {
+            j.at("currency").get_to(value.currency);
+        }
+        if (j.contains("amount")) {
+            j.at("amount").get_to(value.amount);
+        }
+        if (j.contains("star_amount")) {
+            j.at("star_amount").get_to(value.star_amount);
+        }
     }
 }

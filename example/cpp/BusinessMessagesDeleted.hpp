@@ -34,8 +34,5 @@ namespace tgbot {
 
         // The list of identifiers of deleted messages in the chat of the business account
         std::vector<MessageId> message_ids;
-
-        json to_json() const override;
-        static std::shared_ptr<BusinessMessagesDeleted> from_json(const json& data);
     };
 }

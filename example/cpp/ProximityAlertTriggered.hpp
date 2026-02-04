@@ -34,8 +34,5 @@ namespace tgbot {
 
         // The distance between the users
         std::int64_t distance;
-
-        json to_json() const override;
-        static std::shared_ptr<ProximityAlertTriggered> from_json(const json& data);
     };
 }

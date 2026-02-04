@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ForceReply::to_json() const {
-        json j;
-        j["force_reply"] = force_reply;
-        j["input_field_placeholder"] = input_field_placeholder;
-        j["selective"] = selective;
-        return j.dump();
+    void to_json(json& j, const ForceReply& value) {
+        j = json::object();
+        j["force_reply"] = value.force_reply;
+        j["input_field_placeholder"] = value.input_field_placeholder;
+        j["selective"] = value.selective;
     }
-    std::shared_ptr<ForceReply> ForceReply::from_json(const json& data) {
-        auto result(std::make_shared<ForceReply>());
-        result->force_reply = data["force_reply"].get<bool>();
-        result->input_field_placeholder = data["input_field_placeholder"].get<std::string>();
-        result->selective = data["selective"].get<bool>();
-        return result;
+
+    void from_json(const json& j, ForceReply& value) {
+        if (j.contains("force_reply")) {
+            j.at("force_reply").get_to(value.force_reply);
+        }
+        if (j.contains("input_field_placeholder")) {
+            j.at("input_field_placeholder").get_to(value.input_field_placeholder);
+        }
+        if (j.contains("selective")) {
+            j.at("selective").get_to(value.selective);
+        }
     }
 }

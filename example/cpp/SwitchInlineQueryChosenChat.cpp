@@ -5,22 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SwitchInlineQueryChosenChat::to_json() const {
-        json j;
-        j["query"] = query;
-        j["allow_user_chats"] = allow_user_chats;
-        j["allow_bot_chats"] = allow_bot_chats;
-        j["allow_group_chats"] = allow_group_chats;
-        j["allow_channel_chats"] = allow_channel_chats;
-        return j.dump();
+    void to_json(json& j, const SwitchInlineQueryChosenChat& value) {
+        j = json::object();
+        j["query"] = value.query;
+        j["allow_user_chats"] = value.allow_user_chats;
+        j["allow_bot_chats"] = value.allow_bot_chats;
+        j["allow_group_chats"] = value.allow_group_chats;
+        j["allow_channel_chats"] = value.allow_channel_chats;
     }
-    std::shared_ptr<SwitchInlineQueryChosenChat> SwitchInlineQueryChosenChat::from_json(const json& data) {
-        auto result(std::make_shared<SwitchInlineQueryChosenChat>());
-        result->query = data["query"].get<std::string>();
-        result->allow_user_chats = data["allow_user_chats"].get<bool>();
-        result->allow_bot_chats = data["allow_bot_chats"].get<bool>();
-        result->allow_group_chats = data["allow_group_chats"].get<bool>();
-        result->allow_channel_chats = data["allow_channel_chats"].get<bool>();
-        return result;
+
+    void from_json(const json& j, SwitchInlineQueryChosenChat& value) {
+        if (j.contains("query")) {
+            j.at("query").get_to(value.query);
+        }
+        if (j.contains("allow_user_chats")) {
+            j.at("allow_user_chats").get_to(value.allow_user_chats);
+        }
+        if (j.contains("allow_bot_chats")) {
+            j.at("allow_bot_chats").get_to(value.allow_bot_chats);
+        }
+        if (j.contains("allow_group_chats")) {
+            j.at("allow_group_chats").get_to(value.allow_group_chats);
+        }
+        if (j.contains("allow_channel_chats")) {
+            j.at("allow_channel_chats").get_to(value.allow_channel_chats);
+        }
     }
 }

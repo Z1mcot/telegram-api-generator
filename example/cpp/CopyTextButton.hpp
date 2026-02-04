@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~CopyTextButton() = default;
         // The text to be copied to the clipboard; 1-256 characters
         std::string text;
-
-        json to_json() const override;
-        static std::shared_ptr<CopyTextButton> from_json(const json& data);
     };
 }

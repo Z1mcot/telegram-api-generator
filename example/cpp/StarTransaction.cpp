@@ -6,24 +6,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StarTransaction::to_json() const {
-        json j;
-        j["id"] = id;
-        j["amount"] = amount;
-        j["nanostar_amount"] = nanostar_amount;
-        j["date"] = date;
-        j["source"] = source->to_json();
-        j["receiver"] = receiver->to_json();
-        return j.dump();
+    void to_json(json& j, const StarTransaction& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["amount"] = value.amount;
+        j["nanostar_amount"] = value.nanostar_amount;
+        j["date"] = value.date;
+        j["source"] = value.source;
+        j["receiver"] = value.receiver;
     }
-    std::shared_ptr<StarTransaction> StarTransaction::from_json(const json& data) {
-        auto result(std::make_shared<StarTransaction>());
-        result->id = data["id"].get<std::string>();
-        result->amount = data["amount"].get<std::int64_t>();
-        result->nanostar_amount = data["nanostar_amount"].get<std::int64_t>();
-        result->date = data["date"].get<std::int64_t>();
-        result->source = TransactionPartner::from_json(data["source"]);
-        result->receiver = TransactionPartner::from_json(data["receiver"]);
-        return result;
+
+    void from_json(const json& j, StarTransaction& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("amount")) {
+            j.at("amount").get_to(value.amount);
+        }
+        if (j.contains("nanostar_amount")) {
+            j.at("nanostar_amount").get_to(value.nanostar_amount);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
+        if (j.contains("receiver")) {
+            j.at("receiver").get_to(value.receiver);
+        }
     }
 }

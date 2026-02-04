@@ -22,60 +22,106 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Update::to_json() const {
-        json j;
-        j["update_id"] = update_id;
-        j["message"] = message->to_json();
-        j["edited_message"] = edited_message->to_json();
-        j["channel_post"] = channel_post->to_json();
-        j["edited_channel_post"] = edited_channel_post->to_json();
-        j["business_connection"] = business_connection->to_json();
-        j["business_message"] = business_message->to_json();
-        j["edited_business_message"] = edited_business_message->to_json();
-        j["deleted_business_messages"] = deleted_business_messages->to_json();
-        j["message_reaction"] = message_reaction->to_json();
-        j["message_reaction_count"] = message_reaction_count->to_json();
-        j["inline_query"] = inline_query->to_json();
-        j["chosen_inline_result"] = chosen_inline_result->to_json();
-        j["callback_query"] = callback_query->to_json();
-        j["shipping_query"] = shipping_query->to_json();
-        j["pre_checkout_query"] = pre_checkout_query->to_json();
-        j["purchased_paid_media"] = purchased_paid_media->to_json();
-        j["poll"] = poll->to_json();
-        j["poll_answer"] = poll_answer->to_json();
-        j["my_chat_member"] = my_chat_member->to_json();
-        j["chat_member"] = chat_member->to_json();
-        j["chat_join_request"] = chat_join_request->to_json();
-        j["chat_boost"] = chat_boost->to_json();
-        j["removed_chat_boost"] = removed_chat_boost->to_json();
-        return j.dump();
+    void to_json(json& j, const Update& value) {
+        j = json::object();
+        j["update_id"] = value.update_id;
+        j["message"] = value.message;
+        j["edited_message"] = value.edited_message;
+        j["channel_post"] = value.channel_post;
+        j["edited_channel_post"] = value.edited_channel_post;
+        j["business_connection"] = value.business_connection;
+        j["business_message"] = value.business_message;
+        j["edited_business_message"] = value.edited_business_message;
+        j["deleted_business_messages"] = value.deleted_business_messages;
+        j["message_reaction"] = value.message_reaction;
+        j["message_reaction_count"] = value.message_reaction_count;
+        j["inline_query"] = value.inline_query;
+        j["chosen_inline_result"] = value.chosen_inline_result;
+        j["callback_query"] = value.callback_query;
+        j["shipping_query"] = value.shipping_query;
+        j["pre_checkout_query"] = value.pre_checkout_query;
+        j["purchased_paid_media"] = value.purchased_paid_media;
+        j["poll"] = value.poll;
+        j["poll_answer"] = value.poll_answer;
+        j["my_chat_member"] = value.my_chat_member;
+        j["chat_member"] = value.chat_member;
+        j["chat_join_request"] = value.chat_join_request;
+        j["chat_boost"] = value.chat_boost;
+        j["removed_chat_boost"] = value.removed_chat_boost;
     }
-    std::shared_ptr<Update> Update::from_json(const json& data) {
-        auto result(std::make_shared<Update>());
-        result->update_id = data["update_id"].get<std::int64_t>();
-        result->message = Message::from_json(data["message"]);
-        result->edited_message = Message::from_json(data["edited_message"]);
-        result->channel_post = Message::from_json(data["channel_post"]);
-        result->edited_channel_post = Message::from_json(data["edited_channel_post"]);
-        result->business_connection = BusinessConnection::from_json(data["business_connection"]);
-        result->business_message = Message::from_json(data["business_message"]);
-        result->edited_business_message = Message::from_json(data["edited_business_message"]);
-        result->deleted_business_messages = BusinessMessagesDeleted::from_json(data["deleted_business_messages"]);
-        result->message_reaction = MessageReactionUpdated::from_json(data["message_reaction"]);
-        result->message_reaction_count = MessageReactionCountUpdated::from_json(data["message_reaction_count"]);
-        result->inline_query = InlineQuery::from_json(data["inline_query"]);
-        result->chosen_inline_result = ChosenInlineResult::from_json(data["chosen_inline_result"]);
-        result->callback_query = CallbackQuery::from_json(data["callback_query"]);
-        result->shipping_query = ShippingQuery::from_json(data["shipping_query"]);
-        result->pre_checkout_query = PreCheckoutQuery::from_json(data["pre_checkout_query"]);
-        result->purchased_paid_media = PaidMediaPurchased::from_json(data["purchased_paid_media"]);
-        result->poll = Poll::from_json(data["poll"]);
-        result->poll_answer = PollAnswer::from_json(data["poll_answer"]);
-        result->my_chat_member = ChatMemberUpdated::from_json(data["my_chat_member"]);
-        result->chat_member = ChatMemberUpdated::from_json(data["chat_member"]);
-        result->chat_join_request = ChatJoinRequest::from_json(data["chat_join_request"]);
-        result->chat_boost = ChatBoostUpdated::from_json(data["chat_boost"]);
-        result->removed_chat_boost = ChatBoostRemoved::from_json(data["removed_chat_boost"]);
-        return result;
+
+    void from_json(const json& j, Update& value) {
+        if (j.contains("update_id")) {
+            j.at("update_id").get_to(value.update_id);
+        }
+        if (j.contains("message")) {
+            j.at("message").get_to(value.message);
+        }
+        if (j.contains("edited_message")) {
+            j.at("edited_message").get_to(value.edited_message);
+        }
+        if (j.contains("channel_post")) {
+            j.at("channel_post").get_to(value.channel_post);
+        }
+        if (j.contains("edited_channel_post")) {
+            j.at("edited_channel_post").get_to(value.edited_channel_post);
+        }
+        if (j.contains("business_connection")) {
+            j.at("business_connection").get_to(value.business_connection);
+        }
+        if (j.contains("business_message")) {
+            j.at("business_message").get_to(value.business_message);
+        }
+        if (j.contains("edited_business_message")) {
+            j.at("edited_business_message").get_to(value.edited_business_message);
+        }
+        if (j.contains("deleted_business_messages")) {
+            j.at("deleted_business_messages").get_to(value.deleted_business_messages);
+        }
+        if (j.contains("message_reaction")) {
+            j.at("message_reaction").get_to(value.message_reaction);
+        }
+        if (j.contains("message_reaction_count")) {
+            j.at("message_reaction_count").get_to(value.message_reaction_count);
+        }
+        if (j.contains("inline_query")) {
+            j.at("inline_query").get_to(value.inline_query);
+        }
+        if (j.contains("chosen_inline_result")) {
+            j.at("chosen_inline_result").get_to(value.chosen_inline_result);
+        }
+        if (j.contains("callback_query")) {
+            j.at("callback_query").get_to(value.callback_query);
+        }
+        if (j.contains("shipping_query")) {
+            j.at("shipping_query").get_to(value.shipping_query);
+        }
+        if (j.contains("pre_checkout_query")) {
+            j.at("pre_checkout_query").get_to(value.pre_checkout_query);
+        }
+        if (j.contains("purchased_paid_media")) {
+            j.at("purchased_paid_media").get_to(value.purchased_paid_media);
+        }
+        if (j.contains("poll")) {
+            j.at("poll").get_to(value.poll);
+        }
+        if (j.contains("poll_answer")) {
+            j.at("poll_answer").get_to(value.poll_answer);
+        }
+        if (j.contains("my_chat_member")) {
+            j.at("my_chat_member").get_to(value.my_chat_member);
+        }
+        if (j.contains("chat_member")) {
+            j.at("chat_member").get_to(value.chat_member);
+        }
+        if (j.contains("chat_join_request")) {
+            j.at("chat_join_request").get_to(value.chat_join_request);
+        }
+        if (j.contains("chat_boost")) {
+            j.at("chat_boost").get_to(value.chat_boost);
+        }
+        if (j.contains("removed_chat_boost")) {
+            j.at("removed_chat_boost").get_to(value.removed_chat_boost);
+        }
     }
 }

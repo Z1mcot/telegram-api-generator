@@ -32,8 +32,5 @@ namespace tgbot {
 
         // An HTTPS URL that can be used to see transaction details
         std::string url;
-
-        json to_json() const override;
-        static std::shared_ptr<RevenueWithdrawalStateSucceeded> from_json(const json& data);
     };
 }

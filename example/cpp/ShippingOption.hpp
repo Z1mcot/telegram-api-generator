@@ -33,8 +33,5 @@ namespace tgbot {
 
         // List of price portions
         std::vector<std::shared_ptr<LabeledPrice>> prices;
-
-        json to_json() const override;
-        static std::shared_ptr<ShippingOption> from_json(const json& data);
     };
 }

@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.
         std::string big_file_unique_id;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatPhoto> from_json(const json& data);
     };
 }

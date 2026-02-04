@@ -24,6 +24,8 @@ namespace tgbot {
     struct ChatPermissions;
     struct AcceptedGiftTypes;
     struct ChatLocation;
+    struct UserRating;
+    struct UniqueGiftColors;
 
     using json = nlohmann::json;
 
@@ -77,6 +79,9 @@ namespace tgbot {
      * @param custom_emoji_sticker_set_name Optional. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.
      * @param linked_chat_id Optional. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.
      * @param location Optional. For supergroups, the location to which the supergroup is connected
+     * @param rating Optional. For private chats, the rating of the user if any
+     * @param unique_gift_colors Optional. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews
+     * @param paid_message_star_count Optional. The number of Telegram Stars a general user have to pay to send a message to the chat
      */
     struct ChatFullInfo : public TelegramModel {
         virtual ~ChatFullInfo() = default;
@@ -221,7 +226,13 @@ namespace tgbot {
         // Optional. For supergroups, the location to which the supergroup is connected
         std::shared_ptr<ChatLocation> location;
 
-        json to_json() const override;
-        static std::shared_ptr<ChatFullInfo> from_json(const json& data);
+        // Optional. For private chats, the rating of the user if any
+        std::shared_ptr<UserRating> rating;
+
+        // Optional. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews
+        std::shared_ptr<UniqueGiftColors> unique_gift_colors;
+
+        // Optional. The number of Telegram Stars a general user have to pay to send a message to the chat
+        std::int64_t paid_message_star_count;
     };
 }

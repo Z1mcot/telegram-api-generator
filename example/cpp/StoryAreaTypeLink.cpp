@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StoryAreaTypeLink::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["url"] = url;
-        return j.dump();
+    void to_json(json& j, const StoryAreaTypeLink& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["url"] = value.url;
     }
-    std::shared_ptr<StoryAreaTypeLink> StoryAreaTypeLink::from_json(const json& data) {
-        auto result(std::make_shared<StoryAreaTypeLink>());
-        result->type_ = data["type_"].get<std::string>();
-        result->url = data["url"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, StoryAreaTypeLink& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
+        }
     }
 }

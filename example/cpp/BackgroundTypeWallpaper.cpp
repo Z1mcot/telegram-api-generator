@@ -6,22 +6,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BackgroundTypeWallpaper::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["document"] = document->to_json();
-        j["dark_theme_dimming"] = dark_theme_dimming;
-        j["is_blurred"] = is_blurred;
-        j["is_moving"] = is_moving;
-        return j.dump();
+    void to_json(json& j, const BackgroundTypeWallpaper& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["document"] = value.document;
+        j["dark_theme_dimming"] = value.dark_theme_dimming;
+        j["is_blurred"] = value.is_blurred;
+        j["is_moving"] = value.is_moving;
     }
-    std::shared_ptr<BackgroundTypeWallpaper> BackgroundTypeWallpaper::from_json(const json& data) {
-        auto result(std::make_shared<BackgroundTypeWallpaper>());
-        result->type_ = data["type_"].get<std::string>();
-        result->document = Document::from_json(data["document"]);
-        result->dark_theme_dimming = data["dark_theme_dimming"].get<std::int64_t>();
-        result->is_blurred = data["is_blurred"].get<bool>();
-        result->is_moving = data["is_moving"].get<bool>();
-        return result;
+
+    void from_json(const json& j, BackgroundTypeWallpaper& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("document")) {
+            j.at("document").get_to(value.document);
+        }
+        if (j.contains("dark_theme_dimming")) {
+            j.at("dark_theme_dimming").get_to(value.dark_theme_dimming);
+        }
+        if (j.contains("is_blurred")) {
+            j.at("is_blurred").get_to(value.is_blurred);
+        }
+        if (j.contains("is_moving")) {
+            j.at("is_moving").get_to(value.is_moving);
+        }
     }
 }

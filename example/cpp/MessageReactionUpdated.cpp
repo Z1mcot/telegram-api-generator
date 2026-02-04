@@ -7,46 +7,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MessageReactionUpdated::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["message_id"] = message_id.to_json();
-        j["user"] = user->to_json();
-        j["actor_chat"] = actor_chat->to_json();
-        j["date"] = date;
-        std::vector<json> old_reaction_values;
-        old_reaction_values.reserve(old_reaction.size());
-        for (auto& e : old_reaction) {
-            old_reaction_values.push_back(e->to_json());
-        }
-        j["old_reaction"] = old_reaction_values;
-        std::vector<json> new_reaction_values;
-        new_reaction_values.reserve(new_reaction.size());
-        for (auto& e : new_reaction) {
-            new_reaction_values.push_back(e->to_json());
-        }
-        j["new_reaction"] = new_reaction_values;
-        return j.dump();
+    void to_json(json& j, const MessageReactionUpdated& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["message_id"] = value.message_id;
+        j["user"] = value.user;
+        j["actor_chat"] = value.actor_chat;
+        j["date"] = value.date;
+        j["old_reaction"] = value.old_reaction;
+        j["new_reaction"] = value.new_reaction;
     }
-    std::shared_ptr<MessageReactionUpdated> MessageReactionUpdated::from_json(const json& data) {
-        auto result(std::make_shared<MessageReactionUpdated>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->message_id = MessageId::from_json(data["message_id"]);
-        result->user = User::from_json(data["user"]);
-        result->actor_chat = Chat::from_json(data["actor_chat"]);
-        result->date = data["date"].get<std::int64_t>();
-        std::vector<std::vector<std::shared_ptr<ReactionType>>> old_reaction_values;
-        old_reaction_values.reserve(old_reaction.size());
-        for (auto& e : data["old_reaction"]) {
-            old_reaction_values.push_back(std::vector<std::shared_ptr<ReactionType>>::from_json(e));
+
+    void from_json(const json& j, MessageReactionUpdated& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
         }
-        result->old_reaction = old_reaction_values;
-        std::vector<std::vector<std::shared_ptr<ReactionType>>> new_reaction_values;
-        new_reaction_values.reserve(new_reaction.size());
-        for (auto& e : data["new_reaction"]) {
-            new_reaction_values.push_back(std::vector<std::shared_ptr<ReactionType>>::from_json(e));
+        if (j.contains("message_id")) {
+            j.at("message_id").get_to(value.message_id);
         }
-        result->new_reaction = new_reaction_values;
-        return result;
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("actor_chat")) {
+            j.at("actor_chat").get_to(value.actor_chat);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("old_reaction")) {
+            j.at("old_reaction").get_to(value.old_reaction);
+        }
+        if (j.contains("new_reaction")) {
+            j.at("new_reaction").get_to(value.new_reaction);
+        }
     }
 }

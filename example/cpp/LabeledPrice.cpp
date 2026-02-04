@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json LabeledPrice::to_json() const {
-        json j;
-        j["label"] = label;
-        j["amount"] = amount;
-        return j.dump();
+    void to_json(json& j, const LabeledPrice& value) {
+        j = json::object();
+        j["label"] = value.label;
+        j["amount"] = value.amount;
     }
-    std::shared_ptr<LabeledPrice> LabeledPrice::from_json(const json& data) {
-        auto result(std::make_shared<LabeledPrice>());
-        result->label = data["label"].get<std::string>();
-        result->amount = data["amount"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, LabeledPrice& value) {
+        if (j.contains("label")) {
+            j.at("label").get_to(value.label);
+        }
+        if (j.contains("amount")) {
+            j.at("amount").get_to(value.amount);
+        }
     }
 }

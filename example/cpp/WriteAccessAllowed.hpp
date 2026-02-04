@@ -32,8 +32,5 @@ namespace tgbot {
 
         // Optional. True, if the access was granted when the bot was added to the attachment or side menu
         bool from_attachment_menu;
-
-        json to_json() const override;
-        static std::shared_ptr<WriteAccessAllowed> from_json(const json& data);
     };
 }

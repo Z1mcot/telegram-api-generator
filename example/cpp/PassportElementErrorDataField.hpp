@@ -40,8 +40,5 @@ namespace tgbot {
 
         // Error message
         std::string message;
-
-        json to_json() const override;
-        static std::shared_ptr<PassportElementErrorDataField> from_json(const json& data);
     };
 }

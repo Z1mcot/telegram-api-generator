@@ -6,24 +6,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json UniqueGiftInfo::to_json() const {
-        json j;
-        j["gift"] = gift->to_json();
-        j["origin"] = origin;
-        j["last_resale_star_count"] = last_resale_star_count;
-        j["owned_gift_id"] = owned_gift_id;
-        j["transfer_star_count"] = transfer_star_count;
-        j["next_transfer_date"] = next_transfer_date;
-        return j.dump();
+    void to_json(json& j, const UniqueGiftInfo& value) {
+        j = json::object();
+        j["gift"] = value.gift;
+        j["origin"] = value.origin;
+        j["last_resale_currency"] = value.last_resale_currency;
+        j["last_resale_amount"] = value.last_resale_amount;
+        j["owned_gift_id"] = value.owned_gift_id;
+        j["transfer_star_count"] = value.transfer_star_count;
+        j["next_transfer_date"] = value.next_transfer_date;
     }
-    std::shared_ptr<UniqueGiftInfo> UniqueGiftInfo::from_json(const json& data) {
-        auto result(std::make_shared<UniqueGiftInfo>());
-        result->gift = UniqueGift::from_json(data["gift"]);
-        result->origin = data["origin"].get<std::string>();
-        result->last_resale_star_count = data["last_resale_star_count"].get<std::int64_t>();
-        result->owned_gift_id = data["owned_gift_id"].get<std::string>();
-        result->transfer_star_count = data["transfer_star_count"].get<std::int64_t>();
-        result->next_transfer_date = data["next_transfer_date"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, UniqueGiftInfo& value) {
+        if (j.contains("gift")) {
+            j.at("gift").get_to(value.gift);
+        }
+        if (j.contains("origin")) {
+            j.at("origin").get_to(value.origin);
+        }
+        if (j.contains("last_resale_currency")) {
+            j.at("last_resale_currency").get_to(value.last_resale_currency);
+        }
+        if (j.contains("last_resale_amount")) {
+            j.at("last_resale_amount").get_to(value.last_resale_amount);
+        }
+        if (j.contains("owned_gift_id")) {
+            j.at("owned_gift_id").get_to(value.owned_gift_id);
+        }
+        if (j.contains("transfer_star_count")) {
+            j.at("transfer_star_count").get_to(value.transfer_star_count);
+        }
+        if (j.contains("next_transfer_date")) {
+            j.at("next_transfer_date").get_to(value.next_transfer_date);
+        }
     }
 }

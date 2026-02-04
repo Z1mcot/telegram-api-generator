@@ -44,8 +44,5 @@ namespace tgbot {
 
         // Address post code
         std::string post_code;
-
-        json to_json() const override;
-        static std::shared_ptr<ShippingAddress> from_json(const json& data);
     };
 }

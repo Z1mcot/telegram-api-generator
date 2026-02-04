@@ -76,8 +76,5 @@ namespace tgbot {
 
         // Optional. True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages
         bool can_manage_topics;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatPermissions> from_json(const json& data);
     };
 }

@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SentWebAppMessage::to_json() const {
-        json j;
-        j["inline_message_id"] = inline_message_id;
-        return j.dump();
+    void to_json(json& j, const SentWebAppMessage& value) {
+        j = json::object();
+        j["inline_message_id"] = value.inline_message_id;
     }
-    std::shared_ptr<SentWebAppMessage> SentWebAppMessage::from_json(const json& data) {
-        auto result(std::make_shared<SentWebAppMessage>());
-        result->inline_message_id = data["inline_message_id"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, SentWebAppMessage& value) {
+        if (j.contains("inline_message_id")) {
+            j.at("inline_message_id").get_to(value.inline_message_id);
+        }
     }
 }

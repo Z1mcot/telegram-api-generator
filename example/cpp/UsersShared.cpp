@@ -5,26 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json UsersShared::to_json() const {
-        json j;
-        j["request_id"] = request_id;
-        std::vector<json> users_values;
-        users_values.reserve(users.size());
-        for (auto& e : users) {
-            users_values.push_back(e->to_json());
-        }
-        j["users"] = users_values;
-        return j.dump();
+    void to_json(json& j, const UsersShared& value) {
+        j = json::object();
+        j["request_id"] = value.request_id;
+        j["users"] = value.users;
     }
-    std::shared_ptr<UsersShared> UsersShared::from_json(const json& data) {
-        auto result(std::make_shared<UsersShared>());
-        result->request_id = data["request_id"].get<std::int64_t>();
-        std::vector<std::vector<std::shared_ptr<SharedUser>>> users_values;
-        users_values.reserve(users.size());
-        for (auto& e : data["users"]) {
-            users_values.push_back(std::vector<std::shared_ptr<SharedUser>>::from_json(e));
+
+    void from_json(const json& j, UsersShared& value) {
+        if (j.contains("request_id")) {
+            j.at("request_id").get_to(value.request_id);
         }
-        result->users = users_values;
-        return result;
+        if (j.contains("users")) {
+            j.at("users").get_to(value.users);
+        }
     }
 }

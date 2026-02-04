@@ -21,6 +21,7 @@ namespace tgbot {
      * @param name Name of the topic
      * @param icon_color Color of the topic icon in RGB format
      * @param icon_custom_emoji_id Optional. Unique identifier of the custom emoji shown as the topic icon
+     * @param is_name_implicit Optional. True, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot
      */
     struct ForumTopicCreated : public TelegramModel {
         virtual ~ForumTopicCreated() = default;
@@ -33,7 +34,7 @@ namespace tgbot {
         // Optional. Unique identifier of the custom emoji shown as the topic icon
         std::string icon_custom_emoji_id;
 
-        json to_json() const override;
-        static std::shared_ptr<ForumTopicCreated> from_json(const json& data);
+        // Optional. True, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot
+        bool is_name_implicit;
     };
 }

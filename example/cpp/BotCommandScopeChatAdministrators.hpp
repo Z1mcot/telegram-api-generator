@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername). Channel direct messages chats and channel chats aren't supported.
         ChatId chat_id;
-
-        json to_json() const override;
-        static std::shared_ptr<BotCommandScopeChatAdministrators> from_json(const json& data);
     };
 }

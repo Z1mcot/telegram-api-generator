@@ -40,8 +40,5 @@ namespace tgbot {
 
         // Optional. Additional data about the contact in the form of a vCard
         std::string vcard;
-
-        json to_json() const override;
-        static std::shared_ptr<Contact> from_json(const json& data);
     };
 }

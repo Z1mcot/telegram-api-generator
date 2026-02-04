@@ -7,20 +7,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatBoostRemoved::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["boost_id"] = boost_id;
-        j["remove_date"] = remove_date;
-        j["source"] = source->to_json();
-        return j.dump();
+    void to_json(json& j, const ChatBoostRemoved& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["boost_id"] = value.boost_id;
+        j["remove_date"] = value.remove_date;
+        j["source"] = value.source;
     }
-    std::shared_ptr<ChatBoostRemoved> ChatBoostRemoved::from_json(const json& data) {
-        auto result(std::make_shared<ChatBoostRemoved>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->boost_id = data["boost_id"].get<std::string>();
-        result->remove_date = data["remove_date"].get<std::int64_t>();
-        result->source = ChatBoostSource::from_json(data["source"]);
-        return result;
+
+    void from_json(const json& j, ChatBoostRemoved& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("boost_id")) {
+            j.at("boost_id").get_to(value.boost_id);
+        }
+        if (j.contains("remove_date")) {
+            j.at("remove_date").get_to(value.remove_date);
+        }
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
     }
 }

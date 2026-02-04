@@ -39,8 +39,5 @@ namespace tgbot {
 
         // User specified shipping address
         std::shared_ptr<ShippingAddress> shipping_address;
-
-        json to_json() const override;
-        static std::shared_ptr<ShippingQuery> from_json(const json& data);
     };
 }

@@ -5,24 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineKeyboardMarkup::to_json() const {
-        json j;
-        std::vector<json> inline_keyboard_values;
-        inline_keyboard_values.reserve(inline_keyboard.size());
-        for (auto& e : inline_keyboard) {
-            inline_keyboard_values.push_back(e->to_json());
-        }
-        j["inline_keyboard"] = inline_keyboard_values;
-        return j.dump();
+    void to_json(json& j, const InlineKeyboardMarkup& value) {
+        j = json::object();
+        j["inline_keyboard"] = value.inline_keyboard;
     }
-    std::shared_ptr<InlineKeyboardMarkup> InlineKeyboardMarkup::from_json(const json& data) {
-        auto result(std::make_shared<InlineKeyboardMarkup>());
-        std::vector<std::vector<std::vector<std::shared_ptr<InlineKeyboardButton>>>> inline_keyboard_values;
-        inline_keyboard_values.reserve(inline_keyboard.size());
-        for (auto& e : data["inline_keyboard"]) {
-            inline_keyboard_values.push_back(std::vector<std::vector<std::shared_ptr<InlineKeyboardButton>>>::from_json(e));
+
+    void from_json(const json& j, InlineKeyboardMarkup& value) {
+        if (j.contains("inline_keyboard")) {
+            j.at("inline_keyboard").get_to(value.inline_keyboard);
         }
-        result->inline_keyboard = inline_keyboard_values;
-        return result;
     }
 }

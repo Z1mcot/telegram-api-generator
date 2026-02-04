@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Reason for the refund. Currently, one of “post_deleted” if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or “payment_refunded” if the payer refunded their payment.
         std::string reason;
-
-        json to_json() const override;
-        static std::shared_ptr<SuggestedPostRefunded> from_json(const json& data);
     };
 }

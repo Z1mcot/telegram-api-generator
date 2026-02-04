@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Text of the web_app keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.
         std::string button_text;
-
-        json to_json() const override;
-        static std::shared_ptr<WebAppData> from_json(const json& data);
     };
 }

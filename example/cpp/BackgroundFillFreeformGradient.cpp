@@ -5,26 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BackgroundFillFreeformGradient::to_json() const {
-        json j;
-        j["type"] = type_;
-        std::vector<json> colors_values;
-        colors_values.reserve(colors.size());
-        for (auto& e : colors) {
-            colors_values.push_back(e);
-        }
-        j["colors"] = colors_values;
-        return j.dump();
+    void to_json(json& j, const BackgroundFillFreeformGradient& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["colors"] = value.colors;
     }
-    std::shared_ptr<BackgroundFillFreeformGradient> BackgroundFillFreeformGradient::from_json(const json& data) {
-        auto result(std::make_shared<BackgroundFillFreeformGradient>());
-        result->type_ = data["type_"].get<std::string>();
-        std::vector<std::vector<std::int64_t>> colors_values;
-        colors_values.reserve(colors.size());
-        for (auto& e : data["colors"]) {
-            colors_values.push_back(std::vector<std::int64_t>::from_json(e));
+
+    void from_json(const json& j, BackgroundFillFreeformGradient& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->colors = colors_values;
-        return result;
+        if (j.contains("colors")) {
+            j.at("colors").get_to(value.colors);
+        }
     }
 }

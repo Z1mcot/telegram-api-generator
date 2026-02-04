@@ -5,40 +5,66 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BusinessBotRights::to_json() const {
-        json j;
-        j["can_reply"] = can_reply;
-        j["can_read_messages"] = can_read_messages;
-        j["can_delete_sent_messages"] = can_delete_sent_messages;
-        j["can_delete_all_messages"] = can_delete_all_messages;
-        j["can_edit_name"] = can_edit_name;
-        j["can_edit_bio"] = can_edit_bio;
-        j["can_edit_profile_photo"] = can_edit_profile_photo;
-        j["can_edit_username"] = can_edit_username;
-        j["can_change_gift_settings"] = can_change_gift_settings;
-        j["can_view_gifts_and_stars"] = can_view_gifts_and_stars;
-        j["can_convert_gifts_to_stars"] = can_convert_gifts_to_stars;
-        j["can_transfer_and_upgrade_gifts"] = can_transfer_and_upgrade_gifts;
-        j["can_transfer_stars"] = can_transfer_stars;
-        j["can_manage_stories"] = can_manage_stories;
-        return j.dump();
+    void to_json(json& j, const BusinessBotRights& value) {
+        j = json::object();
+        j["can_reply"] = value.can_reply;
+        j["can_read_messages"] = value.can_read_messages;
+        j["can_delete_sent_messages"] = value.can_delete_sent_messages;
+        j["can_delete_all_messages"] = value.can_delete_all_messages;
+        j["can_edit_name"] = value.can_edit_name;
+        j["can_edit_bio"] = value.can_edit_bio;
+        j["can_edit_profile_photo"] = value.can_edit_profile_photo;
+        j["can_edit_username"] = value.can_edit_username;
+        j["can_change_gift_settings"] = value.can_change_gift_settings;
+        j["can_view_gifts_and_stars"] = value.can_view_gifts_and_stars;
+        j["can_convert_gifts_to_stars"] = value.can_convert_gifts_to_stars;
+        j["can_transfer_and_upgrade_gifts"] = value.can_transfer_and_upgrade_gifts;
+        j["can_transfer_stars"] = value.can_transfer_stars;
+        j["can_manage_stories"] = value.can_manage_stories;
     }
-    std::shared_ptr<BusinessBotRights> BusinessBotRights::from_json(const json& data) {
-        auto result(std::make_shared<BusinessBotRights>());
-        result->can_reply = data["can_reply"].get<bool>();
-        result->can_read_messages = data["can_read_messages"].get<bool>();
-        result->can_delete_sent_messages = data["can_delete_sent_messages"].get<bool>();
-        result->can_delete_all_messages = data["can_delete_all_messages"].get<bool>();
-        result->can_edit_name = data["can_edit_name"].get<bool>();
-        result->can_edit_bio = data["can_edit_bio"].get<bool>();
-        result->can_edit_profile_photo = data["can_edit_profile_photo"].get<bool>();
-        result->can_edit_username = data["can_edit_username"].get<bool>();
-        result->can_change_gift_settings = data["can_change_gift_settings"].get<bool>();
-        result->can_view_gifts_and_stars = data["can_view_gifts_and_stars"].get<bool>();
-        result->can_convert_gifts_to_stars = data["can_convert_gifts_to_stars"].get<bool>();
-        result->can_transfer_and_upgrade_gifts = data["can_transfer_and_upgrade_gifts"].get<bool>();
-        result->can_transfer_stars = data["can_transfer_stars"].get<bool>();
-        result->can_manage_stories = data["can_manage_stories"].get<bool>();
-        return result;
+
+    void from_json(const json& j, BusinessBotRights& value) {
+        if (j.contains("can_reply")) {
+            j.at("can_reply").get_to(value.can_reply);
+        }
+        if (j.contains("can_read_messages")) {
+            j.at("can_read_messages").get_to(value.can_read_messages);
+        }
+        if (j.contains("can_delete_sent_messages")) {
+            j.at("can_delete_sent_messages").get_to(value.can_delete_sent_messages);
+        }
+        if (j.contains("can_delete_all_messages")) {
+            j.at("can_delete_all_messages").get_to(value.can_delete_all_messages);
+        }
+        if (j.contains("can_edit_name")) {
+            j.at("can_edit_name").get_to(value.can_edit_name);
+        }
+        if (j.contains("can_edit_bio")) {
+            j.at("can_edit_bio").get_to(value.can_edit_bio);
+        }
+        if (j.contains("can_edit_profile_photo")) {
+            j.at("can_edit_profile_photo").get_to(value.can_edit_profile_photo);
+        }
+        if (j.contains("can_edit_username")) {
+            j.at("can_edit_username").get_to(value.can_edit_username);
+        }
+        if (j.contains("can_change_gift_settings")) {
+            j.at("can_change_gift_settings").get_to(value.can_change_gift_settings);
+        }
+        if (j.contains("can_view_gifts_and_stars")) {
+            j.at("can_view_gifts_and_stars").get_to(value.can_view_gifts_and_stars);
+        }
+        if (j.contains("can_convert_gifts_to_stars")) {
+            j.at("can_convert_gifts_to_stars").get_to(value.can_convert_gifts_to_stars);
+        }
+        if (j.contains("can_transfer_and_upgrade_gifts")) {
+            j.at("can_transfer_and_upgrade_gifts").get_to(value.can_transfer_and_upgrade_gifts);
+        }
+        if (j.contains("can_transfer_stars")) {
+            j.at("can_transfer_stars").get_to(value.can_transfer_stars);
+        }
+        if (j.contains("can_manage_stories")) {
+            j.at("can_manage_stories").get_to(value.can_manage_stories);
+        }
     }
 }

@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatBoostAdded::to_json() const {
-        json j;
-        j["boost_count"] = boost_count;
-        return j.dump();
+    void to_json(json& j, const ChatBoostAdded& value) {
+        j = json::object();
+        j["boost_count"] = value.boost_count;
     }
-    std::shared_ptr<ChatBoostAdded> ChatBoostAdded::from_json(const json& data) {
-        auto result(std::make_shared<ChatBoostAdded>());
-        result->boost_count = data["boost_count"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, ChatBoostAdded& value) {
+        if (j.contains("boost_count")) {
+            j.at("boost_count").get_to(value.boost_count);
+        }
     }
 }

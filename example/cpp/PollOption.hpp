@@ -33,8 +33,5 @@ namespace tgbot {
 
         // Number of users that voted for this option
         std::int64_t voter_count;
-
-        json to_json() const override;
-        static std::shared_ptr<PollOption> from_json(const json& data);
     };
 }

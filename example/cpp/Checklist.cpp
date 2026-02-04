@@ -5,42 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Checklist::to_json() const {
-        json j;
-        j["title"] = title;
-        std::vector<json> title_entities_values;
-        title_entities_values.reserve(title_entities.size());
-        for (auto& e : title_entities) {
-            title_entities_values.push_back(e->to_json());
-        }
-        j["title_entities"] = title_entities_values;
-        std::vector<json> tasks_values;
-        tasks_values.reserve(tasks.size());
-        for (auto& e : tasks) {
-            tasks_values.push_back(e->to_json());
-        }
-        j["tasks"] = tasks_values;
-        j["others_can_add_tasks"] = others_can_add_tasks;
-        j["others_can_mark_tasks_as_done"] = others_can_mark_tasks_as_done;
-        return j.dump();
+    void to_json(json& j, const Checklist& value) {
+        j = json::object();
+        j["title"] = value.title;
+        j["title_entities"] = value.title_entities;
+        j["tasks"] = value.tasks;
+        j["others_can_add_tasks"] = value.others_can_add_tasks;
+        j["others_can_mark_tasks_as_done"] = value.others_can_mark_tasks_as_done;
     }
-    std::shared_ptr<Checklist> Checklist::from_json(const json& data) {
-        auto result(std::make_shared<Checklist>());
-        result->title = data["title"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> title_entities_values;
-        title_entities_values.reserve(title_entities.size());
-        for (auto& e : data["title_entities"]) {
-            title_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, Checklist& value) {
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
         }
-        result->title_entities = title_entities_values;
-        std::vector<std::vector<std::shared_ptr<ChecklistTask>>> tasks_values;
-        tasks_values.reserve(tasks.size());
-        for (auto& e : data["tasks"]) {
-            tasks_values.push_back(std::vector<std::shared_ptr<ChecklistTask>>::from_json(e));
+        if (j.contains("title_entities")) {
+            j.at("title_entities").get_to(value.title_entities);
         }
-        result->tasks = tasks_values;
-        result->others_can_add_tasks = data["others_can_add_tasks"].get<bool>();
-        result->others_can_mark_tasks_as_done = data["others_can_mark_tasks_as_done"].get<bool>();
-        return result;
+        if (j.contains("tasks")) {
+            j.at("tasks").get_to(value.tasks);
+        }
+        if (j.contains("others_can_add_tasks")) {
+            j.at("others_can_add_tasks").get_to(value.others_can_add_tasks);
+        }
+        if (j.contains("others_can_mark_tasks_as_done")) {
+            j.at("others_can_mark_tasks_as_done").get_to(value.others_can_mark_tasks_as_done);
+        }
     }
 }

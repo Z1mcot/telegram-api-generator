@@ -34,8 +34,5 @@ namespace tgbot {
 
         // The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users
         std::int64_t commission_per_mille;
-
-        json to_json() const override;
-        static std::shared_ptr<TransactionPartnerAffiliateProgram> from_json(const json& data);
     };
 }

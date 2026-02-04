@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json UniqueGiftBackdrop::to_json() const {
-        json j;
-        j["name"] = name;
-        j["colors"] = colors->to_json();
-        j["rarity_per_mille"] = rarity_per_mille;
-        return j.dump();
+    void to_json(json& j, const UniqueGiftBackdrop& value) {
+        j = json::object();
+        j["name"] = value.name;
+        j["colors"] = value.colors;
+        j["rarity_per_mille"] = value.rarity_per_mille;
     }
-    std::shared_ptr<UniqueGiftBackdrop> UniqueGiftBackdrop::from_json(const json& data) {
-        auto result(std::make_shared<UniqueGiftBackdrop>());
-        result->name = data["name"].get<std::string>();
-        result->colors = UniqueGiftBackdropColors::from_json(data["colors"]);
-        result->rarity_per_mille = data["rarity_per_mille"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, UniqueGiftBackdrop& value) {
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
+        }
+        if (j.contains("colors")) {
+            j.at("colors").get_to(value.colors);
+        }
+        if (j.contains("rarity_per_mille")) {
+            j.at("rarity_per_mille").get_to(value.rarity_per_mille);
+        }
     }
 }

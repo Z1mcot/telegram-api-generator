@@ -5,26 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BusinessOpeningHours::to_json() const {
-        json j;
-        j["time_zone_name"] = time_zone_name;
-        std::vector<json> opening_hours_values;
-        opening_hours_values.reserve(opening_hours.size());
-        for (auto& e : opening_hours) {
-            opening_hours_values.push_back(e->to_json());
-        }
-        j["opening_hours"] = opening_hours_values;
-        return j.dump();
+    void to_json(json& j, const BusinessOpeningHours& value) {
+        j = json::object();
+        j["time_zone_name"] = value.time_zone_name;
+        j["opening_hours"] = value.opening_hours;
     }
-    std::shared_ptr<BusinessOpeningHours> BusinessOpeningHours::from_json(const json& data) {
-        auto result(std::make_shared<BusinessOpeningHours>());
-        result->time_zone_name = data["time_zone_name"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<BusinessOpeningHoursInterval>>> opening_hours_values;
-        opening_hours_values.reserve(opening_hours.size());
-        for (auto& e : data["opening_hours"]) {
-            opening_hours_values.push_back(std::vector<std::shared_ptr<BusinessOpeningHoursInterval>>::from_json(e));
+
+    void from_json(const json& j, BusinessOpeningHours& value) {
+        if (j.contains("time_zone_name")) {
+            j.at("time_zone_name").get_to(value.time_zone_name);
         }
-        result->opening_hours = opening_hours_values;
-        return result;
+        if (j.contains("opening_hours")) {
+            j.at("opening_hours").get_to(value.opening_hours);
+        }
     }
 }

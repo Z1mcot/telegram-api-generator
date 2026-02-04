@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~KeyboardButtonPollType() = default;
         // Optional. If quiz is passed, the user will be allowed to create only polls in the quiz mode. If regular is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.
         std::string type_;
-
-        json to_json() const override;
-        static std::shared_ptr<KeyboardButtonPollType> from_json(const json& data);
     };
 }

@@ -39,8 +39,5 @@ namespace tgbot {
 
         // Optional. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only
         std::shared_ptr<StarAmount> star_amount;
-
-        json to_json() const override;
-        static std::shared_ptr<SuggestedPostPaid> from_json(const json& data);
     };
 }

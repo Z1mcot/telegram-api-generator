@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PaidMediaPreview::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["width"] = width;
-        j["height"] = height;
-        j["duration"] = duration;
-        return j.dump();
+    void to_json(json& j, const PaidMediaPreview& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["width"] = value.width;
+        j["height"] = value.height;
+        j["duration"] = value.duration;
     }
-    std::shared_ptr<PaidMediaPreview> PaidMediaPreview::from_json(const json& data) {
-        auto result(std::make_shared<PaidMediaPreview>());
-        result->type_ = data["type_"].get<std::string>();
-        result->width = data["width"].get<std::int64_t>();
-        result->height = data["height"].get<std::int64_t>();
-        result->duration = data["duration"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, PaidMediaPreview& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("width")) {
+            j.at("width").get_to(value.width);
+        }
+        if (j.contains("height")) {
+            j.at("height").get_to(value.height);
+        }
+        if (j.contains("duration")) {
+            j.at("duration").get_to(value.duration);
+        }
     }
 }

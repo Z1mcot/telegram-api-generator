@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SuggestedPostPrice::to_json() const {
-        json j;
-        j["currency"] = currency;
-        j["amount"] = amount;
-        return j.dump();
+    void to_json(json& j, const SuggestedPostPrice& value) {
+        j = json::object();
+        j["currency"] = value.currency;
+        j["amount"] = value.amount;
     }
-    std::shared_ptr<SuggestedPostPrice> SuggestedPostPrice::from_json(const json& data) {
-        auto result(std::make_shared<SuggestedPostPrice>());
-        result->currency = data["currency"].get<std::string>();
-        result->amount = data["amount"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, SuggestedPostPrice& value) {
+        if (j.contains("currency")) {
+            j.at("currency").get_to(value.currency);
+        }
+        if (j.contains("amount")) {
+            j.at("amount").get_to(value.amount);
+        }
     }
 }

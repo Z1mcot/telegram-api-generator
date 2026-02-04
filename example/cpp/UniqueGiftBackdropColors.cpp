@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json UniqueGiftBackdropColors::to_json() const {
-        json j;
-        j["center_color"] = center_color;
-        j["edge_color"] = edge_color;
-        j["symbol_color"] = symbol_color;
-        j["text_color"] = text_color;
-        return j.dump();
+    void to_json(json& j, const UniqueGiftBackdropColors& value) {
+        j = json::object();
+        j["center_color"] = value.center_color;
+        j["edge_color"] = value.edge_color;
+        j["symbol_color"] = value.symbol_color;
+        j["text_color"] = value.text_color;
     }
-    std::shared_ptr<UniqueGiftBackdropColors> UniqueGiftBackdropColors::from_json(const json& data) {
-        auto result(std::make_shared<UniqueGiftBackdropColors>());
-        result->center_color = data["center_color"].get<std::int64_t>();
-        result->edge_color = data["edge_color"].get<std::int64_t>();
-        result->symbol_color = data["symbol_color"].get<std::int64_t>();
-        result->text_color = data["text_color"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, UniqueGiftBackdropColors& value) {
+        if (j.contains("center_color")) {
+            j.at("center_color").get_to(value.center_color);
+        }
+        if (j.contains("edge_color")) {
+            j.at("edge_color").get_to(value.edge_color);
+        }
+        if (j.contains("symbol_color")) {
+            j.at("symbol_color").get_to(value.symbol_color);
+        }
+        if (j.contains("text_color")) {
+            j.at("text_color").get_to(value.text_color);
+        }
     }
 }

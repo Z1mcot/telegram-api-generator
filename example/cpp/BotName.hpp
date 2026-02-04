@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~BotName() = default;
         // The bot's name
         std::string name;
-
-        json to_json() const override;
-        static std::shared_ptr<BotName> from_json(const json& data);
     };
 }

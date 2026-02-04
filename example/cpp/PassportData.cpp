@@ -6,26 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PassportData::to_json() const {
-        json j;
-        std::vector<json> data_values;
-        data_values.reserve(data.size());
-        for (auto& e : data) {
-            data_values.push_back(e->to_json());
-        }
-        j["data"] = data_values;
-        j["credentials"] = credentials->to_json();
-        return j.dump();
+    void to_json(json& j, const PassportData& value) {
+        j = json::object();
+        j["data"] = value.data;
+        j["credentials"] = value.credentials;
     }
-    std::shared_ptr<PassportData> PassportData::from_json(const json& data) {
-        auto result(std::make_shared<PassportData>());
-        std::vector<std::vector<std::shared_ptr<EncryptedPassportElement>>> data_values;
-        data_values.reserve(data.size());
-        for (auto& e : data["data"]) {
-            data_values.push_back(std::vector<std::shared_ptr<EncryptedPassportElement>>::from_json(e));
+
+    void from_json(const json& j, PassportData& value) {
+        if (j.contains("data")) {
+            j.at("data").get_to(value.data);
         }
-        result->data = data_values;
-        result->credentials = EncryptedCredentials::from_json(data["credentials"]);
-        return result;
+        if (j.contains("credentials")) {
+            j.at("credentials").get_to(value.credentials);
+        }
     }
 }

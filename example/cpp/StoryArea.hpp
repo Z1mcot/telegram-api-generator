@@ -31,8 +31,5 @@ namespace tgbot {
 
         // Type of the area
         std::shared_ptr<StoryAreaType> type_;
-
-        json to_json() const override;
-        static std::shared_ptr<StoryArea> from_json(const json& data);
     };
 }

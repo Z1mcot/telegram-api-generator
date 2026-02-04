@@ -57,8 +57,5 @@ namespace tgbot {
 
         // Optional. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only
         std::int64_t premium_subscription_month_count;
-
-        json to_json() const override;
-        static std::shared_ptr<Giveaway> from_json(const json& data);
     };
 }

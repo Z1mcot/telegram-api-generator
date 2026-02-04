@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 
 namespace tgbot {
 
@@ -18,7 +19,7 @@ namespace tgbot {
      * Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of MessageId of the sent messages is returned.
      *
      * @param chat_id Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-     * @param message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @param message_thread_id Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
      * @param direct_messages_topic_id Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat
      * @param from_chat_id Unique identifier for the chat where the original messages were sent (or channel username in the format @channelusername)
      * @param message_ids A JSON-serialized list of 1-100 identifiers of messages in the chat from_chat_id to copy. The identifiers must be specified in a strictly increasing order.
@@ -30,7 +31,7 @@ namespace tgbot {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
         ChatId chat_id;
 
-        // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        // Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         MessageThreadId message_thread_id;
 
         // Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat

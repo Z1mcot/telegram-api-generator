@@ -52,8 +52,5 @@ namespace tgbot {
 
         // Optional. True, if the chat is the direct messages chat of a channel
         bool is_direct_messages;
-
-        json to_json() const override;
-        static std::shared_ptr<Chat> from_json(const json& data);
     };
 }

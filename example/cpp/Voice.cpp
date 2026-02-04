@@ -5,22 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Voice::to_json() const {
-        json j;
-        j["file_id"] = file_id;
-        j["file_unique_id"] = file_unique_id;
-        j["duration"] = duration;
-        j["mime_type"] = mime_type;
-        j["file_size"] = file_size;
-        return j.dump();
+    void to_json(json& j, const Voice& value) {
+        j = json::object();
+        j["file_id"] = value.file_id;
+        j["file_unique_id"] = value.file_unique_id;
+        j["duration"] = value.duration;
+        j["mime_type"] = value.mime_type;
+        j["file_size"] = value.file_size;
     }
-    std::shared_ptr<Voice> Voice::from_json(const json& data) {
-        auto result(std::make_shared<Voice>());
-        result->file_id = data["file_id"].get<std::string>();
-        result->file_unique_id = data["file_unique_id"].get<std::string>();
-        result->duration = data["duration"].get<std::int64_t>();
-        result->mime_type = data["mime_type"].get<std::string>();
-        result->file_size = data["file_size"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, Voice& value) {
+        if (j.contains("file_id")) {
+            j.at("file_id").get_to(value.file_id);
+        }
+        if (j.contains("file_unique_id")) {
+            j.at("file_unique_id").get_to(value.file_unique_id);
+        }
+        if (j.contains("duration")) {
+            j.at("duration").get_to(value.duration);
+        }
+        if (j.contains("mime_type")) {
+            j.at("mime_type").get_to(value.mime_type);
+        }
+        if (j.contains("file_size")) {
+            j.at("file_size").get_to(value.file_size);
+        }
     }
 }

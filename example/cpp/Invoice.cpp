@@ -5,22 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Invoice::to_json() const {
-        json j;
-        j["title"] = title;
-        j["description"] = description;
-        j["start_parameter"] = start_parameter;
-        j["currency"] = currency;
-        j["total_amount"] = total_amount;
-        return j.dump();
+    void to_json(json& j, const Invoice& value) {
+        j = json::object();
+        j["title"] = value.title;
+        j["description"] = value.description;
+        j["start_parameter"] = value.start_parameter;
+        j["currency"] = value.currency;
+        j["total_amount"] = value.total_amount;
     }
-    std::shared_ptr<Invoice> Invoice::from_json(const json& data) {
-        auto result(std::make_shared<Invoice>());
-        result->title = data["title"].get<std::string>();
-        result->description = data["description"].get<std::string>();
-        result->start_parameter = data["start_parameter"].get<std::string>();
-        result->currency = data["currency"].get<std::string>();
-        result->total_amount = data["total_amount"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, Invoice& value) {
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("description")) {
+            j.at("description").get_to(value.description);
+        }
+        if (j.contains("start_parameter")) {
+            j.at("start_parameter").get_to(value.start_parameter);
+        }
+        if (j.contains("currency")) {
+            j.at("currency").get_to(value.currency);
+        }
+        if (j.contains("total_amount")) {
+            j.at("total_amount").get_to(value.total_amount);
+        }
     }
 }

@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Location address; 1-64 characters, as defined by the chat owner
         std::string address;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatLocation> from_json(const json& data);
     };
 }

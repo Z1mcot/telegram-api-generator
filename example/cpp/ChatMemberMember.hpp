@@ -34,8 +34,5 @@ namespace tgbot {
 
         // Optional. Date when the user's subscription will expire; Unix time
         std::int64_t until_date;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatMemberMember> from_json(const json& data);
     };
 }

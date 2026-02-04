@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json GiveawayCreated::to_json() const {
-        json j;
-        j["prize_star_count"] = prize_star_count;
-        return j.dump();
+    void to_json(json& j, const GiveawayCreated& value) {
+        j = json::object();
+        j["prize_star_count"] = value.prize_star_count;
     }
-    std::shared_ptr<GiveawayCreated> GiveawayCreated::from_json(const json& data) {
-        auto result(std::make_shared<GiveawayCreated>());
-        result->prize_star_count = data["prize_star_count"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, GiveawayCreated& value) {
+        if (j.contains("prize_star_count")) {
+            j.at("prize_star_count").get_to(value.prize_star_count);
+        }
     }
 }

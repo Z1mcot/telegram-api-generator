@@ -40,8 +40,5 @@ namespace tgbot {
 
         // Optional. Pass True if the video has no sound
         bool is_animation;
-
-        json to_json() const override;
-        static std::shared_ptr<InputStoryContentVideo> from_json(const json& data);
     };
 }

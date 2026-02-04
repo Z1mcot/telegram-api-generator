@@ -7,26 +7,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json CallbackQuery::to_json() const {
-        json j;
-        j["id"] = id;
-        j["from"] = from->to_json();
-        j["message"] = message->to_json();
-        j["inline_message_id"] = inline_message_id;
-        j["chat_instance"] = chat_instance;
-        j["data"] = data;
-        j["game_short_name"] = game_short_name;
-        return j.dump();
+    void to_json(json& j, const CallbackQuery& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["from"] = value.from;
+        j["message"] = value.message;
+        j["inline_message_id"] = value.inline_message_id;
+        j["chat_instance"] = value.chat_instance;
+        j["data"] = value.data;
+        j["game_short_name"] = value.game_short_name;
     }
-    std::shared_ptr<CallbackQuery> CallbackQuery::from_json(const json& data) {
-        auto result(std::make_shared<CallbackQuery>());
-        result->id = data["id"].get<std::string>();
-        result->from = User::from_json(data["from"]);
-        result->message = MaybeInaccessibleMessage::from_json(data["message"]);
-        result->inline_message_id = data["inline_message_id"].get<std::string>();
-        result->chat_instance = data["chat_instance"].get<std::string>();
-        result->data = data["data"].get<std::string>();
-        result->game_short_name = data["game_short_name"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, CallbackQuery& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("message")) {
+            j.at("message").get_to(value.message);
+        }
+        if (j.contains("inline_message_id")) {
+            j.at("inline_message_id").get_to(value.inline_message_id);
+        }
+        if (j.contains("chat_instance")) {
+            j.at("chat_instance").get_to(value.chat_instance);
+        }
+        if (j.contains("data")) {
+            j.at("data").get_to(value.data);
+        }
+        if (j.contains("game_short_name")) {
+            j.at("game_short_name").get_to(value.game_short_name);
+        }
     }
 }

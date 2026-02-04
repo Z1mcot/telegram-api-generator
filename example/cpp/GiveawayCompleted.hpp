@@ -38,8 +38,5 @@ namespace tgbot {
 
         // Optional. True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.
         bool is_star_giveaway;
-
-        json to_json() const override;
-        static std::shared_ptr<GiveawayCompleted> from_json(const json& data);
     };
 }

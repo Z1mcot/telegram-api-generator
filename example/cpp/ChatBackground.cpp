@@ -6,14 +6,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatBackground::to_json() const {
-        json j;
-        j["type"] = type_->to_json();
-        return j.dump();
+    void to_json(json& j, const ChatBackground& value) {
+        j = json::object();
+        j["type"] = value.type_;
     }
-    std::shared_ptr<ChatBackground> ChatBackground::from_json(const json& data) {
-        auto result(std::make_shared<ChatBackground>());
-        result->type_ = BackgroundType::from_json(data["type_"]);
-        return result;
+
+    void from_json(const json& j, ChatBackground& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
     }
 }

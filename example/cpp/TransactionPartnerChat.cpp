@@ -7,18 +7,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json TransactionPartnerChat::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["chat"] = chat->to_json();
-        j["gift"] = gift->to_json();
-        return j.dump();
+    void to_json(json& j, const TransactionPartnerChat& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["chat"] = value.chat;
+        j["gift"] = value.gift;
     }
-    std::shared_ptr<TransactionPartnerChat> TransactionPartnerChat::from_json(const json& data) {
-        auto result(std::make_shared<TransactionPartnerChat>());
-        result->type_ = data["type_"].get<std::string>();
-        result->chat = Chat::from_json(data["chat"]);
-        result->gift = Gift::from_json(data["gift"]);
-        return result;
+
+    void from_json(const json& j, TransactionPartnerChat& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("gift")) {
+            j.at("gift").get_to(value.gift);
+        }
     }
 }

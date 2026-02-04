@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~TransactionPartnerTelegramAds() = default;
         // Type of the transaction partner, always “telegram_ads”
         std::string type_;
-
-        json to_json() const override;
-        static std::shared_ptr<TransactionPartnerTelegramAds> from_json(const json& data);
     };
 }

@@ -56,8 +56,5 @@ namespace tgbot {
 
         // Optional. Pass True if the uploaded video is suitable for streaming
         bool supports_streaming;
-
-        json to_json() const override;
-        static std::shared_ptr<InputPaidMediaVideo> from_json(const json& data);
     };
 }

@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatMemberBanned::to_json() const {
-        json j;
-        j["status"] = status;
-        j["user"] = user->to_json();
-        j["until_date"] = until_date;
-        return j.dump();
+    void to_json(json& j, const ChatMemberBanned& value) {
+        j = json::object();
+        j["status"] = value.status;
+        j["user"] = value.user;
+        j["until_date"] = value.until_date;
     }
-    std::shared_ptr<ChatMemberBanned> ChatMemberBanned::from_json(const json& data) {
-        auto result(std::make_shared<ChatMemberBanned>());
-        result->status = data["status"].get<std::string>();
-        result->user = User::from_json(data["user"]);
-        result->until_date = data["until_date"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, ChatMemberBanned& value) {
+        if (j.contains("status")) {
+            j.at("status").get_to(value.status);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("until_date")) {
+            j.at("until_date").get_to(value.until_date);
+        }
     }
 }

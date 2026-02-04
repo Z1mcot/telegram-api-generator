@@ -57,8 +57,5 @@ namespace tgbot {
 
         // Optional. True, if the user joined the chat via a chat folder invite link
         bool via_chat_folder_invite_link;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatMemberUpdated> from_json(const json& data);
     };
 }

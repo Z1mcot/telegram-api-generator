@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputStoryContentPhoto::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["photo"] = photo;
-        return j.dump();
+    void to_json(json& j, const InputStoryContentPhoto& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["photo"] = value.photo;
     }
-    std::shared_ptr<InputStoryContentPhoto> InputStoryContentPhoto::from_json(const json& data) {
-        auto result(std::make_shared<InputStoryContentPhoto>());
-        result->type_ = data["type_"].get<std::string>();
-        result->photo = data["photo"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, InputStoryContentPhoto& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("photo")) {
+            j.at("photo").get_to(value.photo);
+        }
     }
 }

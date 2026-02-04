@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ForumTopicEdited::to_json() const {
-        json j;
-        j["name"] = name;
-        j["icon_custom_emoji_id"] = icon_custom_emoji_id;
-        return j.dump();
+    void to_json(json& j, const ForumTopicEdited& value) {
+        j = json::object();
+        j["name"] = value.name;
+        j["icon_custom_emoji_id"] = value.icon_custom_emoji_id;
     }
-    std::shared_ptr<ForumTopicEdited> ForumTopicEdited::from_json(const json& data) {
-        auto result(std::make_shared<ForumTopicEdited>());
-        result->name = data["name"].get<std::string>();
-        result->icon_custom_emoji_id = data["icon_custom_emoji_id"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ForumTopicEdited& value) {
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
+        }
+        if (j.contains("icon_custom_emoji_id")) {
+            j.at("icon_custom_emoji_id").get_to(value.icon_custom_emoji_id);
+        }
     }
 }

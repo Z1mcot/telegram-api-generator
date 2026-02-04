@@ -5,30 +5,46 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputPaidMediaVideo::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["media"] = media;
-        j["thumbnail"] = thumbnail;
-        j["cover"] = cover;
-        j["start_timestamp"] = start_timestamp;
-        j["width"] = width;
-        j["height"] = height;
-        j["duration"] = duration;
-        j["supports_streaming"] = supports_streaming;
-        return j.dump();
+    void to_json(json& j, const InputPaidMediaVideo& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["media"] = value.media;
+        j["thumbnail"] = value.thumbnail;
+        j["cover"] = value.cover;
+        j["start_timestamp"] = value.start_timestamp;
+        j["width"] = value.width;
+        j["height"] = value.height;
+        j["duration"] = value.duration;
+        j["supports_streaming"] = value.supports_streaming;
     }
-    std::shared_ptr<InputPaidMediaVideo> InputPaidMediaVideo::from_json(const json& data) {
-        auto result(std::make_shared<InputPaidMediaVideo>());
-        result->type_ = data["type_"].get<std::string>();
-        result->media = data["media"].get<std::string>();
-        result->thumbnail = data["thumbnail"].get<std::string>();
-        result->cover = data["cover"].get<std::string>();
-        result->start_timestamp = data["start_timestamp"].get<std::int64_t>();
-        result->width = data["width"].get<std::int64_t>();
-        result->height = data["height"].get<std::int64_t>();
-        result->duration = data["duration"].get<std::int64_t>();
-        result->supports_streaming = data["supports_streaming"].get<bool>();
-        return result;
+
+    void from_json(const json& j, InputPaidMediaVideo& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("media")) {
+            j.at("media").get_to(value.media);
+        }
+        if (j.contains("thumbnail")) {
+            j.at("thumbnail").get_to(value.thumbnail);
+        }
+        if (j.contains("cover")) {
+            j.at("cover").get_to(value.cover);
+        }
+        if (j.contains("start_timestamp")) {
+            j.at("start_timestamp").get_to(value.start_timestamp);
+        }
+        if (j.contains("width")) {
+            j.at("width").get_to(value.width);
+        }
+        if (j.contains("height")) {
+            j.at("height").get_to(value.height);
+        }
+        if (j.contains("duration")) {
+            j.at("duration").get_to(value.duration);
+        }
+        if (j.contains("supports_streaming")) {
+            j.at("supports_streaming").get_to(value.supports_streaming);
+        }
     }
 }

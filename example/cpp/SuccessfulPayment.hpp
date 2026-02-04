@@ -62,8 +62,5 @@ namespace tgbot {
 
         // Provider payment identifier
         std::string provider_payment_charge_id;
-
-        json to_json() const override;
-        static std::shared_ptr<SuccessfulPayment> from_json(const json& data);
     };
 }

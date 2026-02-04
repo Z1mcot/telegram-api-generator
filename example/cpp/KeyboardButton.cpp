@@ -9,26 +9,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json KeyboardButton::to_json() const {
-        json j;
-        j["text"] = text;
-        j["request_users"] = request_users->to_json();
-        j["request_chat"] = request_chat->to_json();
-        j["request_contact"] = request_contact;
-        j["request_location"] = request_location;
-        j["request_poll"] = request_poll->to_json();
-        j["web_app"] = web_app->to_json();
-        return j.dump();
+    void to_json(json& j, const KeyboardButton& value) {
+        j = json::object();
+        j["text"] = value.text;
+        j["request_users"] = value.request_users;
+        j["request_chat"] = value.request_chat;
+        j["request_contact"] = value.request_contact;
+        j["request_location"] = value.request_location;
+        j["request_poll"] = value.request_poll;
+        j["web_app"] = value.web_app;
     }
-    std::shared_ptr<KeyboardButton> KeyboardButton::from_json(const json& data) {
-        auto result(std::make_shared<KeyboardButton>());
-        result->text = data["text"].get<std::string>();
-        result->request_users = KeyboardButtonRequestUsers::from_json(data["request_users"]);
-        result->request_chat = KeyboardButtonRequestChat::from_json(data["request_chat"]);
-        result->request_contact = data["request_contact"].get<bool>();
-        result->request_location = data["request_location"].get<bool>();
-        result->request_poll = KeyboardButtonPollType::from_json(data["request_poll"]);
-        result->web_app = WebAppInfo::from_json(data["web_app"]);
-        return result;
+
+    void from_json(const json& j, KeyboardButton& value) {
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("request_users")) {
+            j.at("request_users").get_to(value.request_users);
+        }
+        if (j.contains("request_chat")) {
+            j.at("request_chat").get_to(value.request_chat);
+        }
+        if (j.contains("request_contact")) {
+            j.at("request_contact").get_to(value.request_contact);
+        }
+        if (j.contains("request_location")) {
+            j.at("request_location").get_to(value.request_location);
+        }
+        if (j.contains("request_poll")) {
+            j.at("request_poll").get_to(value.request_poll);
+        }
+        if (j.contains("web_app")) {
+            j.at("web_app").get_to(value.web_app);
+        }
     }
 }

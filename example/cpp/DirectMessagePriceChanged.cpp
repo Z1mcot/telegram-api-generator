@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json DirectMessagePriceChanged::to_json() const {
-        json j;
-        j["are_direct_messages_enabled"] = are_direct_messages_enabled;
-        j["direct_message_star_count"] = direct_message_star_count;
-        return j.dump();
+    void to_json(json& j, const DirectMessagePriceChanged& value) {
+        j = json::object();
+        j["are_direct_messages_enabled"] = value.are_direct_messages_enabled;
+        j["direct_message_star_count"] = value.direct_message_star_count;
     }
-    std::shared_ptr<DirectMessagePriceChanged> DirectMessagePriceChanged::from_json(const json& data) {
-        auto result(std::make_shared<DirectMessagePriceChanged>());
-        result->are_direct_messages_enabled = data["are_direct_messages_enabled"].get<bool>();
-        result->direct_message_star_count = data["direct_message_star_count"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, DirectMessagePriceChanged& value) {
+        if (j.contains("are_direct_messages_enabled")) {
+            j.at("are_direct_messages_enabled").get_to(value.are_direct_messages_enabled);
+        }
+        if (j.contains("direct_message_star_count")) {
+            j.at("direct_message_star_count").get_to(value.direct_message_star_count);
+        }
     }
 }

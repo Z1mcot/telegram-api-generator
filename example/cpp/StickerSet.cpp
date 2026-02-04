@@ -6,32 +6,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StickerSet::to_json() const {
-        json j;
-        j["name"] = name;
-        j["title"] = title;
-        j["sticker_type"] = sticker_type;
-        std::vector<json> stickers_values;
-        stickers_values.reserve(stickers.size());
-        for (auto& e : stickers) {
-            stickers_values.push_back(e->to_json());
-        }
-        j["stickers"] = stickers_values;
-        j["thumbnail"] = thumbnail->to_json();
-        return j.dump();
+    void to_json(json& j, const StickerSet& value) {
+        j = json::object();
+        j["name"] = value.name;
+        j["title"] = value.title;
+        j["sticker_type"] = value.sticker_type;
+        j["stickers"] = value.stickers;
+        j["thumbnail"] = value.thumbnail;
     }
-    std::shared_ptr<StickerSet> StickerSet::from_json(const json& data) {
-        auto result(std::make_shared<StickerSet>());
-        result->name = data["name"].get<std::string>();
-        result->title = data["title"].get<std::string>();
-        result->sticker_type = data["sticker_type"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<Sticker>>> stickers_values;
-        stickers_values.reserve(stickers.size());
-        for (auto& e : data["stickers"]) {
-            stickers_values.push_back(std::vector<std::shared_ptr<Sticker>>::from_json(e));
+
+    void from_json(const json& j, StickerSet& value) {
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
         }
-        result->stickers = stickers_values;
-        result->thumbnail = PhotoSize::from_json(data["thumbnail"]);
-        return result;
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("sticker_type")) {
+            j.at("sticker_type").get_to(value.sticker_type);
+        }
+        if (j.contains("stickers")) {
+            j.at("stickers").get_to(value.stickers);
+        }
+        if (j.contains("thumbnail")) {
+            j.at("thumbnail").get_to(value.thumbnail);
+        }
     }
 }

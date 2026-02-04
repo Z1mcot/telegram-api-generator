@@ -58,8 +58,5 @@ namespace tgbot {
 
         // Optional. Title of the audio
         std::string title;
-
-        json to_json() const override;
-        static std::shared_ptr<InputMediaAudio> from_json(const json& data);
     };
 }

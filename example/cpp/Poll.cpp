@@ -5,70 +5,66 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Poll::to_json() const {
-        json j;
-        j["id"] = id;
-        j["question"] = question;
-        std::vector<json> question_entities_values;
-        question_entities_values.reserve(question_entities.size());
-        for (auto& e : question_entities) {
-            question_entities_values.push_back(e->to_json());
-        }
-        j["question_entities"] = question_entities_values;
-        std::vector<json> options_values;
-        options_values.reserve(options.size());
-        for (auto& e : options) {
-            options_values.push_back(e->to_json());
-        }
-        j["options"] = options_values;
-        j["total_voter_count"] = total_voter_count;
-        j["is_closed"] = is_closed;
-        j["is_anonymous"] = is_anonymous;
-        j["type"] = type_;
-        j["allows_multiple_answers"] = allows_multiple_answers;
-        j["correct_option_id"] = correct_option_id;
-        j["explanation"] = explanation;
-        std::vector<json> explanation_entities_values;
-        explanation_entities_values.reserve(explanation_entities.size());
-        for (auto& e : explanation_entities) {
-            explanation_entities_values.push_back(e->to_json());
-        }
-        j["explanation_entities"] = explanation_entities_values;
-        j["open_period"] = open_period;
-        j["close_date"] = close_date;
-        return j.dump();
+    void to_json(json& j, const Poll& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["question"] = value.question;
+        j["question_entities"] = value.question_entities;
+        j["options"] = value.options;
+        j["total_voter_count"] = value.total_voter_count;
+        j["is_closed"] = value.is_closed;
+        j["is_anonymous"] = value.is_anonymous;
+        j["type"] = value.type_;
+        j["allows_multiple_answers"] = value.allows_multiple_answers;
+        j["correct_option_id"] = value.correct_option_id;
+        j["explanation"] = value.explanation;
+        j["explanation_entities"] = value.explanation_entities;
+        j["open_period"] = value.open_period;
+        j["close_date"] = value.close_date;
     }
-    std::shared_ptr<Poll> Poll::from_json(const json& data) {
-        auto result(std::make_shared<Poll>());
-        result->id = data["id"].get<std::string>();
-        result->question = data["question"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> question_entities_values;
-        question_entities_values.reserve(question_entities.size());
-        for (auto& e : data["question_entities"]) {
-            question_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, Poll& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
         }
-        result->question_entities = question_entities_values;
-        std::vector<std::vector<std::shared_ptr<PollOption>>> options_values;
-        options_values.reserve(options.size());
-        for (auto& e : data["options"]) {
-            options_values.push_back(std::vector<std::shared_ptr<PollOption>>::from_json(e));
+        if (j.contains("question")) {
+            j.at("question").get_to(value.question);
         }
-        result->options = options_values;
-        result->total_voter_count = data["total_voter_count"].get<std::int64_t>();
-        result->is_closed = data["is_closed"].get<bool>();
-        result->is_anonymous = data["is_anonymous"].get<bool>();
-        result->type_ = data["type_"].get<std::string>();
-        result->allows_multiple_answers = data["allows_multiple_answers"].get<bool>();
-        result->correct_option_id = data["correct_option_id"].get<std::int64_t>();
-        result->explanation = data["explanation"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> explanation_entities_values;
-        explanation_entities_values.reserve(explanation_entities.size());
-        for (auto& e : data["explanation_entities"]) {
-            explanation_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+        if (j.contains("question_entities")) {
+            j.at("question_entities").get_to(value.question_entities);
         }
-        result->explanation_entities = explanation_entities_values;
-        result->open_period = data["open_period"].get<std::int64_t>();
-        result->close_date = data["close_date"].get<std::int64_t>();
-        return result;
+        if (j.contains("options")) {
+            j.at("options").get_to(value.options);
+        }
+        if (j.contains("total_voter_count")) {
+            j.at("total_voter_count").get_to(value.total_voter_count);
+        }
+        if (j.contains("is_closed")) {
+            j.at("is_closed").get_to(value.is_closed);
+        }
+        if (j.contains("is_anonymous")) {
+            j.at("is_anonymous").get_to(value.is_anonymous);
+        }
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("allows_multiple_answers")) {
+            j.at("allows_multiple_answers").get_to(value.allows_multiple_answers);
+        }
+        if (j.contains("correct_option_id")) {
+            j.at("correct_option_id").get_to(value.correct_option_id);
+        }
+        if (j.contains("explanation")) {
+            j.at("explanation").get_to(value.explanation);
+        }
+        if (j.contains("explanation_entities")) {
+            j.at("explanation_entities").get_to(value.explanation_entities);
+        }
+        if (j.contains("open_period")) {
+            j.at("open_period").get_to(value.open_period);
+        }
+        if (j.contains("close_date")) {
+            j.at("close_date").get_to(value.close_date);
+        }
     }
 }

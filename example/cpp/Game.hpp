@@ -48,8 +48,5 @@ namespace tgbot {
 
         // Optional. Animation that will be displayed in the game message in chats. Upload via BotFather
         std::shared_ptr<Animation> animation;
-
-        json to_json() const override;
-        static std::shared_ptr<Game> from_json(const json& data);
     };
 }

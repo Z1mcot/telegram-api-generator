@@ -46,8 +46,5 @@ namespace tgbot {
 
         // Optional. File size in bytes
         std::int64_t file_size;
-
-        json to_json() const override;
-        static std::shared_ptr<VideoNote> from_json(const json& data);
     };
 }

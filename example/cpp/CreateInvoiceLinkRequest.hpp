@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 #include "LabeledPrice.hpp"
 
 namespace tgbot {

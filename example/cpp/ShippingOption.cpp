@@ -5,28 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ShippingOption::to_json() const {
-        json j;
-        j["id"] = id;
-        j["title"] = title;
-        std::vector<json> prices_values;
-        prices_values.reserve(prices.size());
-        for (auto& e : prices) {
-            prices_values.push_back(e->to_json());
-        }
-        j["prices"] = prices_values;
-        return j.dump();
+    void to_json(json& j, const ShippingOption& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["title"] = value.title;
+        j["prices"] = value.prices;
     }
-    std::shared_ptr<ShippingOption> ShippingOption::from_json(const json& data) {
-        auto result(std::make_shared<ShippingOption>());
-        result->id = data["id"].get<std::string>();
-        result->title = data["title"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<LabeledPrice>>> prices_values;
-        prices_values.reserve(prices.size());
-        for (auto& e : data["prices"]) {
-            prices_values.push_back(std::vector<std::shared_ptr<LabeledPrice>>::from_json(e));
+
+    void from_json(const json& j, ShippingOption& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
         }
-        result->prices = prices_values;
-        return result;
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("prices")) {
+            j.at("prices").get_to(value.prices);
+        }
     }
 }

@@ -7,22 +7,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json AffiliateInfo::to_json() const {
-        json j;
-        j["affiliate_user"] = affiliate_user->to_json();
-        j["affiliate_chat"] = affiliate_chat->to_json();
-        j["commission_per_mille"] = commission_per_mille;
-        j["amount"] = amount;
-        j["nanostar_amount"] = nanostar_amount;
-        return j.dump();
+    void to_json(json& j, const AffiliateInfo& value) {
+        j = json::object();
+        j["affiliate_user"] = value.affiliate_user;
+        j["affiliate_chat"] = value.affiliate_chat;
+        j["commission_per_mille"] = value.commission_per_mille;
+        j["amount"] = value.amount;
+        j["nanostar_amount"] = value.nanostar_amount;
     }
-    std::shared_ptr<AffiliateInfo> AffiliateInfo::from_json(const json& data) {
-        auto result(std::make_shared<AffiliateInfo>());
-        result->affiliate_user = User::from_json(data["affiliate_user"]);
-        result->affiliate_chat = Chat::from_json(data["affiliate_chat"]);
-        result->commission_per_mille = data["commission_per_mille"].get<std::int64_t>();
-        result->amount = data["amount"].get<std::int64_t>();
-        result->nanostar_amount = data["nanostar_amount"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, AffiliateInfo& value) {
+        if (j.contains("affiliate_user")) {
+            j.at("affiliate_user").get_to(value.affiliate_user);
+        }
+        if (j.contains("affiliate_chat")) {
+            j.at("affiliate_chat").get_to(value.affiliate_chat);
+        }
+        if (j.contains("commission_per_mille")) {
+            j.at("commission_per_mille").get_to(value.commission_per_mille);
+        }
+        if (j.contains("amount")) {
+            j.at("amount").get_to(value.amount);
+        }
+        if (j.contains("nanostar_amount")) {
+            j.at("nanostar_amount").get_to(value.nanostar_amount);
+        }
     }
 }

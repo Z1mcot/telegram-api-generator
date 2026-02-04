@@ -41,8 +41,5 @@ namespace tgbot {
 
         // Optional. Available sizes of the chat photo, if the photo was requested by the bot
         std::vector<std::shared_ptr<PhotoSize>> photo;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatShared> from_json(const json& data);
     };
 }

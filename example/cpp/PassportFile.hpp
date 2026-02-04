@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Unix time when the file was uploaded
         std::int64_t file_date;
-
-        json to_json() const override;
-        static std::shared_ptr<PassportFile> from_json(const json& data);
     };
 }

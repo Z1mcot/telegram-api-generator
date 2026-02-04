@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BusinessOpeningHoursInterval::to_json() const {
-        json j;
-        j["opening_minute"] = opening_minute;
-        j["closing_minute"] = closing_minute;
-        return j.dump();
+    void to_json(json& j, const BusinessOpeningHoursInterval& value) {
+        j = json::object();
+        j["opening_minute"] = value.opening_minute;
+        j["closing_minute"] = value.closing_minute;
     }
-    std::shared_ptr<BusinessOpeningHoursInterval> BusinessOpeningHoursInterval::from_json(const json& data) {
-        auto result(std::make_shared<BusinessOpeningHoursInterval>());
-        result->opening_minute = data["opening_minute"].get<std::int64_t>();
-        result->closing_minute = data["closing_minute"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, BusinessOpeningHoursInterval& value) {
+        if (j.contains("opening_minute")) {
+            j.at("opening_minute").get_to(value.opening_minute);
+        }
+        if (j.contains("closing_minute")) {
+            j.at("closing_minute").get_to(value.closing_minute);
+        }
     }
 }

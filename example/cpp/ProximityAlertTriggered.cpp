@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ProximityAlertTriggered::to_json() const {
-        json j;
-        j["traveler"] = traveler->to_json();
-        j["watcher"] = watcher->to_json();
-        j["distance"] = distance;
-        return j.dump();
+    void to_json(json& j, const ProximityAlertTriggered& value) {
+        j = json::object();
+        j["traveler"] = value.traveler;
+        j["watcher"] = value.watcher;
+        j["distance"] = value.distance;
     }
-    std::shared_ptr<ProximityAlertTriggered> ProximityAlertTriggered::from_json(const json& data) {
-        auto result(std::make_shared<ProximityAlertTriggered>());
-        result->traveler = User::from_json(data["traveler"]);
-        result->watcher = User::from_json(data["watcher"]);
-        result->distance = data["distance"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, ProximityAlertTriggered& value) {
+        if (j.contains("traveler")) {
+            j.at("traveler").get_to(value.traveler);
+        }
+        if (j.contains("watcher")) {
+            j.at("watcher").get_to(value.watcher);
+        }
+        if (j.contains("distance")) {
+            j.at("distance").get_to(value.distance);
+        }
     }
 }

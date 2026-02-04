@@ -5,28 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PollOption::to_json() const {
-        json j;
-        j["text"] = text;
-        std::vector<json> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : text_entities) {
-            text_entities_values.push_back(e->to_json());
-        }
-        j["text_entities"] = text_entities_values;
-        j["voter_count"] = voter_count;
-        return j.dump();
+    void to_json(json& j, const PollOption& value) {
+        j = json::object();
+        j["text"] = value.text;
+        j["text_entities"] = value.text_entities;
+        j["voter_count"] = value.voter_count;
     }
-    std::shared_ptr<PollOption> PollOption::from_json(const json& data) {
-        auto result(std::make_shared<PollOption>());
-        result->text = data["text"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : data["text_entities"]) {
-            text_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, PollOption& value) {
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
         }
-        result->text_entities = text_entities_values;
-        result->voter_count = data["voter_count"].get<std::int64_t>();
-        return result;
+        if (j.contains("text_entities")) {
+            j.at("text_entities").get_to(value.text_entities);
+        }
+        if (j.contains("voter_count")) {
+            j.at("voter_count").get_to(value.voter_count);
+        }
     }
 }

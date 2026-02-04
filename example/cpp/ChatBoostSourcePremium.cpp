@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatBoostSourcePremium::to_json() const {
-        json j;
-        j["source"] = source;
-        j["user"] = user->to_json();
-        return j.dump();
+    void to_json(json& j, const ChatBoostSourcePremium& value) {
+        j = json::object();
+        j["source"] = value.source;
+        j["user"] = value.user;
     }
-    std::shared_ptr<ChatBoostSourcePremium> ChatBoostSourcePremium::from_json(const json& data) {
-        auto result(std::make_shared<ChatBoostSourcePremium>());
-        result->source = data["source"].get<std::string>();
-        result->user = User::from_json(data["user"]);
-        return result;
+
+    void from_json(const json& j, ChatBoostSourcePremium& value) {
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
     }
 }

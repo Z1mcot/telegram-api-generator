@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Number of times the reaction was added
         std::int64_t total_count;
-
-        json to_json() const override;
-        static std::shared_ptr<ReactionCount> from_json(const json& data);
     };
 }

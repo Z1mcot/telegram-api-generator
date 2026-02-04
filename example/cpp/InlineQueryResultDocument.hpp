@@ -81,8 +81,5 @@ namespace tgbot {
 
         // Optional. Thumbnail height
         std::int64_t thumbnail_height;
-
-        json to_json() const override;
-        static std::shared_ptr<InlineQueryResultDocument> from_json(const json& data);
     };
 }

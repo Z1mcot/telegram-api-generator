@@ -94,8 +94,5 @@ namespace tgbot {
 
         // Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever
         std::int64_t until_date;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatMemberRestricted> from_json(const json& data);
     };
 }

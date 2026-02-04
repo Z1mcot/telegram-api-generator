@@ -78,8 +78,5 @@ namespace tgbot {
 
         // Optional. Point in time (Unix timestamp) when the poll will be automatically closed
         std::int64_t close_date;
-
-        json to_json() const override;
-        static std::shared_ptr<Poll> from_json(const json& data);
     };
 }

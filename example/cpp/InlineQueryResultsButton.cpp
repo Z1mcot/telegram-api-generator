@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQueryResultsButton::to_json() const {
-        json j;
-        j["text"] = text;
-        j["web_app"] = web_app->to_json();
-        j["start_parameter"] = start_parameter;
-        return j.dump();
+    void to_json(json& j, const InlineQueryResultsButton& value) {
+        j = json::object();
+        j["text"] = value.text;
+        j["web_app"] = value.web_app;
+        j["start_parameter"] = value.start_parameter;
     }
-    std::shared_ptr<InlineQueryResultsButton> InlineQueryResultsButton::from_json(const json& data) {
-        auto result(std::make_shared<InlineQueryResultsButton>());
-        result->text = data["text"].get<std::string>();
-        result->web_app = WebAppInfo::from_json(data["web_app"]);
-        result->start_parameter = data["start_parameter"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, InlineQueryResultsButton& value) {
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("web_app")) {
+            j.at("web_app").get_to(value.web_app);
+        }
+        if (j.contains("start_parameter")) {
+            j.at("start_parameter").get_to(value.start_parameter);
+        }
     }
 }

@@ -33,8 +33,5 @@ namespace tgbot {
 
         // Optional. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of text_parse_mode
         std::vector<std::shared_ptr<MessageEntity>> text_entities;
-
-        json to_json() const override;
-        static std::shared_ptr<InputPollOption> from_json(const json& data);
     };
 }

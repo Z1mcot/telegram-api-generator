@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json TransactionPartnerFragment::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["withdrawal_state"] = withdrawal_state->to_json();
-        return j.dump();
+    void to_json(json& j, const TransactionPartnerFragment& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["withdrawal_state"] = value.withdrawal_state;
     }
-    std::shared_ptr<TransactionPartnerFragment> TransactionPartnerFragment::from_json(const json& data) {
-        auto result(std::make_shared<TransactionPartnerFragment>());
-        result->type_ = data["type_"].get<std::string>();
-        result->withdrawal_state = RevenueWithdrawalState::from_json(data["withdrawal_state"]);
-        return result;
+
+    void from_json(const json& j, TransactionPartnerFragment& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("withdrawal_state")) {
+            j.at("withdrawal_state").get_to(value.withdrawal_state);
+        }
     }
 }

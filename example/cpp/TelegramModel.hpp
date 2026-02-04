@@ -14,61 +14,77 @@ namespace tgbot {
 
     using json = nlohmann::json;
 
-    using json = nlohmann::json;
-
     struct TelegramModel {
-        virtual json to_json() const = 0;
         virtual ~TelegramModel() = default;
     };
 
     struct ChatId {
         std::string stringValue;
         std::int64_t longValue() const { return std::stoll(stringValue); }
-
-        json to_json() const { return stringValue; }
-        static void from_json(const json& j, ChatId& value) { value.stringValue = j.get<std::string>(); }
     };
 
     struct UserId {
         std::int64_t longValue;
         ChatId toChatId() const { return ChatId{std::to_string(longValue)}; }
-
-        json to_json() const { return longValue; }
-        static void from_json(const json& j, UserId& value) { value.longValue = j.get<std::int64_t>(); }
     };
 
     struct MessageId {
         std::int64_t longValue;
-
-        json to_json() const { return longValue; }
-        static void from_json(const json& j, MessageId& value) { value.longValue = j.get<std::int64_t>(); }
     };
 
     struct BusinessConnectionId {
         std::string stringValue;
-
-        json to_json() const { return stringValue; }
-        static void from_json(const json& j, BusinessConnectionId& value) { value.stringValue = j.get<std::string>(); }
     };
 
     struct MessageThreadId {
         std::int64_t longValue;
-
-        json to_json() const { return longValue; }
-        static void from_json(const json& j, MessageThreadId& value) { value.longValue = j.get<std::int64_t>(); }
     };
 
     struct MessageEffectId {
         std::string stringValue;
-
-        json to_json() const { return stringValue; }
-        static void from_json(const json& j, MessageEffectId& value) { value.stringValue = j.get<std::string>(); }
     };
 
     struct ParseMode {
         std::string stringValue;
-
-        json to_json() const { return stringValue; }
-        static void from_json(const json& j, ParseMode& value) { value.stringValue = j.get<std::string>(); }
     };
+
+    // JSON serialization for value wrapper types
+    void to_json(json& j, const ChatId& value) { j = value.stringValue; }
+    void from_json(const json& j, ChatId& value) { j.get_to(value.stringValue); }
+
+    void to_json(json& j, const UserId& value) { j = value.longValue; }
+    void from_json(const json& j, UserId& value) { j.get_to(value.longValue); }
+
+    void to_json(json& j, const MessageId& value) { j = value.longValue; }
+    void from_json(const json& j, MessageId& value) { j.get_to(value.longValue); }
+
+    void to_json(json& j, const BusinessConnectionId& value) { j = value.stringValue; }
+    void from_json(const json& j, BusinessConnectionId& value) { j.get_to(value.stringValue); }
+
+    void to_json(json& j, const MessageThreadId& value) { j = value.longValue; }
+    void from_json(const json& j, MessageThreadId& value) { j.get_to(value.longValue); }
+
+    void to_json(json& j, const MessageEffectId& value) { j = value.stringValue; }
+    void from_json(const json& j, MessageEffectId& value) { j.get_to(value.stringValue); }
+
+    void to_json(json& j, const ParseMode& value) { j = value.stringValue; }
+    void from_json(const json& j, ParseMode& value) { j.get_to(value.stringValue); }
+
+    template <typename T>
+    void to_json(json& j, const std::shared_ptr<T>& value) {
+        if (!value) {
+            j = nullptr;
+        } else {
+            j = *value;
+        }
+    }
+
+    template <typename T>
+    void from_json(const json& j, std::shared_ptr<T>& value) {
+        if (j.is_null()) {
+            value.reset();
+        } else {
+            value = std::make_shared<T>(j.get<T>());
+        }
+    }
 }

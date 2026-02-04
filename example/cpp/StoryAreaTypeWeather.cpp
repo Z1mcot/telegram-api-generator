@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StoryAreaTypeWeather::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["temperature"] = temperature;
-        j["emoji"] = emoji;
-        j["background_color"] = background_color;
-        return j.dump();
+    void to_json(json& j, const StoryAreaTypeWeather& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["temperature"] = value.temperature;
+        j["emoji"] = value.emoji;
+        j["background_color"] = value.background_color;
     }
-    std::shared_ptr<StoryAreaTypeWeather> StoryAreaTypeWeather::from_json(const json& data) {
-        auto result(std::make_shared<StoryAreaTypeWeather>());
-        result->type_ = data["type_"].get<std::string>();
-        result->temperature = data["temperature"].get<double>();
-        result->emoji = data["emoji"].get<std::string>();
-        result->background_color = data["background_color"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, StoryAreaTypeWeather& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("temperature")) {
+            j.at("temperature").get_to(value.temperature);
+        }
+        if (j.contains("emoji")) {
+            j.at("emoji").get_to(value.emoji);
+        }
+        if (j.contains("background_color")) {
+            j.at("background_color").get_to(value.background_color);
+        }
     }
 }

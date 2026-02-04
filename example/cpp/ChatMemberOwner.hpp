@@ -38,8 +38,5 @@ namespace tgbot {
 
         // Optional. Custom title for this user
         std::string custom_title;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatMemberOwner> from_json(const json& data);
     };
 }

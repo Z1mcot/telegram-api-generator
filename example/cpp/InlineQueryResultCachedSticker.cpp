@@ -7,22 +7,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQueryResultCachedSticker::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["id"] = id;
-        j["sticker_file_id"] = sticker_file_id;
-        j["reply_markup"] = reply_markup->to_json();
-        j["input_message_content"] = input_message_content->to_json();
-        return j.dump();
+    void to_json(json& j, const InlineQueryResultCachedSticker& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["id"] = value.id;
+        j["sticker_file_id"] = value.sticker_file_id;
+        j["reply_markup"] = value.reply_markup;
+        j["input_message_content"] = value.input_message_content;
     }
-    std::shared_ptr<InlineQueryResultCachedSticker> InlineQueryResultCachedSticker::from_json(const json& data) {
-        auto result(std::make_shared<InlineQueryResultCachedSticker>());
-        result->type_ = data["type_"].get<std::string>();
-        result->id = data["id"].get<std::string>();
-        result->sticker_file_id = data["sticker_file_id"].get<std::string>();
-        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
-        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
-        return result;
+
+    void from_json(const json& j, InlineQueryResultCachedSticker& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("sticker_file_id")) {
+            j.at("sticker_file_id").get_to(value.sticker_file_id);
+        }
+        if (j.contains("reply_markup")) {
+            j.at("reply_markup").get_to(value.reply_markup);
+        }
+        if (j.contains("input_message_content")) {
+            j.at("input_message_content").get_to(value.input_message_content);
+        }
     }
 }

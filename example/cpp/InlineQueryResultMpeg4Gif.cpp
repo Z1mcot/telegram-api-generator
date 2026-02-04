@@ -7,52 +7,70 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQueryResultMpeg4Gif::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["id"] = id;
-        j["mpeg4_url"] = mpeg4_url;
-        j["mpeg4_width"] = mpeg4_width;
-        j["mpeg4_height"] = mpeg4_height;
-        j["mpeg4_duration"] = mpeg4_duration;
-        j["thumbnail_url"] = thumbnail_url;
-        j["thumbnail_mime_type"] = thumbnail_mime_type;
-        j["title"] = title;
-        j["caption"] = caption;
-        j["parse_mode"] = parse_mode->to_json();
-        std::vector<json> caption_entities_values;
-        caption_entities_values.reserve(caption_entities.size());
-        for (auto& e : caption_entities) {
-            caption_entities_values.push_back(e->to_json());
-        }
-        j["caption_entities"] = caption_entities_values;
-        j["show_caption_above_media"] = show_caption_above_media;
-        j["reply_markup"] = reply_markup->to_json();
-        j["input_message_content"] = input_message_content->to_json();
-        return j.dump();
+    void to_json(json& j, const InlineQueryResultMpeg4Gif& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["id"] = value.id;
+        j["mpeg4_url"] = value.mpeg4_url;
+        j["mpeg4_width"] = value.mpeg4_width;
+        j["mpeg4_height"] = value.mpeg4_height;
+        j["mpeg4_duration"] = value.mpeg4_duration;
+        j["thumbnail_url"] = value.thumbnail_url;
+        j["thumbnail_mime_type"] = value.thumbnail_mime_type;
+        j["title"] = value.title;
+        j["caption"] = value.caption;
+        j["parse_mode"] = value.parse_mode;
+        j["caption_entities"] = value.caption_entities;
+        j["show_caption_above_media"] = value.show_caption_above_media;
+        j["reply_markup"] = value.reply_markup;
+        j["input_message_content"] = value.input_message_content;
     }
-    std::shared_ptr<InlineQueryResultMpeg4Gif> InlineQueryResultMpeg4Gif::from_json(const json& data) {
-        auto result(std::make_shared<InlineQueryResultMpeg4Gif>());
-        result->type_ = data["type_"].get<std::string>();
-        result->id = data["id"].get<std::string>();
-        result->mpeg4_url = data["mpeg4_url"].get<std::string>();
-        result->mpeg4_width = data["mpeg4_width"].get<std::int64_t>();
-        result->mpeg4_height = data["mpeg4_height"].get<std::int64_t>();
-        result->mpeg4_duration = data["mpeg4_duration"].get<std::int64_t>();
-        result->thumbnail_url = data["thumbnail_url"].get<std::string>();
-        result->thumbnail_mime_type = data["thumbnail_mime_type"].get<std::string>();
-        result->title = data["title"].get<std::string>();
-        result->caption = data["caption"].get<std::string>();
-        result->parse_mode = ParseMode::from_json(data["parse_mode"]);
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> caption_entities_values;
-        caption_entities_values.reserve(caption_entities.size());
-        for (auto& e : data["caption_entities"]) {
-            caption_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, InlineQueryResultMpeg4Gif& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->caption_entities = caption_entities_values;
-        result->show_caption_above_media = data["show_caption_above_media"].get<bool>();
-        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
-        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
-        return result;
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("mpeg4_url")) {
+            j.at("mpeg4_url").get_to(value.mpeg4_url);
+        }
+        if (j.contains("mpeg4_width")) {
+            j.at("mpeg4_width").get_to(value.mpeg4_width);
+        }
+        if (j.contains("mpeg4_height")) {
+            j.at("mpeg4_height").get_to(value.mpeg4_height);
+        }
+        if (j.contains("mpeg4_duration")) {
+            j.at("mpeg4_duration").get_to(value.mpeg4_duration);
+        }
+        if (j.contains("thumbnail_url")) {
+            j.at("thumbnail_url").get_to(value.thumbnail_url);
+        }
+        if (j.contains("thumbnail_mime_type")) {
+            j.at("thumbnail_mime_type").get_to(value.thumbnail_mime_type);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("caption")) {
+            j.at("caption").get_to(value.caption);
+        }
+        if (j.contains("parse_mode")) {
+            j.at("parse_mode").get_to(value.parse_mode);
+        }
+        if (j.contains("caption_entities")) {
+            j.at("caption_entities").get_to(value.caption_entities);
+        }
+        if (j.contains("show_caption_above_media")) {
+            j.at("show_caption_above_media").get_to(value.show_caption_above_media);
+        }
+        if (j.contains("reply_markup")) {
+            j.at("reply_markup").get_to(value.reply_markup);
+        }
+        if (j.contains("input_message_content")) {
+            j.at("input_message_content").get_to(value.input_message_content);
+        }
     }
 }

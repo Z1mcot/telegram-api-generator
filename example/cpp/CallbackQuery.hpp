@@ -52,8 +52,5 @@ namespace tgbot {
 
         // Optional. Short name of a Game to be returned, serves as the unique identifier for the game
         std::string game_short_name;
-
-        json to_json() const override;
-        static std::shared_ptr<CallbackQuery> from_json(const json& data);
     };
 }

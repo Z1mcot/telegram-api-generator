@@ -28,8 +28,5 @@ namespace tgbot {
 
         // HTTP or tg:// URL to be opened when the area is clicked
         std::string url;
-
-        json to_json() const override;
-        static std::shared_ptr<StoryAreaTypeLink> from_json(const json& data);
     };
 }

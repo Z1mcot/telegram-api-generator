@@ -6,22 +6,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MessageOriginChannel::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["date"] = date;
-        j["chat"] = chat->to_json();
-        j["message_id"] = message_id.to_json();
-        j["author_signature"] = author_signature;
-        return j.dump();
+    void to_json(json& j, const MessageOriginChannel& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["date"] = value.date;
+        j["chat"] = value.chat;
+        j["message_id"] = value.message_id;
+        j["author_signature"] = value.author_signature;
     }
-    std::shared_ptr<MessageOriginChannel> MessageOriginChannel::from_json(const json& data) {
-        auto result(std::make_shared<MessageOriginChannel>());
-        result->type_ = data["type_"].get<std::string>();
-        result->date = data["date"].get<std::int64_t>();
-        result->chat = Chat::from_json(data["chat"]);
-        result->message_id = MessageId::from_json(data["message_id"]);
-        result->author_signature = data["author_signature"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, MessageOriginChannel& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("message_id")) {
+            j.at("message_id").get_to(value.message_id);
+        }
+        if (j.contains("author_signature")) {
+            j.at("author_signature").get_to(value.author_signature);
+        }
     }
 }

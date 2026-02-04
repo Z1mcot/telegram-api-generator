@@ -64,3 +64,5 @@ fabric.properties
 
 # Project exclude paths
 /.gradle/
+.cache
+.vscode

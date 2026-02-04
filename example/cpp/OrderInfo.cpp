@@ -6,20 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json OrderInfo::to_json() const {
-        json j;
-        j["name"] = name;
-        j["phone_number"] = phone_number;
-        j["email"] = email;
-        j["shipping_address"] = shipping_address->to_json();
-        return j.dump();
+    void to_json(json& j, const OrderInfo& value) {
+        j = json::object();
+        j["name"] = value.name;
+        j["phone_number"] = value.phone_number;
+        j["email"] = value.email;
+        j["shipping_address"] = value.shipping_address;
     }
-    std::shared_ptr<OrderInfo> OrderInfo::from_json(const json& data) {
-        auto result(std::make_shared<OrderInfo>());
-        result->name = data["name"].get<std::string>();
-        result->phone_number = data["phone_number"].get<std::string>();
-        result->email = data["email"].get<std::string>();
-        result->shipping_address = ShippingAddress::from_json(data["shipping_address"]);
-        return result;
+
+    void from_json(const json& j, OrderInfo& value) {
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
+        }
+        if (j.contains("phone_number")) {
+            j.at("phone_number").get_to(value.phone_number);
+        }
+        if (j.contains("email")) {
+            j.at("email").get_to(value.email);
+        }
+        if (j.contains("shipping_address")) {
+            j.at("shipping_address").get_to(value.shipping_address);
+        }
     }
 }

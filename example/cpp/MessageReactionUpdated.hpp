@@ -52,8 +52,5 @@ namespace tgbot {
 
         // New list of reaction types that have been set by the user
         std::vector<std::shared_ptr<ReactionType>> new_reaction;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageReactionUpdated> from_json(const json& data);
     };
 }

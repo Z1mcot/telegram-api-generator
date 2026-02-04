@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BackgroundFillSolid::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["color"] = color;
-        return j.dump();
+    void to_json(json& j, const BackgroundFillSolid& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["color"] = value.color;
     }
-    std::shared_ptr<BackgroundFillSolid> BackgroundFillSolid::from_json(const json& data) {
-        auto result(std::make_shared<BackgroundFillSolid>());
-        result->type_ = data["type_"].get<std::string>();
-        result->color = data["color"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, BackgroundFillSolid& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("color")) {
+            j.at("color").get_to(value.color);
+        }
     }
 }

@@ -9,34 +9,54 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineKeyboardButton::to_json() const {
-        json j;
-        j["text"] = text;
-        j["url"] = url;
-        j["callback_data"] = callback_data;
-        j["web_app"] = web_app->to_json();
-        j["login_url"] = login_url->to_json();
-        j["switch_inline_query"] = switch_inline_query;
-        j["switch_inline_query_current_chat"] = switch_inline_query_current_chat;
-        j["switch_inline_query_chosen_chat"] = switch_inline_query_chosen_chat->to_json();
-        j["copy_text"] = copy_text->to_json();
-        j["callback_game"] = callback_game->to_json();
-        j["pay"] = pay;
-        return j.dump();
+    void to_json(json& j, const InlineKeyboardButton& value) {
+        j = json::object();
+        j["text"] = value.text;
+        j["url"] = value.url;
+        j["callback_data"] = value.callback_data;
+        j["web_app"] = value.web_app;
+        j["login_url"] = value.login_url;
+        j["switch_inline_query"] = value.switch_inline_query;
+        j["switch_inline_query_current_chat"] = value.switch_inline_query_current_chat;
+        j["switch_inline_query_chosen_chat"] = value.switch_inline_query_chosen_chat;
+        j["copy_text"] = value.copy_text;
+        j["callback_game"] = value.callback_game;
+        j["pay"] = value.pay;
     }
-    std::shared_ptr<InlineKeyboardButton> InlineKeyboardButton::from_json(const json& data) {
-        auto result(std::make_shared<InlineKeyboardButton>());
-        result->text = data["text"].get<std::string>();
-        result->url = data["url"].get<std::string>();
-        result->callback_data = data["callback_data"].get<std::string>();
-        result->web_app = WebAppInfo::from_json(data["web_app"]);
-        result->login_url = LoginUrl::from_json(data["login_url"]);
-        result->switch_inline_query = data["switch_inline_query"].get<std::string>();
-        result->switch_inline_query_current_chat = data["switch_inline_query_current_chat"].get<std::string>();
-        result->switch_inline_query_chosen_chat = SwitchInlineQueryChosenChat::from_json(data["switch_inline_query_chosen_chat"]);
-        result->copy_text = CopyTextButton::from_json(data["copy_text"]);
-        result->callback_game = CallbackGame::from_json(data["callback_game"]);
-        result->pay = data["pay"].get<bool>();
-        return result;
+
+    void from_json(const json& j, InlineKeyboardButton& value) {
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
+        }
+        if (j.contains("callback_data")) {
+            j.at("callback_data").get_to(value.callback_data);
+        }
+        if (j.contains("web_app")) {
+            j.at("web_app").get_to(value.web_app);
+        }
+        if (j.contains("login_url")) {
+            j.at("login_url").get_to(value.login_url);
+        }
+        if (j.contains("switch_inline_query")) {
+            j.at("switch_inline_query").get_to(value.switch_inline_query);
+        }
+        if (j.contains("switch_inline_query_current_chat")) {
+            j.at("switch_inline_query_current_chat").get_to(value.switch_inline_query_current_chat);
+        }
+        if (j.contains("switch_inline_query_chosen_chat")) {
+            j.at("switch_inline_query_chosen_chat").get_to(value.switch_inline_query_chosen_chat);
+        }
+        if (j.contains("copy_text")) {
+            j.at("copy_text").get_to(value.copy_text);
+        }
+        if (j.contains("callback_game")) {
+            j.at("callback_game").get_to(value.callback_game);
+        }
+        if (j.contains("pay")) {
+            j.at("pay").get_to(value.pay);
+        }
     }
 }

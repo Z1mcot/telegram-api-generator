@@ -5,20 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ForumTopic::to_json() const {
-        json j;
-        j["message_thread_id"] = message_thread_id.to_json();
-        j["name"] = name;
-        j["icon_color"] = icon_color;
-        j["icon_custom_emoji_id"] = icon_custom_emoji_id;
-        return j.dump();
+    void to_json(json& j, const ForumTopic& value) {
+        j = json::object();
+        j["message_thread_id"] = value.message_thread_id;
+        j["name"] = value.name;
+        j["icon_color"] = value.icon_color;
+        j["icon_custom_emoji_id"] = value.icon_custom_emoji_id;
+        j["is_name_implicit"] = value.is_name_implicit;
     }
-    std::shared_ptr<ForumTopic> ForumTopic::from_json(const json& data) {
-        auto result(std::make_shared<ForumTopic>());
-        result->message_thread_id = MessageThreadId::from_json(data["message_thread_id"]);
-        result->name = data["name"].get<std::string>();
-        result->icon_color = data["icon_color"].get<std::int64_t>();
-        result->icon_custom_emoji_id = data["icon_custom_emoji_id"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ForumTopic& value) {
+        if (j.contains("message_thread_id")) {
+            j.at("message_thread_id").get_to(value.message_thread_id);
+        }
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
+        }
+        if (j.contains("icon_color")) {
+            j.at("icon_color").get_to(value.icon_color);
+        }
+        if (j.contains("icon_custom_emoji_id")) {
+            j.at("icon_custom_emoji_id").get_to(value.icon_custom_emoji_id);
+        }
+        if (j.contains("is_name_implicit")) {
+            j.at("is_name_implicit").get_to(value.is_name_implicit);
+        }
     }
 }

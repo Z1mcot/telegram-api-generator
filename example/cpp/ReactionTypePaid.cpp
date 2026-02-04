@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ReactionTypePaid::to_json() const {
-        json j;
-        j["type"] = type_;
-        return j.dump();
+    void to_json(json& j, const ReactionTypePaid& value) {
+        j = json::object();
+        j["type"] = value.type_;
     }
-    std::shared_ptr<ReactionTypePaid> ReactionTypePaid::from_json(const json& data) {
-        auto result(std::make_shared<ReactionTypePaid>());
-        result->type_ = data["type_"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ReactionTypePaid& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
     }
 }

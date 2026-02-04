@@ -32,8 +32,5 @@ namespace tgbot {
 
         // Optional. Year of the user's birth
         std::int64_t year;
-
-        json to_json() const override;
-        static std::shared_ptr<Birthdate> from_json(const json& data);
     };
 }

@@ -5,28 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputPollOption::to_json() const {
-        json j;
-        j["text"] = text;
-        j["text_parse_mode"] = text_parse_mode;
-        std::vector<json> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : text_entities) {
-            text_entities_values.push_back(e->to_json());
-        }
-        j["text_entities"] = text_entities_values;
-        return j.dump();
+    void to_json(json& j, const InputPollOption& value) {
+        j = json::object();
+        j["text"] = value.text;
+        j["text_parse_mode"] = value.text_parse_mode;
+        j["text_entities"] = value.text_entities;
     }
-    std::shared_ptr<InputPollOption> InputPollOption::from_json(const json& data) {
-        auto result(std::make_shared<InputPollOption>());
-        result->text = data["text"].get<std::string>();
-        result->text_parse_mode = data["text_parse_mode"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : data["text_entities"]) {
-            text_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, InputPollOption& value) {
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
         }
-        result->text_entities = text_entities_values;
-        return result;
+        if (j.contains("text_parse_mode")) {
+            j.at("text_parse_mode").get_to(value.text_parse_mode);
+        }
+        if (j.contains("text_entities")) {
+            j.at("text_entities").get_to(value.text_entities);
+        }
     }
 }

@@ -31,8 +31,5 @@ namespace tgbot {
 
         // List of tasks added to the checklist
         std::vector<std::shared_ptr<ChecklistTask>> tasks;
-
-        json to_json() const override;
-        static std::shared_ptr<ChecklistTasksAdded> from_json(const json& data);
     };
 }

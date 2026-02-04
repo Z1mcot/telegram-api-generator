@@ -7,30 +7,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PollAnswer::to_json() const {
-        json j;
-        j["poll_id"] = poll_id;
-        j["voter_chat"] = voter_chat->to_json();
-        j["user"] = user->to_json();
-        std::vector<json> option_ids_values;
-        option_ids_values.reserve(option_ids.size());
-        for (auto& e : option_ids) {
-            option_ids_values.push_back(e);
-        }
-        j["option_ids"] = option_ids_values;
-        return j.dump();
+    void to_json(json& j, const PollAnswer& value) {
+        j = json::object();
+        j["poll_id"] = value.poll_id;
+        j["voter_chat"] = value.voter_chat;
+        j["user"] = value.user;
+        j["option_ids"] = value.option_ids;
     }
-    std::shared_ptr<PollAnswer> PollAnswer::from_json(const json& data) {
-        auto result(std::make_shared<PollAnswer>());
-        result->poll_id = data["poll_id"].get<std::string>();
-        result->voter_chat = Chat::from_json(data["voter_chat"]);
-        result->user = User::from_json(data["user"]);
-        std::vector<std::vector<std::int64_t>> option_ids_values;
-        option_ids_values.reserve(option_ids.size());
-        for (auto& e : data["option_ids"]) {
-            option_ids_values.push_back(std::vector<std::int64_t>::from_json(e));
+
+    void from_json(const json& j, PollAnswer& value) {
+        if (j.contains("poll_id")) {
+            j.at("poll_id").get_to(value.poll_id);
         }
-        result->option_ids = option_ids_values;
-        return result;
+        if (j.contains("voter_chat")) {
+            j.at("voter_chat").get_to(value.voter_chat);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("option_ids")) {
+            j.at("option_ids").get_to(value.option_ids);
+        }
     }
 }

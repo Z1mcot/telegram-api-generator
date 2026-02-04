@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json UniqueGiftSymbol::to_json() const {
-        json j;
-        j["name"] = name;
-        j["sticker"] = sticker->to_json();
-        j["rarity_per_mille"] = rarity_per_mille;
-        return j.dump();
+    void to_json(json& j, const UniqueGiftSymbol& value) {
+        j = json::object();
+        j["name"] = value.name;
+        j["sticker"] = value.sticker;
+        j["rarity_per_mille"] = value.rarity_per_mille;
     }
-    std::shared_ptr<UniqueGiftSymbol> UniqueGiftSymbol::from_json(const json& data) {
-        auto result(std::make_shared<UniqueGiftSymbol>());
-        result->name = data["name"].get<std::string>();
-        result->sticker = Sticker::from_json(data["sticker"]);
-        result->rarity_per_mille = data["rarity_per_mille"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, UniqueGiftSymbol& value) {
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
+        }
+        if (j.contains("sticker")) {
+            j.at("sticker").get_to(value.sticker);
+        }
+        if (j.contains("rarity_per_mille")) {
+            j.at("rarity_per_mille").get_to(value.rarity_per_mille);
+        }
     }
 }

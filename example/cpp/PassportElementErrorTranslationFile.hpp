@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Error message
         std::string message;
-
-        json to_json() const override;
-        static std::shared_ptr<PassportElementErrorTranslationFile> from_json(const json& data);
     };
 }

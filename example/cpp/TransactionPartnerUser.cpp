@@ -8,42 +8,50 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json TransactionPartnerUser::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["transaction_type"] = transaction_type;
-        j["user"] = user->to_json();
-        j["affiliate"] = affiliate->to_json();
-        j["invoice_payload"] = invoice_payload;
-        j["subscription_period"] = subscription_period;
-        std::vector<json> paid_media_values;
-        paid_media_values.reserve(paid_media.size());
-        for (auto& e : paid_media) {
-            paid_media_values.push_back(e->to_json());
-        }
-        j["paid_media"] = paid_media_values;
-        j["paid_media_payload"] = paid_media_payload;
-        j["gift"] = gift->to_json();
-        j["premium_subscription_duration"] = premium_subscription_duration;
-        return j.dump();
+    void to_json(json& j, const TransactionPartnerUser& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["transaction_type"] = value.transaction_type;
+        j["user"] = value.user;
+        j["affiliate"] = value.affiliate;
+        j["invoice_payload"] = value.invoice_payload;
+        j["subscription_period"] = value.subscription_period;
+        j["paid_media"] = value.paid_media;
+        j["paid_media_payload"] = value.paid_media_payload;
+        j["gift"] = value.gift;
+        j["premium_subscription_duration"] = value.premium_subscription_duration;
     }
-    std::shared_ptr<TransactionPartnerUser> TransactionPartnerUser::from_json(const json& data) {
-        auto result(std::make_shared<TransactionPartnerUser>());
-        result->type_ = data["type_"].get<std::string>();
-        result->transaction_type = data["transaction_type"].get<std::string>();
-        result->user = User::from_json(data["user"]);
-        result->affiliate = AffiliateInfo::from_json(data["affiliate"]);
-        result->invoice_payload = data["invoice_payload"].get<std::string>();
-        result->subscription_period = data["subscription_period"].get<std::int64_t>();
-        std::vector<std::vector<std::shared_ptr<PaidMedia>>> paid_media_values;
-        paid_media_values.reserve(paid_media.size());
-        for (auto& e : data["paid_media"]) {
-            paid_media_values.push_back(std::vector<std::shared_ptr<PaidMedia>>::from_json(e));
+
+    void from_json(const json& j, TransactionPartnerUser& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->paid_media = paid_media_values;
-        result->paid_media_payload = data["paid_media_payload"].get<std::string>();
-        result->gift = Gift::from_json(data["gift"]);
-        result->premium_subscription_duration = data["premium_subscription_duration"].get<std::int64_t>();
-        return result;
+        if (j.contains("transaction_type")) {
+            j.at("transaction_type").get_to(value.transaction_type);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("affiliate")) {
+            j.at("affiliate").get_to(value.affiliate);
+        }
+        if (j.contains("invoice_payload")) {
+            j.at("invoice_payload").get_to(value.invoice_payload);
+        }
+        if (j.contains("subscription_period")) {
+            j.at("subscription_period").get_to(value.subscription_period);
+        }
+        if (j.contains("paid_media")) {
+            j.at("paid_media").get_to(value.paid_media);
+        }
+        if (j.contains("paid_media_payload")) {
+            j.at("paid_media_payload").get_to(value.paid_media_payload);
+        }
+        if (j.contains("gift")) {
+            j.at("gift").get_to(value.gift);
+        }
+        if (j.contains("premium_subscription_duration")) {
+            j.at("premium_subscription_duration").get_to(value.premium_subscription_duration);
+        }
     }
 }

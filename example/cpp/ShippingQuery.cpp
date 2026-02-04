@@ -7,20 +7,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ShippingQuery::to_json() const {
-        json j;
-        j["id"] = id;
-        j["from"] = from->to_json();
-        j["invoice_payload"] = invoice_payload;
-        j["shipping_address"] = shipping_address->to_json();
-        return j.dump();
+    void to_json(json& j, const ShippingQuery& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["from"] = value.from;
+        j["invoice_payload"] = value.invoice_payload;
+        j["shipping_address"] = value.shipping_address;
     }
-    std::shared_ptr<ShippingQuery> ShippingQuery::from_json(const json& data) {
-        auto result(std::make_shared<ShippingQuery>());
-        result->id = data["id"].get<std::string>();
-        result->from = User::from_json(data["from"]);
-        result->invoice_payload = data["invoice_payload"].get<std::string>();
-        result->shipping_address = ShippingAddress::from_json(data["shipping_address"]);
-        return result;
+
+    void from_json(const json& j, ShippingQuery& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("invoice_payload")) {
+            j.at("invoice_payload").get_to(value.invoice_payload);
+        }
+        if (j.contains("shipping_address")) {
+            j.at("shipping_address").get_to(value.shipping_address);
+        }
     }
 }

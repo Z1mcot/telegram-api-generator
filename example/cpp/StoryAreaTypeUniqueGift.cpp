@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StoryAreaTypeUniqueGift::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["name"] = name;
-        return j.dump();
+    void to_json(json& j, const StoryAreaTypeUniqueGift& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["name"] = value.name;
     }
-    std::shared_ptr<StoryAreaTypeUniqueGift> StoryAreaTypeUniqueGift::from_json(const json& data) {
-        auto result(std::make_shared<StoryAreaTypeUniqueGift>());
-        result->type_ = data["type_"].get<std::string>();
-        result->name = data["name"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, StoryAreaTypeUniqueGift& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("name")) {
+            j.at("name").get_to(value.name);
+        }
     }
 }

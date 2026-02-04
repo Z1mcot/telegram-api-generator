@@ -34,8 +34,5 @@ namespace tgbot {
 
         // The number of unique gifts that receive this backdrop for every 1000 gifts upgraded
         std::int64_t rarity_per_mille;
-
-        json to_json() const override;
-        static std::shared_ptr<UniqueGiftBackdrop> from_json(const json& data);
     };
 }

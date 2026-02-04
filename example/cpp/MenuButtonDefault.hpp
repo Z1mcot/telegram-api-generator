@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~MenuButtonDefault() = default;
         // Type of the button, must be default
         std::string type_;
-
-        json to_json() const override;
-        static std::shared_ptr<MenuButtonDefault> from_json(const json& data);
     };
 }

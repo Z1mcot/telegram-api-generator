@@ -30,8 +30,5 @@ namespace tgbot {
 
         // User that boosted the chat
         std::shared_ptr<User> user;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatBoostSourcePremium> from_json(const json& data);
     };
 }

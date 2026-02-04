@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Optional. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed
         std::string icon_custom_emoji_id;
-
-        json to_json() const override;
-        static std::shared_ptr<ForumTopicEdited> from_json(const json& data);
     };
 }

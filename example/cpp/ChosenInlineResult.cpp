@@ -7,22 +7,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChosenInlineResult::to_json() const {
-        json j;
-        j["result_id"] = result_id;
-        j["from"] = from->to_json();
-        j["location"] = location->to_json();
-        j["inline_message_id"] = inline_message_id;
-        j["query"] = query;
-        return j.dump();
+    void to_json(json& j, const ChosenInlineResult& value) {
+        j = json::object();
+        j["result_id"] = value.result_id;
+        j["from"] = value.from;
+        j["location"] = value.location;
+        j["inline_message_id"] = value.inline_message_id;
+        j["query"] = value.query;
     }
-    std::shared_ptr<ChosenInlineResult> ChosenInlineResult::from_json(const json& data) {
-        auto result(std::make_shared<ChosenInlineResult>());
-        result->result_id = data["result_id"].get<std::string>();
-        result->from = User::from_json(data["from"]);
-        result->location = Location::from_json(data["location"]);
-        result->inline_message_id = data["inline_message_id"].get<std::string>();
-        result->query = data["query"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ChosenInlineResult& value) {
+        if (j.contains("result_id")) {
+            j.at("result_id").get_to(value.result_id);
+        }
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("location")) {
+            j.at("location").get_to(value.location);
+        }
+        if (j.contains("inline_message_id")) {
+            j.at("inline_message_id").get_to(value.inline_message_id);
+        }
+        if (j.contains("query")) {
+            j.at("query").get_to(value.query);
+        }
     }
 }

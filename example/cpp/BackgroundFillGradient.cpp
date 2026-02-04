@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BackgroundFillGradient::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["top_color"] = top_color;
-        j["bottom_color"] = bottom_color;
-        j["rotation_angle"] = rotation_angle;
-        return j.dump();
+    void to_json(json& j, const BackgroundFillGradient& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["top_color"] = value.top_color;
+        j["bottom_color"] = value.bottom_color;
+        j["rotation_angle"] = value.rotation_angle;
     }
-    std::shared_ptr<BackgroundFillGradient> BackgroundFillGradient::from_json(const json& data) {
-        auto result(std::make_shared<BackgroundFillGradient>());
-        result->type_ = data["type_"].get<std::string>();
-        result->top_color = data["top_color"].get<std::int64_t>();
-        result->bottom_color = data["bottom_color"].get<std::int64_t>();
-        result->rotation_angle = data["rotation_angle"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, BackgroundFillGradient& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("top_color")) {
+            j.at("top_color").get_to(value.top_color);
+        }
+        if (j.contains("bottom_color")) {
+            j.at("bottom_color").get_to(value.bottom_color);
+        }
+        if (j.contains("rotation_angle")) {
+            j.at("rotation_angle").get_to(value.rotation_angle);
+        }
     }
 }

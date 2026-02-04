@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json TransactionPartnerTelegramApi::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["request_count"] = request_count;
-        return j.dump();
+    void to_json(json& j, const TransactionPartnerTelegramApi& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["request_count"] = value.request_count;
     }
-    std::shared_ptr<TransactionPartnerTelegramApi> TransactionPartnerTelegramApi::from_json(const json& data) {
-        auto result(std::make_shared<TransactionPartnerTelegramApi>());
-        result->type_ = data["type_"].get<std::string>();
-        result->request_count = data["request_count"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, TransactionPartnerTelegramApi& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("request_count")) {
+            j.at("request_count").get_to(value.request_count);
+        }
     }
 }

@@ -7,24 +7,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BusinessConnection::to_json() const {
-        json j;
-        j["id"] = id.to_json();
-        j["user"] = user->to_json();
-        j["user_chat_id"] = user_chat_id.to_json();
-        j["date"] = date;
-        j["rights"] = rights->to_json();
-        j["is_enabled"] = is_enabled;
-        return j.dump();
+    void to_json(json& j, const BusinessConnection& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["user"] = value.user;
+        j["user_chat_id"] = value.user_chat_id;
+        j["date"] = value.date;
+        j["rights"] = value.rights;
+        j["is_enabled"] = value.is_enabled;
     }
-    std::shared_ptr<BusinessConnection> BusinessConnection::from_json(const json& data) {
-        auto result(std::make_shared<BusinessConnection>());
-        result->id = BusinessConnectionId::from_json(data["id"]);
-        result->user = User::from_json(data["user"]);
-        result->user_chat_id = ChatId::from_json(data["user_chat_id"]);
-        result->date = data["date"].get<std::int64_t>();
-        result->rights = BusinessBotRights::from_json(data["rights"]);
-        result->is_enabled = data["is_enabled"].get<bool>();
-        return result;
+
+    void from_json(const json& j, BusinessConnection& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("user_chat_id")) {
+            j.at("user_chat_id").get_to(value.user_chat_id);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("rights")) {
+            j.at("rights").get_to(value.rights);
+        }
+        if (j.contains("is_enabled")) {
+            j.at("is_enabled").get_to(value.is_enabled);
+        }
     }
 }

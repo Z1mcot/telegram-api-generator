@@ -69,8 +69,5 @@ namespace tgbot {
 
         // Optional. Content of the message to be sent instead of the photo
         std::shared_ptr<InputMessageContent> input_message_content;
-
-        json to_json() const override;
-        static std::shared_ptr<InlineQueryResultCachedPhoto> from_json(const json& data);
     };
 }

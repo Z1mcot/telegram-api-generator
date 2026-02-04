@@ -7,16 +7,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json SuggestedPostApprovalFailed::to_json() const {
-        json j;
-        j["suggested_post_message"] = suggested_post_message->to_json();
-        j["price"] = price->to_json();
-        return j.dump();
+    void to_json(json& j, const SuggestedPostApprovalFailed& value) {
+        j = json::object();
+        j["suggested_post_message"] = value.suggested_post_message;
+        j["price"] = value.price;
     }
-    std::shared_ptr<SuggestedPostApprovalFailed> SuggestedPostApprovalFailed::from_json(const json& data) {
-        auto result(std::make_shared<SuggestedPostApprovalFailed>());
-        result->suggested_post_message = Message::from_json(data["suggested_post_message"]);
-        result->price = SuggestedPostPrice::from_json(data["price"]);
-        return result;
+
+    void from_json(const json& j, SuggestedPostApprovalFailed& value) {
+        if (j.contains("suggested_post_message")) {
+            j.at("suggested_post_message").get_to(value.suggested_post_message);
+        }
+        if (j.contains("price")) {
+            j.at("price").get_to(value.price);
+        }
     }
 }

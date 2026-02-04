@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatLocation::to_json() const {
-        json j;
-        j["location"] = location->to_json();
-        j["address"] = address;
-        return j.dump();
+    void to_json(json& j, const ChatLocation& value) {
+        j = json::object();
+        j["location"] = value.location;
+        j["address"] = value.address;
     }
-    std::shared_ptr<ChatLocation> ChatLocation::from_json(const json& data) {
-        auto result(std::make_shared<ChatLocation>());
-        result->location = Location::from_json(data["location"]);
-        result->address = data["address"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ChatLocation& value) {
+        if (j.contains("location")) {
+            j.at("location").get_to(value.location);
+        }
+        if (j.contains("address")) {
+            j.at("address").get_to(value.address);
+        }
     }
 }

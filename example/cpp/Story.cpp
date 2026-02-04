@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Story::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["id"] = id;
-        return j.dump();
+    void to_json(json& j, const Story& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["id"] = value.id;
     }
-    std::shared_ptr<Story> Story::from_json(const json& data) {
-        auto result(std::make_shared<Story>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->id = data["id"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, Story& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
     }
 }

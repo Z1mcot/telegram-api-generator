@@ -6,20 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json GiveawayCompleted::to_json() const {
-        json j;
-        j["winner_count"] = winner_count;
-        j["unclaimed_prize_count"] = unclaimed_prize_count;
-        j["giveaway_message"] = giveaway_message->to_json();
-        j["is_star_giveaway"] = is_star_giveaway;
-        return j.dump();
+    void to_json(json& j, const GiveawayCompleted& value) {
+        j = json::object();
+        j["winner_count"] = value.winner_count;
+        j["unclaimed_prize_count"] = value.unclaimed_prize_count;
+        j["giveaway_message"] = value.giveaway_message;
+        j["is_star_giveaway"] = value.is_star_giveaway;
     }
-    std::shared_ptr<GiveawayCompleted> GiveawayCompleted::from_json(const json& data) {
-        auto result(std::make_shared<GiveawayCompleted>());
-        result->winner_count = data["winner_count"].get<std::int64_t>();
-        result->unclaimed_prize_count = data["unclaimed_prize_count"].get<std::int64_t>();
-        result->giveaway_message = Message::from_json(data["giveaway_message"]);
-        result->is_star_giveaway = data["is_star_giveaway"].get<bool>();
-        return result;
+
+    void from_json(const json& j, GiveawayCompleted& value) {
+        if (j.contains("winner_count")) {
+            j.at("winner_count").get_to(value.winner_count);
+        }
+        if (j.contains("unclaimed_prize_count")) {
+            j.at("unclaimed_prize_count").get_to(value.unclaimed_prize_count);
+        }
+        if (j.contains("giveaway_message")) {
+            j.at("giveaway_message").get_to(value.giveaway_message);
+        }
+        if (j.contains("is_star_giveaway")) {
+            j.at("is_star_giveaway").get_to(value.is_star_giveaway);
+        }
     }
 }

@@ -46,8 +46,5 @@ namespace tgbot {
 
         // Optional. Pass True if other users can mark tasks as done or not done in the checklist
         bool others_can_mark_tasks_as_done;
-
-        json to_json() const override;
-        static std::shared_ptr<InputChecklist> from_json(const json& data);
     };
 }

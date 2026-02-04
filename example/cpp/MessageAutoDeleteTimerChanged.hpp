@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~MessageAutoDeleteTimerChanged() = default;
         // New auto-delete time for messages in the chat; in seconds
         std::int64_t message_auto_delete_time;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageAutoDeleteTimerChanged> from_json(const json& data);
     };
 }

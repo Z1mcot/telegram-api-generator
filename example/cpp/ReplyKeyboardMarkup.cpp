@@ -5,34 +5,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ReplyKeyboardMarkup::to_json() const {
-        json j;
-        std::vector<json> keyboard_values;
-        keyboard_values.reserve(keyboard.size());
-        for (auto& e : keyboard) {
-            keyboard_values.push_back(e->to_json());
-        }
-        j["keyboard"] = keyboard_values;
-        j["is_persistent"] = is_persistent;
-        j["resize_keyboard"] = resize_keyboard;
-        j["one_time_keyboard"] = one_time_keyboard;
-        j["input_field_placeholder"] = input_field_placeholder;
-        j["selective"] = selective;
-        return j.dump();
+    void to_json(json& j, const ReplyKeyboardMarkup& value) {
+        j = json::object();
+        j["keyboard"] = value.keyboard;
+        j["is_persistent"] = value.is_persistent;
+        j["resize_keyboard"] = value.resize_keyboard;
+        j["one_time_keyboard"] = value.one_time_keyboard;
+        j["input_field_placeholder"] = value.input_field_placeholder;
+        j["selective"] = value.selective;
     }
-    std::shared_ptr<ReplyKeyboardMarkup> ReplyKeyboardMarkup::from_json(const json& data) {
-        auto result(std::make_shared<ReplyKeyboardMarkup>());
-        std::vector<std::vector<std::vector<std::shared_ptr<KeyboardButton>>>> keyboard_values;
-        keyboard_values.reserve(keyboard.size());
-        for (auto& e : data["keyboard"]) {
-            keyboard_values.push_back(std::vector<std::vector<std::shared_ptr<KeyboardButton>>>::from_json(e));
+
+    void from_json(const json& j, ReplyKeyboardMarkup& value) {
+        if (j.contains("keyboard")) {
+            j.at("keyboard").get_to(value.keyboard);
         }
-        result->keyboard = keyboard_values;
-        result->is_persistent = data["is_persistent"].get<bool>();
-        result->resize_keyboard = data["resize_keyboard"].get<bool>();
-        result->one_time_keyboard = data["one_time_keyboard"].get<bool>();
-        result->input_field_placeholder = data["input_field_placeholder"].get<std::string>();
-        result->selective = data["selective"].get<bool>();
-        return result;
+        if (j.contains("is_persistent")) {
+            j.at("is_persistent").get_to(value.is_persistent);
+        }
+        if (j.contains("resize_keyboard")) {
+            j.at("resize_keyboard").get_to(value.resize_keyboard);
+        }
+        if (j.contains("one_time_keyboard")) {
+            j.at("one_time_keyboard").get_to(value.one_time_keyboard);
+        }
+        if (j.contains("input_field_placeholder")) {
+            j.at("input_field_placeholder").get_to(value.input_field_placeholder);
+        }
+        if (j.contains("selective")) {
+            j.at("selective").get_to(value.selective);
+        }
     }
 }

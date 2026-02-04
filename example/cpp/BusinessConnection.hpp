@@ -47,8 +47,5 @@ namespace tgbot {
 
         // True, if the connection is active
         bool is_enabled;
-
-        json to_json() const override;
-        static std::shared_ptr<BusinessConnection> from_json(const json& data);
     };
 }

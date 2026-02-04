@@ -6,52 +6,50 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json EncryptedPassportElement::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["data"] = data;
-        j["phone_number"] = phone_number;
-        j["email"] = email;
-        std::vector<json> files_values;
-        files_values.reserve(files.size());
-        for (auto& e : files) {
-            files_values.push_back(e->to_json());
-        }
-        j["files"] = files_values;
-        j["front_side"] = front_side->to_json();
-        j["reverse_side"] = reverse_side->to_json();
-        j["selfie"] = selfie->to_json();
-        std::vector<json> translation_values;
-        translation_values.reserve(translation.size());
-        for (auto& e : translation) {
-            translation_values.push_back(e->to_json());
-        }
-        j["translation"] = translation_values;
-        j["hash"] = hash;
-        return j.dump();
+    void to_json(json& j, const EncryptedPassportElement& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["data"] = value.data;
+        j["phone_number"] = value.phone_number;
+        j["email"] = value.email;
+        j["files"] = value.files;
+        j["front_side"] = value.front_side;
+        j["reverse_side"] = value.reverse_side;
+        j["selfie"] = value.selfie;
+        j["translation"] = value.translation;
+        j["hash"] = value.hash;
     }
-    std::shared_ptr<EncryptedPassportElement> EncryptedPassportElement::from_json(const json& data) {
-        auto result(std::make_shared<EncryptedPassportElement>());
-        result->type_ = data["type_"].get<std::string>();
-        result->data = data["data"].get<std::string>();
-        result->phone_number = data["phone_number"].get<std::string>();
-        result->email = data["email"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<PassportFile>>> files_values;
-        files_values.reserve(files.size());
-        for (auto& e : data["files"]) {
-            files_values.push_back(std::vector<std::shared_ptr<PassportFile>>::from_json(e));
+
+    void from_json(const json& j, EncryptedPassportElement& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->files = files_values;
-        result->front_side = PassportFile::from_json(data["front_side"]);
-        result->reverse_side = PassportFile::from_json(data["reverse_side"]);
-        result->selfie = PassportFile::from_json(data["selfie"]);
-        std::vector<std::vector<std::shared_ptr<PassportFile>>> translation_values;
-        translation_values.reserve(translation.size());
-        for (auto& e : data["translation"]) {
-            translation_values.push_back(std::vector<std::shared_ptr<PassportFile>>::from_json(e));
+        if (j.contains("data")) {
+            j.at("data").get_to(value.data);
         }
-        result->translation = translation_values;
-        result->hash = data["hash"].get<std::string>();
-        return result;
+        if (j.contains("phone_number")) {
+            j.at("phone_number").get_to(value.phone_number);
+        }
+        if (j.contains("email")) {
+            j.at("email").get_to(value.email);
+        }
+        if (j.contains("files")) {
+            j.at("files").get_to(value.files);
+        }
+        if (j.contains("front_side")) {
+            j.at("front_side").get_to(value.front_side);
+        }
+        if (j.contains("reverse_side")) {
+            j.at("reverse_side").get_to(value.reverse_side);
+        }
+        if (j.contains("selfie")) {
+            j.at("selfie").get_to(value.selfie);
+        }
+        if (j.contains("translation")) {
+            j.at("translation").get_to(value.translation);
+        }
+        if (j.contains("hash")) {
+            j.at("hash").get_to(value.hash);
+        }
     }
 }

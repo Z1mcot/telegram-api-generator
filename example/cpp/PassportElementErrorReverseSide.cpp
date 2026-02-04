@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PassportElementErrorReverseSide::to_json() const {
-        json j;
-        j["source"] = source;
-        j["type"] = type_;
-        j["file_hash"] = file_hash;
-        j["message"] = message;
-        return j.dump();
+    void to_json(json& j, const PassportElementErrorReverseSide& value) {
+        j = json::object();
+        j["source"] = value.source;
+        j["type"] = value.type_;
+        j["file_hash"] = value.file_hash;
+        j["message"] = value.message;
     }
-    std::shared_ptr<PassportElementErrorReverseSide> PassportElementErrorReverseSide::from_json(const json& data) {
-        auto result(std::make_shared<PassportElementErrorReverseSide>());
-        result->source = data["source"].get<std::string>();
-        result->type_ = data["type_"].get<std::string>();
-        result->file_hash = data["file_hash"].get<std::string>();
-        result->message = data["message"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, PassportElementErrorReverseSide& value) {
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("file_hash")) {
+            j.at("file_hash").get_to(value.file_hash);
+        }
+        if (j.contains("message")) {
+            j.at("message").get_to(value.message);
+        }
     }
 }

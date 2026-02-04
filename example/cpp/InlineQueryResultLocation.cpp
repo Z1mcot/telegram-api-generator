@@ -7,40 +7,66 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQueryResultLocation::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["id"] = id;
-        j["latitude"] = latitude;
-        j["longitude"] = longitude;
-        j["title"] = title;
-        j["horizontal_accuracy"] = horizontal_accuracy;
-        j["live_period"] = live_period;
-        j["heading"] = heading;
-        j["proximity_alert_radius"] = proximity_alert_radius;
-        j["reply_markup"] = reply_markup->to_json();
-        j["input_message_content"] = input_message_content->to_json();
-        j["thumbnail_url"] = thumbnail_url;
-        j["thumbnail_width"] = thumbnail_width;
-        j["thumbnail_height"] = thumbnail_height;
-        return j.dump();
+    void to_json(json& j, const InlineQueryResultLocation& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["id"] = value.id;
+        j["latitude"] = value.latitude;
+        j["longitude"] = value.longitude;
+        j["title"] = value.title;
+        j["horizontal_accuracy"] = value.horizontal_accuracy;
+        j["live_period"] = value.live_period;
+        j["heading"] = value.heading;
+        j["proximity_alert_radius"] = value.proximity_alert_radius;
+        j["reply_markup"] = value.reply_markup;
+        j["input_message_content"] = value.input_message_content;
+        j["thumbnail_url"] = value.thumbnail_url;
+        j["thumbnail_width"] = value.thumbnail_width;
+        j["thumbnail_height"] = value.thumbnail_height;
     }
-    std::shared_ptr<InlineQueryResultLocation> InlineQueryResultLocation::from_json(const json& data) {
-        auto result(std::make_shared<InlineQueryResultLocation>());
-        result->type_ = data["type_"].get<std::string>();
-        result->id = data["id"].get<std::string>();
-        result->latitude = data["latitude"].get<double>();
-        result->longitude = data["longitude"].get<double>();
-        result->title = data["title"].get<std::string>();
-        result->horizontal_accuracy = data["horizontal_accuracy"].get<double>();
-        result->live_period = data["live_period"].get<std::int64_t>();
-        result->heading = data["heading"].get<std::int64_t>();
-        result->proximity_alert_radius = data["proximity_alert_radius"].get<std::int64_t>();
-        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
-        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
-        result->thumbnail_url = data["thumbnail_url"].get<std::string>();
-        result->thumbnail_width = data["thumbnail_width"].get<std::int64_t>();
-        result->thumbnail_height = data["thumbnail_height"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, InlineQueryResultLocation& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("latitude")) {
+            j.at("latitude").get_to(value.latitude);
+        }
+        if (j.contains("longitude")) {
+            j.at("longitude").get_to(value.longitude);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("horizontal_accuracy")) {
+            j.at("horizontal_accuracy").get_to(value.horizontal_accuracy);
+        }
+        if (j.contains("live_period")) {
+            j.at("live_period").get_to(value.live_period);
+        }
+        if (j.contains("heading")) {
+            j.at("heading").get_to(value.heading);
+        }
+        if (j.contains("proximity_alert_radius")) {
+            j.at("proximity_alert_radius").get_to(value.proximity_alert_radius);
+        }
+        if (j.contains("reply_markup")) {
+            j.at("reply_markup").get_to(value.reply_markup);
+        }
+        if (j.contains("input_message_content")) {
+            j.at("input_message_content").get_to(value.input_message_content);
+        }
+        if (j.contains("thumbnail_url")) {
+            j.at("thumbnail_url").get_to(value.thumbnail_url);
+        }
+        if (j.contains("thumbnail_width")) {
+            j.at("thumbnail_width").get_to(value.thumbnail_width);
+        }
+        if (j.contains("thumbnail_height")) {
+            j.at("thumbnail_height").get_to(value.thumbnail_height);
+        }
     }
 }

@@ -6,26 +6,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MessageEntity::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["offset"] = offset;
-        j["length"] = length;
-        j["url"] = url;
-        j["user"] = user->to_json();
-        j["language"] = language;
-        j["custom_emoji_id"] = custom_emoji_id;
-        return j.dump();
+    void to_json(json& j, const MessageEntity& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["offset"] = value.offset;
+        j["length"] = value.length;
+        j["url"] = value.url;
+        j["user"] = value.user;
+        j["language"] = value.language;
+        j["custom_emoji_id"] = value.custom_emoji_id;
     }
-    std::shared_ptr<MessageEntity> MessageEntity::from_json(const json& data) {
-        auto result(std::make_shared<MessageEntity>());
-        result->type_ = data["type_"].get<std::string>();
-        result->offset = data["offset"].get<std::int64_t>();
-        result->length = data["length"].get<std::int64_t>();
-        result->url = data["url"].get<std::string>();
-        result->user = User::from_json(data["user"]);
-        result->language = data["language"].get<std::string>();
-        result->custom_emoji_id = data["custom_emoji_id"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, MessageEntity& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("offset")) {
+            j.at("offset").get_to(value.offset);
+        }
+        if (j.contains("length")) {
+            j.at("length").get_to(value.length);
+        }
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("language")) {
+            j.at("language").get_to(value.language);
+        }
+        if (j.contains("custom_emoji_id")) {
+            j.at("custom_emoji_id").get_to(value.custom_emoji_id);
+        }
     }
 }

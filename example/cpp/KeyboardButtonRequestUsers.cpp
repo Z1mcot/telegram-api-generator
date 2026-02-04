@@ -5,26 +5,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json KeyboardButtonRequestUsers::to_json() const {
-        json j;
-        j["request_id"] = request_id;
-        j["user_is_bot"] = user_is_bot;
-        j["user_is_premium"] = user_is_premium;
-        j["max_quantity"] = max_quantity;
-        j["request_name"] = request_name;
-        j["request_username"] = request_username;
-        j["request_photo"] = request_photo;
-        return j.dump();
+    void to_json(json& j, const KeyboardButtonRequestUsers& value) {
+        j = json::object();
+        j["request_id"] = value.request_id;
+        j["user_is_bot"] = value.user_is_bot;
+        j["user_is_premium"] = value.user_is_premium;
+        j["max_quantity"] = value.max_quantity;
+        j["request_name"] = value.request_name;
+        j["request_username"] = value.request_username;
+        j["request_photo"] = value.request_photo;
     }
-    std::shared_ptr<KeyboardButtonRequestUsers> KeyboardButtonRequestUsers::from_json(const json& data) {
-        auto result(std::make_shared<KeyboardButtonRequestUsers>());
-        result->request_id = data["request_id"].get<std::int64_t>();
-        result->user_is_bot = data["user_is_bot"].get<bool>();
-        result->user_is_premium = data["user_is_premium"].get<bool>();
-        result->max_quantity = data["max_quantity"].get<std::int64_t>();
-        result->request_name = data["request_name"].get<bool>();
-        result->request_username = data["request_username"].get<bool>();
-        result->request_photo = data["request_photo"].get<bool>();
-        return result;
+
+    void from_json(const json& j, KeyboardButtonRequestUsers& value) {
+        if (j.contains("request_id")) {
+            j.at("request_id").get_to(value.request_id);
+        }
+        if (j.contains("user_is_bot")) {
+            j.at("user_is_bot").get_to(value.user_is_bot);
+        }
+        if (j.contains("user_is_premium")) {
+            j.at("user_is_premium").get_to(value.user_is_premium);
+        }
+        if (j.contains("max_quantity")) {
+            j.at("max_quantity").get_to(value.max_quantity);
+        }
+        if (j.contains("request_name")) {
+            j.at("request_name").get_to(value.request_name);
+        }
+        if (j.contains("request_username")) {
+            j.at("request_username").get_to(value.request_username);
+        }
+        if (j.contains("request_photo")) {
+            j.at("request_photo").get_to(value.request_photo);
+        }
     }
 }

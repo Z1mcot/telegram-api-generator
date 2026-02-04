@@ -5,30 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json TextQuote::to_json() const {
-        json j;
-        j["text"] = text;
-        std::vector<json> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : entities) {
-            entities_values.push_back(e->to_json());
-        }
-        j["entities"] = entities_values;
-        j["position"] = position;
-        j["is_manual"] = is_manual;
-        return j.dump();
+    void to_json(json& j, const TextQuote& value) {
+        j = json::object();
+        j["text"] = value.text;
+        j["entities"] = value.entities;
+        j["position"] = value.position;
+        j["is_manual"] = value.is_manual;
     }
-    std::shared_ptr<TextQuote> TextQuote::from_json(const json& data) {
-        auto result(std::make_shared<TextQuote>());
-        result->text = data["text"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : data["entities"]) {
-            entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, TextQuote& value) {
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
         }
-        result->entities = entities_values;
-        result->position = data["position"].get<std::int64_t>();
-        result->is_manual = data["is_manual"].get<bool>();
-        return result;
+        if (j.contains("entities")) {
+            j.at("entities").get_to(value.entities);
+        }
+        if (j.contains("position")) {
+            j.at("position").get_to(value.position);
+        }
+        if (j.contains("is_manual")) {
+            j.at("is_manual").get_to(value.is_manual);
+        }
     }
 }

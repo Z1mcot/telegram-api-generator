@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Optional. Duration of the media in seconds as defined by the sender
         std::int64_t duration;
-
-        json to_json() const override;
-        static std::shared_ptr<PaidMediaPreview> from_json(const json& data);
     };
 }

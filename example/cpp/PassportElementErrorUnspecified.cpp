@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PassportElementErrorUnspecified::to_json() const {
-        json j;
-        j["source"] = source;
-        j["type"] = type_;
-        j["element_hash"] = element_hash;
-        j["message"] = message;
-        return j.dump();
+    void to_json(json& j, const PassportElementErrorUnspecified& value) {
+        j = json::object();
+        j["source"] = value.source;
+        j["type"] = value.type_;
+        j["element_hash"] = value.element_hash;
+        j["message"] = value.message;
     }
-    std::shared_ptr<PassportElementErrorUnspecified> PassportElementErrorUnspecified::from_json(const json& data) {
-        auto result(std::make_shared<PassportElementErrorUnspecified>());
-        result->source = data["source"].get<std::string>();
-        result->type_ = data["type_"].get<std::string>();
-        result->element_hash = data["element_hash"].get<std::string>();
-        result->message = data["message"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, PassportElementErrorUnspecified& value) {
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("element_hash")) {
+            j.at("element_hash").get_to(value.element_hash);
+        }
+        if (j.contains("message")) {
+            j.at("message").get_to(value.message);
+        }
     }
 }

@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Optional. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated
         std::int64_t retry_after;
-
-        json to_json() const override;
-        static std::shared_ptr<ResponseParameters> from_json(const json& data);
     };
 }

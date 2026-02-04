@@ -6,20 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatMemberOwner::to_json() const {
-        json j;
-        j["status"] = status;
-        j["user"] = user->to_json();
-        j["is_anonymous"] = is_anonymous;
-        j["custom_title"] = custom_title;
-        return j.dump();
+    void to_json(json& j, const ChatMemberOwner& value) {
+        j = json::object();
+        j["status"] = value.status;
+        j["user"] = value.user;
+        j["is_anonymous"] = value.is_anonymous;
+        j["custom_title"] = value.custom_title;
     }
-    std::shared_ptr<ChatMemberOwner> ChatMemberOwner::from_json(const json& data) {
-        auto result(std::make_shared<ChatMemberOwner>());
-        result->status = data["status"].get<std::string>();
-        result->user = User::from_json(data["user"]);
-        result->is_anonymous = data["is_anonymous"].get<bool>();
-        result->custom_title = data["custom_title"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ChatMemberOwner& value) {
+        if (j.contains("status")) {
+            j.at("status").get_to(value.status);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("is_anonymous")) {
+            j.at("is_anonymous").get_to(value.is_anonymous);
+        }
+        if (j.contains("custom_title")) {
+            j.at("custom_title").get_to(value.custom_title);
+        }
     }
 }

@@ -31,8 +31,5 @@ namespace tgbot {
 
         // Information about the chat boost
         std::shared_ptr<ChatBoost> boost;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatBoostUpdated> from_json(const json& data);
     };
 }

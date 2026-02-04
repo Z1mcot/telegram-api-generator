@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Optional. Information about the user that created the topic. Currently, it is always present
         std::shared_ptr<User> user;
-
-        json to_json() const override;
-        static std::shared_ptr<DirectMessagesTopic> from_json(const json& data);
     };
 }

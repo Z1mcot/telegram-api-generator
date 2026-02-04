@@ -29,8 +29,5 @@ namespace tgbot {
 
         // List of time intervals describing business opening hours
         std::vector<std::shared_ptr<BusinessOpeningHoursInterval>> opening_hours;
-
-        json to_json() const override;
-        static std::shared_ptr<BusinessOpeningHours> from_json(const json& data);
     };
 }

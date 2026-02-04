@@ -5,44 +5,74 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatAdministratorRights::to_json() const {
-        json j;
-        j["is_anonymous"] = is_anonymous;
-        j["can_manage_chat"] = can_manage_chat;
-        j["can_delete_messages"] = can_delete_messages;
-        j["can_manage_video_chats"] = can_manage_video_chats;
-        j["can_restrict_members"] = can_restrict_members;
-        j["can_promote_members"] = can_promote_members;
-        j["can_change_info"] = can_change_info;
-        j["can_invite_users"] = can_invite_users;
-        j["can_post_stories"] = can_post_stories;
-        j["can_edit_stories"] = can_edit_stories;
-        j["can_delete_stories"] = can_delete_stories;
-        j["can_post_messages"] = can_post_messages;
-        j["can_edit_messages"] = can_edit_messages;
-        j["can_pin_messages"] = can_pin_messages;
-        j["can_manage_topics"] = can_manage_topics;
-        j["can_manage_direct_messages"] = can_manage_direct_messages;
-        return j.dump();
+    void to_json(json& j, const ChatAdministratorRights& value) {
+        j = json::object();
+        j["is_anonymous"] = value.is_anonymous;
+        j["can_manage_chat"] = value.can_manage_chat;
+        j["can_delete_messages"] = value.can_delete_messages;
+        j["can_manage_video_chats"] = value.can_manage_video_chats;
+        j["can_restrict_members"] = value.can_restrict_members;
+        j["can_promote_members"] = value.can_promote_members;
+        j["can_change_info"] = value.can_change_info;
+        j["can_invite_users"] = value.can_invite_users;
+        j["can_post_stories"] = value.can_post_stories;
+        j["can_edit_stories"] = value.can_edit_stories;
+        j["can_delete_stories"] = value.can_delete_stories;
+        j["can_post_messages"] = value.can_post_messages;
+        j["can_edit_messages"] = value.can_edit_messages;
+        j["can_pin_messages"] = value.can_pin_messages;
+        j["can_manage_topics"] = value.can_manage_topics;
+        j["can_manage_direct_messages"] = value.can_manage_direct_messages;
     }
-    std::shared_ptr<ChatAdministratorRights> ChatAdministratorRights::from_json(const json& data) {
-        auto result(std::make_shared<ChatAdministratorRights>());
-        result->is_anonymous = data["is_anonymous"].get<bool>();
-        result->can_manage_chat = data["can_manage_chat"].get<bool>();
-        result->can_delete_messages = data["can_delete_messages"].get<bool>();
-        result->can_manage_video_chats = data["can_manage_video_chats"].get<bool>();
-        result->can_restrict_members = data["can_restrict_members"].get<bool>();
-        result->can_promote_members = data["can_promote_members"].get<bool>();
-        result->can_change_info = data["can_change_info"].get<bool>();
-        result->can_invite_users = data["can_invite_users"].get<bool>();
-        result->can_post_stories = data["can_post_stories"].get<bool>();
-        result->can_edit_stories = data["can_edit_stories"].get<bool>();
-        result->can_delete_stories = data["can_delete_stories"].get<bool>();
-        result->can_post_messages = data["can_post_messages"].get<bool>();
-        result->can_edit_messages = data["can_edit_messages"].get<bool>();
-        result->can_pin_messages = data["can_pin_messages"].get<bool>();
-        result->can_manage_topics = data["can_manage_topics"].get<bool>();
-        result->can_manage_direct_messages = data["can_manage_direct_messages"].get<bool>();
-        return result;
+
+    void from_json(const json& j, ChatAdministratorRights& value) {
+        if (j.contains("is_anonymous")) {
+            j.at("is_anonymous").get_to(value.is_anonymous);
+        }
+        if (j.contains("can_manage_chat")) {
+            j.at("can_manage_chat").get_to(value.can_manage_chat);
+        }
+        if (j.contains("can_delete_messages")) {
+            j.at("can_delete_messages").get_to(value.can_delete_messages);
+        }
+        if (j.contains("can_manage_video_chats")) {
+            j.at("can_manage_video_chats").get_to(value.can_manage_video_chats);
+        }
+        if (j.contains("can_restrict_members")) {
+            j.at("can_restrict_members").get_to(value.can_restrict_members);
+        }
+        if (j.contains("can_promote_members")) {
+            j.at("can_promote_members").get_to(value.can_promote_members);
+        }
+        if (j.contains("can_change_info")) {
+            j.at("can_change_info").get_to(value.can_change_info);
+        }
+        if (j.contains("can_invite_users")) {
+            j.at("can_invite_users").get_to(value.can_invite_users);
+        }
+        if (j.contains("can_post_stories")) {
+            j.at("can_post_stories").get_to(value.can_post_stories);
+        }
+        if (j.contains("can_edit_stories")) {
+            j.at("can_edit_stories").get_to(value.can_edit_stories);
+        }
+        if (j.contains("can_delete_stories")) {
+            j.at("can_delete_stories").get_to(value.can_delete_stories);
+        }
+        if (j.contains("can_post_messages")) {
+            j.at("can_post_messages").get_to(value.can_post_messages);
+        }
+        if (j.contains("can_edit_messages")) {
+            j.at("can_edit_messages").get_to(value.can_edit_messages);
+        }
+        if (j.contains("can_pin_messages")) {
+            j.at("can_pin_messages").get_to(value.can_pin_messages);
+        }
+        if (j.contains("can_manage_topics")) {
+            j.at("can_manage_topics").get_to(value.can_manage_topics);
+        }
+        if (j.contains("can_manage_direct_messages")) {
+            j.at("can_manage_direct_messages").get_to(value.can_manage_direct_messages);
+        }
     }
 }

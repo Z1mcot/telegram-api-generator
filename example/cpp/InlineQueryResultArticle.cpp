@@ -7,32 +7,50 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQueryResultArticle::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["id"] = id;
-        j["title"] = title;
-        j["input_message_content"] = input_message_content->to_json();
-        j["reply_markup"] = reply_markup->to_json();
-        j["url"] = url;
-        j["description"] = description;
-        j["thumbnail_url"] = thumbnail_url;
-        j["thumbnail_width"] = thumbnail_width;
-        j["thumbnail_height"] = thumbnail_height;
-        return j.dump();
+    void to_json(json& j, const InlineQueryResultArticle& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["id"] = value.id;
+        j["title"] = value.title;
+        j["input_message_content"] = value.input_message_content;
+        j["reply_markup"] = value.reply_markup;
+        j["url"] = value.url;
+        j["description"] = value.description;
+        j["thumbnail_url"] = value.thumbnail_url;
+        j["thumbnail_width"] = value.thumbnail_width;
+        j["thumbnail_height"] = value.thumbnail_height;
     }
-    std::shared_ptr<InlineQueryResultArticle> InlineQueryResultArticle::from_json(const json& data) {
-        auto result(std::make_shared<InlineQueryResultArticle>());
-        result->type_ = data["type_"].get<std::string>();
-        result->id = data["id"].get<std::string>();
-        result->title = data["title"].get<std::string>();
-        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
-        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
-        result->url = data["url"].get<std::string>();
-        result->description = data["description"].get<std::string>();
-        result->thumbnail_url = data["thumbnail_url"].get<std::string>();
-        result->thumbnail_width = data["thumbnail_width"].get<std::int64_t>();
-        result->thumbnail_height = data["thumbnail_height"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, InlineQueryResultArticle& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("input_message_content")) {
+            j.at("input_message_content").get_to(value.input_message_content);
+        }
+        if (j.contains("reply_markup")) {
+            j.at("reply_markup").get_to(value.reply_markup);
+        }
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
+        }
+        if (j.contains("description")) {
+            j.at("description").get_to(value.description);
+        }
+        if (j.contains("thumbnail_url")) {
+            j.at("thumbnail_url").get_to(value.thumbnail_url);
+        }
+        if (j.contains("thumbnail_width")) {
+            j.at("thumbnail_width").get_to(value.thumbnail_width);
+        }
+        if (j.contains("thumbnail_height")) {
+            j.at("thumbnail_height").get_to(value.thumbnail_height);
+        }
     }
 }

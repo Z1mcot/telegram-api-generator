@@ -7,30 +7,46 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json OwnedGiftUnique::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["gift"] = gift->to_json();
-        j["owned_gift_id"] = owned_gift_id;
-        j["sender_user"] = sender_user->to_json();
-        j["send_date"] = send_date;
-        j["is_saved"] = is_saved;
-        j["can_be_transferred"] = can_be_transferred;
-        j["transfer_star_count"] = transfer_star_count;
-        j["next_transfer_date"] = next_transfer_date;
-        return j.dump();
+    void to_json(json& j, const OwnedGiftUnique& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["gift"] = value.gift;
+        j["owned_gift_id"] = value.owned_gift_id;
+        j["sender_user"] = value.sender_user;
+        j["send_date"] = value.send_date;
+        j["is_saved"] = value.is_saved;
+        j["can_be_transferred"] = value.can_be_transferred;
+        j["transfer_star_count"] = value.transfer_star_count;
+        j["next_transfer_date"] = value.next_transfer_date;
     }
-    std::shared_ptr<OwnedGiftUnique> OwnedGiftUnique::from_json(const json& data) {
-        auto result(std::make_shared<OwnedGiftUnique>());
-        result->type_ = data["type_"].get<std::string>();
-        result->gift = UniqueGift::from_json(data["gift"]);
-        result->owned_gift_id = data["owned_gift_id"].get<std::string>();
-        result->sender_user = User::from_json(data["sender_user"]);
-        result->send_date = data["send_date"].get<std::int64_t>();
-        result->is_saved = data["is_saved"].get<bool>();
-        result->can_be_transferred = data["can_be_transferred"].get<bool>();
-        result->transfer_star_count = data["transfer_star_count"].get<std::int64_t>();
-        result->next_transfer_date = data["next_transfer_date"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, OwnedGiftUnique& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("gift")) {
+            j.at("gift").get_to(value.gift);
+        }
+        if (j.contains("owned_gift_id")) {
+            j.at("owned_gift_id").get_to(value.owned_gift_id);
+        }
+        if (j.contains("sender_user")) {
+            j.at("sender_user").get_to(value.sender_user);
+        }
+        if (j.contains("send_date")) {
+            j.at("send_date").get_to(value.send_date);
+        }
+        if (j.contains("is_saved")) {
+            j.at("is_saved").get_to(value.is_saved);
+        }
+        if (j.contains("can_be_transferred")) {
+            j.at("can_be_transferred").get_to(value.can_be_transferred);
+        }
+        if (j.contains("transfer_star_count")) {
+            j.at("transfer_star_count").get_to(value.transfer_star_count);
+        }
+        if (j.contains("next_transfer_date")) {
+            j.at("next_transfer_date").get_to(value.next_transfer_date);
+        }
     }
 }

@@ -6,30 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputTextMessageContent::to_json() const {
-        json j;
-        j["message_text"] = message_text;
-        j["parse_mode"] = parse_mode->to_json();
-        std::vector<json> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : entities) {
-            entities_values.push_back(e->to_json());
-        }
-        j["entities"] = entities_values;
-        j["link_preview_options"] = link_preview_options->to_json();
-        return j.dump();
+    void to_json(json& j, const InputTextMessageContent& value) {
+        j = json::object();
+        j["message_text"] = value.message_text;
+        j["parse_mode"] = value.parse_mode;
+        j["entities"] = value.entities;
+        j["link_preview_options"] = value.link_preview_options;
     }
-    std::shared_ptr<InputTextMessageContent> InputTextMessageContent::from_json(const json& data) {
-        auto result(std::make_shared<InputTextMessageContent>());
-        result->message_text = data["message_text"].get<std::string>();
-        result->parse_mode = ParseMode::from_json(data["parse_mode"]);
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : data["entities"]) {
-            entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, InputTextMessageContent& value) {
+        if (j.contains("message_text")) {
+            j.at("message_text").get_to(value.message_text);
         }
-        result->entities = entities_values;
-        result->link_preview_options = LinkPreviewOptions::from_json(data["link_preview_options"]);
-        return result;
+        if (j.contains("parse_mode")) {
+            j.at("parse_mode").get_to(value.parse_mode);
+        }
+        if (j.contains("entities")) {
+            j.at("entities").get_to(value.entities);
+        }
+        if (j.contains("link_preview_options")) {
+            j.at("link_preview_options").get_to(value.link_preview_options);
+        }
     }
 }

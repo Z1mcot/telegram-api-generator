@@ -6,44 +6,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Game::to_json() const {
-        json j;
-        j["title"] = title;
-        j["description"] = description;
-        std::vector<json> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : photo) {
-            photo_values.push_back(e->to_json());
-        }
-        j["photo"] = photo_values;
-        j["text"] = text;
-        std::vector<json> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : text_entities) {
-            text_entities_values.push_back(e->to_json());
-        }
-        j["text_entities"] = text_entities_values;
-        j["animation"] = animation->to_json();
-        return j.dump();
+    void to_json(json& j, const Game& value) {
+        j = json::object();
+        j["title"] = value.title;
+        j["description"] = value.description;
+        j["photo"] = value.photo;
+        j["text"] = value.text;
+        j["text_entities"] = value.text_entities;
+        j["animation"] = value.animation;
     }
-    std::shared_ptr<Game> Game::from_json(const json& data) {
-        auto result(std::make_shared<Game>());
-        result->title = data["title"].get<std::string>();
-        result->description = data["description"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<PhotoSize>>> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : data["photo"]) {
-            photo_values.push_back(std::vector<std::shared_ptr<PhotoSize>>::from_json(e));
+
+    void from_json(const json& j, Game& value) {
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
         }
-        result->photo = photo_values;
-        result->text = data["text"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : data["text_entities"]) {
-            text_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+        if (j.contains("description")) {
+            j.at("description").get_to(value.description);
         }
-        result->text_entities = text_entities_values;
-        result->animation = Animation::from_json(data["animation"]);
-        return result;
+        if (j.contains("photo")) {
+            j.at("photo").get_to(value.photo);
+        }
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("text_entities")) {
+            j.at("text_entities").get_to(value.text_entities);
+        }
+        if (j.contains("animation")) {
+            j.at("animation").get_to(value.animation);
+        }
     }
 }

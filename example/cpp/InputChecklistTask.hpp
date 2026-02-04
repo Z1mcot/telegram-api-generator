@@ -37,8 +37,5 @@ namespace tgbot {
 
         // Optional. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.
         std::vector<std::shared_ptr<MessageEntity>> text_entities;
-
-        json to_json() const override;
-        static std::shared_ptr<InputChecklistTask> from_json(const json& data);
     };
 }

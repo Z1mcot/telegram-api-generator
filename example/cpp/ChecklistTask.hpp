@@ -15,6 +15,7 @@
 namespace tgbot {
 
     struct User;
+    struct Chat;
 
     using json = nlohmann::json;
 
@@ -24,7 +25,8 @@ namespace tgbot {
      * @param id Unique identifier of the task
      * @param text Text of the task
      * @param text_entities Optional. Special entities that appear in the task text
-     * @param completed_by_user Optional. User that completed the task; omitted if the task wasn't completed
+     * @param completed_by_user Optional. User that completed the task; omitted if the task wasn't completed by a user
+     * @param completed_by_chat Optional. Chat that completed the task; omitted if the task wasn't completed by a chat
      * @param completion_date Optional. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
      */
     struct ChecklistTask : public TelegramModel {
@@ -38,13 +40,13 @@ namespace tgbot {
         // Optional. Special entities that appear in the task text
         std::vector<std::shared_ptr<MessageEntity>> text_entities;
 
-        // Optional. User that completed the task; omitted if the task wasn't completed
+        // Optional. User that completed the task; omitted if the task wasn't completed by a user
         std::shared_ptr<User> completed_by_user;
+
+        // Optional. Chat that completed the task; omitted if the task wasn't completed by a chat
+        std::shared_ptr<Chat> completed_by_chat;
 
         // Optional. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed
         std::int64_t completion_date;
-
-        json to_json() const override;
-        static std::shared_ptr<ChecklistTask> from_json(const json& data);
     };
 }

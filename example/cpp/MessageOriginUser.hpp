@@ -34,8 +34,5 @@ namespace tgbot {
 
         // User that sent the message originally
         std::shared_ptr<User> sender_user;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageOriginUser> from_json(const json& data);
     };
 }

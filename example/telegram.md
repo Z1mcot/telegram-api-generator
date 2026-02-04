@@ -41,7 +41,7 @@
 ### Data Types
 <p>This object represents a Telegram user or bot.</p>
 
-    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean, has_main_web_app: Boolean)
+    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean, has_main_web_app: Boolean, has_topics_enabled: Boolean)
 
 <p>This object represents a chat.</p>
 
@@ -49,11 +49,11 @@
 
 <p>This object contains full information about a chat.</p>
 
-    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, is_direct_messages: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, parent_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, accepted_gift_types: AcceptedGiftTypes, can_send_paid_media: Boolean, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
+    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, is_direct_messages: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, parent_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, accepted_gift_types: AcceptedGiftTypes, can_send_paid_media: Boolean, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation, rating: UserRating, unique_gift_colors: UniqueGiftColors, paid_message_star_count: Integer)
 
 <p>This object represents a message.</p>
 
-    Message(message_id: Integer, message_thread_id: Integer, direct_messages_topic: DirectMessagesTopic, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, reply_to_checklist_task_id: Integer, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, is_paid_post: Boolean, media_group_id: String, author_signature: String, paid_star_count: Integer, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, suggested_post_info: SuggestedPostInfo, effect_id: String, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, checklist: Checklist, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, refunded_payment: RefundedPayment, users_shared: UsersShared, chat_shared: ChatShared, gift: GiftInfo, unique_gift: UniqueGiftInfo, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, checklist_tasks_done: ChecklistTasksDone, checklist_tasks_added: ChecklistTasksAdded, direct_message_price_changed: DirectMessagePriceChanged, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, paid_message_price_changed: PaidMessagePriceChanged, suggested_post_approved: SuggestedPostApproved, suggested_post_approval_failed: SuggestedPostApprovalFailed, suggested_post_declined: SuggestedPostDeclined, suggested_post_paid: SuggestedPostPaid, suggested_post_refunded: SuggestedPostRefunded, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, message_thread_id: Integer, direct_messages_topic: DirectMessagesTopic, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, reply_to_checklist_task_id: Integer, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, is_paid_post: Boolean, media_group_id: String, author_signature: String, paid_star_count: Integer, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, suggested_post_info: SuggestedPostInfo, effect_id: String, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, checklist: Checklist, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, refunded_payment: RefundedPayment, users_shared: UsersShared, chat_shared: ChatShared, gift: GiftInfo, unique_gift: UniqueGiftInfo, gift_upgrade_sent: GiftInfo, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, checklist_tasks_done: ChecklistTasksDone, checklist_tasks_added: ChecklistTasksAdded, direct_message_price_changed: DirectMessagePriceChanged, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, paid_message_price_changed: PaidMessagePriceChanged, suggested_post_approved: SuggestedPostApproved, suggested_post_approval_failed: SuggestedPostApprovalFailed, suggested_post_declined: SuggestedPostDeclined, suggested_post_paid: SuggestedPostPaid, suggested_post_refunded: SuggestedPostRefunded, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a unique message identifier.</p>
 
@@ -169,7 +169,7 @@
 
 <p>Describes a task in a checklist.</p>
 
-    ChecklistTask(id: Integer, text: String, text_entities: List<MessageEntity>, completed_by_user: User, completion_date: Integer)
+    ChecklistTask(id: Integer, text: String, text_entities: List<MessageEntity>, completed_by_user: User, completed_by_chat: Chat, completion_date: Integer)
 
 <p>Describes a checklist.</p>
 
@@ -249,7 +249,7 @@
 
 <p>This object represents a service message about a new forum topic created in the chat.</p>
 
-    ForumTopicCreated(name: String, icon_color: Integer, icon_custom_emoji_id: String)
+    ForumTopicCreated(name: String, icon_color: Integer, icon_custom_emoji_id: String, is_name_implicit: Boolean)
 
 <p>This object represents a service message about an edited forum topic.</p>
 
@@ -492,6 +492,10 @@
 
     BusinessOpeningHours(time_zone_name: String, opening_hours: List<BusinessOpeningHoursInterval>)
 
+<p>This object describes the rating of a user based on their Telegram Star spendings.</p>
+
+    UserRating(level: Integer, rating: Integer, current_level_rating: Integer, next_level_rating: Integer)
+
 <p>Describes the position of a clickable area within a story.</p>
 
     StoryAreaPosition(x_percentage: Float, y_percentage: Float, width_percentage: Float, height_percentage: Float, rotation_angle: Float, corner_radius_percentage: Float)
@@ -554,11 +558,15 @@
 
 <p>This object represents a forum topic.</p>
 
-    ForumTopic(message_thread_id: Integer, name: String, icon_color: Integer, icon_custom_emoji_id: String)
+    ForumTopic(message_thread_id: Integer, name: String, icon_color: Integer, icon_custom_emoji_id: String, is_name_implicit: Boolean)
+
+<p>This object describes the background of a gift.</p>
+
+    GiftBackground(center_color: Integer, edge_color: Integer, text_color: Integer)
 
 <p>This object represents a gift that can be sent by the bot.</p>
 
-    Gift(id: String, sticker: Sticker, star_count: Integer, upgrade_star_count: Integer, total_count: Integer, remaining_count: Integer, publisher_chat: Chat)
+    Gift(id: String, sticker: Sticker, star_count: Integer, upgrade_star_count: Integer, is_premium: Boolean, has_colors: Boolean, total_count: Integer, remaining_count: Integer, personal_total_count: Integer, personal_remaining_count: Integer, background: GiftBackground, unique_gift_variant_count: Integer, publisher_chat: Chat)
 
 <p>This object represent a list of gifts.</p>
 
@@ -580,21 +588,25 @@
 
     UniqueGiftBackdrop(name: String, colors: UniqueGiftBackdropColors, rarity_per_mille: Integer)
 
+<p>This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.</p>
+
+    UniqueGiftColors(model_custom_emoji_id: String, symbol_custom_emoji_id: String, light_theme_main_color: Integer, light_theme_other_colors: List<Integer>, dark_theme_main_color: Integer, dark_theme_other_colors: List<Integer>)
+
 <p>This object describes a unique gift that was upgraded from a regular gift.</p>
 
-    UniqueGift(base_name: String, name: String, number: Integer, model: UniqueGiftModel, symbol: UniqueGiftSymbol, backdrop: UniqueGiftBackdrop, publisher_chat: Chat)
+    UniqueGift(gift_id: String, base_name: String, name: String, number: Integer, model: UniqueGiftModel, symbol: UniqueGiftSymbol, backdrop: UniqueGiftBackdrop, is_premium: Boolean, is_from_blockchain: Boolean, colors: UniqueGiftColors, publisher_chat: Chat)
 
 <p>Describes a service message about a regular gift that was sent or received.</p>
 
-    GiftInfo(gift: Gift, owned_gift_id: String, convert_star_count: Integer, prepaid_upgrade_star_count: Integer, can_be_upgraded: Boolean, text: String, entities: List<MessageEntity>, is_private: Boolean)
+    GiftInfo(gift: Gift, owned_gift_id: String, convert_star_count: Integer, prepaid_upgrade_star_count: Integer, is_upgrade_separate: Boolean, can_be_upgraded: Boolean, text: String, entities: List<MessageEntity>, is_private: Boolean, unique_gift_number: Integer)
 
 <p>Describes a service message about a unique gift that was sent or received.</p>
 
-    UniqueGiftInfo(gift: UniqueGift, origin: String, last_resale_star_count: Integer, owned_gift_id: String, transfer_star_count: Integer, next_transfer_date: Integer)
+    UniqueGiftInfo(gift: UniqueGift, origin: String, last_resale_currency: String, last_resale_amount: Integer, owned_gift_id: String, transfer_star_count: Integer, next_transfer_date: Integer)
 
 <p>Describes a regular gift owned by a user or a chat.</p>
 
-    OwnedGiftRegular(type: String, gift: Gift, owned_gift_id: String, sender_user: User, send_date: Integer, text: String, entities: List<MessageEntity>, is_private: Boolean, is_saved: Boolean, can_be_upgraded: Boolean, was_refunded: Boolean, convert_star_count: Integer, prepaid_upgrade_star_count: Integer)
+    OwnedGiftRegular(type: String, gift: Gift, owned_gift_id: String, sender_user: User, send_date: Integer, text: String, entities: List<MessageEntity>, is_private: Boolean, is_saved: Boolean, can_be_upgraded: Boolean, was_refunded: Boolean, convert_star_count: Integer, prepaid_upgrade_star_count: Integer, is_upgrade_separate: Boolean, unique_gift_number: Integer)
 
 <p>Describes a unique gift received and owned by a user or a chat.</p>
 
@@ -606,7 +618,7 @@
 
 <p>This object describes the types of gifts that can be gifted to a user or a chat.</p>
 
-    AcceptedGiftTypes(unlimited_gifts: Boolean, limited_gifts: Boolean, unique_gifts: Boolean, premium_subscription: Boolean)
+    AcceptedGiftTypes(unlimited_gifts: Boolean, limited_gifts: Boolean, unique_gifts: Boolean, premium_subscription: Boolean, gifts_from_channels: Boolean)
 
 <p>Describes an amount of Telegram Stars.</p>
 
@@ -775,7 +787,7 @@
 
 <p>Use this method to forward messages of any kind. Service messages and messages with protected content can't be forwarded. On success, the sent <a href="#message">Message</a> is returned.</p>
 
-    forwardMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, video_start_timestamp: Integer, disable_notification: Boolean, protect_content: Boolean, suggested_post_parameters: SuggestedPostParameters, message_id: Integer)
+    forwardMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, video_start_timestamp: Integer, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, suggested_post_parameters: SuggestedPostParameters, message_id: Integer)
 
 <p>Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
 
@@ -783,7 +795,7 @@
 
 <p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
-    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, video_start_timestamp: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, suggested_post_parameters: SuggestedPostParameters, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, video_start_timestamp: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, suggested_post_parameters: SuggestedPostParameters, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessages">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href="#messageid">MessageId</a> of the sent messages is returned.</p>
 
@@ -848,6 +860,10 @@
 <p>Use this method to send an animated emoji that will display a random value. On success, the sent <a href="#message">Message</a> is returned.</p>
 
     sendDice(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, emoji: String, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, suggested_post_parameters: SuggestedPostParameters, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+
+<p>Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns <em>True</em> on success.</p>
+
+    sendMessageDraft(chat_id: Integer, message_thread_id: Integer, draft_id: Integer, text: String, parse_mode: ParseMode, entities: List<MessageEntity>)
 
 <p>Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns <em>True</em> on success.</p><blockquote>
  <p>Example: The <a href="https://t.me/imagebot">ImageBot</a> needs some time to process a request and upload the image. Instead of sending a text message along the lines of “Retrieving image, please wait…”, the bot may use <a href="#sendchataction">sendChatAction</a> with <em>action</em> = <em>upload_photo</em>. The user will see a “sending photo” status for the bot.</p>
@@ -1001,7 +1017,7 @@
 
     createForumTopic(chat_id: IntegerOrString, name: String, icon_color: Integer, icon_custom_emoji_id: String)
 
-<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+<p>Use this method to edit name and icon of a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
 
     editForumTopic(chat_id: IntegerOrString, message_thread_id: Integer, name: String, icon_custom_emoji_id: String)
 
@@ -1013,11 +1029,11 @@
 
     reopenForumTopic(chat_id: IntegerOrString, message_thread_id: Integer)
 
-<p>Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_delete_messages</em> administrator rights. Returns <em>True</em> on success.</p>
+<p>Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_delete_messages</em> administrator rights. Returns <em>True</em> on success.</p>
 
     deleteForumTopic(chat_id: IntegerOrString, message_thread_id: Integer)
 
-<p>Use this method to clear the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>
+<p>Use this method to clear the list of pinned messages in a forum topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>
 
     unpinAllForumTopicMessages(chat_id: IntegerOrString, message_thread_id: Integer)
 
@@ -1177,7 +1193,15 @@
 
 <p>Returns the gifts received and owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
 
-    getBusinessAccountGifts(business_connection_id: String, exclude_unsaved: Boolean, exclude_saved: Boolean, exclude_unlimited: Boolean, exclude_limited: Boolean, exclude_unique: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
+    getBusinessAccountGifts(business_connection_id: String, exclude_unsaved: Boolean, exclude_saved: Boolean, exclude_unlimited: Boolean, exclude_limited_upgradable: Boolean, exclude_limited_non_upgradable: Boolean, exclude_unique: Boolean, exclude_from_blockchain: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
+
+<p>Returns the gifts owned and hosted by a user. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
+
+    getUserGifts(user_id: Integer, exclude_unlimited: Boolean, exclude_limited_upgradable: Boolean, exclude_limited_non_upgradable: Boolean, exclude_from_blockchain: Boolean, exclude_unique: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
+
+<p>Returns the gifts owned by a chat. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
+
+    getChatGifts(chat_id: IntegerOrString, exclude_unsaved: Boolean, exclude_saved: Boolean, exclude_unlimited: Boolean, exclude_limited_upgradable: Boolean, exclude_limited_non_upgradable: Boolean, exclude_from_blockchain: Boolean, exclude_unique: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
 
 <p>Converts a given regular gift to Telegram Stars. Requires the <em>can_convert_gifts_to_stars</em> business bot right. Returns <em>True</em> on success.</p>
 
@@ -1194,6 +1218,10 @@
 <p>Posts a story on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
 
     postStory(business_connection_id: String, content: InputStoryContent, active_period: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, areas: List<StoryArea>, post_to_chat_page: Boolean, protect_content: Boolean)
+
+<p>Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the <em>can_manage_stories</em> business bot right for both business accounts. Returns <a href="#story">Story</a> on success.</p>
+
+    repostStory(business_connection_id: String, from_chat_id: Integer, from_story_id: Integer, active_period: Integer, post_to_chat_page: Boolean, protect_content: Boolean)
 
 <p>Edits a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href="#story">Story</a> on success.</p>
 

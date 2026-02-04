@@ -7,24 +7,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQuery::to_json() const {
-        json j;
-        j["id"] = id;
-        j["from"] = from->to_json();
-        j["query"] = query;
-        j["offset"] = offset;
-        j["chat_type"] = chat_type;
-        j["location"] = location->to_json();
-        return j.dump();
+    void to_json(json& j, const InlineQuery& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["from"] = value.from;
+        j["query"] = value.query;
+        j["offset"] = value.offset;
+        j["chat_type"] = value.chat_type;
+        j["location"] = value.location;
     }
-    std::shared_ptr<InlineQuery> InlineQuery::from_json(const json& data) {
-        auto result(std::make_shared<InlineQuery>());
-        result->id = data["id"].get<std::string>();
-        result->from = User::from_json(data["from"]);
-        result->query = data["query"].get<std::string>();
-        result->offset = data["offset"].get<std::string>();
-        result->chat_type = data["chat_type"].get<std::string>();
-        result->location = Location::from_json(data["location"]);
-        return result;
+
+    void from_json(const json& j, InlineQuery& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("query")) {
+            j.at("query").get_to(value.query);
+        }
+        if (j.contains("offset")) {
+            j.at("offset").get_to(value.offset);
+        }
+        if (j.contains("chat_type")) {
+            j.at("chat_type").get_to(value.chat_type);
+        }
+        if (j.contains("location")) {
+            j.at("location").get_to(value.location);
+        }
     }
 }

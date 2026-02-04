@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json LocationAddress::to_json() const {
-        json j;
-        j["country_code"] = country_code;
-        j["state"] = state;
-        j["city"] = city;
-        j["street"] = street;
-        return j.dump();
+    void to_json(json& j, const LocationAddress& value) {
+        j = json::object();
+        j["country_code"] = value.country_code;
+        j["state"] = value.state;
+        j["city"] = value.city;
+        j["street"] = value.street;
     }
-    std::shared_ptr<LocationAddress> LocationAddress::from_json(const json& data) {
-        auto result(std::make_shared<LocationAddress>());
-        result->country_code = data["country_code"].get<std::string>();
-        result->state = data["state"].get<std::string>();
-        result->city = data["city"].get<std::string>();
-        result->street = data["street"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, LocationAddress& value) {
+        if (j.contains("country_code")) {
+            j.at("country_code").get_to(value.country_code);
+        }
+        if (j.contains("state")) {
+            j.at("state").get_to(value.state);
+        }
+        if (j.contains("city")) {
+            j.at("city").get_to(value.city);
+        }
+        if (j.contains("street")) {
+            j.at("street").get_to(value.street);
+        }
     }
 }

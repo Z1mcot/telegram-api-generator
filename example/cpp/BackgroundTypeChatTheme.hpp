@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Name of the chat theme, which is usually an emoji
         std::string theme_name;
-
-        json to_json() const override;
-        static std::shared_ptr<BackgroundTypeChatTheme> from_json(const json& data);
     };
 }

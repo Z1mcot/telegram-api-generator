@@ -5,22 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PassportElementErrorDataField::to_json() const {
-        json j;
-        j["source"] = source;
-        j["type"] = type_;
-        j["field_name"] = field_name;
-        j["data_hash"] = data_hash;
-        j["message"] = message;
-        return j.dump();
+    void to_json(json& j, const PassportElementErrorDataField& value) {
+        j = json::object();
+        j["source"] = value.source;
+        j["type"] = value.type_;
+        j["field_name"] = value.field_name;
+        j["data_hash"] = value.data_hash;
+        j["message"] = value.message;
     }
-    std::shared_ptr<PassportElementErrorDataField> PassportElementErrorDataField::from_json(const json& data) {
-        auto result(std::make_shared<PassportElementErrorDataField>());
-        result->source = data["source"].get<std::string>();
-        result->type_ = data["type_"].get<std::string>();
-        result->field_name = data["field_name"].get<std::string>();
-        result->data_hash = data["data_hash"].get<std::string>();
-        result->message = data["message"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, PassportElementErrorDataField& value) {
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("field_name")) {
+            j.at("field_name").get_to(value.field_name);
+        }
+        if (j.contains("data_hash")) {
+            j.at("data_hash").get_to(value.data_hash);
+        }
+        if (j.contains("message")) {
+            j.at("message").get_to(value.message);
+        }
     }
 }

@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PreparedInlineMessage::to_json() const {
-        json j;
-        j["id"] = id;
-        j["expiration_date"] = expiration_date;
-        return j.dump();
+    void to_json(json& j, const PreparedInlineMessage& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["expiration_date"] = value.expiration_date;
     }
-    std::shared_ptr<PreparedInlineMessage> PreparedInlineMessage::from_json(const json& data) {
-        auto result(std::make_shared<PreparedInlineMessage>());
-        result->id = data["id"].get<std::string>();
-        result->expiration_date = data["expiration_date"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, PreparedInlineMessage& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("expiration_date")) {
+            j.at("expiration_date").get_to(value.expiration_date);
+        }
     }
 }

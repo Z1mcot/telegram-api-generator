@@ -21,8 +21,9 @@ namespace tgbot {
      * Describes a service message about a unique gift that was sent or received.
      *
      * @param gift Information about the gift
-     * @param origin Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
-     * @param last_resale_star_count Optional. For gifts bought from other users, the price paid for the gift
+     * @param origin Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, “resale” for gifts bought from other users, “gifted_upgrade” for upgrades purchased after the gift was sent, or “offer” for gifts bought or sold through gift purchase offers
+     * @param last_resale_currency Optional. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of “XTR” for Telegram Stars or “TON” for toncoins.
+     * @param last_resale_amount Optional. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins
      * @param owned_gift_id Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
      * @param transfer_star_count Optional. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift
      * @param next_transfer_date Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
@@ -32,11 +33,14 @@ namespace tgbot {
         // Information about the gift
         std::shared_ptr<UniqueGift> gift;
 
-        // Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users
+        // Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, “resale” for gifts bought from other users, “gifted_upgrade” for upgrades purchased after the gift was sent, or “offer” for gifts bought or sold through gift purchase offers
         std::string origin;
 
-        // Optional. For gifts bought from other users, the price paid for the gift
-        std::int64_t last_resale_star_count;
+        // Optional. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of “XTR” for Telegram Stars or “TON” for toncoins.
+        std::string last_resale_currency;
+
+        // Optional. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins
+        std::int64_t last_resale_amount;
 
         // Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
         std::string owned_gift_id;
@@ -46,8 +50,5 @@ namespace tgbot {
 
         // Optional. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now
         std::int64_t next_transfer_date;
-
-        json to_json() const override;
-        static std::shared_ptr<UniqueGiftInfo> from_json(const json& data);
     };
 }

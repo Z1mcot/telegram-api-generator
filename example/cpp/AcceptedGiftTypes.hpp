@@ -22,6 +22,7 @@ namespace tgbot {
      * @param limited_gifts True, if limited regular gifts are accepted
      * @param unique_gifts True, if unique gifts or gifts that can be upgraded to unique for free are accepted
      * @param premium_subscription True, if a Telegram Premium subscription is accepted
+     * @param gifts_from_channels True, if transfers of unique gifts from channels are accepted
      */
     struct AcceptedGiftTypes : public TelegramModel {
         virtual ~AcceptedGiftTypes() = default;
@@ -37,7 +38,7 @@ namespace tgbot {
         // True, if a Telegram Premium subscription is accepted
         bool premium_subscription;
 
-        json to_json() const override;
-        static std::shared_ptr<AcceptedGiftTypes> from_json(const json& data);
+        // True, if transfers of unique gifts from channels are accepted
+        bool gifts_from_channels;
     };
 }

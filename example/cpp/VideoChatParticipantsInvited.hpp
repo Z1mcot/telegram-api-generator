@@ -25,8 +25,5 @@ namespace tgbot {
         virtual ~VideoChatParticipantsInvited() = default;
         // New members that were invited to the video chat
         std::vector<std::shared_ptr<User>> users;
-
-        json to_json() const override;
-        static std::shared_ptr<VideoChatParticipantsInvited> from_json(const json& data);
     };
 }

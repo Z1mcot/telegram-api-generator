@@ -3,30 +3,67 @@
 
 #include "Gift.hpp"
 #include "Sticker.hpp"
+#include "GiftBackground.hpp"
 #include "Chat.hpp"
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Gift::to_json() const {
-        json j;
-        j["id"] = id;
-        j["sticker"] = sticker->to_json();
-        j["star_count"] = star_count;
-        j["upgrade_star_count"] = upgrade_star_count;
-        j["total_count"] = total_count;
-        j["remaining_count"] = remaining_count;
-        j["publisher_chat"] = publisher_chat->to_json();
-        return j.dump();
+    void to_json(json& j, const Gift& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["sticker"] = value.sticker;
+        j["star_count"] = value.star_count;
+        j["upgrade_star_count"] = value.upgrade_star_count;
+        j["is_premium"] = value.is_premium;
+        j["has_colors"] = value.has_colors;
+        j["total_count"] = value.total_count;
+        j["remaining_count"] = value.remaining_count;
+        j["personal_total_count"] = value.personal_total_count;
+        j["personal_remaining_count"] = value.personal_remaining_count;
+        j["background"] = value.background;
+        j["unique_gift_variant_count"] = value.unique_gift_variant_count;
+        j["publisher_chat"] = value.publisher_chat;
     }
-    std::shared_ptr<Gift> Gift::from_json(const json& data) {
-        auto result(std::make_shared<Gift>());
-        result->id = data["id"].get<std::string>();
-        result->sticker = Sticker::from_json(data["sticker"]);
-        result->star_count = data["star_count"].get<std::int64_t>();
-        result->upgrade_star_count = data["upgrade_star_count"].get<std::int64_t>();
-        result->total_count = data["total_count"].get<std::int64_t>();
-        result->remaining_count = data["remaining_count"].get<std::int64_t>();
-        result->publisher_chat = Chat::from_json(data["publisher_chat"]);
-        return result;
+
+    void from_json(const json& j, Gift& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("sticker")) {
+            j.at("sticker").get_to(value.sticker);
+        }
+        if (j.contains("star_count")) {
+            j.at("star_count").get_to(value.star_count);
+        }
+        if (j.contains("upgrade_star_count")) {
+            j.at("upgrade_star_count").get_to(value.upgrade_star_count);
+        }
+        if (j.contains("is_premium")) {
+            j.at("is_premium").get_to(value.is_premium);
+        }
+        if (j.contains("has_colors")) {
+            j.at("has_colors").get_to(value.has_colors);
+        }
+        if (j.contains("total_count")) {
+            j.at("total_count").get_to(value.total_count);
+        }
+        if (j.contains("remaining_count")) {
+            j.at("remaining_count").get_to(value.remaining_count);
+        }
+        if (j.contains("personal_total_count")) {
+            j.at("personal_total_count").get_to(value.personal_total_count);
+        }
+        if (j.contains("personal_remaining_count")) {
+            j.at("personal_remaining_count").get_to(value.personal_remaining_count);
+        }
+        if (j.contains("background")) {
+            j.at("background").get_to(value.background);
+        }
+        if (j.contains("unique_gift_variant_count")) {
+            j.at("unique_gift_variant_count").get_to(value.unique_gift_variant_count);
+        }
+        if (j.contains("publisher_chat")) {
+            j.at("publisher_chat").get_to(value.publisher_chat);
+        }
     }
 }

@@ -29,8 +29,5 @@ namespace tgbot {
 
         // Requested profile pictures (in up to 4 sizes each)
         std::vector<std::vector<std::shared_ptr<PhotoSize>>> photos;
-
-        json to_json() const override;
-        static std::shared_ptr<UserProfilePhotos> from_json(const json& data);
     };
 }

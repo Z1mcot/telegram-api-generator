@@ -66,8 +66,5 @@ namespace tgbot {
 
         // Optional. Pass True if the animation needs to be covered with a spoiler animation
         bool has_spoiler;
-
-        json to_json() const override;
-        static std::shared_ptr<InputMediaAnimation> from_json(const json& data);
     };
 }

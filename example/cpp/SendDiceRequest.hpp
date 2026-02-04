@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 
 namespace tgbot {
 
@@ -23,7 +24,7 @@ namespace tgbot {
      *
      * @param business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
      * @param chat_id Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-     * @param message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @param message_thread_id Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
      * @param direct_messages_topic_id Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
      * @param emoji Emoji on which the dice throw animation is based. Currently, must be one of “”, “”, “”, “”, “”, or “”. Dice can have values 1-6 for “”, “” and “”, values 1-5 for “” and “”, and values 1-64 for “”. Defaults to “”
      * @param disable_notification Sends the message silently. Users will receive a notification with no sound.
@@ -41,7 +42,7 @@ namespace tgbot {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
         ChatId chat_id;
 
-        // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        // Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         MessageThreadId message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat

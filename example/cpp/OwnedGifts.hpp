@@ -33,8 +33,5 @@ namespace tgbot {
 
         // Optional. Offset for the next request. If empty, then there are no more results
         std::string next_offset;
-
-        json to_json() const override;
-        static std::shared_ptr<OwnedGifts> from_json(const json& data);
     };
 }

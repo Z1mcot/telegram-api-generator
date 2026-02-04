@@ -50,8 +50,5 @@ namespace tgbot {
 
         // Optional. Google Places type of the venue. (See supported types.)
         std::string google_place_type;
-
-        json to_json() const override;
-        static std::shared_ptr<Venue> from_json(const json& data);
     };
 }

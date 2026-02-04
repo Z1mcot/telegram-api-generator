@@ -5,20 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json AcceptedGiftTypes::to_json() const {
-        json j;
-        j["unlimited_gifts"] = unlimited_gifts;
-        j["limited_gifts"] = limited_gifts;
-        j["unique_gifts"] = unique_gifts;
-        j["premium_subscription"] = premium_subscription;
-        return j.dump();
+    void to_json(json& j, const AcceptedGiftTypes& value) {
+        j = json::object();
+        j["unlimited_gifts"] = value.unlimited_gifts;
+        j["limited_gifts"] = value.limited_gifts;
+        j["unique_gifts"] = value.unique_gifts;
+        j["premium_subscription"] = value.premium_subscription;
+        j["gifts_from_channels"] = value.gifts_from_channels;
     }
-    std::shared_ptr<AcceptedGiftTypes> AcceptedGiftTypes::from_json(const json& data) {
-        auto result(std::make_shared<AcceptedGiftTypes>());
-        result->unlimited_gifts = data["unlimited_gifts"].get<bool>();
-        result->limited_gifts = data["limited_gifts"].get<bool>();
-        result->unique_gifts = data["unique_gifts"].get<bool>();
-        result->premium_subscription = data["premium_subscription"].get<bool>();
-        return result;
+
+    void from_json(const json& j, AcceptedGiftTypes& value) {
+        if (j.contains("unlimited_gifts")) {
+            j.at("unlimited_gifts").get_to(value.unlimited_gifts);
+        }
+        if (j.contains("limited_gifts")) {
+            j.at("limited_gifts").get_to(value.limited_gifts);
+        }
+        if (j.contains("unique_gifts")) {
+            j.at("unique_gifts").get_to(value.unique_gifts);
+        }
+        if (j.contains("premium_subscription")) {
+            j.at("premium_subscription").get_to(value.premium_subscription);
+        }
+        if (j.contains("gifts_from_channels")) {
+            j.at("gifts_from_channels").get_to(value.gifts_from_channels);
+        }
     }
 }

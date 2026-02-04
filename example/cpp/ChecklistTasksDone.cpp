@@ -6,38 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChecklistTasksDone::to_json() const {
-        json j;
-        j["checklist_message"] = checklist_message->to_json();
-        std::vector<json> marked_as_done_task_ids_values;
-        marked_as_done_task_ids_values.reserve(marked_as_done_task_ids.size());
-        for (auto& e : marked_as_done_task_ids) {
-            marked_as_done_task_ids_values.push_back(e);
-        }
-        j["marked_as_done_task_ids"] = marked_as_done_task_ids_values;
-        std::vector<json> marked_as_not_done_task_ids_values;
-        marked_as_not_done_task_ids_values.reserve(marked_as_not_done_task_ids.size());
-        for (auto& e : marked_as_not_done_task_ids) {
-            marked_as_not_done_task_ids_values.push_back(e);
-        }
-        j["marked_as_not_done_task_ids"] = marked_as_not_done_task_ids_values;
-        return j.dump();
+    void to_json(json& j, const ChecklistTasksDone& value) {
+        j = json::object();
+        j["checklist_message"] = value.checklist_message;
+        j["marked_as_done_task_ids"] = value.marked_as_done_task_ids;
+        j["marked_as_not_done_task_ids"] = value.marked_as_not_done_task_ids;
     }
-    std::shared_ptr<ChecklistTasksDone> ChecklistTasksDone::from_json(const json& data) {
-        auto result(std::make_shared<ChecklistTasksDone>());
-        result->checklist_message = Message::from_json(data["checklist_message"]);
-        std::vector<std::vector<std::int64_t>> marked_as_done_task_ids_values;
-        marked_as_done_task_ids_values.reserve(marked_as_done_task_ids.size());
-        for (auto& e : data["marked_as_done_task_ids"]) {
-            marked_as_done_task_ids_values.push_back(std::vector<std::int64_t>::from_json(e));
+
+    void from_json(const json& j, ChecklistTasksDone& value) {
+        if (j.contains("checklist_message")) {
+            j.at("checklist_message").get_to(value.checklist_message);
         }
-        result->marked_as_done_task_ids = marked_as_done_task_ids_values;
-        std::vector<std::vector<std::int64_t>> marked_as_not_done_task_ids_values;
-        marked_as_not_done_task_ids_values.reserve(marked_as_not_done_task_ids.size());
-        for (auto& e : data["marked_as_not_done_task_ids"]) {
-            marked_as_not_done_task_ids_values.push_back(std::vector<std::int64_t>::from_json(e));
+        if (j.contains("marked_as_done_task_ids")) {
+            j.at("marked_as_done_task_ids").get_to(value.marked_as_done_task_ids);
         }
-        result->marked_as_not_done_task_ids = marked_as_not_done_task_ids_values;
-        return result;
+        if (j.contains("marked_as_not_done_task_ids")) {
+            j.at("marked_as_not_done_task_ids").get_to(value.marked_as_not_done_task_ids);
+        }
     }
 }

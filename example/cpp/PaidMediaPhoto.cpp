@@ -5,26 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PaidMediaPhoto::to_json() const {
-        json j;
-        j["type"] = type_;
-        std::vector<json> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : photo) {
-            photo_values.push_back(e->to_json());
-        }
-        j["photo"] = photo_values;
-        return j.dump();
+    void to_json(json& j, const PaidMediaPhoto& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["photo"] = value.photo;
     }
-    std::shared_ptr<PaidMediaPhoto> PaidMediaPhoto::from_json(const json& data) {
-        auto result(std::make_shared<PaidMediaPhoto>());
-        result->type_ = data["type_"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<PhotoSize>>> photo_values;
-        photo_values.reserve(photo.size());
-        for (auto& e : data["photo"]) {
-            photo_values.push_back(std::vector<std::shared_ptr<PhotoSize>>::from_json(e));
+
+    void from_json(const json& j, PaidMediaPhoto& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->photo = photo_values;
-        return result;
+        if (j.contains("photo")) {
+            j.at("photo").get_to(value.photo);
+        }
     }
 }

@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Value of the dice, 1-6 for “”, “” and “” base emoji, 1-5 for “” and “” base emoji, 1-64 for “” base emoji
         std::int64_t value;
-
-        json to_json() const override;
-        static std::shared_ptr<Dice> from_json(const json& data);
     };
 }

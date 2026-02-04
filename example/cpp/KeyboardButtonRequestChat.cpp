@@ -6,34 +6,54 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json KeyboardButtonRequestChat::to_json() const {
-        json j;
-        j["request_id"] = request_id;
-        j["chat_is_channel"] = chat_is_channel;
-        j["chat_is_forum"] = chat_is_forum;
-        j["chat_has_username"] = chat_has_username;
-        j["chat_is_created"] = chat_is_created;
-        j["user_administrator_rights"] = user_administrator_rights->to_json();
-        j["bot_administrator_rights"] = bot_administrator_rights->to_json();
-        j["bot_is_member"] = bot_is_member;
-        j["request_title"] = request_title;
-        j["request_username"] = request_username;
-        j["request_photo"] = request_photo;
-        return j.dump();
+    void to_json(json& j, const KeyboardButtonRequestChat& value) {
+        j = json::object();
+        j["request_id"] = value.request_id;
+        j["chat_is_channel"] = value.chat_is_channel;
+        j["chat_is_forum"] = value.chat_is_forum;
+        j["chat_has_username"] = value.chat_has_username;
+        j["chat_is_created"] = value.chat_is_created;
+        j["user_administrator_rights"] = value.user_administrator_rights;
+        j["bot_administrator_rights"] = value.bot_administrator_rights;
+        j["bot_is_member"] = value.bot_is_member;
+        j["request_title"] = value.request_title;
+        j["request_username"] = value.request_username;
+        j["request_photo"] = value.request_photo;
     }
-    std::shared_ptr<KeyboardButtonRequestChat> KeyboardButtonRequestChat::from_json(const json& data) {
-        auto result(std::make_shared<KeyboardButtonRequestChat>());
-        result->request_id = data["request_id"].get<std::int64_t>();
-        result->chat_is_channel = data["chat_is_channel"].get<bool>();
-        result->chat_is_forum = data["chat_is_forum"].get<bool>();
-        result->chat_has_username = data["chat_has_username"].get<bool>();
-        result->chat_is_created = data["chat_is_created"].get<bool>();
-        result->user_administrator_rights = ChatAdministratorRights::from_json(data["user_administrator_rights"]);
-        result->bot_administrator_rights = ChatAdministratorRights::from_json(data["bot_administrator_rights"]);
-        result->bot_is_member = data["bot_is_member"].get<bool>();
-        result->request_title = data["request_title"].get<bool>();
-        result->request_username = data["request_username"].get<bool>();
-        result->request_photo = data["request_photo"].get<bool>();
-        return result;
+
+    void from_json(const json& j, KeyboardButtonRequestChat& value) {
+        if (j.contains("request_id")) {
+            j.at("request_id").get_to(value.request_id);
+        }
+        if (j.contains("chat_is_channel")) {
+            j.at("chat_is_channel").get_to(value.chat_is_channel);
+        }
+        if (j.contains("chat_is_forum")) {
+            j.at("chat_is_forum").get_to(value.chat_is_forum);
+        }
+        if (j.contains("chat_has_username")) {
+            j.at("chat_has_username").get_to(value.chat_has_username);
+        }
+        if (j.contains("chat_is_created")) {
+            j.at("chat_is_created").get_to(value.chat_is_created);
+        }
+        if (j.contains("user_administrator_rights")) {
+            j.at("user_administrator_rights").get_to(value.user_administrator_rights);
+        }
+        if (j.contains("bot_administrator_rights")) {
+            j.at("bot_administrator_rights").get_to(value.bot_administrator_rights);
+        }
+        if (j.contains("bot_is_member")) {
+            j.at("bot_is_member").get_to(value.bot_is_member);
+        }
+        if (j.contains("request_title")) {
+            j.at("request_title").get_to(value.request_title);
+        }
+        if (j.contains("request_username")) {
+            j.at("request_username").get_to(value.request_username);
+        }
+        if (j.contains("request_photo")) {
+            j.at("request_photo").get_to(value.request_photo);
+        }
     }
 }

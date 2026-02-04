@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ReactionCount::to_json() const {
-        json j;
-        j["type"] = type_->to_json();
-        j["total_count"] = total_count;
-        return j.dump();
+    void to_json(json& j, const ReactionCount& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["total_count"] = value.total_count;
     }
-    std::shared_ptr<ReactionCount> ReactionCount::from_json(const json& data) {
-        auto result(std::make_shared<ReactionCount>());
-        result->type_ = ReactionType::from_json(data["type_"]);
-        result->total_count = data["total_count"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, ReactionCount& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("total_count")) {
+            j.at("total_count").get_to(value.total_count);
+        }
     }
 }

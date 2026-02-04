@@ -6,20 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StoryAreaTypeLocation::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["latitude"] = latitude;
-        j["longitude"] = longitude;
-        j["address"] = address->to_json();
-        return j.dump();
+    void to_json(json& j, const StoryAreaTypeLocation& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["latitude"] = value.latitude;
+        j["longitude"] = value.longitude;
+        j["address"] = value.address;
     }
-    std::shared_ptr<StoryAreaTypeLocation> StoryAreaTypeLocation::from_json(const json& data) {
-        auto result(std::make_shared<StoryAreaTypeLocation>());
-        result->type_ = data["type_"].get<std::string>();
-        result->latitude = data["latitude"].get<double>();
-        result->longitude = data["longitude"].get<double>();
-        result->address = LocationAddress::from_json(data["address"]);
-        return result;
+
+    void from_json(const json& j, StoryAreaTypeLocation& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("latitude")) {
+            j.at("latitude").get_to(value.latitude);
+        }
+        if (j.contains("longitude")) {
+            j.at("longitude").get_to(value.longitude);
+        }
+        if (j.contains("address")) {
+            j.at("address").get_to(value.address);
+        }
     }
 }

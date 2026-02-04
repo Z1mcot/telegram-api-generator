@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 #include "MessageEntity.hpp"
 
 namespace tgbot {
@@ -20,7 +21,7 @@ namespace tgbot {
      *
      * @param user_id Required if chat_id is not specified. Unique identifier of the target user who will receive the gift.
      * @param chat_id Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @channelusername) that will receive the gift.
-     * @param gift_id Identifier of the gift
+     * @param gift_id Identifier of the gift; limited gifts can't be sent to channel chats
      * @param pay_for_upgrade Pass True to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver
      * @param text Text that will be shown along with the gift; 0-128 characters
      * @param text_parse_mode Mode for parsing entities in the text. See formatting options for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored.
@@ -33,7 +34,7 @@ namespace tgbot {
         // Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @channelusername) that will receive the gift.
         ChatId chat_id;
 
-        // Identifier of the gift
+        // Identifier of the gift; limited gifts can't be sent to channel chats
         std::string gift_id;
 
         // Pass True to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver

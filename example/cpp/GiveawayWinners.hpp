@@ -71,8 +71,5 @@ namespace tgbot {
 
         // Optional. Description of additional giveaway prize
         std::string prize_description;
-
-        json to_json() const override;
-        static std::shared_ptr<GiveawayWinners> from_json(const json& data);
     };
 }

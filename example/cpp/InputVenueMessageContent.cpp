@@ -5,28 +5,42 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputVenueMessageContent::to_json() const {
-        json j;
-        j["latitude"] = latitude;
-        j["longitude"] = longitude;
-        j["title"] = title;
-        j["address"] = address;
-        j["foursquare_id"] = foursquare_id;
-        j["foursquare_type"] = foursquare_type;
-        j["google_place_id"] = google_place_id;
-        j["google_place_type"] = google_place_type;
-        return j.dump();
+    void to_json(json& j, const InputVenueMessageContent& value) {
+        j = json::object();
+        j["latitude"] = value.latitude;
+        j["longitude"] = value.longitude;
+        j["title"] = value.title;
+        j["address"] = value.address;
+        j["foursquare_id"] = value.foursquare_id;
+        j["foursquare_type"] = value.foursquare_type;
+        j["google_place_id"] = value.google_place_id;
+        j["google_place_type"] = value.google_place_type;
     }
-    std::shared_ptr<InputVenueMessageContent> InputVenueMessageContent::from_json(const json& data) {
-        auto result(std::make_shared<InputVenueMessageContent>());
-        result->latitude = data["latitude"].get<double>();
-        result->longitude = data["longitude"].get<double>();
-        result->title = data["title"].get<std::string>();
-        result->address = data["address"].get<std::string>();
-        result->foursquare_id = data["foursquare_id"].get<std::string>();
-        result->foursquare_type = data["foursquare_type"].get<std::string>();
-        result->google_place_id = data["google_place_id"].get<std::string>();
-        result->google_place_type = data["google_place_type"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, InputVenueMessageContent& value) {
+        if (j.contains("latitude")) {
+            j.at("latitude").get_to(value.latitude);
+        }
+        if (j.contains("longitude")) {
+            j.at("longitude").get_to(value.longitude);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("address")) {
+            j.at("address").get_to(value.address);
+        }
+        if (j.contains("foursquare_id")) {
+            j.at("foursquare_id").get_to(value.foursquare_id);
+        }
+        if (j.contains("foursquare_type")) {
+            j.at("foursquare_type").get_to(value.foursquare_type);
+        }
+        if (j.contains("google_place_id")) {
+            j.at("google_place_id").get_to(value.google_place_id);
+        }
+        if (j.contains("google_place_type")) {
+            j.at("google_place_type").get_to(value.google_place_type);
+        }
     }
 }

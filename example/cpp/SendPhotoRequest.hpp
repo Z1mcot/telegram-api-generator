@@ -25,7 +25,7 @@ namespace tgbot {
      *
      * @param business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
      * @param chat_id Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-     * @param message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @param message_thread_id Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
      * @param direct_messages_topic_id Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
      * @param photo Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. More information on Sending Files »
      * @param caption Photo caption (may also be used when resending photos by file_id), 0-1024 characters after entities parsing
@@ -48,7 +48,7 @@ namespace tgbot {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
         ChatId chat_id;
 
-        // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        // Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         MessageThreadId message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat

@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json LoginUrl::to_json() const {
-        json j;
-        j["url"] = url;
-        j["forward_text"] = forward_text;
-        j["bot_username"] = bot_username;
-        j["request_write_access"] = request_write_access;
-        return j.dump();
+    void to_json(json& j, const LoginUrl& value) {
+        j = json::object();
+        j["url"] = value.url;
+        j["forward_text"] = value.forward_text;
+        j["bot_username"] = value.bot_username;
+        j["request_write_access"] = value.request_write_access;
     }
-    std::shared_ptr<LoginUrl> LoginUrl::from_json(const json& data) {
-        auto result(std::make_shared<LoginUrl>());
-        result->url = data["url"].get<std::string>();
-        result->forward_text = data["forward_text"].get<std::string>();
-        result->bot_username = data["bot_username"].get<std::string>();
-        result->request_write_access = data["request_write_access"].get<bool>();
-        return result;
+
+    void from_json(const json& j, LoginUrl& value) {
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
+        }
+        if (j.contains("forward_text")) {
+            j.at("forward_text").get_to(value.forward_text);
+        }
+        if (j.contains("bot_username")) {
+            j.at("bot_username").get_to(value.bot_username);
+        }
+        if (j.contains("request_write_access")) {
+            j.at("request_write_access").get_to(value.request_write_access);
+        }
     }
 }

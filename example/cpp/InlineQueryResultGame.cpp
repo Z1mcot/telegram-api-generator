@@ -6,20 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQueryResultGame::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["id"] = id;
-        j["game_short_name"] = game_short_name;
-        j["reply_markup"] = reply_markup->to_json();
-        return j.dump();
+    void to_json(json& j, const InlineQueryResultGame& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["id"] = value.id;
+        j["game_short_name"] = value.game_short_name;
+        j["reply_markup"] = value.reply_markup;
     }
-    std::shared_ptr<InlineQueryResultGame> InlineQueryResultGame::from_json(const json& data) {
-        auto result(std::make_shared<InlineQueryResultGame>());
-        result->type_ = data["type_"].get<std::string>();
-        result->id = data["id"].get<std::string>();
-        result->game_short_name = data["game_short_name"].get<std::string>();
-        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
-        return result;
+
+    void from_json(const json& j, InlineQueryResultGame& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("game_short_name")) {
+            j.at("game_short_name").get_to(value.game_short_name);
+        }
+        if (j.contains("reply_markup")) {
+            j.at("reply_markup").get_to(value.reply_markup);
+        }
     }
 }

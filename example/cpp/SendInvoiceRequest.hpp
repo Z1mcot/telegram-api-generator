@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 #include "LabeledPrice.hpp"
 
 namespace tgbot {
@@ -23,7 +24,7 @@ namespace tgbot {
      * Use this method to send invoices. On success, the sent Message is returned.
      *
      * @param chat_id Unique identifier for the target chat or username of the target channel (in the format @channelusername)
-     * @param message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @param message_thread_id Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
      * @param direct_messages_topic_id Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
      * @param title Product name, 1-32 characters
      * @param description Product description, 1-255 characters
@@ -58,7 +59,7 @@ namespace tgbot {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername)
         ChatId chat_id;
 
-        // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        // Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         MessageThreadId message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat

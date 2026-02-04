@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Reaction emoji. Currently, it can be one of "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
         std::string emoji;
-
-        json to_json() const override;
-        static std::shared_ptr<ReactionTypeEmoji> from_json(const json& data);
     };
 }

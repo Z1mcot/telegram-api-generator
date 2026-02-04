@@ -43,8 +43,5 @@ namespace tgbot {
 
         // Optional. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds
         std::int64_t nanostar_amount;
-
-        json to_json() const override;
-        static std::shared_ptr<AffiliateInfo> from_json(const json& data);
     };
 }

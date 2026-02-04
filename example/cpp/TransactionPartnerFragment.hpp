@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Optional. State of the transaction if the transaction is outgoing
         std::shared_ptr<RevenueWithdrawalState> withdrawal_state;
-
-        json to_json() const override;
-        static std::shared_ptr<TransactionPartnerFragment> from_json(const json& data);
     };
 }

@@ -26,9 +26,9 @@ namespace tgbot {
      *
      * @param business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
      * @param chat_id Unique identifier for the target chat or username of the target channel (in the format @channelusername). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
-     * @param message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @param message_thread_id Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
      * @param direct_messages_topic_id Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
-     * @param star_count The number of Telegram Stars that must be paid to buy access to the media; 1-10000
+     * @param star_count The number of Telegram Stars that must be paid to buy access to the media; 1-25000
      * @param media A JSON-serialized array describing the media to be sent; up to 10 items
      * @param payload Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
      * @param caption Media caption, 0-1024 characters after entities parsing
@@ -49,13 +49,13 @@ namespace tgbot {
         // Unique identifier for the target chat or username of the target channel (in the format @channelusername). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
         ChatId chat_id;
 
-        // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        // Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         MessageThreadId message_thread_id;
 
         // Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         std::int64_t direct_messages_topic_id;
 
-        // The number of Telegram Stars that must be paid to buy access to the media; 1-10000
+        // The number of Telegram Stars that must be paid to buy access to the media; 1-25000
         std::int64_t star_count;
 
         // A JSON-serialized array describing the media to be sent; up to 10 items

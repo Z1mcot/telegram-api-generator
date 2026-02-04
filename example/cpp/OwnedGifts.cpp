@@ -5,28 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json OwnedGifts::to_json() const {
-        json j;
-        j["total_count"] = total_count;
-        std::vector<json> gifts_values;
-        gifts_values.reserve(gifts.size());
-        for (auto& e : gifts) {
-            gifts_values.push_back(e->to_json());
-        }
-        j["gifts"] = gifts_values;
-        j["next_offset"] = next_offset;
-        return j.dump();
+    void to_json(json& j, const OwnedGifts& value) {
+        j = json::object();
+        j["total_count"] = value.total_count;
+        j["gifts"] = value.gifts;
+        j["next_offset"] = value.next_offset;
     }
-    std::shared_ptr<OwnedGifts> OwnedGifts::from_json(const json& data) {
-        auto result(std::make_shared<OwnedGifts>());
-        result->total_count = data["total_count"].get<std::int64_t>();
-        std::vector<std::vector<std::shared_ptr<OwnedGift>>> gifts_values;
-        gifts_values.reserve(gifts.size());
-        for (auto& e : data["gifts"]) {
-            gifts_values.push_back(std::vector<std::shared_ptr<OwnedGift>>::from_json(e));
+
+    void from_json(const json& j, OwnedGifts& value) {
+        if (j.contains("total_count")) {
+            j.at("total_count").get_to(value.total_count);
         }
-        result->gifts = gifts_values;
-        result->next_offset = data["next_offset"].get<std::string>();
-        return result;
+        if (j.contains("gifts")) {
+            j.at("gifts").get_to(value.gifts);
+        }
+        if (j.contains("next_offset")) {
+            j.at("next_offset").get_to(value.next_offset);
+        }
     }
 }

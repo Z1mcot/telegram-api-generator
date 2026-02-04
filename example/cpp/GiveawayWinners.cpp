@@ -6,46 +6,58 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json GiveawayWinners::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["giveaway_message_id"] = giveaway_message_id;
-        j["winners_selection_date"] = winners_selection_date;
-        j["winner_count"] = winner_count;
-        std::vector<json> winners_values;
-        winners_values.reserve(winners.size());
-        for (auto& e : winners) {
-            winners_values.push_back(e->to_json());
-        }
-        j["winners"] = winners_values;
-        j["additional_chat_count"] = additional_chat_count;
-        j["prize_star_count"] = prize_star_count;
-        j["premium_subscription_month_count"] = premium_subscription_month_count;
-        j["unclaimed_prize_count"] = unclaimed_prize_count;
-        j["only_new_members"] = only_new_members;
-        j["was_refunded"] = was_refunded;
-        j["prize_description"] = prize_description;
-        return j.dump();
+    void to_json(json& j, const GiveawayWinners& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["giveaway_message_id"] = value.giveaway_message_id;
+        j["winners_selection_date"] = value.winners_selection_date;
+        j["winner_count"] = value.winner_count;
+        j["winners"] = value.winners;
+        j["additional_chat_count"] = value.additional_chat_count;
+        j["prize_star_count"] = value.prize_star_count;
+        j["premium_subscription_month_count"] = value.premium_subscription_month_count;
+        j["unclaimed_prize_count"] = value.unclaimed_prize_count;
+        j["only_new_members"] = value.only_new_members;
+        j["was_refunded"] = value.was_refunded;
+        j["prize_description"] = value.prize_description;
     }
-    std::shared_ptr<GiveawayWinners> GiveawayWinners::from_json(const json& data) {
-        auto result(std::make_shared<GiveawayWinners>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->giveaway_message_id = data["giveaway_message_id"].get<std::int64_t>();
-        result->winners_selection_date = data["winners_selection_date"].get<std::int64_t>();
-        result->winner_count = data["winner_count"].get<std::int64_t>();
-        std::vector<std::vector<std::shared_ptr<User>>> winners_values;
-        winners_values.reserve(winners.size());
-        for (auto& e : data["winners"]) {
-            winners_values.push_back(std::vector<std::shared_ptr<User>>::from_json(e));
+
+    void from_json(const json& j, GiveawayWinners& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
         }
-        result->winners = winners_values;
-        result->additional_chat_count = data["additional_chat_count"].get<std::int64_t>();
-        result->prize_star_count = data["prize_star_count"].get<std::int64_t>();
-        result->premium_subscription_month_count = data["premium_subscription_month_count"].get<std::int64_t>();
-        result->unclaimed_prize_count = data["unclaimed_prize_count"].get<std::int64_t>();
-        result->only_new_members = data["only_new_members"].get<bool>();
-        result->was_refunded = data["was_refunded"].get<bool>();
-        result->prize_description = data["prize_description"].get<std::string>();
-        return result;
+        if (j.contains("giveaway_message_id")) {
+            j.at("giveaway_message_id").get_to(value.giveaway_message_id);
+        }
+        if (j.contains("winners_selection_date")) {
+            j.at("winners_selection_date").get_to(value.winners_selection_date);
+        }
+        if (j.contains("winner_count")) {
+            j.at("winner_count").get_to(value.winner_count);
+        }
+        if (j.contains("winners")) {
+            j.at("winners").get_to(value.winners);
+        }
+        if (j.contains("additional_chat_count")) {
+            j.at("additional_chat_count").get_to(value.additional_chat_count);
+        }
+        if (j.contains("prize_star_count")) {
+            j.at("prize_star_count").get_to(value.prize_star_count);
+        }
+        if (j.contains("premium_subscription_month_count")) {
+            j.at("premium_subscription_month_count").get_to(value.premium_subscription_month_count);
+        }
+        if (j.contains("unclaimed_prize_count")) {
+            j.at("unclaimed_prize_count").get_to(value.unclaimed_prize_count);
+        }
+        if (j.contains("only_new_members")) {
+            j.at("only_new_members").get_to(value.only_new_members);
+        }
+        if (j.contains("was_refunded")) {
+            j.at("was_refunded").get_to(value.was_refunded);
+        }
+        if (j.contains("prize_description")) {
+            j.at("prize_description").get_to(value.prize_description);
+        }
     }
 }

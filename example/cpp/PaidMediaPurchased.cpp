@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PaidMediaPurchased::to_json() const {
-        json j;
-        j["from"] = from->to_json();
-        j["paid_media_payload"] = paid_media_payload;
-        return j.dump();
+    void to_json(json& j, const PaidMediaPurchased& value) {
+        j = json::object();
+        j["from"] = value.from;
+        j["paid_media_payload"] = value.paid_media_payload;
     }
-    std::shared_ptr<PaidMediaPurchased> PaidMediaPurchased::from_json(const json& data) {
-        auto result(std::make_shared<PaidMediaPurchased>());
-        result->from = User::from_json(data["from"]);
-        result->paid_media_payload = data["paid_media_payload"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, PaidMediaPurchased& value) {
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("paid_media_payload")) {
+            j.at("paid_media_payload").get_to(value.paid_media_payload);
+        }
     }
 }

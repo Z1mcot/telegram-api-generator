@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 
 namespace tgbot {
 
@@ -22,7 +23,7 @@ namespace tgbot {
      *
      * @param business_connection_id Unique identifier of the business connection on behalf of which the message will be sent
      * @param chat_id Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats.
-     * @param message_thread_id Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+     * @param message_thread_id Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
      * @param game_short_name Short name of the game, serves as the unique identifier for the game. Set up your games via @BotFather.
      * @param disable_notification Sends the message silently. Users will receive a notification with no sound.
      * @param protect_content Protects the contents of the sent message from forwarding and saving
@@ -38,7 +39,7 @@ namespace tgbot {
         // Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats.
         ChatId chat_id;
 
-        // Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        // Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         MessageThreadId message_thread_id;
 
         // Short name of the game, serves as the unique identifier for the game. Set up your games via @BotFather.

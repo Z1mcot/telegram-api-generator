@@ -53,8 +53,5 @@ namespace tgbot {
 
         // Optional. Identifier of the specific checklist task to be replied to
         std::int64_t checklist_task_id;
-
-        json to_json() const override;
-        static std::shared_ptr<ReplyParameters> from_json(const json& data);
     };
 }

@@ -50,8 +50,5 @@ namespace tgbot {
 
         // Optional. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always True, if the document is sent as part of an album.
         bool disable_content_type_detection;
-
-        json to_json() const override;
-        static std::shared_ptr<InputMediaDocument> from_json(const json& data);
     };
 }

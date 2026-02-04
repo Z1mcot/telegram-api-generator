@@ -31,8 +31,5 @@ namespace tgbot {
 
         // Expected price of the post
         std::shared_ptr<SuggestedPostPrice> price;
-
-        json to_json() const override;
-        static std::shared_ptr<SuggestedPostApprovalFailed> from_json(const json& data);
     };
 }

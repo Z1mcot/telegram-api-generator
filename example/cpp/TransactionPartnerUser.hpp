@@ -65,8 +65,5 @@ namespace tgbot {
 
         // Optional. Number of months the gifted Telegram Premium subscription will be active for; for “premium_purchase” transactions only
         std::int64_t premium_subscription_duration;
-
-        json to_json() const override;
-        static std::shared_ptr<TransactionPartnerUser> from_json(const json& data);
     };
 }

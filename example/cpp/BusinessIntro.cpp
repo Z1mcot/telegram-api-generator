@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BusinessIntro::to_json() const {
-        json j;
-        j["title"] = title;
-        j["message"] = message;
-        j["sticker"] = sticker->to_json();
-        return j.dump();
+    void to_json(json& j, const BusinessIntro& value) {
+        j = json::object();
+        j["title"] = value.title;
+        j["message"] = value.message;
+        j["sticker"] = value.sticker;
     }
-    std::shared_ptr<BusinessIntro> BusinessIntro::from_json(const json& data) {
-        auto result(std::make_shared<BusinessIntro>());
-        result->title = data["title"].get<std::string>();
-        result->message = data["message"].get<std::string>();
-        result->sticker = Sticker::from_json(data["sticker"]);
-        return result;
+
+    void from_json(const json& j, BusinessIntro& value) {
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("message")) {
+            j.at("message").get_to(value.message);
+        }
+        if (j.contains("sticker")) {
+            j.at("sticker").get_to(value.sticker);
+        }
     }
 }

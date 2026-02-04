@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputProfilePhotoAnimated::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["animation"] = animation;
-        j["main_frame_timestamp"] = main_frame_timestamp;
-        return j.dump();
+    void to_json(json& j, const InputProfilePhotoAnimated& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["animation"] = value.animation;
+        j["main_frame_timestamp"] = value.main_frame_timestamp;
     }
-    std::shared_ptr<InputProfilePhotoAnimated> InputProfilePhotoAnimated::from_json(const json& data) {
-        auto result(std::make_shared<InputProfilePhotoAnimated>());
-        result->type_ = data["type_"].get<std::string>();
-        result->animation = data["animation"].get<std::string>();
-        result->main_frame_timestamp = data["main_frame_timestamp"].get<double>();
-        return result;
+
+    void from_json(const json& j, InputProfilePhotoAnimated& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("animation")) {
+            j.at("animation").get_to(value.animation);
+        }
+        if (j.contains("main_frame_timestamp")) {
+            j.at("main_frame_timestamp").get_to(value.main_frame_timestamp);
+        }
     }
 }

@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~RevenueWithdrawalStateFailed() = default;
         // Type of the state, always “failed”
         std::string type_;
-
-        json to_json() const override;
-        static std::shared_ptr<RevenueWithdrawalStateFailed> from_json(const json& data);
     };
 }

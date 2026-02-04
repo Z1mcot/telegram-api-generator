@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Information about the user
         std::shared_ptr<User> user;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatMemberLeft> from_json(const json& data);
     };
 }

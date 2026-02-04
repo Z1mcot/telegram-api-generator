@@ -37,8 +37,5 @@ namespace tgbot {
 
         // Optional. Pass True to request the permission for your bot to send messages to the user.
         bool request_write_access;
-
-        json to_json() const override;
-        static std::shared_ptr<LoginUrl> from_json(const json& data);
     };
 }

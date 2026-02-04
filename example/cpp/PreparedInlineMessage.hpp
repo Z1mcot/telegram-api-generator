@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used
         std::int64_t expiration_date;
-
-        json to_json() const override;
-        static std::shared_ptr<PreparedInlineMessage> from_json(const json& data);
     };
 }

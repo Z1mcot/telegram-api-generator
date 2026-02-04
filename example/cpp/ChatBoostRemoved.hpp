@@ -39,8 +39,5 @@ namespace tgbot {
 
         // Source of the removed boost
         std::shared_ptr<ChatBoostSource> source;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatBoostRemoved> from_json(const json& data);
     };
 }

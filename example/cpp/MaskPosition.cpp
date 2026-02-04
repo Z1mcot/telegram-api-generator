@@ -5,20 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MaskPosition::to_json() const {
-        json j;
-        j["point"] = point;
-        j["x_shift"] = x_shift;
-        j["y_shift"] = y_shift;
-        j["scale"] = scale;
-        return j.dump();
+    void to_json(json& j, const MaskPosition& value) {
+        j = json::object();
+        j["point"] = value.point;
+        j["x_shift"] = value.x_shift;
+        j["y_shift"] = value.y_shift;
+        j["scale"] = value.scale;
     }
-    std::shared_ptr<MaskPosition> MaskPosition::from_json(const json& data) {
-        auto result(std::make_shared<MaskPosition>());
-        result->point = data["point"].get<std::string>();
-        result->x_shift = data["x_shift"].get<double>();
-        result->y_shift = data["y_shift"].get<double>();
-        result->scale = data["scale"].get<double>();
-        return result;
+
+    void from_json(const json& j, MaskPosition& value) {
+        if (j.contains("point")) {
+            j.at("point").get_to(value.point);
+        }
+        if (j.contains("x_shift")) {
+            j.at("x_shift").get_to(value.x_shift);
+        }
+        if (j.contains("y_shift")) {
+            j.at("y_shift").get_to(value.y_shift);
+        }
+        if (j.contains("scale")) {
+            j.at("scale").get_to(value.scale);
+        }
     }
 }

@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~BotCommandScopeDefault() = default;
         // Scope type, must be default
         std::string type_;
-
-        json to_json() const override;
-        static std::shared_ptr<BotCommandScopeDefault> from_json(const json& data);
     };
 }

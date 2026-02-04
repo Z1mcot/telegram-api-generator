@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StarAmount::to_json() const {
-        json j;
-        j["amount"] = amount;
-        j["nanostar_amount"] = nanostar_amount;
-        return j.dump();
+    void to_json(json& j, const StarAmount& value) {
+        j = json::object();
+        j["amount"] = value.amount;
+        j["nanostar_amount"] = value.nanostar_amount;
     }
-    std::shared_ptr<StarAmount> StarAmount::from_json(const json& data) {
-        auto result(std::make_shared<StarAmount>());
-        result->amount = data["amount"].get<std::int64_t>();
-        result->nanostar_amount = data["nanostar_amount"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, StarAmount& value) {
+        if (j.contains("amount")) {
+            j.at("amount").get_to(value.amount);
+        }
+        if (j.contains("nanostar_amount")) {
+            j.at("nanostar_amount").get_to(value.nanostar_amount);
+        }
     }
 }

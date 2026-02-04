@@ -40,8 +40,5 @@ namespace tgbot {
 
         // Optional. Link preview generation options for the message
         std::shared_ptr<LinkPreviewOptions> link_preview_options;
-
-        json to_json() const override;
-        static std::shared_ptr<InputTextMessageContent> from_json(const json& data);
     };
 }

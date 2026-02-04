@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Information about the paid media
         std::vector<std::shared_ptr<PaidMedia>> paid_media;
-
-        json to_json() const override;
-        static std::shared_ptr<PaidMediaInfo> from_json(const json& data);
     };
 }

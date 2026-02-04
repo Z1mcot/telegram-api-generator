@@ -25,8 +25,5 @@ namespace tgbot {
         virtual ~UserChatBoosts() = default;
         // The list of boosts added to the chat by the user
         std::vector<std::shared_ptr<ChatBoost>> boosts;
-
-        json to_json() const override;
-        static std::shared_ptr<UserChatBoosts> from_json(const json& data);
     };
 }

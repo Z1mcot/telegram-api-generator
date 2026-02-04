@@ -44,8 +44,5 @@ namespace tgbot {
 
         // The radius of the rectangle corner rounding, as a percentage of the media width
         double corner_radius_percentage;
-
-        json to_json() const override;
-        static std::shared_ptr<StoryAreaPosition> from_json(const json& data);
     };
 }

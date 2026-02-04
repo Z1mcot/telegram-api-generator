@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~ChatBoostAdded() = default;
         // Number of boosts added by the user
         std::int64_t boost_count;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatBoostAdded> from_json(const json& data);
     };
 }

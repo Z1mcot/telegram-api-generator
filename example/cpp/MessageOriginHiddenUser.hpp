@@ -32,8 +32,5 @@ namespace tgbot {
 
         // Name of the user that sent the message originally
         std::string sender_user_name;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageOriginHiddenUser> from_json(const json& data);
     };
 }

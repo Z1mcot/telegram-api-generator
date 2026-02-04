@@ -58,8 +58,5 @@ namespace tgbot {
 
         // Optional. Thumbnail of the album cover to which the music file belongs
         std::shared_ptr<PhotoSize> thumbnail;
-
-        json to_json() const override;
-        static std::shared_ptr<Audio> from_json(const json& data);
     };
 }

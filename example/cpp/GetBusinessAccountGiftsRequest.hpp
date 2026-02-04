@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 
 namespace tgbot {
 
@@ -21,8 +22,10 @@ namespace tgbot {
      * @param exclude_unsaved Pass True to exclude gifts that aren't saved to the account's profile page
      * @param exclude_saved Pass True to exclude gifts that are saved to the account's profile page
      * @param exclude_unlimited Pass True to exclude gifts that can be purchased an unlimited number of times
-     * @param exclude_limited Pass True to exclude gifts that can be purchased a limited number of times
+     * @param exclude_limited_upgradable Pass True to exclude gifts that can be purchased a limited number of times and can be upgraded to unique
+     * @param exclude_limited_non_upgradable Pass True to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique
      * @param exclude_unique Pass True to exclude unique gifts
+     * @param exclude_from_blockchain Pass True to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram
      * @param sort_by_price Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.
      * @param offset Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
      * @param limit The maximum number of gifts to be returned; 1-100. Defaults to 100
@@ -40,11 +43,17 @@ namespace tgbot {
         // Pass True to exclude gifts that can be purchased an unlimited number of times
         bool exclude_unlimited;
 
-        // Pass True to exclude gifts that can be purchased a limited number of times
-        bool exclude_limited;
+        // Pass True to exclude gifts that can be purchased a limited number of times and can be upgraded to unique
+        bool exclude_limited_upgradable;
+
+        // Pass True to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique
+        bool exclude_limited_non_upgradable;
 
         // Pass True to exclude unique gifts
         bool exclude_unique;
+
+        // Pass True to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram
+        bool exclude_from_blockchain;
 
         // Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.
         bool sort_by_price;

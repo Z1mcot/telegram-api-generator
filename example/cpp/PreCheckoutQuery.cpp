@@ -7,26 +7,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PreCheckoutQuery::to_json() const {
-        json j;
-        j["id"] = id;
-        j["from"] = from->to_json();
-        j["currency"] = currency;
-        j["total_amount"] = total_amount;
-        j["invoice_payload"] = invoice_payload;
-        j["shipping_option_id"] = shipping_option_id;
-        j["order_info"] = order_info->to_json();
-        return j.dump();
+    void to_json(json& j, const PreCheckoutQuery& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["from"] = value.from;
+        j["currency"] = value.currency;
+        j["total_amount"] = value.total_amount;
+        j["invoice_payload"] = value.invoice_payload;
+        j["shipping_option_id"] = value.shipping_option_id;
+        j["order_info"] = value.order_info;
     }
-    std::shared_ptr<PreCheckoutQuery> PreCheckoutQuery::from_json(const json& data) {
-        auto result(std::make_shared<PreCheckoutQuery>());
-        result->id = data["id"].get<std::string>();
-        result->from = User::from_json(data["from"]);
-        result->currency = data["currency"].get<std::string>();
-        result->total_amount = data["total_amount"].get<std::int64_t>();
-        result->invoice_payload = data["invoice_payload"].get<std::string>();
-        result->shipping_option_id = data["shipping_option_id"].get<std::string>();
-        result->order_info = OrderInfo::from_json(data["order_info"]);
-        return result;
+
+    void from_json(const json& j, PreCheckoutQuery& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("currency")) {
+            j.at("currency").get_to(value.currency);
+        }
+        if (j.contains("total_amount")) {
+            j.at("total_amount").get_to(value.total_amount);
+        }
+        if (j.contains("invoice_payload")) {
+            j.at("invoice_payload").get_to(value.invoice_payload);
+        }
+        if (j.contains("shipping_option_id")) {
+            j.at("shipping_option_id").get_to(value.shipping_option_id);
+        }
+        if (j.contains("order_info")) {
+            j.at("order_info").get_to(value.order_info);
+        }
     }
 }

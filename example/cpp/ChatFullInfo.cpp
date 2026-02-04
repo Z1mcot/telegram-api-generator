@@ -12,129 +12,215 @@
 #include "ChatPermissions.hpp"
 #include "AcceptedGiftTypes.hpp"
 #include "ChatLocation.hpp"
+#include "UserRating.hpp"
+#include "UniqueGiftColors.hpp"
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatFullInfo::to_json() const {
-        json j;
-        j["id"] = id.to_json();
-        j["type"] = type_;
-        j["title"] = title;
-        j["username"] = username;
-        j["first_name"] = first_name;
-        j["last_name"] = last_name;
-        j["is_forum"] = is_forum;
-        j["is_direct_messages"] = is_direct_messages;
-        j["accent_color_id"] = accent_color_id;
-        j["max_reaction_count"] = max_reaction_count;
-        j["photo"] = photo->to_json();
-        std::vector<json> active_usernames_values;
-        active_usernames_values.reserve(active_usernames.size());
-        for (auto& e : active_usernames) {
-            active_usernames_values.push_back(e);
-        }
-        j["active_usernames"] = active_usernames_values;
-        j["birthdate"] = birthdate->to_json();
-        j["business_intro"] = business_intro->to_json();
-        j["business_location"] = business_location->to_json();
-        j["business_opening_hours"] = business_opening_hours->to_json();
-        j["personal_chat"] = personal_chat->to_json();
-        j["parent_chat"] = parent_chat->to_json();
-        std::vector<json> available_reactions_values;
-        available_reactions_values.reserve(available_reactions.size());
-        for (auto& e : available_reactions) {
-            available_reactions_values.push_back(e->to_json());
-        }
-        j["available_reactions"] = available_reactions_values;
-        j["background_custom_emoji_id"] = background_custom_emoji_id;
-        j["profile_accent_color_id"] = profile_accent_color_id;
-        j["profile_background_custom_emoji_id"] = profile_background_custom_emoji_id;
-        j["emoji_status_custom_emoji_id"] = emoji_status_custom_emoji_id;
-        j["emoji_status_expiration_date"] = emoji_status_expiration_date;
-        j["bio"] = bio;
-        j["has_private_forwards"] = has_private_forwards;
-        j["has_restricted_voice_and_video_messages"] = has_restricted_voice_and_video_messages;
-        j["join_to_send_messages"] = join_to_send_messages;
-        j["join_by_request"] = join_by_request;
-        j["description"] = description;
-        j["invite_link"] = invite_link;
-        j["pinned_message"] = pinned_message->to_json();
-        j["permissions"] = permissions->to_json();
-        j["accepted_gift_types"] = accepted_gift_types->to_json();
-        j["can_send_paid_media"] = can_send_paid_media;
-        j["slow_mode_delay"] = slow_mode_delay;
-        j["unrestrict_boost_count"] = unrestrict_boost_count;
-        j["message_auto_delete_time"] = message_auto_delete_time;
-        j["has_aggressive_anti_spam_enabled"] = has_aggressive_anti_spam_enabled;
-        j["has_hidden_members"] = has_hidden_members;
-        j["has_protected_content"] = has_protected_content;
-        j["has_visible_history"] = has_visible_history;
-        j["sticker_set_name"] = sticker_set_name;
-        j["can_set_sticker_set"] = can_set_sticker_set;
-        j["custom_emoji_sticker_set_name"] = custom_emoji_sticker_set_name;
-        j["linked_chat_id"] = linked_chat_id.to_json();
-        j["location"] = location->to_json();
-        return j.dump();
+    void to_json(json& j, const ChatFullInfo& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["type"] = value.type_;
+        j["title"] = value.title;
+        j["username"] = value.username;
+        j["first_name"] = value.first_name;
+        j["last_name"] = value.last_name;
+        j["is_forum"] = value.is_forum;
+        j["is_direct_messages"] = value.is_direct_messages;
+        j["accent_color_id"] = value.accent_color_id;
+        j["max_reaction_count"] = value.max_reaction_count;
+        j["photo"] = value.photo;
+        j["active_usernames"] = value.active_usernames;
+        j["birthdate"] = value.birthdate;
+        j["business_intro"] = value.business_intro;
+        j["business_location"] = value.business_location;
+        j["business_opening_hours"] = value.business_opening_hours;
+        j["personal_chat"] = value.personal_chat;
+        j["parent_chat"] = value.parent_chat;
+        j["available_reactions"] = value.available_reactions;
+        j["background_custom_emoji_id"] = value.background_custom_emoji_id;
+        j["profile_accent_color_id"] = value.profile_accent_color_id;
+        j["profile_background_custom_emoji_id"] = value.profile_background_custom_emoji_id;
+        j["emoji_status_custom_emoji_id"] = value.emoji_status_custom_emoji_id;
+        j["emoji_status_expiration_date"] = value.emoji_status_expiration_date;
+        j["bio"] = value.bio;
+        j["has_private_forwards"] = value.has_private_forwards;
+        j["has_restricted_voice_and_video_messages"] = value.has_restricted_voice_and_video_messages;
+        j["join_to_send_messages"] = value.join_to_send_messages;
+        j["join_by_request"] = value.join_by_request;
+        j["description"] = value.description;
+        j["invite_link"] = value.invite_link;
+        j["pinned_message"] = value.pinned_message;
+        j["permissions"] = value.permissions;
+        j["accepted_gift_types"] = value.accepted_gift_types;
+        j["can_send_paid_media"] = value.can_send_paid_media;
+        j["slow_mode_delay"] = value.slow_mode_delay;
+        j["unrestrict_boost_count"] = value.unrestrict_boost_count;
+        j["message_auto_delete_time"] = value.message_auto_delete_time;
+        j["has_aggressive_anti_spam_enabled"] = value.has_aggressive_anti_spam_enabled;
+        j["has_hidden_members"] = value.has_hidden_members;
+        j["has_protected_content"] = value.has_protected_content;
+        j["has_visible_history"] = value.has_visible_history;
+        j["sticker_set_name"] = value.sticker_set_name;
+        j["can_set_sticker_set"] = value.can_set_sticker_set;
+        j["custom_emoji_sticker_set_name"] = value.custom_emoji_sticker_set_name;
+        j["linked_chat_id"] = value.linked_chat_id;
+        j["location"] = value.location;
+        j["rating"] = value.rating;
+        j["unique_gift_colors"] = value.unique_gift_colors;
+        j["paid_message_star_count"] = value.paid_message_star_count;
     }
-    std::shared_ptr<ChatFullInfo> ChatFullInfo::from_json(const json& data) {
-        auto result(std::make_shared<ChatFullInfo>());
-        result->id = ChatId::from_json(data["id"]);
-        result->type_ = data["type_"].get<std::string>();
-        result->title = data["title"].get<std::string>();
-        result->username = data["username"].get<std::string>();
-        result->first_name = data["first_name"].get<std::string>();
-        result->last_name = data["last_name"].get<std::string>();
-        result->is_forum = data["is_forum"].get<bool>();
-        result->is_direct_messages = data["is_direct_messages"].get<bool>();
-        result->accent_color_id = data["accent_color_id"].get<std::int64_t>();
-        result->max_reaction_count = data["max_reaction_count"].get<std::int64_t>();
-        result->photo = ChatPhoto::from_json(data["photo"]);
-        std::vector<std::vector<std::string>> active_usernames_values;
-        active_usernames_values.reserve(active_usernames.size());
-        for (auto& e : data["active_usernames"]) {
-            active_usernames_values.push_back(std::vector<std::string>::from_json(e));
+
+    void from_json(const json& j, ChatFullInfo& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
         }
-        result->active_usernames = active_usernames_values;
-        result->birthdate = Birthdate::from_json(data["birthdate"]);
-        result->business_intro = BusinessIntro::from_json(data["business_intro"]);
-        result->business_location = BusinessLocation::from_json(data["business_location"]);
-        result->business_opening_hours = BusinessOpeningHours::from_json(data["business_opening_hours"]);
-        result->personal_chat = Chat::from_json(data["personal_chat"]);
-        result->parent_chat = Chat::from_json(data["parent_chat"]);
-        std::vector<std::vector<std::shared_ptr<ReactionType>>> available_reactions_values;
-        available_reactions_values.reserve(available_reactions.size());
-        for (auto& e : data["available_reactions"]) {
-            available_reactions_values.push_back(std::vector<std::shared_ptr<ReactionType>>::from_json(e));
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->available_reactions = available_reactions_values;
-        result->background_custom_emoji_id = data["background_custom_emoji_id"].get<std::string>();
-        result->profile_accent_color_id = data["profile_accent_color_id"].get<std::int64_t>();
-        result->profile_background_custom_emoji_id = data["profile_background_custom_emoji_id"].get<std::string>();
-        result->emoji_status_custom_emoji_id = data["emoji_status_custom_emoji_id"].get<std::string>();
-        result->emoji_status_expiration_date = data["emoji_status_expiration_date"].get<std::int64_t>();
-        result->bio = data["bio"].get<std::string>();
-        result->has_private_forwards = data["has_private_forwards"].get<bool>();
-        result->has_restricted_voice_and_video_messages = data["has_restricted_voice_and_video_messages"].get<bool>();
-        result->join_to_send_messages = data["join_to_send_messages"].get<bool>();
-        result->join_by_request = data["join_by_request"].get<bool>();
-        result->description = data["description"].get<std::string>();
-        result->invite_link = data["invite_link"].get<std::string>();
-        result->pinned_message = Message::from_json(data["pinned_message"]);
-        result->permissions = ChatPermissions::from_json(data["permissions"]);
-        result->accepted_gift_types = AcceptedGiftTypes::from_json(data["accepted_gift_types"]);
-        result->can_send_paid_media = data["can_send_paid_media"].get<bool>();
-        result->slow_mode_delay = data["slow_mode_delay"].get<std::int64_t>();
-        result->unrestrict_boost_count = data["unrestrict_boost_count"].get<std::int64_t>();
-        result->message_auto_delete_time = data["message_auto_delete_time"].get<std::int64_t>();
-        result->has_aggressive_anti_spam_enabled = data["has_aggressive_anti_spam_enabled"].get<bool>();
-        result->has_hidden_members = data["has_hidden_members"].get<bool>();
-        result->has_protected_content = data["has_protected_content"].get<bool>();
-        result->has_visible_history = data["has_visible_history"].get<bool>();
-        result->sticker_set_name = data["sticker_set_name"].get<std::string>();
-        result->can_set_sticker_set = data["can_set_sticker_set"].get<bool>();
-        result->custom_emoji_sticker_set_name = data["custom_emoji_sticker_set_name"].get<std::string>();
-        result->linked_chat_id = ChatId::from_json(data["linked_chat_id"]);
-        result->location = ChatLocation::from_json(data["location"]);
-        return result;
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("username")) {
+            j.at("username").get_to(value.username);
+        }
+        if (j.contains("first_name")) {
+            j.at("first_name").get_to(value.first_name);
+        }
+        if (j.contains("last_name")) {
+            j.at("last_name").get_to(value.last_name);
+        }
+        if (j.contains("is_forum")) {
+            j.at("is_forum").get_to(value.is_forum);
+        }
+        if (j.contains("is_direct_messages")) {
+            j.at("is_direct_messages").get_to(value.is_direct_messages);
+        }
+        if (j.contains("accent_color_id")) {
+            j.at("accent_color_id").get_to(value.accent_color_id);
+        }
+        if (j.contains("max_reaction_count")) {
+            j.at("max_reaction_count").get_to(value.max_reaction_count);
+        }
+        if (j.contains("photo")) {
+            j.at("photo").get_to(value.photo);
+        }
+        if (j.contains("active_usernames")) {
+            j.at("active_usernames").get_to(value.active_usernames);
+        }
+        if (j.contains("birthdate")) {
+            j.at("birthdate").get_to(value.birthdate);
+        }
+        if (j.contains("business_intro")) {
+            j.at("business_intro").get_to(value.business_intro);
+        }
+        if (j.contains("business_location")) {
+            j.at("business_location").get_to(value.business_location);
+        }
+        if (j.contains("business_opening_hours")) {
+            j.at("business_opening_hours").get_to(value.business_opening_hours);
+        }
+        if (j.contains("personal_chat")) {
+            j.at("personal_chat").get_to(value.personal_chat);
+        }
+        if (j.contains("parent_chat")) {
+            j.at("parent_chat").get_to(value.parent_chat);
+        }
+        if (j.contains("available_reactions")) {
+            j.at("available_reactions").get_to(value.available_reactions);
+        }
+        if (j.contains("background_custom_emoji_id")) {
+            j.at("background_custom_emoji_id").get_to(value.background_custom_emoji_id);
+        }
+        if (j.contains("profile_accent_color_id")) {
+            j.at("profile_accent_color_id").get_to(value.profile_accent_color_id);
+        }
+        if (j.contains("profile_background_custom_emoji_id")) {
+            j.at("profile_background_custom_emoji_id").get_to(value.profile_background_custom_emoji_id);
+        }
+        if (j.contains("emoji_status_custom_emoji_id")) {
+            j.at("emoji_status_custom_emoji_id").get_to(value.emoji_status_custom_emoji_id);
+        }
+        if (j.contains("emoji_status_expiration_date")) {
+            j.at("emoji_status_expiration_date").get_to(value.emoji_status_expiration_date);
+        }
+        if (j.contains("bio")) {
+            j.at("bio").get_to(value.bio);
+        }
+        if (j.contains("has_private_forwards")) {
+            j.at("has_private_forwards").get_to(value.has_private_forwards);
+        }
+        if (j.contains("has_restricted_voice_and_video_messages")) {
+            j.at("has_restricted_voice_and_video_messages").get_to(value.has_restricted_voice_and_video_messages);
+        }
+        if (j.contains("join_to_send_messages")) {
+            j.at("join_to_send_messages").get_to(value.join_to_send_messages);
+        }
+        if (j.contains("join_by_request")) {
+            j.at("join_by_request").get_to(value.join_by_request);
+        }
+        if (j.contains("description")) {
+            j.at("description").get_to(value.description);
+        }
+        if (j.contains("invite_link")) {
+            j.at("invite_link").get_to(value.invite_link);
+        }
+        if (j.contains("pinned_message")) {
+            j.at("pinned_message").get_to(value.pinned_message);
+        }
+        if (j.contains("permissions")) {
+            j.at("permissions").get_to(value.permissions);
+        }
+        if (j.contains("accepted_gift_types")) {
+            j.at("accepted_gift_types").get_to(value.accepted_gift_types);
+        }
+        if (j.contains("can_send_paid_media")) {
+            j.at("can_send_paid_media").get_to(value.can_send_paid_media);
+        }
+        if (j.contains("slow_mode_delay")) {
+            j.at("slow_mode_delay").get_to(value.slow_mode_delay);
+        }
+        if (j.contains("unrestrict_boost_count")) {
+            j.at("unrestrict_boost_count").get_to(value.unrestrict_boost_count);
+        }
+        if (j.contains("message_auto_delete_time")) {
+            j.at("message_auto_delete_time").get_to(value.message_auto_delete_time);
+        }
+        if (j.contains("has_aggressive_anti_spam_enabled")) {
+            j.at("has_aggressive_anti_spam_enabled").get_to(value.has_aggressive_anti_spam_enabled);
+        }
+        if (j.contains("has_hidden_members")) {
+            j.at("has_hidden_members").get_to(value.has_hidden_members);
+        }
+        if (j.contains("has_protected_content")) {
+            j.at("has_protected_content").get_to(value.has_protected_content);
+        }
+        if (j.contains("has_visible_history")) {
+            j.at("has_visible_history").get_to(value.has_visible_history);
+        }
+        if (j.contains("sticker_set_name")) {
+            j.at("sticker_set_name").get_to(value.sticker_set_name);
+        }
+        if (j.contains("can_set_sticker_set")) {
+            j.at("can_set_sticker_set").get_to(value.can_set_sticker_set);
+        }
+        if (j.contains("custom_emoji_sticker_set_name")) {
+            j.at("custom_emoji_sticker_set_name").get_to(value.custom_emoji_sticker_set_name);
+        }
+        if (j.contains("linked_chat_id")) {
+            j.at("linked_chat_id").get_to(value.linked_chat_id);
+        }
+        if (j.contains("location")) {
+            j.at("location").get_to(value.location);
+        }
+        if (j.contains("rating")) {
+            j.at("rating").get_to(value.rating);
+        }
+        if (j.contains("unique_gift_colors")) {
+            j.at("unique_gift_colors").get_to(value.unique_gift_colors);
+        }
+        if (j.contains("paid_message_star_count")) {
+            j.at("paid_message_star_count").get_to(value.paid_message_star_count);
+        }
     }
 }

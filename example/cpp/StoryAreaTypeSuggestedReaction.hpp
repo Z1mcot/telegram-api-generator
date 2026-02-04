@@ -38,8 +38,5 @@ namespace tgbot {
 
         // Optional. Pass True if reaction area corner is flipped
         bool is_flipped;
-
-        json to_json() const override;
-        static std::shared_ptr<StoryAreaTypeSuggestedReaction> from_json(const json& data);
     };
 }

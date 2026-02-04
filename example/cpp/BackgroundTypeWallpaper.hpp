@@ -42,8 +42,5 @@ namespace tgbot {
 
         // Optional. True, if the background moves slightly when the device is tilted
         bool is_moving;
-
-        json to_json() const override;
-        static std::shared_ptr<BackgroundTypeWallpaper> from_json(const json& data);
     };
 }

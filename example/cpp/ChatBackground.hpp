@@ -26,8 +26,5 @@ namespace tgbot {
         virtual ~ChatBackground() = default;
         // Type of the background
         std::shared_ptr<BackgroundType> type_;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatBackground> from_json(const json& data);
     };
 }

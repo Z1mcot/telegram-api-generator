@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BotCommand::to_json() const {
-        json j;
-        j["command"] = command;
-        j["description"] = description;
-        return j.dump();
+    void to_json(json& j, const BotCommand& value) {
+        j = json::object();
+        j["command"] = value.command;
+        j["description"] = value.description;
     }
-    std::shared_ptr<BotCommand> BotCommand::from_json(const json& data) {
-        auto result(std::make_shared<BotCommand>());
-        result->command = data["command"].get<std::string>();
-        result->description = data["description"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, BotCommand& value) {
+        if (j.contains("command")) {
+            j.at("command").get_to(value.command);
+        }
+        if (j.contains("description")) {
+            j.at("description").get_to(value.description);
+        }
     }
 }

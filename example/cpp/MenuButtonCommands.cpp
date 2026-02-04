@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MenuButtonCommands::to_json() const {
-        json j;
-        j["type"] = type_;
-        return j.dump();
+    void to_json(json& j, const MenuButtonCommands& value) {
+        j = json::object();
+        j["type"] = value.type_;
     }
-    std::shared_ptr<MenuButtonCommands> MenuButtonCommands::from_json(const json& data) {
-        auto result(std::make_shared<MenuButtonCommands>());
-        result->type_ = data["type_"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, MenuButtonCommands& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
     }
 }

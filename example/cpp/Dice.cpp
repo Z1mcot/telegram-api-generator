@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Dice::to_json() const {
-        json j;
-        j["emoji"] = emoji;
-        j["value"] = value;
-        return j.dump();
+    void to_json(json& j, const Dice& value) {
+        j = json::object();
+        j["emoji"] = value.emoji;
+        j["value"] = value.value;
     }
-    std::shared_ptr<Dice> Dice::from_json(const json& data) {
-        auto result(std::make_shared<Dice>());
-        result->emoji = data["emoji"].get<std::string>();
-        result->value = data["value"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, Dice& value) {
+        if (j.contains("emoji")) {
+            j.at("emoji").get_to(value.emoji);
+        }
+        if (j.contains("value")) {
+            j.at("value").get_to(value.value);
+        }
     }
 }

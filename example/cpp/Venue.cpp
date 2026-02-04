@@ -6,26 +6,38 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Venue::to_json() const {
-        json j;
-        j["location"] = location->to_json();
-        j["title"] = title;
-        j["address"] = address;
-        j["foursquare_id"] = foursquare_id;
-        j["foursquare_type"] = foursquare_type;
-        j["google_place_id"] = google_place_id;
-        j["google_place_type"] = google_place_type;
-        return j.dump();
+    void to_json(json& j, const Venue& value) {
+        j = json::object();
+        j["location"] = value.location;
+        j["title"] = value.title;
+        j["address"] = value.address;
+        j["foursquare_id"] = value.foursquare_id;
+        j["foursquare_type"] = value.foursquare_type;
+        j["google_place_id"] = value.google_place_id;
+        j["google_place_type"] = value.google_place_type;
     }
-    std::shared_ptr<Venue> Venue::from_json(const json& data) {
-        auto result(std::make_shared<Venue>());
-        result->location = Location::from_json(data["location"]);
-        result->title = data["title"].get<std::string>();
-        result->address = data["address"].get<std::string>();
-        result->foursquare_id = data["foursquare_id"].get<std::string>();
-        result->foursquare_type = data["foursquare_type"].get<std::string>();
-        result->google_place_id = data["google_place_id"].get<std::string>();
-        result->google_place_type = data["google_place_type"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, Venue& value) {
+        if (j.contains("location")) {
+            j.at("location").get_to(value.location);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("address")) {
+            j.at("address").get_to(value.address);
+        }
+        if (j.contains("foursquare_id")) {
+            j.at("foursquare_id").get_to(value.foursquare_id);
+        }
+        if (j.contains("foursquare_type")) {
+            j.at("foursquare_type").get_to(value.foursquare_type);
+        }
+        if (j.contains("google_place_id")) {
+            j.at("google_place_id").get_to(value.google_place_id);
+        }
+        if (j.contains("google_place_type")) {
+            j.at("google_place_type").get_to(value.google_place_type);
+        }
     }
 }

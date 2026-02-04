@@ -134,8 +134,5 @@ namespace tgbot {
 
         // Optional. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.
         std::shared_ptr<ChatBoostRemoved> removed_chat_boost;
-
-        json to_json() const override;
-        static std::shared_ptr<Update> from_json(const json& data);
     };
 }

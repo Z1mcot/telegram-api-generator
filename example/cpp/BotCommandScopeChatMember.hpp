@@ -32,8 +32,5 @@ namespace tgbot {
 
         // Unique identifier of the target user
         UserId user_id;
-
-        json to_json() const override;
-        static std::shared_ptr<BotCommandScopeChatMember> from_json(const json& data);
     };
 }

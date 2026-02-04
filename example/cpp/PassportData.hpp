@@ -31,8 +31,5 @@ namespace tgbot {
 
         // Encrypted credentials required to decrypt the data
         std::shared_ptr<EncryptedCredentials> credentials;
-
-        json to_json() const override;
-        static std::shared_ptr<PassportData> from_json(const json& data);
     };
 }

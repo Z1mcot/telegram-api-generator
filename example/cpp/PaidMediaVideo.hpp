@@ -30,8 +30,5 @@ namespace tgbot {
 
         // The video
         std::shared_ptr<Video> video;
-
-        json to_json() const override;
-        static std::shared_ptr<PaidMediaVideo> from_json(const json& data);
     };
 }

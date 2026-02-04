@@ -6,42 +6,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputSticker::to_json() const {
-        json j;
-        j["sticker"] = sticker;
-        j["format"] = format;
-        std::vector<json> emoji_list_values;
-        emoji_list_values.reserve(emoji_list.size());
-        for (auto& e : emoji_list) {
-            emoji_list_values.push_back(e);
-        }
-        j["emoji_list"] = emoji_list_values;
-        j["mask_position"] = mask_position->to_json();
-        std::vector<json> keywords_values;
-        keywords_values.reserve(keywords.size());
-        for (auto& e : keywords) {
-            keywords_values.push_back(e);
-        }
-        j["keywords"] = keywords_values;
-        return j.dump();
+    void to_json(json& j, const InputSticker& value) {
+        j = json::object();
+        j["sticker"] = value.sticker;
+        j["format"] = value.format;
+        j["emoji_list"] = value.emoji_list;
+        j["mask_position"] = value.mask_position;
+        j["keywords"] = value.keywords;
     }
-    std::shared_ptr<InputSticker> InputSticker::from_json(const json& data) {
-        auto result(std::make_shared<InputSticker>());
-        result->sticker = data["sticker"].get<std::string>();
-        result->format = data["format"].get<std::string>();
-        std::vector<std::vector<std::string>> emoji_list_values;
-        emoji_list_values.reserve(emoji_list.size());
-        for (auto& e : data["emoji_list"]) {
-            emoji_list_values.push_back(std::vector<std::string>::from_json(e));
+
+    void from_json(const json& j, InputSticker& value) {
+        if (j.contains("sticker")) {
+            j.at("sticker").get_to(value.sticker);
         }
-        result->emoji_list = emoji_list_values;
-        result->mask_position = MaskPosition::from_json(data["mask_position"]);
-        std::vector<std::vector<std::string>> keywords_values;
-        keywords_values.reserve(keywords.size());
-        for (auto& e : data["keywords"]) {
-            keywords_values.push_back(std::vector<std::string>::from_json(e));
+        if (j.contains("format")) {
+            j.at("format").get_to(value.format);
         }
-        result->keywords = keywords_values;
-        return result;
+        if (j.contains("emoji_list")) {
+            j.at("emoji_list").get_to(value.emoji_list);
+        }
+        if (j.contains("mask_position")) {
+            j.at("mask_position").get_to(value.mask_position);
+        }
+        if (j.contains("keywords")) {
+            j.at("keywords").get_to(value.keywords);
+        }
     }
 }

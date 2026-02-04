@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json DirectMessagesTopic::to_json() const {
-        json j;
-        j["topic_id"] = topic_id;
-        j["user"] = user->to_json();
-        return j.dump();
+    void to_json(json& j, const DirectMessagesTopic& value) {
+        j = json::object();
+        j["topic_id"] = value.topic_id;
+        j["user"] = value.user;
     }
-    std::shared_ptr<DirectMessagesTopic> DirectMessagesTopic::from_json(const json& data) {
-        auto result(std::make_shared<DirectMessagesTopic>());
-        result->topic_id = data["topic_id"].get<std::int64_t>();
-        result->user = User::from_json(data["user"]);
-        return result;
+
+    void from_json(const json& j, DirectMessagesTopic& value) {
+        if (j.contains("topic_id")) {
+            j.at("topic_id").get_to(value.topic_id);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
     }
 }

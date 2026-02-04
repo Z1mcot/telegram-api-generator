@@ -6,30 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MessageReactionCountUpdated::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["message_id"] = message_id.to_json();
-        j["date"] = date;
-        std::vector<json> reactions_values;
-        reactions_values.reserve(reactions.size());
-        for (auto& e : reactions) {
-            reactions_values.push_back(e->to_json());
-        }
-        j["reactions"] = reactions_values;
-        return j.dump();
+    void to_json(json& j, const MessageReactionCountUpdated& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["message_id"] = value.message_id;
+        j["date"] = value.date;
+        j["reactions"] = value.reactions;
     }
-    std::shared_ptr<MessageReactionCountUpdated> MessageReactionCountUpdated::from_json(const json& data) {
-        auto result(std::make_shared<MessageReactionCountUpdated>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->message_id = MessageId::from_json(data["message_id"]);
-        result->date = data["date"].get<std::int64_t>();
-        std::vector<std::vector<std::shared_ptr<ReactionCount>>> reactions_values;
-        reactions_values.reserve(reactions.size());
-        for (auto& e : data["reactions"]) {
-            reactions_values.push_back(std::vector<std::shared_ptr<ReactionCount>>::from_json(e));
+
+    void from_json(const json& j, MessageReactionCountUpdated& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
         }
-        result->reactions = reactions_values;
-        return result;
+        if (j.contains("message_id")) {
+            j.at("message_id").get_to(value.message_id);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("reactions")) {
+            j.at("reactions").get_to(value.reactions);
+        }
     }
 }

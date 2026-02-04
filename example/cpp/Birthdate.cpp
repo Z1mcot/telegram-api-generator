@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Birthdate::to_json() const {
-        json j;
-        j["day"] = day;
-        j["month"] = month;
-        j["year"] = year;
-        return j.dump();
+    void to_json(json& j, const Birthdate& value) {
+        j = json::object();
+        j["day"] = value.day;
+        j["month"] = value.month;
+        j["year"] = value.year;
     }
-    std::shared_ptr<Birthdate> Birthdate::from_json(const json& data) {
-        auto result(std::make_shared<Birthdate>());
-        result->day = data["day"].get<std::int64_t>();
-        result->month = data["month"].get<std::int64_t>();
-        result->year = data["year"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, Birthdate& value) {
+        if (j.contains("day")) {
+            j.at("day").get_to(value.day);
+        }
+        if (j.contains("month")) {
+            j.at("month").get_to(value.month);
+        }
+        if (j.contains("year")) {
+            j.at("year").get_to(value.year);
+        }
     }
 }

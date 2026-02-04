@@ -56,8 +56,5 @@ namespace tgbot {
 
         // Optional. A list of update types the bot is subscribed to. Defaults to all update types except chat_member
         std::vector<std::string> allowed_updates;
-
-        json to_json() const override;
-        static std::shared_ptr<WebhookInfo> from_json(const json& data);
     };
 }

@@ -36,8 +36,5 @@ namespace tgbot {
 
         // A color of the area background in the ARGB format
         std::int64_t background_color;
-
-        json to_json() const override;
-        static std::shared_ptr<StoryAreaTypeWeather> from_json(const json& data);
     };
 }

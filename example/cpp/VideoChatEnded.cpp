@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json VideoChatEnded::to_json() const {
-        json j;
-        j["duration"] = duration;
-        return j.dump();
+    void to_json(json& j, const VideoChatEnded& value) {
+        j = json::object();
+        j["duration"] = value.duration;
     }
-    std::shared_ptr<VideoChatEnded> VideoChatEnded::from_json(const json& data) {
-        auto result(std::make_shared<VideoChatEnded>());
-        result->duration = data["duration"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, VideoChatEnded& value) {
+        if (j.contains("duration")) {
+            j.at("duration").get_to(value.duration);
+        }
     }
 }

@@ -113,7 +113,7 @@
 ### Data Types
 #### User
 
-    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean, has_main_web_app: Boolean)
+    User(id: Integer, is_bot: Boolean, first_name: String, last_name: String, username: String, language_code: String, is_premium: Boolean, added_to_attachment_menu: Boolean, can_join_groups: Boolean, can_read_all_group_messages: Boolean, supports_inline_queries: Boolean, can_connect_to_business: Boolean, has_main_web_app: Boolean, has_topics_enabled: Boolean)
 
 <p>This object represents a Telegram user or bot.</p>
 
@@ -132,6 +132,7 @@
 | supports_inline_queries | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot supports inline queries. Returned only in <a href="#getme">getMe</a>. |
 | can_connect_to_business | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in <a href="#getme">getMe</a>. |
 | has_main_web_app | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href="#getme">getMe</a>. |
+| has_topics_enabled | Boolean | false | <em>Optional</em>. <em>True</em>, if the bot has forum topic mode enabled in private chats. Returned only in <a href="#getme">getMe</a>. |
 
 #### Chat
 
@@ -152,7 +153,7 @@
 
 #### ChatFullInfo
 
-    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, is_direct_messages: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, parent_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, accepted_gift_types: AcceptedGiftTypes, can_send_paid_media: Boolean, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation)
+    ChatFullInfo(id: Integer, type: String, title: String, username: String, first_name: String, last_name: String, is_forum: Boolean, is_direct_messages: Boolean, accent_color_id: Integer, max_reaction_count: Integer, photo: ChatPhoto, active_usernames: List<String>, birthdate: Birthdate, business_intro: BusinessIntro, business_location: BusinessLocation, business_opening_hours: BusinessOpeningHours, personal_chat: Chat, parent_chat: Chat, available_reactions: List<ReactionType>, background_custom_emoji_id: String, profile_accent_color_id: Integer, profile_background_custom_emoji_id: String, emoji_status_custom_emoji_id: String, emoji_status_expiration_date: Integer, bio: String, has_private_forwards: Boolean, has_restricted_voice_and_video_messages: Boolean, join_to_send_messages: Boolean, join_by_request: Boolean, description: String, invite_link: String, pinned_message: Message, permissions: ChatPermissions, accepted_gift_types: AcceptedGiftTypes, can_send_paid_media: Boolean, slow_mode_delay: Integer, unrestrict_boost_count: Integer, message_auto_delete_time: Integer, has_aggressive_anti_spam_enabled: Boolean, has_hidden_members: Boolean, has_protected_content: Boolean, has_visible_history: Boolean, sticker_set_name: String, can_set_sticker_set: Boolean, custom_emoji_sticker_set_name: String, linked_chat_id: Integer, location: ChatLocation, rating: UserRating, unique_gift_colors: UniqueGiftColors, paid_message_star_count: Integer)
 
 <p>This object contains full information about a chat.</p>
 
@@ -205,17 +206,20 @@
 | custom_emoji_sticker_set_name | String | false | <em>Optional</em>. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. |
 | linked_chat_id | Integer | false | <em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. |
 | location | ChatLocation | false | <em>Optional</em>. For supergroups, the location to which the supergroup is connected |
+| rating | UserRating | false | <em>Optional</em>. For private chats, the rating of the user if any |
+| unique_gift_colors | UniqueGiftColors | false | <em>Optional</em>. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews |
+| paid_message_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars a general user have to pay to send a message to the chat |
 
 #### Message
 
-    Message(message_id: Integer, message_thread_id: Integer, direct_messages_topic: DirectMessagesTopic, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, reply_to_checklist_task_id: Integer, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, is_paid_post: Boolean, media_group_id: String, author_signature: String, paid_star_count: Integer, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, suggested_post_info: SuggestedPostInfo, effect_id: String, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, checklist: Checklist, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, refunded_payment: RefundedPayment, users_shared: UsersShared, chat_shared: ChatShared, gift: GiftInfo, unique_gift: UniqueGiftInfo, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, checklist_tasks_done: ChecklistTasksDone, checklist_tasks_added: ChecklistTasksAdded, direct_message_price_changed: DirectMessagePriceChanged, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, paid_message_price_changed: PaidMessagePriceChanged, suggested_post_approved: SuggestedPostApproved, suggested_post_approval_failed: SuggestedPostApprovalFailed, suggested_post_declined: SuggestedPostDeclined, suggested_post_paid: SuggestedPostPaid, suggested_post_refunded: SuggestedPostRefunded, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
+    Message(message_id: Integer, message_thread_id: Integer, direct_messages_topic: DirectMessagesTopic, from: User, sender_chat: Chat, sender_boost_count: Integer, sender_business_bot: User, date: Integer, business_connection_id: String, chat: Chat, forward_origin: MessageOrigin, is_topic_message: Boolean, is_automatic_forward: Boolean, reply_to_message: Message, external_reply: ExternalReplyInfo, quote: TextQuote, reply_to_story: Story, reply_to_checklist_task_id: Integer, via_bot: User, edit_date: Integer, has_protected_content: Boolean, is_from_offline: Boolean, is_paid_post: Boolean, media_group_id: String, author_signature: String, paid_star_count: Integer, text: String, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, suggested_post_info: SuggestedPostInfo, effect_id: String, animation: Animation, audio: Audio, document: Document, paid_media: PaidMediaInfo, photo: List<PhotoSize>, sticker: Sticker, story: Story, video: Video, video_note: VideoNote, voice: Voice, caption: String, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, has_media_spoiler: Boolean, checklist: Checklist, contact: Contact, dice: Dice, game: Game, poll: Poll, venue: Venue, location: Location, new_chat_members: List<User>, left_chat_member: User, new_chat_title: String, new_chat_photo: List<PhotoSize>, delete_chat_photo: Boolean, group_chat_created: Boolean, supergroup_chat_created: Boolean, channel_chat_created: Boolean, message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged, migrate_to_chat_id: Integer, migrate_from_chat_id: Integer, pinned_message: MaybeInaccessibleMessage, invoice: Invoice, successful_payment: SuccessfulPayment, refunded_payment: RefundedPayment, users_shared: UsersShared, chat_shared: ChatShared, gift: GiftInfo, unique_gift: UniqueGiftInfo, gift_upgrade_sent: GiftInfo, connected_website: String, write_access_allowed: WriteAccessAllowed, passport_data: PassportData, proximity_alert_triggered: ProximityAlertTriggered, boost_added: ChatBoostAdded, chat_background_set: ChatBackground, checklist_tasks_done: ChecklistTasksDone, checklist_tasks_added: ChecklistTasksAdded, direct_message_price_changed: DirectMessagePriceChanged, forum_topic_created: ForumTopicCreated, forum_topic_edited: ForumTopicEdited, forum_topic_closed: ForumTopicClosed, forum_topic_reopened: ForumTopicReopened, general_forum_topic_hidden: GeneralForumTopicHidden, general_forum_topic_unhidden: GeneralForumTopicUnhidden, giveaway_created: GiveawayCreated, giveaway: Giveaway, giveaway_winners: GiveawayWinners, giveaway_completed: GiveawayCompleted, paid_message_price_changed: PaidMessagePriceChanged, suggested_post_approved: SuggestedPostApproved, suggested_post_approval_failed: SuggestedPostApprovalFailed, suggested_post_declined: SuggestedPostDeclined, suggested_post_paid: SuggestedPostPaid, suggested_post_refunded: SuggestedPostRefunded, video_chat_scheduled: VideoChatScheduled, video_chat_started: VideoChatStarted, video_chat_ended: VideoChatEnded, video_chat_participants_invited: VideoChatParticipantsInvited, web_app_data: WebAppData, reply_markup: InlineKeyboardMarkup)
 
 <p>This object represents a message.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | message_id | Integer | true | Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent |
-| message_thread_id | Integer | false | <em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only |
+| message_thread_id | Integer | false | <em>Optional</em>. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only |
 | direct_messages_topic | DirectMessagesTopic | false | <em>Optional</em>. Information about the direct messages chat topic that contains the message |
 | from | User | false | <em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats |
 | sender_chat | Chat | false | <em>Optional</em>. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field <em>from</em> contains a fake sender user in non-channel chats. |
@@ -225,7 +229,7 @@
 | business_connection_id | String | false | <em>Optional</em>. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier. |
 | chat | Chat | true | Chat the message belongs to |
 | forward_origin | MessageOrigin | false | <em>Optional</em>. Information about the original message for forwarded messages |
-| is_topic_message | Boolean | false | <em>Optional</em>. <em>True</em>, if the message is sent to a forum topic |
+| is_topic_message | Boolean | false | <em>Optional</em>. <em>True</em>, if the message is sent to a topic in a forum supergroup or a private chat with the bot |
 | is_automatic_forward | Boolean | false | <em>Optional</em>. <em>True</em>, if the message is a channel post that was automatically forwarded to the connected discussion group |
 | reply_to_message | Message | false | <em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the <a href="#message">Message</a> object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply. |
 | external_reply | ExternalReplyInfo | false | <em>Optional</em>. Information about the message that is being replied to, which may come from another chat or forum topic |
@@ -285,6 +289,7 @@
 | chat_shared | ChatShared | false | <em>Optional</em>. Service message: a chat was shared with the bot |
 | gift | GiftInfo | false | <em>Optional</em>. Service message: a regular gift was sent or received |
 | unique_gift | UniqueGiftInfo | false | <em>Optional</em>. Service message: a unique gift was sent or received |
+| gift_upgrade_sent | GiftInfo | false | <em>Optional</em>. Service message: upgrade of a gift was purchased after the gift was sent |
 | connected_website | String | false | <em>Optional</em>. The domain name of the website on which the user has logged in. <a href="/widgets/login">More about Telegram Login »</a> |
 | write_access_allowed | WriteAccessAllowed | false | <em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href="/bots/webapps#initializing-mini-apps">requestWriteAccess</a> |
 | passport_data | PassportData | false | <em>Optional</em>. Telegram Passport data |
@@ -728,7 +733,7 @@
 
 #### ChecklistTask
 
-    ChecklistTask(id: Integer, text: String, text_entities: List<MessageEntity>, completed_by_user: User, completion_date: Integer)
+    ChecklistTask(id: Integer, text: String, text_entities: List<MessageEntity>, completed_by_user: User, completed_by_chat: Chat, completion_date: Integer)
 
 <p>Describes a task in a checklist.</p>
 
@@ -737,7 +742,8 @@
 | id | Integer | true | Unique identifier of the task |
 | text | String | true | Text of the task |
 | text_entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the task text |
-| completed_by_user | User | false | <em>Optional</em>. User that completed the task; omitted if the task wasn't completed |
+| completed_by_user | User | false | <em>Optional</em>. User that completed the task; omitted if the task wasn't completed by a user |
+| completed_by_chat | Chat | false | <em>Optional</em>. Chat that completed the task; omitted if the task wasn't completed by a chat |
 | completion_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed |
 
 #### Checklist
@@ -978,7 +984,7 @@
 
 #### ForumTopicCreated
 
-    ForumTopicCreated(name: String, icon_color: Integer, icon_custom_emoji_id: String)
+    ForumTopicCreated(name: String, icon_color: Integer, icon_custom_emoji_id: String, is_name_implicit: Boolean)
 
 <p>This object represents a service message about a new forum topic created in the chat.</p>
 
@@ -987,6 +993,7 @@
 | name | String | true | Name of the topic |
 | icon_color | Integer | true | Color of the topic icon in RGB format |
 | icon_custom_emoji_id | String | false | <em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon |
+| is_name_implicit | Boolean | false | <em>Optional</em>. <em>True</em>, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot |
 
 #### ForumTopicEdited
 
@@ -1784,6 +1791,19 @@
 | time_zone_name | String | true | Unique name of the time zone for which the opening hours are defined |
 | opening_hours | List<BusinessOpeningHoursInterval> | true | List of time intervals describing business opening hours |
 
+#### UserRating
+
+    UserRating(level: Integer, rating: Integer, current_level_rating: Integer, next_level_rating: Integer)
+
+<p>This object describes the rating of a user based on their Telegram Star spendings.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| level | Integer | true | Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern. |
+| rating | Integer | true | Numerical value of the user's rating; the higher the rating, the better |
+| current_level_rating | Integer | true | The rating value required to get the current level |
+| next_level_rating | Integer | false | <em>Optional</em>. The rating value required to get to the next level; omitted if the maximum level was reached |
+
 #### StoryAreaPosition
 
     StoryAreaPosition(x_percentage: Float, y_percentage: Float, width_percentage: Float, height_percentage: Float, rotation_angle: Float, corner_radius_percentage: Float)
@@ -1969,7 +1989,7 @@
 
 #### ForumTopic
 
-    ForumTopic(message_thread_id: Integer, name: String, icon_color: Integer, icon_custom_emoji_id: String)
+    ForumTopic(message_thread_id: Integer, name: String, icon_color: Integer, icon_custom_emoji_id: String, is_name_implicit: Boolean)
 
 <p>This object represents a forum topic.</p>
 
@@ -1979,10 +1999,23 @@
 | name | String | true | Name of the topic |
 | icon_color | Integer | true | Color of the topic icon in RGB format |
 | icon_custom_emoji_id | String | false | <em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon |
+| is_name_implicit | Boolean | false | <em>Optional</em>. <em>True</em>, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot |
+
+#### GiftBackground
+
+    GiftBackground(center_color: Integer, edge_color: Integer, text_color: Integer)
+
+<p>This object describes the background of a gift.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| center_color | Integer | true | Center color of the background in RGB format |
+| edge_color | Integer | true | Edge color of the background in RGB format |
+| text_color | Integer | true | Text color of the background in RGB format |
 
 #### Gift
 
-    Gift(id: String, sticker: Sticker, star_count: Integer, upgrade_star_count: Integer, total_count: Integer, remaining_count: Integer, publisher_chat: Chat)
+    Gift(id: String, sticker: Sticker, star_count: Integer, upgrade_star_count: Integer, is_premium: Boolean, has_colors: Boolean, total_count: Integer, remaining_count: Integer, personal_total_count: Integer, personal_remaining_count: Integer, background: GiftBackground, unique_gift_variant_count: Integer, publisher_chat: Chat)
 
 <p>This object represents a gift that can be sent by the bot.</p>
 
@@ -1992,8 +2025,14 @@
 | sticker | Sticker | true | The sticker that represents the gift |
 | star_count | Integer | true | The number of Telegram Stars that must be paid to send the sticker |
 | upgrade_star_count | Integer | false | <em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one |
-| total_count | Integer | false | <em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only |
-| remaining_count | Integer | false | <em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only |
+| is_premium | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift can only be purchased by Telegram Premium subscribers |
+| has_colors | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift can be used (after being upgraded) to customize a user's appearance |
+| total_count | Integer | false | <em>Optional</em>. The total number of gifts of this type that can be sent by all users; for limited gifts only |
+| remaining_count | Integer | false | <em>Optional</em>. The number of remaining gifts of this type that can be sent by all users; for limited gifts only |
+| personal_total_count | Integer | false | <em>Optional</em>. The total number of gifts of this type that can be sent by the bot; for limited gifts only |
+| personal_remaining_count | Integer | false | <em>Optional</em>. The number of remaining gifts of this type that can be sent by the bot; for limited gifts only |
+| background | GiftBackground | false | <em>Optional</em>. Background of the gift |
+| unique_gift_variant_count | Integer | false | <em>Optional</em>. The total number of different unique gifts that can be obtained by upgrading the gift |
 | publisher_chat | Chat | false | <em>Optional</em>. Information about the chat that published the gift |
 
 #### Gifts
@@ -2055,25 +2094,44 @@
 | colors | UniqueGiftBackdropColors | true | Colors of the backdrop |
 | rarity_per_mille | Integer | true | The number of unique gifts that receive this backdrop for every 1000 gifts upgraded |
 
+#### UniqueGiftColors
+
+    UniqueGiftColors(model_custom_emoji_id: String, symbol_custom_emoji_id: String, light_theme_main_color: Integer, light_theme_other_colors: List<Integer>, dark_theme_main_color: Integer, dark_theme_other_colors: List<Integer>)
+
+<p>This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| model_custom_emoji_id | String | true | Custom emoji identifier of the unique gift's model |
+| symbol_custom_emoji_id | String | true | Custom emoji identifier of the unique gift's symbol |
+| light_theme_main_color | Integer | true | Main color used in light themes; RGB format |
+| light_theme_other_colors | List<Integer> | true | List of 1-3 additional colors used in light themes; RGB format |
+| dark_theme_main_color | Integer | true | Main color used in dark themes; RGB format |
+| dark_theme_other_colors | List<Integer> | true | List of 1-3 additional colors used in dark themes; RGB format |
+
 #### UniqueGift
 
-    UniqueGift(base_name: String, name: String, number: Integer, model: UniqueGiftModel, symbol: UniqueGiftSymbol, backdrop: UniqueGiftBackdrop, publisher_chat: Chat)
+    UniqueGift(gift_id: String, base_name: String, name: String, number: Integer, model: UniqueGiftModel, symbol: UniqueGiftSymbol, backdrop: UniqueGiftBackdrop, is_premium: Boolean, is_from_blockchain: Boolean, colors: UniqueGiftColors, publisher_chat: Chat)
 
 <p>This object describes a unique gift that was upgraded from a regular gift.</p>
 
 | name | type | required | description |
 |---|---|---|---|
+| gift_id | String | true | Identifier of the regular gift from which the gift was upgraded |
 | base_name | String | true | Human-readable name of the regular gift from which this unique gift was upgraded |
 | name | String | true | Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas |
 | number | Integer | true | Unique number of the upgraded gift among gifts upgraded from the same regular gift |
 | model | UniqueGiftModel | true | Model of the gift |
 | symbol | UniqueGiftSymbol | true | Symbol of the gift |
 | backdrop | UniqueGiftBackdrop | true | Backdrop of the gift |
+| is_premium | Boolean | false | <em>Optional</em>. <em>True</em>, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers |
+| is_from_blockchain | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram |
+| colors | UniqueGiftColors | false | <em>Optional</em>. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only |
 | publisher_chat | Chat | false | <em>Optional</em>. Information about the chat that published the gift |
 
 #### GiftInfo
 
-    GiftInfo(gift: Gift, owned_gift_id: String, convert_star_count: Integer, prepaid_upgrade_star_count: Integer, can_be_upgraded: Boolean, text: String, entities: List<MessageEntity>, is_private: Boolean)
+    GiftInfo(gift: Gift, owned_gift_id: String, convert_star_count: Integer, prepaid_upgrade_star_count: Integer, is_upgrade_separate: Boolean, can_be_upgraded: Boolean, text: String, entities: List<MessageEntity>, is_private: Boolean, unique_gift_number: Integer)
 
 <p>Describes a service message about a regular gift that was sent or received.</p>
 
@@ -2082,30 +2140,33 @@
 | gift | Gift | true | Information about the gift |
 | owned_gift_id | String | false | <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts |
 | convert_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible |
-| prepaid_upgrade_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift |
+| prepaid_upgrade_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that were prepaid for the ability to upgrade the gift |
+| is_upgrade_separate | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift's upgrade was purchased after the gift was sent |
 | can_be_upgraded | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift |
 | text | String | false | <em>Optional</em>. Text of the message that was added to the gift |
 | entities | List<MessageEntity> | false | <em>Optional</em>. Special entities that appear in the text |
 | is_private | Boolean | false | <em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them |
+| unique_gift_number | Integer | false | <em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href="#uniquegift">UniqueGift</a> |
 
 #### UniqueGiftInfo
 
-    UniqueGiftInfo(gift: UniqueGift, origin: String, last_resale_star_count: Integer, owned_gift_id: String, transfer_star_count: Integer, next_transfer_date: Integer)
+    UniqueGiftInfo(gift: UniqueGift, origin: String, last_resale_currency: String, last_resale_amount: Integer, owned_gift_id: String, transfer_star_count: Integer, next_transfer_date: Integer)
 
 <p>Describes a service message about a unique gift that was sent or received.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | gift | UniqueGift | true | Information about the gift |
-| origin | String | true | Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, or “resale” for gifts bought from other users |
-| last_resale_star_count | Integer | false | <em>Optional</em>. For gifts bought from other users, the price paid for the gift |
+| origin | String | true | Origin of the gift. Currently, either “upgrade” for gifts upgraded from regular gifts, “transfer” for gifts transferred from other users or channels, “resale” for gifts bought from other users, “gifted_upgrade” for upgrades purchased after the gift was sent, or “offer” for gifts bought or sold through gift purchase offers |
+| last_resale_currency | String | false | <em>Optional</em>. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of “XTR” for Telegram Stars or “TON” for toncoins. |
+| last_resale_amount | Integer | false | <em>Optional</em>. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins |
 | owned_gift_id | String | false | <em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts |
 | transfer_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift |
 | next_transfer_date | Integer | false | <em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now |
 
 #### OwnedGiftRegular
 
-    OwnedGiftRegular(type: String, gift: Gift, owned_gift_id: String, sender_user: User, send_date: Integer, text: String, entities: List<MessageEntity>, is_private: Boolean, is_saved: Boolean, can_be_upgraded: Boolean, was_refunded: Boolean, convert_star_count: Integer, prepaid_upgrade_star_count: Integer)
+    OwnedGiftRegular(type: String, gift: Gift, owned_gift_id: String, sender_user: User, send_date: Integer, text: String, entities: List<MessageEntity>, is_private: Boolean, is_saved: Boolean, can_be_upgraded: Boolean, was_refunded: Boolean, convert_star_count: Integer, prepaid_upgrade_star_count: Integer, is_upgrade_separate: Boolean, unique_gift_number: Integer)
 
 <p>Describes a regular gift owned by a user or a chat.</p>
 
@@ -2122,8 +2183,10 @@
 | is_saved | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only |
 | can_be_upgraded | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only |
 | was_refunded | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift was refunded and isn't available anymore |
-| convert_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars |
-| prepaid_upgrade_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift |
+| convert_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only |
+| prepaid_upgrade_star_count | Integer | false | <em>Optional</em>. Number of Telegram Stars that were paid for the ability to upgrade the gift |
+| is_upgrade_separate | Boolean | false | <em>Optional</em>. <em>True</em>, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only |
+| unique_gift_number | Integer | false | <em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href="#uniquegift">UniqueGift</a> |
 
 #### OwnedGiftUnique
 
@@ -2157,7 +2220,7 @@
 
 #### AcceptedGiftTypes
 
-    AcceptedGiftTypes(unlimited_gifts: Boolean, limited_gifts: Boolean, unique_gifts: Boolean, premium_subscription: Boolean)
+    AcceptedGiftTypes(unlimited_gifts: Boolean, limited_gifts: Boolean, unique_gifts: Boolean, premium_subscription: Boolean, gifts_from_channels: Boolean)
 
 <p>This object describes the types of gifts that can be gifted to a user or a chat.</p>
 
@@ -2167,6 +2230,7 @@
 | limited_gifts | Boolean | true | <em>True</em>, if limited regular gifts are accepted |
 | unique_gifts | Boolean | true | <em>True</em>, if unique gifts or gifts that can be upgraded to unique for free are accepted |
 | premium_subscription | Boolean | true | <em>True</em>, if a Telegram Premium subscription is accepted |
+| gifts_from_channels | Boolean | true | <em>True</em>, if transfers of unique gifts from channels are accepted |
 
 #### StarAmount
 
@@ -2667,7 +2731,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | text | String | true | Text of the message to be sent, 1-4096 characters after entities parsing |
 | parse_mode | ParseMode | false | Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details. |
@@ -2683,19 +2747,20 @@
 
 #### forwardMessage
 
-    forwardMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, video_start_timestamp: Integer, disable_notification: Boolean, protect_content: Boolean, suggested_post_parameters: SuggestedPostParameters, message_id: Integer)
+    forwardMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, video_start_timestamp: Integer, disable_notification: Boolean, protect_content: Boolean, message_effect_id: String, suggested_post_parameters: SuggestedPostParameters, message_id: Integer)
 
 <p>Use this method to forward messages of any kind. Service messages and messages with protected content can't be forwarded. On success, the sent <a href="#message">Message</a> is returned.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat |
 | from_chat_id | IntegerOrString | true | Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>) |
 | video_start_timestamp | Integer | false | New start timestamp for the forwarded video in the message |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the forwarded message from forwarding and saving |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; only available when forwarding to private chats |
 | suggested_post_parameters | SuggestedPostParameters | false | A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only |
 | message_id | Integer | true | Message identifier in the chat specified in <em>from_chat_id</em> |
 
@@ -2708,7 +2773,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the messages will be forwarded; required if the messages are forwarded to a direct messages chat |
 | from_chat_id | IntegerOrString | true | Unique identifier for the chat where the original messages were sent (or channel username in the format <code>@channelusername</code>) |
 | message_ids | List<Integer> | true | A JSON-serialized list of 1-100 identifiers of messages in the chat <em>from_chat_id</em> to forward. The identifiers must be specified in a strictly increasing order. |
@@ -2717,14 +2782,14 @@
 
 #### copyMessage
 
-    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, video_start_timestamp: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, suggested_post_parameters: SuggestedPostParameters, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
+    copyMessage(chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, from_chat_id: IntegerOrString, message_id: Integer, video_start_timestamp: Integer, caption: String, parse_mode: ParseMode, caption_entities: List<MessageEntity>, show_caption_above_media: Boolean, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, suggested_post_parameters: SuggestedPostParameters, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)
 
 <p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href="#poll">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href="#forwardmessage">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href="#messageid">MessageId</a> of the sent message on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | from_chat_id | IntegerOrString | true | Unique identifier for the chat where the original message was sent (or channel username in the format <code>@channelusername</code>) |
 | message_id | Integer | true | Message identifier in the chat specified in <em>from_chat_id</em> |
@@ -2736,6 +2801,7 @@
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |
 | allow_paid_broadcast | Boolean | false | Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href="https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance |
+| message_effect_id | String | false | Unique identifier of the message effect to be added to the message; only available when copying to private chats |
 | suggested_post_parameters | SuggestedPostParameters | false | A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined. |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
@@ -2749,7 +2815,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat |
 | from_chat_id | IntegerOrString | true | Unique identifier for the chat where the original messages were sent (or channel username in the format <code>@channelusername</code>) |
 | message_ids | List<Integer> | true | A JSON-serialized list of 1-100 identifiers of messages in the chat <em>from_chat_id</em> to copy. The identifiers must be specified in a strictly increasing order. |
@@ -2767,7 +2833,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | photo | InputFileOrString | true | Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Photo caption (may also be used when resending photos by <em>file_id</em>), 0-1024 characters after entities parsing |
@@ -2793,7 +2859,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | audio | InputFileOrString | true | Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Audio caption, 0-1024 characters after entities parsing |
@@ -2821,7 +2887,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | document | InputFileOrString | true | File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | thumbnail | InputFileOrString | false | Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass “attach://&lt;file_attach_name&gt;” if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href="#sending-files">More information on Sending Files »</a> |
@@ -2847,7 +2913,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | video | InputFileOrString | true | Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | duration | Integer | false | Duration of sent video in seconds |
@@ -2880,7 +2946,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | animation | InputFileOrString | true | Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | duration | Integer | false | Duration of sent animation in seconds |
@@ -2910,7 +2976,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | voice | InputFileOrString | true | Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a> |
 | caption | String | false | Voice message caption, 0-1024 characters after entities parsing |
@@ -2935,7 +3001,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | video_note | InputFileOrString | true | Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Sending video notes by a URL is currently unsupported |
 | duration | Integer | false | Duration of sent video in seconds |
@@ -2959,9 +3025,9 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance. |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
-| star_count | Integer | true | The number of Telegram Stars that must be paid to buy access to the media; 1-10000 |
+| star_count | Integer | true | The number of Telegram Stars that must be paid to buy access to the media; 1-25000 |
 | media | List<InputPaidMedia> | true | A JSON-serialized array describing the media to be sent; up to 10 items |
 | payload | String | false | Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes. |
 | caption | String | false | Media caption, 0-1024 characters after entities parsing |
@@ -2985,7 +3051,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat |
 | media | List<InputMedia> | true | A JSON-serialized array describing messages to be sent, must include 2-10 items |
 | disable_notification | Boolean | false | Sends messages <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
@@ -3004,7 +3070,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | latitude | Float | true | Latitude of the location |
 | longitude | Float | true | Longitude of the location |
@@ -3030,7 +3096,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | latitude | Float | true | Latitude of the venue |
 | longitude | Float | true | Longitude of the venue |
@@ -3058,7 +3124,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | phone_number | String | true | Contact's phone number |
 | first_name | String | true | Contact's first name |
@@ -3082,7 +3148,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). Polls can't be sent to channel direct messages chats. |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | question | String | true | Poll question, 1-300 characters |
 | question_parse_mode | String | false | Mode for parsing entities in the question. See <a href="#formatting-options">formatting options</a> for more details. Currently, only custom emoji entities are allowed |
 | question_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em> |
@@ -3131,7 +3197,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | emoji | String | false | Emoji on which the dice throw animation is based. Currently, must be one of “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">”, “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, or “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Dice can have values 1-6 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">”, “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EAF.png" width="20" height="20" alt="🎯">” and “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB3.png" width="20" height="20" alt="🎳">”, values 1-5 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8F80.png" width="20" height="20" alt="🏀">” and “<img class="emoji" src="//telegram.org/img/emoji/40/E29ABD.png" width="20" height="20" alt="⚽">”, and values 1-64 for “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB0.png" width="20" height="20" alt="🎰">”. Defaults to “<img class="emoji" src="//telegram.org/img/emoji/40/F09F8EB2.png" width="20" height="20" alt="🎲">” |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
@@ -3141,6 +3207,21 @@
 | suggested_post_parameters | SuggestedPostParameters | false | A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined. |
 | reply_parameters | ReplyParameters | false | Description of the message to reply to |
 | reply_markup | KeyboardOption | false | Additional interface options. A JSON-serialized object for an <a href="/bots/features#inline-keyboards">inline keyboard</a>, <a href="/bots/features#keyboards">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user |
+
+#### sendMessageDraft
+
+    sendMessageDraft(chat_id: Integer, message_thread_id: Integer, draft_id: Integer, text: String, parse_mode: ParseMode, entities: List<MessageEntity>)
+
+<p>Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns <em>True</em> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | Integer | true | Unique identifier for the target private chat |
+| message_thread_id | Integer | false | Unique identifier for the target message thread |
+| draft_id | Integer | true | Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated |
+| text | String | true | Text of the message to be sent, 1-4096 characters after entities parsing |
+| parse_mode | ParseMode | false | Mode for parsing entities in the message text. See <a href="#formatting-options">formatting options</a> for more details. |
+| entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em> |
 
 #### sendChatAction
 
@@ -3154,7 +3235,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the action will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>). Channel chats and channel direct messages chats aren't supported. |
-| message_thread_id | Integer | false | Unique identifier for the target message thread; for supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only |
 | action | String | true | Type of action to broadcast. Choose one, depending on what the user is about to receive: <em>typing</em> for <a href="#sendmessage">text messages</a>, <em>upload_photo</em> for <a href="#sendphoto">photos</a>, <em>record_video</em> or <em>upload_video</em> for <a href="#sendvideo">videos</a>, <em>record_voice</em> or <em>upload_voice</em> for <a href="#sendvoice">voice notes</a>, <em>upload_document</em> for <a href="#senddocument">general files</a>, <em>choose_sticker</em> for <a href="#sendsticker">stickers</a>, <em>find_location</em> for <a href="#sendlocation">location data</a>, <em>record_video_note</em> or <em>upload_video_note</em> for <a href="#sendvideonote">video notes</a>. |
 
 #### setMessageReaction
@@ -3257,7 +3338,7 @@
 | can_manage_chat | Boolean | false | Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege. |
 | can_delete_messages | Boolean | false | Pass <em>True</em> if the administrator can delete messages of other users |
 | can_manage_video_chats | Boolean | false | Pass <em>True</em> if the administrator can manage video chats |
-| can_restrict_members | Boolean | false | Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics |
+| can_restrict_members | Boolean | false | Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to <em>True</em> for promotions of channel administrators |
 | can_promote_members | Boolean | false | Pass <em>True</em> if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him) |
 | can_change_info | Boolean | false | Pass <em>True</em> if the administrator can change chat title, photo and other settings |
 | can_invite_users | Boolean | false | Pass <em>True</em> if the administrator can invite new users to the chat |
@@ -3588,7 +3669,7 @@
 
     editForumTopic(chat_id: IntegerOrString, message_thread_id: Integer, name: String, icon_custom_emoji_id: String)
 
-<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
+<p>Use this method to edit name and icon of a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -3623,7 +3704,7 @@
 
     deleteForumTopic(chat_id: IntegerOrString, message_thread_id: Integer)
 
-<p>Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_delete_messages</em> administrator rights. Returns <em>True</em> on success.</p>
+<p>Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_delete_messages</em> administrator rights. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -3634,7 +3715,7 @@
 
     unpinAllForumTopicMessages(chat_id: IntegerOrString, message_thread_id: Integer)
 
-<p>Use this method to clear the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>
+<p>Use this method to clear the list of pinned messages in a forum topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>
 
 | name | type | required | description |
 |---|---|---|---|
@@ -3888,7 +3969,7 @@
 |---|---|---|---|
 | user_id | Integer | false | Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift. |
 | chat_id | IntegerOrString | false | Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift. |
-| gift_id | String | true | Identifier of the gift |
+| gift_id | String | true | Identifier of the gift; limited gifts can't be sent to channel chats |
 | pay_for_upgrade | Boolean | false | Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver |
 | text | String | false | Text that will be shown along with the gift; 0-128 characters |
 | text_parse_mode | String | false | Mode for parsing entities in the text. See <a href="#formatting-options">formatting options</a> for more details. Entities other than “bold”, “italic”, “underline”, “strikethrough”, “spoiler”, and “custom_emoji” are ignored. |
@@ -4066,7 +4147,7 @@
 
 #### getBusinessAccountGifts
 
-    getBusinessAccountGifts(business_connection_id: String, exclude_unsaved: Boolean, exclude_saved: Boolean, exclude_unlimited: Boolean, exclude_limited: Boolean, exclude_unique: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
+    getBusinessAccountGifts(business_connection_id: String, exclude_unsaved: Boolean, exclude_saved: Boolean, exclude_unlimited: Boolean, exclude_limited_upgradable: Boolean, exclude_limited_non_upgradable: Boolean, exclude_unique: Boolean, exclude_from_blockchain: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
 
 <p>Returns the gifts received and owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
 
@@ -4076,10 +4157,50 @@
 | exclude_unsaved | Boolean | false | Pass <em>True</em> to exclude gifts that aren't saved to the account's profile page |
 | exclude_saved | Boolean | false | Pass <em>True</em> to exclude gifts that are saved to the account's profile page |
 | exclude_unlimited | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times |
-| exclude_limited | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times |
+| exclude_limited_upgradable | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique |
+| exclude_limited_non_upgradable | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique |
 | exclude_unique | Boolean | false | Pass <em>True</em> to exclude unique gifts |
+| exclude_from_blockchain | Boolean | false | Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram |
 | sort_by_price | Boolean | false | Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination. |
 | offset | String | false | Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results |
+| limit | Integer | false | The maximum number of gifts to be returned; 1-100. Defaults to 100 |
+
+#### getUserGifts
+
+    getUserGifts(user_id: Integer, exclude_unlimited: Boolean, exclude_limited_upgradable: Boolean, exclude_limited_non_upgradable: Boolean, exclude_from_blockchain: Boolean, exclude_unique: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
+
+<p>Returns the gifts owned and hosted by a user. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| user_id | Integer | true | Unique identifier of the user |
+| exclude_unlimited | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times |
+| exclude_limited_upgradable | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique |
+| exclude_limited_non_upgradable | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique |
+| exclude_from_blockchain | Boolean | false | Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram |
+| exclude_unique | Boolean | false | Pass <em>True</em> to exclude unique gifts |
+| sort_by_price | Boolean | false | Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination. |
+| offset | String | false | Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results |
+| limit | Integer | false | The maximum number of gifts to be returned; 1-100. Defaults to 100 |
+
+#### getChatGifts
+
+    getChatGifts(chat_id: IntegerOrString, exclude_unsaved: Boolean, exclude_saved: Boolean, exclude_unlimited: Boolean, exclude_limited_upgradable: Boolean, exclude_limited_non_upgradable: Boolean, exclude_from_blockchain: Boolean, exclude_unique: Boolean, sort_by_price: Boolean, offset: String, limit: Integer)
+
+<p>Returns the gifts owned by a chat. Returns <a href="#ownedgifts">OwnedGifts</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
+| exclude_unsaved | Boolean | false | Pass <em>True</em> to exclude gifts that aren't saved to the chat's profile page. Always <em>True</em>, unless the bot has the <em>can_post_messages</em> administrator right in the channel. |
+| exclude_saved | Boolean | false | Pass <em>True</em> to exclude gifts that are saved to the chat's profile page. Always <em>False</em>, unless the bot has the <em>can_post_messages</em> administrator right in the channel. |
+| exclude_unlimited | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times |
+| exclude_limited_upgradable | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique |
+| exclude_limited_non_upgradable | Boolean | false | Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique |
+| exclude_from_blockchain | Boolean | false | Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram |
+| exclude_unique | Boolean | false | Pass <em>True</em> to exclude unique gifts |
+| sort_by_price | Boolean | false | Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination. |
+| offset | String | false | Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results |
 | limit | Integer | false | The maximum number of gifts to be returned; 1-100. Defaults to 100 |
 
 #### convertGiftToStars
@@ -4134,6 +4255,21 @@
 | parse_mode | ParseMode | false | Mode for parsing entities in the story caption. See <a href="#formatting-options">formatting options</a> for more details. |
 | caption_entities | List<MessageEntity> | false | A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em> |
 | areas | List<StoryArea> | false | A JSON-serialized list of clickable areas to be shown on the story |
+| post_to_chat_page | Boolean | false | Pass <em>True</em> to keep the story accessible after it expires |
+| protect_content | Boolean | false | Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting |
+
+#### repostStory
+
+    repostStory(business_connection_id: String, from_chat_id: Integer, from_story_id: Integer, active_period: Integer, post_to_chat_page: Boolean, protect_content: Boolean)
+
+<p>Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the <em>can_manage_stories</em> business bot right for both business accounts. Returns <a href="#story">Story</a> on success.</p>
+
+| name | type | required | description |
+|---|---|---|---|
+| business_connection_id | String | true | Unique identifier of the business connection |
+| from_chat_id | Integer | true | Unique identifier of the chat which posted the story that should be reposted |
+| from_story_id | Integer | true | Unique identifier of the story that should be reposted |
+| active_period | Integer | true | Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code> |
 | post_to_chat_page | Boolean | false | Pass <em>True</em> to keep the story accessible after it expires |
 | protect_content | Boolean | false | Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting |
 
@@ -4423,7 +4559,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | sticker | InputFileOrString | true | Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. <a href="#sending-files">More information on Sending Files »</a>. Video and animated stickers can't be sent via an HTTP URL. |
 | emoji | String | false | Emoji associated with the sticker; only for just uploaded stickers |
@@ -5518,7 +5654,7 @@
 | name | type | required | description |
 |---|---|---|---|
 | chat_id | IntegerOrString | true | Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>) |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | direct_messages_topic_id | Integer | false | Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat |
 | title | String | true | Product name, 1-32 characters |
 | description | String | true | Product description, 1-255 characters |
@@ -5874,7 +6010,7 @@
 |---|---|---|---|
 | business_connection_id | String | false | Unique identifier of the business connection on behalf of which the message will be sent |
 | chat_id | Integer | true | Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats. |
-| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of the forum; for forum supergroups only |
+| message_thread_id | Integer | false | Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only |
 | game_short_name | String | true | Short name of the game, serves as the unique identifier for the game. Set up your games via <a href="https://t.me/botfather">@BotFather</a>. |
 | disable_notification | Boolean | false | Sends the message <a href="https://telegram.org/blog/channels-2-0#silent-messages">silently</a>. Users will receive a notification with no sound. |
 | protect_content | Boolean | false | Protects the contents of the sent message from forwarding and saving |

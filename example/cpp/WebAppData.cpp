@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json WebAppData::to_json() const {
-        json j;
-        j["data"] = data;
-        j["button_text"] = button_text;
-        return j.dump();
+    void to_json(json& j, const WebAppData& value) {
+        j = json::object();
+        j["data"] = value.data;
+        j["button_text"] = value.button_text;
     }
-    std::shared_ptr<WebAppData> WebAppData::from_json(const json& data) {
-        auto result(std::make_shared<WebAppData>());
-        result->data = data["data"].get<std::string>();
-        result->button_text = data["button_text"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, WebAppData& value) {
+        if (j.contains("data")) {
+            j.at("data").get_to(value.data);
+        }
+        if (j.contains("button_text")) {
+            j.at("button_text").get_to(value.button_text);
+        }
     }
 }

@@ -38,8 +38,5 @@ namespace tgbot {
 
         // Optional. Inline keyboard attached to the message
         std::shared_ptr<InlineKeyboardMarkup> reply_markup;
-
-        json to_json() const override;
-        static std::shared_ptr<InlineQueryResultGame> from_json(const json& data);
     };
 }

@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ResponseParameters::to_json() const {
-        json j;
-        j["migrate_to_chat_id"] = migrate_to_chat_id.to_json();
-        j["retry_after"] = retry_after;
-        return j.dump();
+    void to_json(json& j, const ResponseParameters& value) {
+        j = json::object();
+        j["migrate_to_chat_id"] = value.migrate_to_chat_id;
+        j["retry_after"] = value.retry_after;
     }
-    std::shared_ptr<ResponseParameters> ResponseParameters::from_json(const json& data) {
-        auto result(std::make_shared<ResponseParameters>());
-        result->migrate_to_chat_id = ChatId::from_json(data["migrate_to_chat_id"]);
-        result->retry_after = data["retry_after"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, ResponseParameters& value) {
+        if (j.contains("migrate_to_chat_id")) {
+            j.at("migrate_to_chat_id").get_to(value.migrate_to_chat_id);
+        }
+        if (j.contains("retry_after")) {
+            j.at("retry_after").get_to(value.retry_after);
+        }
     }
 }

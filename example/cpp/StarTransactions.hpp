@@ -25,8 +25,5 @@ namespace tgbot {
         virtual ~StarTransactions() = default;
         // The list of transactions
         std::vector<std::shared_ptr<StarTransaction>> transactions;
-
-        json to_json() const override;
-        static std::shared_ptr<StarTransactions> from_json(const json& data);
     };
 }

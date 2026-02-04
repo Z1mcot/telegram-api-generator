@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json EncryptedCredentials::to_json() const {
-        json j;
-        j["data"] = data;
-        j["hash"] = hash;
-        j["secret"] = secret;
-        return j.dump();
+    void to_json(json& j, const EncryptedCredentials& value) {
+        j = json::object();
+        j["data"] = value.data;
+        j["hash"] = value.hash;
+        j["secret"] = value.secret;
     }
-    std::shared_ptr<EncryptedCredentials> EncryptedCredentials::from_json(const json& data) {
-        auto result(std::make_shared<EncryptedCredentials>());
-        result->data = data["data"].get<std::string>();
-        result->hash = data["hash"].get<std::string>();
-        result->secret = data["secret"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, EncryptedCredentials& value) {
+        if (j.contains("data")) {
+            j.at("data").get_to(value.data);
+        }
+        if (j.contains("hash")) {
+            j.at("hash").get_to(value.hash);
+        }
+        if (j.contains("secret")) {
+            j.at("secret").get_to(value.secret);
+        }
     }
 }

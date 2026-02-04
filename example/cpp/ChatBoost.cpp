@@ -6,20 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatBoost::to_json() const {
-        json j;
-        j["boost_id"] = boost_id;
-        j["add_date"] = add_date;
-        j["expiration_date"] = expiration_date;
-        j["source"] = source->to_json();
-        return j.dump();
+    void to_json(json& j, const ChatBoost& value) {
+        j = json::object();
+        j["boost_id"] = value.boost_id;
+        j["add_date"] = value.add_date;
+        j["expiration_date"] = value.expiration_date;
+        j["source"] = value.source;
     }
-    std::shared_ptr<ChatBoost> ChatBoost::from_json(const json& data) {
-        auto result(std::make_shared<ChatBoost>());
-        result->boost_id = data["boost_id"].get<std::string>();
-        result->add_date = data["add_date"].get<std::int64_t>();
-        result->expiration_date = data["expiration_date"].get<std::int64_t>();
-        result->source = ChatBoostSource::from_json(data["source"]);
-        return result;
+
+    void from_json(const json& j, ChatBoost& value) {
+        if (j.contains("boost_id")) {
+            j.at("boost_id").get_to(value.boost_id);
+        }
+        if (j.contains("add_date")) {
+            j.at("add_date").get_to(value.add_date);
+        }
+        if (j.contains("expiration_date")) {
+            j.at("expiration_date").get_to(value.expiration_date);
+        }
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
     }
 }

@@ -28,8 +28,5 @@ namespace tgbot {
 
         // The number of successful requests that exceeded regular limits and were therefore billed
         std::int64_t request_count;
-
-        json to_json() const override;
-        static std::shared_ptr<TransactionPartnerTelegramApi> from_json(const json& data);
     };
 }

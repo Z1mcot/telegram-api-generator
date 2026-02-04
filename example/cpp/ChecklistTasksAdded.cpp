@@ -6,26 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChecklistTasksAdded::to_json() const {
-        json j;
-        j["checklist_message"] = checklist_message->to_json();
-        std::vector<json> tasks_values;
-        tasks_values.reserve(tasks.size());
-        for (auto& e : tasks) {
-            tasks_values.push_back(e->to_json());
-        }
-        j["tasks"] = tasks_values;
-        return j.dump();
+    void to_json(json& j, const ChecklistTasksAdded& value) {
+        j = json::object();
+        j["checklist_message"] = value.checklist_message;
+        j["tasks"] = value.tasks;
     }
-    std::shared_ptr<ChecklistTasksAdded> ChecklistTasksAdded::from_json(const json& data) {
-        auto result(std::make_shared<ChecklistTasksAdded>());
-        result->checklist_message = Message::from_json(data["checklist_message"]);
-        std::vector<std::vector<std::shared_ptr<ChecklistTask>>> tasks_values;
-        tasks_values.reserve(tasks.size());
-        for (auto& e : data["tasks"]) {
-            tasks_values.push_back(std::vector<std::shared_ptr<ChecklistTask>>::from_json(e));
+
+    void from_json(const json& j, ChecklistTasksAdded& value) {
+        if (j.contains("checklist_message")) {
+            j.at("checklist_message").get_to(value.checklist_message);
         }
-        result->tasks = tasks_values;
-        return result;
+        if (j.contains("tasks")) {
+            j.at("tasks").get_to(value.tasks);
+        }
     }
 }

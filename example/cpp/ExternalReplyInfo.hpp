@@ -144,8 +144,5 @@ namespace tgbot {
 
         // Optional. Message is a venue, information about the venue
         std::shared_ptr<Venue> venue;
-
-        json to_json() const override;
-        static std::shared_ptr<ExternalReplyInfo> from_json(const json& data);
     };
 }

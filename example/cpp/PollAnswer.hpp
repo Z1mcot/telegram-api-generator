@@ -39,8 +39,5 @@ namespace tgbot {
 
         // 0-based identifiers of chosen answer options. May be empty if the vote was retracted.
         std::vector<std::int64_t> option_ids;
-
-        json to_json() const override;
-        static std::shared_ptr<PollAnswer> from_json(const json& data);
     };
 }

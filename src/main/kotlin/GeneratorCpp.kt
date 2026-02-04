@@ -211,58 +211,37 @@ private fun generateTelegramModelFile(): CppModelFile {
 struct ChatId {
     std::string stringValue;
     std::int64_t longValue() const { return std::stoll(stringValue); }
-
-    json to_json() const { return stringValue; }
-    static void from_json(const json& j, ChatId& value) { value.stringValue = j.get<std::string>(); }
 };
 """.trimIndent(),
         """
 struct UserId {
     std::int64_t longValue;
     ChatId toChatId() const { return ChatId{std::to_string(longValue)}; }
-
-    json to_json() const { return longValue; }
-    static void from_json(const json& j, UserId& value) { value.longValue = j.get<std::int64_t>(); }
 };
 """.trimIndent(),
         """
 struct MessageId {
     std::int64_t longValue;
-
-    json to_json() const { return longValue; }
-    static void from_json(const json& j, MessageId& value) { value.longValue = j.get<std::int64_t>(); }
 };
 """.trimIndent(),
         """
 struct BusinessConnectionId {
     std::string stringValue;
-
-    json to_json() const { return stringValue; }
-    static void from_json(const json& j, BusinessConnectionId& value) { value.stringValue = j.get<std::string>(); }
 };
 """.trimIndent(),
         """
 struct MessageThreadId {
     std::int64_t longValue;
-
-    json to_json() const { return longValue; }
-    static void from_json(const json& j, MessageThreadId& value) { value.longValue = j.get<std::int64_t>(); }
 };
 """.trimIndent(),
         """
 struct MessageEffectId {
     std::string stringValue;
-
-    json to_json() const { return stringValue; }
-    static void from_json(const json& j, MessageEffectId& value) { value.stringValue = j.get<std::string>(); }
 };
 """.trimIndent(),
         """
 struct ParseMode {
     std::string stringValue;
-
-    json to_json() const { return stringValue; }
-    static void from_json(const json& j, ParseMode& value) { value.stringValue = j.get<std::string>(); }
 };
 """.trimIndent()
     )
@@ -271,7 +250,6 @@ struct ParseMode {
         appendLine(
             """
 struct TelegramModel {
-    virtual json to_json() const = 0;
     virtual ~TelegramModel() = default;
 };
 """.trimIndent()
@@ -283,16 +261,56 @@ struct TelegramModel {
                 appendLine()
             }
         }
+
+        // Free json serializers for value wrapper types (nlohmann::json ADL-based API)
+        appendLine()
+        appendLine("// JSON serialization for value wrapper types")
+        appendLine("void to_json(json& j, const ChatId& value) { j = value.stringValue; }")
+        appendLine("void from_json(const json& j, ChatId& value) { j.get_to(value.stringValue); }")
+        appendLine()
+        appendLine("void to_json(json& j, const UserId& value) { j = value.longValue; }")
+        appendLine("void from_json(const json& j, UserId& value) { j.get_to(value.longValue); }")
+        appendLine()
+        appendLine("void to_json(json& j, const MessageId& value) { j = value.longValue; }")
+        appendLine("void from_json(const json& j, MessageId& value) { j.get_to(value.longValue); }")
+        appendLine()
+        appendLine("void to_json(json& j, const BusinessConnectionId& value) { j = value.stringValue; }")
+        appendLine("void from_json(const json& j, BusinessConnectionId& value) { j.get_to(value.stringValue); }")
+        appendLine()
+        appendLine("void to_json(json& j, const MessageThreadId& value) { j = value.longValue; }")
+        appendLine("void from_json(const json& j, MessageThreadId& value) { j.get_to(value.longValue); }")
+        appendLine()
+        appendLine("void to_json(json& j, const MessageEffectId& value) { j = value.stringValue; }")
+        appendLine("void from_json(const json& j, MessageEffectId& value) { j.get_to(value.stringValue); }")
+        appendLine()
+        appendLine("void to_json(json& j, const ParseMode& value) { j = value.stringValue; }")
+        appendLine("void from_json(const json& j, ParseMode& value) { j.get_to(value.stringValue); }")
+        appendLine()
+
+        // Generic JSON serialization for std::shared_ptr<T> so model fields can use pointers
+        appendLine("template <typename T>")
+        appendLine("void to_json(json& j, const std::shared_ptr<T>& value) {")
+        appendLine("    if (!value) {")
+        appendLine("        j = nullptr;")
+        appendLine("    } else {")
+        appendLine("        j = *value;")
+        appendLine("    }")
+        appendLine("}")
+        appendLine()
+        appendLine("template <typename T>")
+        appendLine("void from_json(const json& j, std::shared_ptr<T>& value) {")
+        appendLine("    if (j.is_null()) {")
+        appendLine("        value.reset();")
+        appendLine("    } else {")
+        appendLine("        value = std::make_shared<T>(j.get<T>());")
+        appendLine("    }")
+        appendLine("}")
     }.trimEnd()
 
     val headerContent = buildCppHeader(
         forwardDeclarations = emptyList(),
         includes = CPP_BASE_INCLUDES,
-        body = buildString {
-            appendLine("using json = nlohmann::json;")
-            appendLine()
-            appendLine(body)
-        }
+        body = body
     )
     return CppModelFile(name = "TelegramModel", headerContent = headerContent, sourceContent = null)
 }
@@ -420,10 +438,21 @@ private fun DocMethod.toCppRequestFile(
     val valueTypes = collectValueTypesFromParameters(docParameters, structName, customTypeNames)
     val vectorElementTypes = collectVectorElementTypesFromParameters(docParameters, structName, customTypeNames)
 
+    // Check if any parameter uses a value class type (ChatId, UserId, etc.)
+    // These are filtered out by collectValueTypesFromParameters, so we need to check directly
+    val hasValueClassType = docParameters.any { param ->
+        val fieldType = param.toCppFieldType(null)
+        val baseType = stripCppWrappers(fieldType)
+        baseType in valueClassNames
+    }
+    
+    // Also check vector element types for value classes
+    val hasValueClassInVector = vectorElementTypes.any { it in valueClassNames }
+
     val forwardDeclarations = pointerTypes.map { "struct $it;" }
     val headerIncludes = buildList {
         addAll(CPP_BASE_INCLUDES)
-        if (valueTypes.any { it in valueClassNames }) {
+        if (hasValueClassType || hasValueClassInVector || valueTypes.any { it in valueClassNames }) {
             add("#include \"TelegramModel.hpp\"")
         }
         addAll(valueTypes.filterNot { it in valueClassNames }.map { "#include \"$it.hpp\"" })
@@ -753,84 +782,35 @@ private fun DocType.toCppStructDeclaration() = buildString {
             if (index != docFields.lastIndex) appendLine()
         }
     }
-    appendLine()
-    appendLine("    json to_json() const override;")
-    appendLine("    static std::shared_ptr<$name> from_json(const json& data);")
     append("};")
 }
 
 
 private fun DocType.toCppStructImplementation() = buildString {
-    val explicitlySerializedFields: MutableSet<String> = mutableSetOf()
-    val vectors: MutableSet<String> = mutableSetOf()
-    val ptrs: MutableSet<String> = mutableSetOf()
-
-    docFields.forEach { field ->
-        val fieldName = field.cppFieldName()
-        val fieldType = field.toCppFieldType(name)
-        if (fieldType.contains("std::vector")) {
-            vectors.add(fieldName)
-        }
-        
-        if (!BASIC_JSON_TYPES_IN_CPP.contains(fieldType)) {
-            explicitlySerializedFields.add(fieldName)
-        }
-
-        if (!BASIC_JSON_TYPES_IN_CPP.contains(fieldType) &&
-            !BASIC_TG_TYPES.contains(fieldType) &&
-            !vectors.contains(fieldName)
-        ) {
-            ptrs.add(fieldName)
-        }
-    }
-
-    appendLine("json $name::to_json() const {")
-    appendLine("    json j;")
+    // Free functions for nlohmann::json ADL-based serialization
+    appendLine("void to_json(json& j, const $name& value) {")
     if (docFields.isEmpty()) {
         appendLine("    j = json::object();")
     } else {
+        appendLine("    j = json::object();")
         docFields.forEach { field ->
             val fieldName = field.cppFieldName()
             val jsonFieldName = field.name
-            val fieldType = field.toCppFieldType(name)
-            
-            // TODO maybe remove explicitlySerializedFileds check in first match
-            val toJsonPostfix = when {
-                ptrs.contains(fieldName) && explicitlySerializedFields.contains(fieldName) -> "->to_json()"
-                explicitlySerializedFields.contains(fieldName) -> ".to_json()"
-                else -> ""
-            }
-
-            if (vectors.contains(fieldName)) {
-                append(generateVectorSerialization(fieldType, fieldName, jsonFieldName).replace("        ", "    "))
-            } else {
-                appendLine("    j[\"$jsonFieldName\"] = $fieldName$toJsonPostfix;")
-            }
+            appendLine("    j[\"$jsonFieldName\"] = value.$fieldName;")
         }
     }
-    appendLine("    return j.dump();")
     appendLine("}")
-
-    appendLine("std::shared_ptr<$name> $name::from_json(const json& data) {")
-    appendLine("    auto result(std::make_shared<$name>());")
+    appendLine()
+    appendLine("void from_json(const json& j, $name& value) {")
     if (!docFields.isEmpty()) {
         docFields.forEach { field ->
             val fieldName = field.cppFieldName()
             val jsonFieldName = field.name
-            val fieldType = field.toCppFieldType(name)
-
-            if (vectors.contains(fieldName)) {
-                // TODO deserialisation
-                append(generateVectorDeserialization(fieldType, fieldName, jsonFieldName).replace("        ", "    "))
-            } else if (explicitlySerializedFields.contains(fieldName)) {
-                val elementType = fieldType.removePrefix("std::shared_ptr<").removeSuffix(">")
-                appendLine("    result->$fieldName = $elementType::from_json(data[\"$fieldName\"]);")
-            } else {
-                appendLine("    result->$fieldName = data[\"$fieldName\"].get<$fieldType>();")
-            }
-        }   
+            appendLine("    if (j.contains(\"$jsonFieldName\")) {")
+            appendLine("        j.at(\"$jsonFieldName\").get_to(value.$fieldName);")
+            appendLine("    }")
+        }
     }
-    appendLine("    return result;")
     appendLine("}")
 }
 

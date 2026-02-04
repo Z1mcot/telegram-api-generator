@@ -5,22 +5,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json RefundedPayment::to_json() const {
-        json j;
-        j["currency"] = currency;
-        j["total_amount"] = total_amount;
-        j["invoice_payload"] = invoice_payload;
-        j["telegram_payment_charge_id"] = telegram_payment_charge_id;
-        j["provider_payment_charge_id"] = provider_payment_charge_id;
-        return j.dump();
+    void to_json(json& j, const RefundedPayment& value) {
+        j = json::object();
+        j["currency"] = value.currency;
+        j["total_amount"] = value.total_amount;
+        j["invoice_payload"] = value.invoice_payload;
+        j["telegram_payment_charge_id"] = value.telegram_payment_charge_id;
+        j["provider_payment_charge_id"] = value.provider_payment_charge_id;
     }
-    std::shared_ptr<RefundedPayment> RefundedPayment::from_json(const json& data) {
-        auto result(std::make_shared<RefundedPayment>());
-        result->currency = data["currency"].get<std::string>();
-        result->total_amount = data["total_amount"].get<std::int64_t>();
-        result->invoice_payload = data["invoice_payload"].get<std::string>();
-        result->telegram_payment_charge_id = data["telegram_payment_charge_id"].get<std::string>();
-        result->provider_payment_charge_id = data["provider_payment_charge_id"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, RefundedPayment& value) {
+        if (j.contains("currency")) {
+            j.at("currency").get_to(value.currency);
+        }
+        if (j.contains("total_amount")) {
+            j.at("total_amount").get_to(value.total_amount);
+        }
+        if (j.contains("invoice_payload")) {
+            j.at("invoice_payload").get_to(value.invoice_payload);
+        }
+        if (j.contains("telegram_payment_charge_id")) {
+            j.at("telegram_payment_charge_id").get_to(value.telegram_payment_charge_id);
+        }
+        if (j.contains("provider_payment_charge_id")) {
+            j.at("provider_payment_charge_id").get_to(value.provider_payment_charge_id);
+        }
     }
 }

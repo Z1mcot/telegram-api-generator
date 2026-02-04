@@ -40,8 +40,5 @@ namespace tgbot {
 
         // Optional. True, if channel chats can be chosen
         bool allow_channel_chats;
-
-        json to_json() const override;
-        static std::shared_ptr<SwitchInlineQueryChosenChat> from_json(const json& data);
     };
 }

@@ -9,28 +9,42 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatMemberUpdated::to_json() const {
-        json j;
-        j["chat"] = chat->to_json();
-        j["from"] = from->to_json();
-        j["date"] = date;
-        j["old_chat_member"] = old_chat_member->to_json();
-        j["new_chat_member"] = new_chat_member->to_json();
-        j["invite_link"] = invite_link->to_json();
-        j["via_join_request"] = via_join_request;
-        j["via_chat_folder_invite_link"] = via_chat_folder_invite_link;
-        return j.dump();
+    void to_json(json& j, const ChatMemberUpdated& value) {
+        j = json::object();
+        j["chat"] = value.chat;
+        j["from"] = value.from;
+        j["date"] = value.date;
+        j["old_chat_member"] = value.old_chat_member;
+        j["new_chat_member"] = value.new_chat_member;
+        j["invite_link"] = value.invite_link;
+        j["via_join_request"] = value.via_join_request;
+        j["via_chat_folder_invite_link"] = value.via_chat_folder_invite_link;
     }
-    std::shared_ptr<ChatMemberUpdated> ChatMemberUpdated::from_json(const json& data) {
-        auto result(std::make_shared<ChatMemberUpdated>());
-        result->chat = Chat::from_json(data["chat"]);
-        result->from = User::from_json(data["from"]);
-        result->date = data["date"].get<std::int64_t>();
-        result->old_chat_member = ChatMember::from_json(data["old_chat_member"]);
-        result->new_chat_member = ChatMember::from_json(data["new_chat_member"]);
-        result->invite_link = ChatInviteLink::from_json(data["invite_link"]);
-        result->via_join_request = data["via_join_request"].get<bool>();
-        result->via_chat_folder_invite_link = data["via_chat_folder_invite_link"].get<bool>();
-        return result;
+
+    void from_json(const json& j, ChatMemberUpdated& value) {
+        if (j.contains("chat")) {
+            j.at("chat").get_to(value.chat);
+        }
+        if (j.contains("from")) {
+            j.at("from").get_to(value.from);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("old_chat_member")) {
+            j.at("old_chat_member").get_to(value.old_chat_member);
+        }
+        if (j.contains("new_chat_member")) {
+            j.at("new_chat_member").get_to(value.new_chat_member);
+        }
+        if (j.contains("invite_link")) {
+            j.at("invite_link").get_to(value.invite_link);
+        }
+        if (j.contains("via_join_request")) {
+            j.at("via_join_request").get_to(value.via_join_request);
+        }
+        if (j.contains("via_chat_folder_invite_link")) {
+            j.at("via_chat_folder_invite_link").get_to(value.via_chat_folder_invite_link);
+        }
     }
 }

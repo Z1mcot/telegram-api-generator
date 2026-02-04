@@ -28,8 +28,5 @@ namespace tgbot {
 
         // The color of the background fill in the RGB24 format
         std::int64_t color;
-
-        json to_json() const override;
-        static std::shared_ptr<BackgroundFillSolid> from_json(const json& data);
     };
 }

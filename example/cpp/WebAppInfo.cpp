@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json WebAppInfo::to_json() const {
-        json j;
-        j["url"] = url;
-        return j.dump();
+    void to_json(json& j, const WebAppInfo& value) {
+        j = json::object();
+        j["url"] = value.url;
     }
-    std::shared_ptr<WebAppInfo> WebAppInfo::from_json(const json& data) {
-        auto result(std::make_shared<WebAppInfo>());
-        result->url = data["url"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, WebAppInfo& value) {
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
+        }
     }
 }

@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Clockwise rotation angle of the background fill in degrees; 0-359
         std::int64_t rotation_angle;
-
-        json to_json() const override;
-        static std::shared_ptr<BackgroundFillGradient> from_json(const json& data);
     };
 }

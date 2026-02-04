@@ -28,8 +28,5 @@ namespace tgbot {
 
         // The amount of the currency that will be paid for the post in the smallest units of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.
         std::int64_t amount;
-
-        json to_json() const override;
-        static std::shared_ptr<SuggestedPostPrice> from_json(const json& data);
     };
 }

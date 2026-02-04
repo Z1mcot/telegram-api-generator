@@ -24,11 +24,13 @@ namespace tgbot {
      * @param gift Information about the gift
      * @param owned_gift_id Optional. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts
      * @param convert_star_count Optional. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
-     * @param prepaid_upgrade_star_count Optional. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
+     * @param prepaid_upgrade_star_count Optional. Number of Telegram Stars that were prepaid for the ability to upgrade the gift
+     * @param is_upgrade_separate Optional. True, if the gift's upgrade was purchased after the gift was sent
      * @param can_be_upgraded Optional. True, if the gift can be upgraded to a unique gift
      * @param text Optional. Text of the message that was added to the gift
      * @param entities Optional. Special entities that appear in the text
      * @param is_private Optional. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
+     * @param unique_gift_number Optional. Unique number reserved for this gift when upgraded. See the number field in UniqueGift
      */
     struct GiftInfo : public TelegramModel {
         virtual ~GiftInfo() = default;
@@ -41,8 +43,11 @@ namespace tgbot {
         // Optional. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible
         std::int64_t convert_star_count;
 
-        // Optional. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift
+        // Optional. Number of Telegram Stars that were prepaid for the ability to upgrade the gift
         std::int64_t prepaid_upgrade_star_count;
+
+        // Optional. True, if the gift's upgrade was purchased after the gift was sent
+        bool is_upgrade_separate;
 
         // Optional. True, if the gift can be upgraded to a unique gift
         bool can_be_upgraded;
@@ -56,7 +61,7 @@ namespace tgbot {
         // Optional. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them
         bool is_private;
 
-        json to_json() const override;
-        static std::shared_ptr<GiftInfo> from_json(const json& data);
+        // Optional. Unique number reserved for this gift when upgraded. See the number field in UniqueGift
+        std::int64_t unique_gift_number;
     };
 }

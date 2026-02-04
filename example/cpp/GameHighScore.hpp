@@ -34,8 +34,5 @@ namespace tgbot {
 
         // Score
         std::int64_t score;
-
-        json to_json() const override;
-        static std::shared_ptr<GameHighScore> from_json(const json& data);
     };
 }

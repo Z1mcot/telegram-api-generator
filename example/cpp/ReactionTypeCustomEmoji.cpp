@@ -5,16 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ReactionTypeCustomEmoji::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["custom_emoji_id"] = custom_emoji_id;
-        return j.dump();
+    void to_json(json& j, const ReactionTypeCustomEmoji& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["custom_emoji_id"] = value.custom_emoji_id;
     }
-    std::shared_ptr<ReactionTypeCustomEmoji> ReactionTypeCustomEmoji::from_json(const json& data) {
-        auto result(std::make_shared<ReactionTypeCustomEmoji>());
-        result->type_ = data["type_"].get<std::string>();
-        result->custom_emoji_id = data["custom_emoji_id"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ReactionTypeCustomEmoji& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("custom_emoji_id")) {
+            j.at("custom_emoji_id").get_to(value.custom_emoji_id);
+        }
     }
 }

@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PaidMessagePriceChanged::to_json() const {
-        json j;
-        j["paid_message_star_count"] = paid_message_star_count;
-        return j.dump();
+    void to_json(json& j, const PaidMessagePriceChanged& value) {
+        j = json::object();
+        j["paid_message_star_count"] = value.paid_message_star_count;
     }
-    std::shared_ptr<PaidMessagePriceChanged> PaidMessagePriceChanged::from_json(const json& data) {
-        auto result(std::make_shared<PaidMessagePriceChanged>());
-        result->paid_message_star_count = data["paid_message_star_count"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, PaidMessagePriceChanged& value) {
+        if (j.contains("paid_message_star_count")) {
+            j.at("paid_message_star_count").get_to(value.paid_message_star_count);
+        }
     }
 }

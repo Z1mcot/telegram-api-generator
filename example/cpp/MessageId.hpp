@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~MessageId() = default;
         // Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent
         MessageId message_id;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageId> from_json(const json& data);
     };
 }

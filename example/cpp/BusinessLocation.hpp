@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Optional. Location of the business
         std::shared_ptr<Location> location;
-
-        json to_json() const override;
-        static std::shared_ptr<BusinessLocation> from_json(const json& data);
     };
 }

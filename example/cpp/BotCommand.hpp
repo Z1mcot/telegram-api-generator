@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Description of the command; 1-256 characters.
         std::string description;
-
-        json to_json() const override;
-        static std::shared_ptr<BotCommand> from_json(const json& data);
     };
 }

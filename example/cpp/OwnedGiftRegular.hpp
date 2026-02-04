@@ -33,8 +33,10 @@ namespace tgbot {
      * @param is_saved Optional. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only
      * @param can_be_upgraded Optional. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only
      * @param was_refunded Optional. True, if the gift was refunded and isn't available anymore
-     * @param convert_star_count Optional. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars
-     * @param prepaid_upgrade_star_count Optional. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift
+     * @param convert_star_count Optional. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only
+     * @param prepaid_upgrade_star_count Optional. Number of Telegram Stars that were paid for the ability to upgrade the gift
+     * @param is_upgrade_separate Optional. True, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only
+     * @param unique_gift_number Optional. Unique number reserved for this gift when upgraded. See the number field in UniqueGift
      */
     struct OwnedGiftRegular : public OwnedGift {
         virtual ~OwnedGiftRegular() = default;
@@ -71,13 +73,16 @@ namespace tgbot {
         // Optional. True, if the gift was refunded and isn't available anymore
         bool was_refunded;
 
-        // Optional. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars
+        // Optional. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only
         std::int64_t convert_star_count;
 
-        // Optional. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift
+        // Optional. Number of Telegram Stars that were paid for the ability to upgrade the gift
         std::int64_t prepaid_upgrade_star_count;
 
-        json to_json() const override;
-        static std::shared_ptr<OwnedGiftRegular> from_json(const json& data);
+        // Optional. True, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only
+        bool is_upgrade_separate;
+
+        // Optional. Unique number reserved for this gift when upgraded. See the number field in UniqueGift
+        std::int64_t unique_gift_number;
     };
 }

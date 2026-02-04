@@ -9,6 +9,7 @@
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <stdexcept>
+#include "TelegramModel.hpp"
 
 namespace tgbot {
 
@@ -23,7 +24,7 @@ namespace tgbot {
      * @param can_manage_chat Pass True if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
      * @param can_delete_messages Pass True if the administrator can delete messages of other users
      * @param can_manage_video_chats Pass True if the administrator can manage video chats
-     * @param can_restrict_members Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics
+     * @param can_restrict_members Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to True for promotions of channel administrators
      * @param can_promote_members Pass True if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
      * @param can_change_info Pass True if the administrator can change chat title, photo and other settings
      * @param can_invite_users Pass True if the administrator can invite new users to the chat
@@ -55,7 +56,7 @@ namespace tgbot {
         // Pass True if the administrator can manage video chats
         bool can_manage_video_chats;
 
-        // Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics
+        // Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to True for promotions of channel administrators
         bool can_restrict_members;
 
         // Pass True if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)

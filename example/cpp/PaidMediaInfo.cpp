@@ -5,26 +5,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PaidMediaInfo::to_json() const {
-        json j;
-        j["star_count"] = star_count;
-        std::vector<json> paid_media_values;
-        paid_media_values.reserve(paid_media.size());
-        for (auto& e : paid_media) {
-            paid_media_values.push_back(e->to_json());
-        }
-        j["paid_media"] = paid_media_values;
-        return j.dump();
+    void to_json(json& j, const PaidMediaInfo& value) {
+        j = json::object();
+        j["star_count"] = value.star_count;
+        j["paid_media"] = value.paid_media;
     }
-    std::shared_ptr<PaidMediaInfo> PaidMediaInfo::from_json(const json& data) {
-        auto result(std::make_shared<PaidMediaInfo>());
-        result->star_count = data["star_count"].get<std::int64_t>();
-        std::vector<std::vector<std::shared_ptr<PaidMedia>>> paid_media_values;
-        paid_media_values.reserve(paid_media.size());
-        for (auto& e : data["paid_media"]) {
-            paid_media_values.push_back(std::vector<std::shared_ptr<PaidMedia>>::from_json(e));
+
+    void from_json(const json& j, PaidMediaInfo& value) {
+        if (j.contains("star_count")) {
+            j.at("star_count").get_to(value.star_count);
         }
-        result->paid_media = paid_media_values;
-        return result;
+        if (j.contains("paid_media")) {
+            j.at("paid_media").get_to(value.paid_media);
+        }
     }
 }

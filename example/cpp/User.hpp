@@ -31,6 +31,7 @@ namespace tgbot {
      * @param supports_inline_queries Optional. True, if the bot supports inline queries. Returned only in getMe.
      * @param can_connect_to_business Optional. True, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in getMe.
      * @param has_main_web_app Optional. True, if the bot has a main Web App. Returned only in getMe.
+     * @param has_topics_enabled Optional. True, if the bot has forum topic mode enabled in private chats. Returned only in getMe.
      */
     struct User : public TelegramModel {
         virtual ~User() = default;
@@ -73,7 +74,7 @@ namespace tgbot {
         // Optional. True, if the bot has a main Web App. Returned only in getMe.
         bool has_main_web_app;
 
-        json to_json() const override;
-        static std::shared_ptr<User> from_json(const json& data);
+        // Optional. True, if the bot has forum topic mode enabled in private chats. Returned only in getMe.
+        bool has_topics_enabled;
     };
 }

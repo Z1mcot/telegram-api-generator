@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json TransactionPartnerAffiliateProgram::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["sponsor_user"] = sponsor_user->to_json();
-        j["commission_per_mille"] = commission_per_mille;
-        return j.dump();
+    void to_json(json& j, const TransactionPartnerAffiliateProgram& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["sponsor_user"] = value.sponsor_user;
+        j["commission_per_mille"] = value.commission_per_mille;
     }
-    std::shared_ptr<TransactionPartnerAffiliateProgram> TransactionPartnerAffiliateProgram::from_json(const json& data) {
-        auto result(std::make_shared<TransactionPartnerAffiliateProgram>());
-        result->type_ = data["type_"].get<std::string>();
-        result->sponsor_user = User::from_json(data["sponsor_user"]);
-        result->commission_per_mille = data["commission_per_mille"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, TransactionPartnerAffiliateProgram& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("sponsor_user")) {
+            j.at("sponsor_user").get_to(value.sponsor_user);
+        }
+        if (j.contains("commission_per_mille")) {
+            j.at("commission_per_mille").get_to(value.commission_per_mille);
+        }
     }
 }

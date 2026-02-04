@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Optional. Additional data about the contact in the form of a vCard, 0-2048 bytes
         std::string vcard;
-
-        json to_json() const override;
-        static std::shared_ptr<InputContactMessageContent> from_json(const json& data);
     };
 }

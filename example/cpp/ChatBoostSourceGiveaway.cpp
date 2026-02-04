@@ -6,22 +6,30 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ChatBoostSourceGiveaway::to_json() const {
-        json j;
-        j["source"] = source;
-        j["giveaway_message_id"] = giveaway_message_id;
-        j["user"] = user->to_json();
-        j["prize_star_count"] = prize_star_count;
-        j["is_unclaimed"] = is_unclaimed;
-        return j.dump();
+    void to_json(json& j, const ChatBoostSourceGiveaway& value) {
+        j = json::object();
+        j["source"] = value.source;
+        j["giveaway_message_id"] = value.giveaway_message_id;
+        j["user"] = value.user;
+        j["prize_star_count"] = value.prize_star_count;
+        j["is_unclaimed"] = value.is_unclaimed;
     }
-    std::shared_ptr<ChatBoostSourceGiveaway> ChatBoostSourceGiveaway::from_json(const json& data) {
-        auto result(std::make_shared<ChatBoostSourceGiveaway>());
-        result->source = data["source"].get<std::string>();
-        result->giveaway_message_id = data["giveaway_message_id"].get<std::int64_t>();
-        result->user = User::from_json(data["user"]);
-        result->prize_star_count = data["prize_star_count"].get<std::int64_t>();
-        result->is_unclaimed = data["is_unclaimed"].get<bool>();
-        return result;
+
+    void from_json(const json& j, ChatBoostSourceGiveaway& value) {
+        if (j.contains("source")) {
+            j.at("source").get_to(value.source);
+        }
+        if (j.contains("giveaway_message_id")) {
+            j.at("giveaway_message_id").get_to(value.giveaway_message_id);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("prize_star_count")) {
+            j.at("prize_star_count").get_to(value.prize_star_count);
+        }
+        if (j.contains("is_unclaimed")) {
+            j.at("is_unclaimed").get_to(value.is_unclaimed);
+        }
     }
 }

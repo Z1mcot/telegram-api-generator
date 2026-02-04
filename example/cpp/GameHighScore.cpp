@@ -6,18 +6,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json GameHighScore::to_json() const {
-        json j;
-        j["position"] = position;
-        j["user"] = user->to_json();
-        j["score"] = score;
-        return j.dump();
+    void to_json(json& j, const GameHighScore& value) {
+        j = json::object();
+        j["position"] = value.position;
+        j["user"] = value.user;
+        j["score"] = value.score;
     }
-    std::shared_ptr<GameHighScore> GameHighScore::from_json(const json& data) {
-        auto result(std::make_shared<GameHighScore>());
-        result->position = data["position"].get<std::int64_t>();
-        result->user = User::from_json(data["user"]);
-        result->score = data["score"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, GameHighScore& value) {
+        if (j.contains("position")) {
+            j.at("position").get_to(value.position);
+        }
+        if (j.contains("user")) {
+            j.at("user").get_to(value.user);
+        }
+        if (j.contains("score")) {
+            j.at("score").get_to(value.score);
+        }
     }
 }

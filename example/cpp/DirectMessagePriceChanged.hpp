@@ -28,8 +28,5 @@ namespace tgbot {
 
         // Optional. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.
         std::int64_t direct_message_star_count;
-
-        json to_json() const override;
-        static std::shared_ptr<DirectMessagePriceChanged> from_json(const json& data);
     };
 }

@@ -36,8 +36,5 @@ namespace tgbot {
 
         // Optional. Street address of the location
         std::string street;
-
-        json to_json() const override;
-        static std::shared_ptr<LocationAddress> from_json(const json& data);
     };
 }

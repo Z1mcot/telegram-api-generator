@@ -50,8 +50,5 @@ namespace tgbot {
 
         // Optional. For “custom_emoji” only, unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker
         std::string custom_emoji_id;
-
-        json to_json() const override;
-        static std::shared_ptr<MessageEntity> from_json(const json& data);
     };
 }

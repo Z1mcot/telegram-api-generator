@@ -101,8 +101,5 @@ namespace tgbot {
 
         // Optional. Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.
         bool is_flexible;
-
-        json to_json() const override;
-        static std::shared_ptr<InputInvoiceMessageContent> from_json(const json& data);
     };
 }

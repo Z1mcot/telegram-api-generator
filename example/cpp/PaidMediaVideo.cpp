@@ -6,16 +6,18 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json PaidMediaVideo::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["video"] = video->to_json();
-        return j.dump();
+    void to_json(json& j, const PaidMediaVideo& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["video"] = value.video;
     }
-    std::shared_ptr<PaidMediaVideo> PaidMediaVideo::from_json(const json& data) {
-        auto result(std::make_shared<PaidMediaVideo>());
-        result->type_ = data["type_"].get<std::string>();
-        result->video = Video::from_json(data["video"]);
-        return result;
+
+    void from_json(const json& j, PaidMediaVideo& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("video")) {
+            j.at("video").get_to(value.video);
+        }
     }
 }

@@ -51,8 +51,5 @@ namespace tgbot {
 
         // Optional. Order information provided by the user
         std::shared_ptr<OrderInfo> order_info;
-
-        json to_json() const override;
-        static std::shared_ptr<PreCheckoutQuery> from_json(const json& data);
     };
 }

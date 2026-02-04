@@ -30,8 +30,5 @@ namespace tgbot {
 
         // Unique identifier for the story in the chat
         std::int64_t id;
-
-        json to_json() const override;
-        static std::shared_ptr<Story> from_json(const json& data);
     };
 }

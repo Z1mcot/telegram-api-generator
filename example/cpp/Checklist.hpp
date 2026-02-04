@@ -42,8 +42,5 @@ namespace tgbot {
 
         // Optional. True, if users other than the creator of the list can mark tasks as done or not done
         bool others_can_mark_tasks_as_done;
-
-        json to_json() const override;
-        static std::shared_ptr<Checklist> from_json(const json& data);
     };
 }

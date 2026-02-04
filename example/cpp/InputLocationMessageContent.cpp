@@ -5,24 +5,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputLocationMessageContent::to_json() const {
-        json j;
-        j["latitude"] = latitude;
-        j["longitude"] = longitude;
-        j["horizontal_accuracy"] = horizontal_accuracy;
-        j["live_period"] = live_period;
-        j["heading"] = heading;
-        j["proximity_alert_radius"] = proximity_alert_radius;
-        return j.dump();
+    void to_json(json& j, const InputLocationMessageContent& value) {
+        j = json::object();
+        j["latitude"] = value.latitude;
+        j["longitude"] = value.longitude;
+        j["horizontal_accuracy"] = value.horizontal_accuracy;
+        j["live_period"] = value.live_period;
+        j["heading"] = value.heading;
+        j["proximity_alert_radius"] = value.proximity_alert_radius;
     }
-    std::shared_ptr<InputLocationMessageContent> InputLocationMessageContent::from_json(const json& data) {
-        auto result(std::make_shared<InputLocationMessageContent>());
-        result->latitude = data["latitude"].get<double>();
-        result->longitude = data["longitude"].get<double>();
-        result->horizontal_accuracy = data["horizontal_accuracy"].get<double>();
-        result->live_period = data["live_period"].get<std::int64_t>();
-        result->heading = data["heading"].get<std::int64_t>();
-        result->proximity_alert_radius = data["proximity_alert_radius"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, InputLocationMessageContent& value) {
+        if (j.contains("latitude")) {
+            j.at("latitude").get_to(value.latitude);
+        }
+        if (j.contains("longitude")) {
+            j.at("longitude").get_to(value.longitude);
+        }
+        if (j.contains("horizontal_accuracy")) {
+            j.at("horizontal_accuracy").get_to(value.horizontal_accuracy);
+        }
+        if (j.contains("live_period")) {
+            j.at("live_period").get_to(value.live_period);
+        }
+        if (j.contains("heading")) {
+            j.at("heading").get_to(value.heading);
+        }
+        if (j.contains("proximity_alert_radius")) {
+            j.at("proximity_alert_radius").get_to(value.proximity_alert_radius);
+        }
     }
 }

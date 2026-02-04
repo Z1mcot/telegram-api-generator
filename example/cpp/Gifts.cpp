@@ -5,24 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json Gifts::to_json() const {
-        json j;
-        std::vector<json> gifts_values;
-        gifts_values.reserve(gifts.size());
-        for (auto& e : gifts) {
-            gifts_values.push_back(e->to_json());
-        }
-        j["gifts"] = gifts_values;
-        return j.dump();
+    void to_json(json& j, const Gifts& value) {
+        j = json::object();
+        j["gifts"] = value.gifts;
     }
-    std::shared_ptr<Gifts> Gifts::from_json(const json& data) {
-        auto result(std::make_shared<Gifts>());
-        std::vector<std::vector<std::shared_ptr<Gift>>> gifts_values;
-        gifts_values.reserve(gifts.size());
-        for (auto& e : data["gifts"]) {
-            gifts_values.push_back(std::vector<std::shared_ptr<Gift>>::from_json(e));
+
+    void from_json(const json& j, Gifts& value) {
+        if (j.contains("gifts")) {
+            j.at("gifts").get_to(value.gifts);
         }
-        result->gifts = gifts_values;
-        return result;
     }
 }

@@ -5,18 +5,22 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json MessageOriginHiddenUser::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["date"] = date;
-        j["sender_user_name"] = sender_user_name;
-        return j.dump();
+    void to_json(json& j, const MessageOriginHiddenUser& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["date"] = value.date;
+        j["sender_user_name"] = value.sender_user_name;
     }
-    std::shared_ptr<MessageOriginHiddenUser> MessageOriginHiddenUser::from_json(const json& data) {
-        auto result(std::make_shared<MessageOriginHiddenUser>());
-        result->type_ = data["type_"].get<std::string>();
-        result->date = data["date"].get<std::int64_t>();
-        result->sender_user_name = data["sender_user_name"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, MessageOriginHiddenUser& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("date")) {
+            j.at("date").get_to(value.date);
+        }
+        if (j.contains("sender_user_name")) {
+            j.at("sender_user_name").get_to(value.sender_user_name);
+        }
     }
 }

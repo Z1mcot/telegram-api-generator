@@ -7,48 +7,70 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json OwnedGiftRegular::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["gift"] = gift->to_json();
-        j["owned_gift_id"] = owned_gift_id;
-        j["sender_user"] = sender_user->to_json();
-        j["send_date"] = send_date;
-        j["text"] = text;
-        std::vector<json> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : entities) {
-            entities_values.push_back(e->to_json());
-        }
-        j["entities"] = entities_values;
-        j["is_private"] = is_private;
-        j["is_saved"] = is_saved;
-        j["can_be_upgraded"] = can_be_upgraded;
-        j["was_refunded"] = was_refunded;
-        j["convert_star_count"] = convert_star_count;
-        j["prepaid_upgrade_star_count"] = prepaid_upgrade_star_count;
-        return j.dump();
+    void to_json(json& j, const OwnedGiftRegular& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["gift"] = value.gift;
+        j["owned_gift_id"] = value.owned_gift_id;
+        j["sender_user"] = value.sender_user;
+        j["send_date"] = value.send_date;
+        j["text"] = value.text;
+        j["entities"] = value.entities;
+        j["is_private"] = value.is_private;
+        j["is_saved"] = value.is_saved;
+        j["can_be_upgraded"] = value.can_be_upgraded;
+        j["was_refunded"] = value.was_refunded;
+        j["convert_star_count"] = value.convert_star_count;
+        j["prepaid_upgrade_star_count"] = value.prepaid_upgrade_star_count;
+        j["is_upgrade_separate"] = value.is_upgrade_separate;
+        j["unique_gift_number"] = value.unique_gift_number;
     }
-    std::shared_ptr<OwnedGiftRegular> OwnedGiftRegular::from_json(const json& data) {
-        auto result(std::make_shared<OwnedGiftRegular>());
-        result->type_ = data["type_"].get<std::string>();
-        result->gift = Gift::from_json(data["gift"]);
-        result->owned_gift_id = data["owned_gift_id"].get<std::string>();
-        result->sender_user = User::from_json(data["sender_user"]);
-        result->send_date = data["send_date"].get<std::int64_t>();
-        result->text = data["text"].get<std::string>();
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> entities_values;
-        entities_values.reserve(entities.size());
-        for (auto& e : data["entities"]) {
-            entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, OwnedGiftRegular& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
         }
-        result->entities = entities_values;
-        result->is_private = data["is_private"].get<bool>();
-        result->is_saved = data["is_saved"].get<bool>();
-        result->can_be_upgraded = data["can_be_upgraded"].get<bool>();
-        result->was_refunded = data["was_refunded"].get<bool>();
-        result->convert_star_count = data["convert_star_count"].get<std::int64_t>();
-        result->prepaid_upgrade_star_count = data["prepaid_upgrade_star_count"].get<std::int64_t>();
-        return result;
+        if (j.contains("gift")) {
+            j.at("gift").get_to(value.gift);
+        }
+        if (j.contains("owned_gift_id")) {
+            j.at("owned_gift_id").get_to(value.owned_gift_id);
+        }
+        if (j.contains("sender_user")) {
+            j.at("sender_user").get_to(value.sender_user);
+        }
+        if (j.contains("send_date")) {
+            j.at("send_date").get_to(value.send_date);
+        }
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("entities")) {
+            j.at("entities").get_to(value.entities);
+        }
+        if (j.contains("is_private")) {
+            j.at("is_private").get_to(value.is_private);
+        }
+        if (j.contains("is_saved")) {
+            j.at("is_saved").get_to(value.is_saved);
+        }
+        if (j.contains("can_be_upgraded")) {
+            j.at("can_be_upgraded").get_to(value.can_be_upgraded);
+        }
+        if (j.contains("was_refunded")) {
+            j.at("was_refunded").get_to(value.was_refunded);
+        }
+        if (j.contains("convert_star_count")) {
+            j.at("convert_star_count").get_to(value.convert_star_count);
+        }
+        if (j.contains("prepaid_upgrade_star_count")) {
+            j.at("prepaid_upgrade_star_count").get_to(value.prepaid_upgrade_star_count);
+        }
+        if (j.contains("is_upgrade_separate")) {
+            j.at("is_upgrade_separate").get_to(value.is_upgrade_separate);
+        }
+        if (j.contains("unique_gift_number")) {
+            j.at("unique_gift_number").get_to(value.unique_gift_number);
+        }
     }
 }

@@ -5,24 +5,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json ShippingAddress::to_json() const {
-        json j;
-        j["country_code"] = country_code;
-        j["state"] = state;
-        j["city"] = city;
-        j["street_line1"] = street_line1;
-        j["street_line2"] = street_line2;
-        j["post_code"] = post_code;
-        return j.dump();
+    void to_json(json& j, const ShippingAddress& value) {
+        j = json::object();
+        j["country_code"] = value.country_code;
+        j["state"] = value.state;
+        j["city"] = value.city;
+        j["street_line1"] = value.street_line1;
+        j["street_line2"] = value.street_line2;
+        j["post_code"] = value.post_code;
     }
-    std::shared_ptr<ShippingAddress> ShippingAddress::from_json(const json& data) {
-        auto result(std::make_shared<ShippingAddress>());
-        result->country_code = data["country_code"].get<std::string>();
-        result->state = data["state"].get<std::string>();
-        result->city = data["city"].get<std::string>();
-        result->street_line1 = data["street_line1"].get<std::string>();
-        result->street_line2 = data["street_line2"].get<std::string>();
-        result->post_code = data["post_code"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, ShippingAddress& value) {
+        if (j.contains("country_code")) {
+            j.at("country_code").get_to(value.country_code);
+        }
+        if (j.contains("state")) {
+            j.at("state").get_to(value.state);
+        }
+        if (j.contains("city")) {
+            j.at("city").get_to(value.city);
+        }
+        if (j.contains("street_line1")) {
+            j.at("street_line1").get_to(value.street_line1);
+        }
+        if (j.contains("street_line2")) {
+            j.at("street_line2").get_to(value.street_line2);
+        }
+        if (j.contains("post_code")) {
+            j.at("post_code").get_to(value.post_code);
+        }
     }
 }

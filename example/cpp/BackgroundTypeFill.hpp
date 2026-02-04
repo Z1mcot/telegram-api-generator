@@ -34,8 +34,5 @@ namespace tgbot {
 
         // Dimming of the background in dark themes, as a percentage; 0-100
         std::int64_t dark_theme_dimming;
-
-        json to_json() const override;
-        static std::shared_ptr<BackgroundTypeFill> from_json(const json& data);
     };
 }

@@ -28,8 +28,5 @@ namespace tgbot {
 
         // A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format
         std::vector<std::int64_t> colors;
-
-        json to_json() const override;
-        static std::shared_ptr<BackgroundFillFreeformGradient> from_json(const json& data);
     };
 }

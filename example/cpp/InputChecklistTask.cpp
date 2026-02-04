@@ -5,30 +5,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InputChecklistTask::to_json() const {
-        json j;
-        j["id"] = id;
-        j["text"] = text;
-        j["parse_mode"] = parse_mode->to_json();
-        std::vector<json> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : text_entities) {
-            text_entities_values.push_back(e->to_json());
-        }
-        j["text_entities"] = text_entities_values;
-        return j.dump();
+    void to_json(json& j, const InputChecklistTask& value) {
+        j = json::object();
+        j["id"] = value.id;
+        j["text"] = value.text;
+        j["parse_mode"] = value.parse_mode;
+        j["text_entities"] = value.text_entities;
     }
-    std::shared_ptr<InputChecklistTask> InputChecklistTask::from_json(const json& data) {
-        auto result(std::make_shared<InputChecklistTask>());
-        result->id = data["id"].get<std::int64_t>();
-        result->text = data["text"].get<std::string>();
-        result->parse_mode = ParseMode::from_json(data["parse_mode"]);
-        std::vector<std::vector<std::shared_ptr<MessageEntity>>> text_entities_values;
-        text_entities_values.reserve(text_entities.size());
-        for (auto& e : data["text_entities"]) {
-            text_entities_values.push_back(std::vector<std::shared_ptr<MessageEntity>>::from_json(e));
+
+    void from_json(const json& j, InputChecklistTask& value) {
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
         }
-        result->text_entities = text_entities_values;
-        return result;
+        if (j.contains("text")) {
+            j.at("text").get_to(value.text);
+        }
+        if (j.contains("parse_mode")) {
+            j.at("parse_mode").get_to(value.parse_mode);
+        }
+        if (j.contains("text_entities")) {
+            j.at("text_entities").get_to(value.text_entities);
+        }
     }
 }

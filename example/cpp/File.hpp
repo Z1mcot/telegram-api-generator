@@ -37,8 +37,5 @@ namespace tgbot {
 
         // Optional. File path. Use https://api.telegram.org/file/bot<token>/<file_path> to get the file.
         std::string file_path;
-
-        json to_json() const override;
-        static std::shared_ptr<File> from_json(const json& data);
     };
 }

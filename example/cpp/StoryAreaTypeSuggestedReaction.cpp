@@ -6,20 +6,26 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StoryAreaTypeSuggestedReaction::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["reaction_type"] = reaction_type->to_json();
-        j["is_dark"] = is_dark;
-        j["is_flipped"] = is_flipped;
-        return j.dump();
+    void to_json(json& j, const StoryAreaTypeSuggestedReaction& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["reaction_type"] = value.reaction_type;
+        j["is_dark"] = value.is_dark;
+        j["is_flipped"] = value.is_flipped;
     }
-    std::shared_ptr<StoryAreaTypeSuggestedReaction> StoryAreaTypeSuggestedReaction::from_json(const json& data) {
-        auto result(std::make_shared<StoryAreaTypeSuggestedReaction>());
-        result->type_ = data["type_"].get<std::string>();
-        result->reaction_type = ReactionType::from_json(data["reaction_type"]);
-        result->is_dark = data["is_dark"].get<bool>();
-        result->is_flipped = data["is_flipped"].get<bool>();
-        return result;
+
+    void from_json(const json& j, StoryAreaTypeSuggestedReaction& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("reaction_type")) {
+            j.at("reaction_type").get_to(value.reaction_type);
+        }
+        if (j.contains("is_dark")) {
+            j.at("is_dark").get_to(value.is_dark);
+        }
+        if (j.contains("is_flipped")) {
+            j.at("is_flipped").get_to(value.is_flipped);
+        }
     }
 }

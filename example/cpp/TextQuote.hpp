@@ -37,8 +37,5 @@ namespace tgbot {
 
         // Optional. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.
         bool is_manual;
-
-        json to_json() const override;
-        static std::shared_ptr<TextQuote> from_json(const json& data);
     };
 }

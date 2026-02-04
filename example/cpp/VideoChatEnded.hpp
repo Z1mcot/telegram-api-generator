@@ -24,8 +24,5 @@ namespace tgbot {
         virtual ~VideoChatEnded() = default;
         // Video chat duration in seconds
         std::int64_t duration;
-
-        json to_json() const override;
-        static std::shared_ptr<VideoChatEnded> from_json(const json& data);
     };
 }

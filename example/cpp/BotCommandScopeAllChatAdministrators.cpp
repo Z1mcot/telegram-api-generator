@@ -5,14 +5,14 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json BotCommandScopeAllChatAdministrators::to_json() const {
-        json j;
-        j["type"] = type_;
-        return j.dump();
+    void to_json(json& j, const BotCommandScopeAllChatAdministrators& value) {
+        j = json::object();
+        j["type"] = value.type_;
     }
-    std::shared_ptr<BotCommandScopeAllChatAdministrators> BotCommandScopeAllChatAdministrators::from_json(const json& data) {
-        auto result(std::make_shared<BotCommandScopeAllChatAdministrators>());
-        result->type_ = data["type_"].get<std::string>();
-        return result;
+
+    void from_json(const json& j, BotCommandScopeAllChatAdministrators& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
     }
 }

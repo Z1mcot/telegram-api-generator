@@ -29,8 +29,5 @@ namespace tgbot {
 
         // The photo
         std::vector<std::shared_ptr<PhotoSize>> photo;
-
-        json to_json() const override;
-        static std::shared_ptr<PaidMediaPhoto> from_json(const json& data);
     };
 }

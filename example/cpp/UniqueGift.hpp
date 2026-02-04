@@ -16,6 +16,7 @@ namespace tgbot {
     struct UniqueGiftModel;
     struct UniqueGiftSymbol;
     struct UniqueGiftBackdrop;
+    struct UniqueGiftColors;
     struct Chat;
 
     using json = nlohmann::json;
@@ -23,16 +24,23 @@ namespace tgbot {
     /**
      * This object describes a unique gift that was upgraded from a regular gift.
      *
+     * @param gift_id Identifier of the regular gift from which the gift was upgraded
      * @param base_name Human-readable name of the regular gift from which this unique gift was upgraded
      * @param name Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas
      * @param number Unique number of the upgraded gift among gifts upgraded from the same regular gift
      * @param model Model of the gift
      * @param symbol Symbol of the gift
      * @param backdrop Backdrop of the gift
+     * @param is_premium Optional. True, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers
+     * @param is_from_blockchain Optional. True, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram
+     * @param colors Optional. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only
      * @param publisher_chat Optional. Information about the chat that published the gift
      */
     struct UniqueGift : public TelegramModel {
         virtual ~UniqueGift() = default;
+        // Identifier of the regular gift from which the gift was upgraded
+        std::string gift_id;
+
         // Human-readable name of the regular gift from which this unique gift was upgraded
         std::string base_name;
 
@@ -51,10 +59,16 @@ namespace tgbot {
         // Backdrop of the gift
         std::shared_ptr<UniqueGiftBackdrop> backdrop;
 
+        // Optional. True, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers
+        bool is_premium;
+
+        // Optional. True, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram
+        bool is_from_blockchain;
+
+        // Optional. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only
+        std::shared_ptr<UniqueGiftColors> colors;
+
         // Optional. Information about the chat that published the gift
         std::shared_ptr<Chat> publisher_chat;
-
-        json to_json() const override;
-        static std::shared_ptr<UniqueGift> from_json(const json& data);
     };
 }

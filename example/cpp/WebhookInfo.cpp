@@ -5,40 +5,46 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json WebhookInfo::to_json() const {
-        json j;
-        j["url"] = url;
-        j["has_custom_certificate"] = has_custom_certificate;
-        j["pending_update_count"] = pending_update_count;
-        j["ip_address"] = ip_address;
-        j["last_error_date"] = last_error_date;
-        j["last_error_message"] = last_error_message;
-        j["last_synchronization_error_date"] = last_synchronization_error_date;
-        j["max_connections"] = max_connections;
-        std::vector<json> allowed_updates_values;
-        allowed_updates_values.reserve(allowed_updates.size());
-        for (auto& e : allowed_updates) {
-            allowed_updates_values.push_back(e);
-        }
-        j["allowed_updates"] = allowed_updates_values;
-        return j.dump();
+    void to_json(json& j, const WebhookInfo& value) {
+        j = json::object();
+        j["url"] = value.url;
+        j["has_custom_certificate"] = value.has_custom_certificate;
+        j["pending_update_count"] = value.pending_update_count;
+        j["ip_address"] = value.ip_address;
+        j["last_error_date"] = value.last_error_date;
+        j["last_error_message"] = value.last_error_message;
+        j["last_synchronization_error_date"] = value.last_synchronization_error_date;
+        j["max_connections"] = value.max_connections;
+        j["allowed_updates"] = value.allowed_updates;
     }
-    std::shared_ptr<WebhookInfo> WebhookInfo::from_json(const json& data) {
-        auto result(std::make_shared<WebhookInfo>());
-        result->url = data["url"].get<std::string>();
-        result->has_custom_certificate = data["has_custom_certificate"].get<bool>();
-        result->pending_update_count = data["pending_update_count"].get<std::int64_t>();
-        result->ip_address = data["ip_address"].get<std::string>();
-        result->last_error_date = data["last_error_date"].get<std::int64_t>();
-        result->last_error_message = data["last_error_message"].get<std::string>();
-        result->last_synchronization_error_date = data["last_synchronization_error_date"].get<std::int64_t>();
-        result->max_connections = data["max_connections"].get<std::int64_t>();
-        std::vector<std::vector<std::string>> allowed_updates_values;
-        allowed_updates_values.reserve(allowed_updates.size());
-        for (auto& e : data["allowed_updates"]) {
-            allowed_updates_values.push_back(std::vector<std::string>::from_json(e));
+
+    void from_json(const json& j, WebhookInfo& value) {
+        if (j.contains("url")) {
+            j.at("url").get_to(value.url);
         }
-        result->allowed_updates = allowed_updates_values;
-        return result;
+        if (j.contains("has_custom_certificate")) {
+            j.at("has_custom_certificate").get_to(value.has_custom_certificate);
+        }
+        if (j.contains("pending_update_count")) {
+            j.at("pending_update_count").get_to(value.pending_update_count);
+        }
+        if (j.contains("ip_address")) {
+            j.at("ip_address").get_to(value.ip_address);
+        }
+        if (j.contains("last_error_date")) {
+            j.at("last_error_date").get_to(value.last_error_date);
+        }
+        if (j.contains("last_error_message")) {
+            j.at("last_error_message").get_to(value.last_error_message);
+        }
+        if (j.contains("last_synchronization_error_date")) {
+            j.at("last_synchronization_error_date").get_to(value.last_synchronization_error_date);
+        }
+        if (j.contains("max_connections")) {
+            j.at("max_connections").get_to(value.max_connections);
+        }
+        if (j.contains("allowed_updates")) {
+            j.at("allowed_updates").get_to(value.allowed_updates);
+        }
     }
 }

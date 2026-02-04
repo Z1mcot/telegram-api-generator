@@ -42,8 +42,5 @@ namespace tgbot {
 
         // Optional. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For “regular” and “custom_emoji” stickers only.
         std::vector<std::string> keywords;
-
-        json to_json() const override;
-        static std::shared_ptr<InputSticker> from_json(const json& data);
     };
 }

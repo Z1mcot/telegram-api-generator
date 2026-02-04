@@ -5,24 +5,34 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json StoryAreaPosition::to_json() const {
-        json j;
-        j["x_percentage"] = x_percentage;
-        j["y_percentage"] = y_percentage;
-        j["width_percentage"] = width_percentage;
-        j["height_percentage"] = height_percentage;
-        j["rotation_angle"] = rotation_angle;
-        j["corner_radius_percentage"] = corner_radius_percentage;
-        return j.dump();
+    void to_json(json& j, const StoryAreaPosition& value) {
+        j = json::object();
+        j["x_percentage"] = value.x_percentage;
+        j["y_percentage"] = value.y_percentage;
+        j["width_percentage"] = value.width_percentage;
+        j["height_percentage"] = value.height_percentage;
+        j["rotation_angle"] = value.rotation_angle;
+        j["corner_radius_percentage"] = value.corner_radius_percentage;
     }
-    std::shared_ptr<StoryAreaPosition> StoryAreaPosition::from_json(const json& data) {
-        auto result(std::make_shared<StoryAreaPosition>());
-        result->x_percentage = data["x_percentage"].get<double>();
-        result->y_percentage = data["y_percentage"].get<double>();
-        result->width_percentage = data["width_percentage"].get<double>();
-        result->height_percentage = data["height_percentage"].get<double>();
-        result->rotation_angle = data["rotation_angle"].get<double>();
-        result->corner_radius_percentage = data["corner_radius_percentage"].get<double>();
-        return result;
+
+    void from_json(const json& j, StoryAreaPosition& value) {
+        if (j.contains("x_percentage")) {
+            j.at("x_percentage").get_to(value.x_percentage);
+        }
+        if (j.contains("y_percentage")) {
+            j.at("y_percentage").get_to(value.y_percentage);
+        }
+        if (j.contains("width_percentage")) {
+            j.at("width_percentage").get_to(value.width_percentage);
+        }
+        if (j.contains("height_percentage")) {
+            j.at("height_percentage").get_to(value.height_percentage);
+        }
+        if (j.contains("rotation_angle")) {
+            j.at("rotation_angle").get_to(value.rotation_angle);
+        }
+        if (j.contains("corner_radius_percentage")) {
+            j.at("corner_radius_percentage").get_to(value.corner_radius_percentage);
+        }
     }
 }

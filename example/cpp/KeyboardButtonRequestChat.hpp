@@ -66,8 +66,5 @@ namespace tgbot {
 
         // Optional. Pass True to request the chat's photo
         bool request_photo;
-
-        json to_json() const override;
-        static std::shared_ptr<KeyboardButtonRequestChat> from_json(const json& data);
     };
 }

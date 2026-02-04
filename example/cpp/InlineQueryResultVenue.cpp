@@ -7,42 +7,70 @@
 #include <nlohmann/json.hpp>
 
 namespace tgbot {
-    json InlineQueryResultVenue::to_json() const {
-        json j;
-        j["type"] = type_;
-        j["id"] = id;
-        j["latitude"] = latitude;
-        j["longitude"] = longitude;
-        j["title"] = title;
-        j["address"] = address;
-        j["foursquare_id"] = foursquare_id;
-        j["foursquare_type"] = foursquare_type;
-        j["google_place_id"] = google_place_id;
-        j["google_place_type"] = google_place_type;
-        j["reply_markup"] = reply_markup->to_json();
-        j["input_message_content"] = input_message_content->to_json();
-        j["thumbnail_url"] = thumbnail_url;
-        j["thumbnail_width"] = thumbnail_width;
-        j["thumbnail_height"] = thumbnail_height;
-        return j.dump();
+    void to_json(json& j, const InlineQueryResultVenue& value) {
+        j = json::object();
+        j["type"] = value.type_;
+        j["id"] = value.id;
+        j["latitude"] = value.latitude;
+        j["longitude"] = value.longitude;
+        j["title"] = value.title;
+        j["address"] = value.address;
+        j["foursquare_id"] = value.foursquare_id;
+        j["foursquare_type"] = value.foursquare_type;
+        j["google_place_id"] = value.google_place_id;
+        j["google_place_type"] = value.google_place_type;
+        j["reply_markup"] = value.reply_markup;
+        j["input_message_content"] = value.input_message_content;
+        j["thumbnail_url"] = value.thumbnail_url;
+        j["thumbnail_width"] = value.thumbnail_width;
+        j["thumbnail_height"] = value.thumbnail_height;
     }
-    std::shared_ptr<InlineQueryResultVenue> InlineQueryResultVenue::from_json(const json& data) {
-        auto result(std::make_shared<InlineQueryResultVenue>());
-        result->type_ = data["type_"].get<std::string>();
-        result->id = data["id"].get<std::string>();
-        result->latitude = data["latitude"].get<double>();
-        result->longitude = data["longitude"].get<double>();
-        result->title = data["title"].get<std::string>();
-        result->address = data["address"].get<std::string>();
-        result->foursquare_id = data["foursquare_id"].get<std::string>();
-        result->foursquare_type = data["foursquare_type"].get<std::string>();
-        result->google_place_id = data["google_place_id"].get<std::string>();
-        result->google_place_type = data["google_place_type"].get<std::string>();
-        result->reply_markup = InlineKeyboardMarkup::from_json(data["reply_markup"]);
-        result->input_message_content = InputMessageContent::from_json(data["input_message_content"]);
-        result->thumbnail_url = data["thumbnail_url"].get<std::string>();
-        result->thumbnail_width = data["thumbnail_width"].get<std::int64_t>();
-        result->thumbnail_height = data["thumbnail_height"].get<std::int64_t>();
-        return result;
+
+    void from_json(const json& j, InlineQueryResultVenue& value) {
+        if (j.contains("type")) {
+            j.at("type").get_to(value.type_);
+        }
+        if (j.contains("id")) {
+            j.at("id").get_to(value.id);
+        }
+        if (j.contains("latitude")) {
+            j.at("latitude").get_to(value.latitude);
+        }
+        if (j.contains("longitude")) {
+            j.at("longitude").get_to(value.longitude);
+        }
+        if (j.contains("title")) {
+            j.at("title").get_to(value.title);
+        }
+        if (j.contains("address")) {
+            j.at("address").get_to(value.address);
+        }
+        if (j.contains("foursquare_id")) {
+            j.at("foursquare_id").get_to(value.foursquare_id);
+        }
+        if (j.contains("foursquare_type")) {
+            j.at("foursquare_type").get_to(value.foursquare_type);
+        }
+        if (j.contains("google_place_id")) {
+            j.at("google_place_id").get_to(value.google_place_id);
+        }
+        if (j.contains("google_place_type")) {
+            j.at("google_place_type").get_to(value.google_place_type);
+        }
+        if (j.contains("reply_markup")) {
+            j.at("reply_markup").get_to(value.reply_markup);
+        }
+        if (j.contains("input_message_content")) {
+            j.at("input_message_content").get_to(value.input_message_content);
+        }
+        if (j.contains("thumbnail_url")) {
+            j.at("thumbnail_url").get_to(value.thumbnail_url);
+        }
+        if (j.contains("thumbnail_width")) {
+            j.at("thumbnail_width").get_to(value.thumbnail_width);
+        }
+        if (j.contains("thumbnail_height")) {
+            j.at("thumbnail_height").get_to(value.thumbnail_height);
+        }
     }
 }

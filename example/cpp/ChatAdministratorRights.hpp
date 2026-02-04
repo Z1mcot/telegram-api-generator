@@ -84,8 +84,5 @@ namespace tgbot {
 
         // Optional. True, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only
         bool can_manage_direct_messages;
-
-        json to_json() const override;
-        static std::shared_ptr<ChatAdministratorRights> from_json(const json& data);
     };
 }

@@ -34,8 +34,5 @@ namespace tgbot {
 
         // Always 0. The field can be used to differentiate regular and inaccessible messages.
         std::int64_t date;
-
-        json to_json() const override;
-        static std::shared_ptr<InaccessibleMessage> from_json(const json& data);
     };
 }

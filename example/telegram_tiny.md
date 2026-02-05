@@ -258,6 +258,7 @@
     setWebhook(url: String, certificate: InputFile, ip_address: String, max_connections: Integer, allowed_updates: List<String>, drop_pending_updates: Boolean, secret_token: String)
     deleteWebhook(drop_pending_updates: Boolean)
     getWebhookInfo()
+    getMe()
     logOut()
     close()
     sendMessage(business_connection_id: String, chat_id: IntegerOrString, message_thread_id: Integer, direct_messages_topic_id: Integer, text: String, parse_mode: ParseMode, entities: List<MessageEntity>, link_preview_options: LinkPreviewOptions, disable_notification: Boolean, protect_content: Boolean, allow_paid_broadcast: Boolean, message_effect_id: String, suggested_post_parameters: SuggestedPostParameters, reply_parameters: ReplyParameters, reply_markup: KeyboardOption)

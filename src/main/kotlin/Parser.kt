@@ -38,6 +38,7 @@ data class DocParameter(
 fun Document.toSection(): List<DocSection> {
     val returnsRegex = listOf(
         "((?:Array of )?\\S+) (?:objects? )?is returned".toRegex(),
+        ".*in form of a ((?:Array of )?\\S+) object".toRegex(),
         ".*[Rr]eturns .*?((?:Array of )?[A-Z]\\w+)".toRegex()
     )
     val content = select("#dev_page_content").first()!!
@@ -65,7 +66,7 @@ fun Document.toSection(): List<DocSection> {
                         "p" -> {
                             h4Desc += it.toString()
                             val text = it.text()
-                            if ("Use this method" in text) docParameters = emptyList()
+                            if ("Use this method" in text || "A simple method" in text) docParameters = emptyList()
                             returnsRegex.firstOrNull { regex ->
                                 val find = regex.find(text)
                                 if (find != null) {

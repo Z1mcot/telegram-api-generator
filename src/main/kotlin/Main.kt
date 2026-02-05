@@ -20,7 +20,7 @@ fun main() = runBlocking {
                 type.copy(
                     docFields = type.docFields.sortedByDescending { it.required }
                 )
-            }.filter { it.name != "MessageId" },
+            },
             docMethods = doc.docMethods.map { method ->
                 method.copy(
                     docParameters = method.docParameters.sortedByDescending { it.required }
@@ -52,8 +52,7 @@ fun main() = runBlocking {
     // File("example/TelegramClient.kt").writeText(docsRequiredFirst.toKotlinMethods())
     // File("example/TelegramModels.rs").writeText(docs.toRustModels())
     val cppOutputDir = File("example/cpp")
-    docs.writeCppModelFiles(cppOutputDir)
-    File("example/TelegramClient.hpp").writeText(docsRequiredFirst.toCppClient())
+    docsRequiredFirst.writeCppFiles(cppOutputDir)
 
     println("🎉 $version - Examples generated!")
 }

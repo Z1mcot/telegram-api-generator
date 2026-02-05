@@ -773,6 +773,10 @@
 ## Available methods
 
 ### Methods
+<p>A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a <a href="#user">User</a> object.</p>
+
+    getMe()
+
 <p>Use this method to log out from the cloud Bot API server before launching the bot locally. You <strong>must</strong> log out the bot before running it locally, otherwise there is no guarantee that the bot will receive updates. After a successful call, you can immediately log in on a local server, but will not be able to log in back to the cloud Bot API server for 10 minutes. Returns <em>True</em> on success. Requires no parameters.</p>
 
     logOut()

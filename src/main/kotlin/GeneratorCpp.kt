@@ -1,4 +1,5 @@
 import java.io.File
+import kotlin.text.appendLine
 
 val BASIC_JSON_TYPES_IN_CPP: Set<String> = setOf(
     "std::int64_t",
@@ -10,18 +11,18 @@ val BASIC_JSON_TYPES_IN_CPP: Set<String> = setOf(
 
 private val CPP_BASE_INCLUDES = listOf(
     "#include <cstdint>",
-    "#include <optional>",
     "#include <string>",
     "#include <vector>",
     "#include <memory>",
     "#include <nlohmann/json.hpp>",
-    "#include <stdexcept>"
 )
 
 private enum class CppFileCategory {
     TYPE,
     REQUEST,
-    TOOLS
+    TOOLS,
+    ROOT,
+    NET
 }
 
 private data class CppModelFile(
@@ -41,7 +42,7 @@ private fun buildCppHeader(
     appendLine("#pragma once")
     includes.distinct().forEach { appendLine(it) }
     appendLine()
-    appendLine("namespace tgbot {")
+    appendLine("namespace TgBot {")
     if (forwardDeclarations.isNotEmpty()) {
         appendLine()
         forwardDeclarations.distinct().forEach { appendLine("    $it") }
@@ -67,11 +68,13 @@ private fun buildCppSource(
         CppFileCategory.TYPE -> "types/"
         CppFileCategory.REQUEST -> "requests/"
         CppFileCategory.TOOLS -> "tools/"
+        CppFileCategory.NET -> "net/"
+        CppFileCategory.ROOT -> ""
     }
     appendLine("#include \"$prefix$headerName.hpp\"")
     includes.distinct().forEach { appendLine(it) }
     appendLine()
-    appendLine("namespace tgbot {")
+    appendLine("namespace TgBot {")
     appendLine(withIndent(body.trimEnd()))
     appendLine("}")
 }
@@ -106,11 +109,10 @@ private fun extractCustomTypes(
 }
 
 private fun collectPointerTypes(
-    fields: List<DocField>,
+    fieldTypes: List<String>,
     className: String?,
     customTypeNames: Set<String>
-): Set<String> = fields.mapNotNull { field ->
-    val fieldType = field.toCppFieldType(className)
+): Set<String> = fieldTypes.mapNotNull { fieldType ->
     if (fieldType.endsWith("Ptr")) {
         val baseType = stripCppWrappers(fieldType)
         if (baseType in customTypeNames && baseType != className) {
@@ -119,56 +121,31 @@ private fun collectPointerTypes(
     } else null
 }.toSet()
 
-private fun collectValueTypes(
+private fun collectPointerTypesFromFields(
     fields: List<DocField>,
     className: String?,
     customTypeNames: Set<String>
-): Set<String> = fields.mapNotNull { field ->
-    val fieldType = field.toCppFieldType(className)
-    if (!fieldType.endsWith("Ptr") &&
-        !fieldType.startsWith("std::vector<") &&
-        !BASIC_JSON_TYPES_IN_CPP.contains(fieldType)) {
-        val baseType = stripCppWrappers(fieldType)
-        if (baseType in customTypeNames && baseType != className) {
-            baseType
-        } else null
-    } else null
-}.toSet()
-
-private fun collectVectorElementTypes(
-    fields: List<DocField>,
-    className: String?,
-    customTypeNames: Set<String>
-): Set<String> = fields.mapNotNull { field ->
-    val fieldType = field.toCppFieldType(className)
-    if (fieldType.startsWith("std::vector<")) {
-        val elementType = stripCppWrappers(fieldType)
-        if (elementType in customTypeNames && elementType != className) {
-            elementType
-        } else null
-    } else null
-}.toSet()
+): Set<String> = collectPointerTypes(
+    fields.map { field -> field.toCppFieldType(className) },
+    className,
+    customTypeNames
+)
 
 private fun collectPointerTypesFromParameters(
     parameters: List<DocParameter>,
     className: String?,
     customTypeNames: Set<String>
-): Set<String> = parameters.mapNotNull { param ->
-    val fieldType = param.toCppFieldType(null)
-    if (fieldType.endsWith("Ptr")) {
-        val baseType = stripCppWrappers(fieldType)
-        if (baseType in customTypeNames && baseType != className) {
-            baseType
-        } else null
-    } else null
-}.toSet()
+): Set<String> = collectPointerTypes(
+    parameters.map { parameter -> parameter.toCppFieldType(null) },
+    className,
+    customTypeNames
+)
 
-private fun collectValueTypesFromParameters(
-    parameters: List<DocParameter>,
+private fun collectValueTypes(
+    fieldTypes: List<String>,
     className: String?,
     customTypeNames: Set<String>
-): Set<String> = parameters.mapNotNull { param ->
-    val fieldType = param.toCppFieldType(null)
+): Set<String> = fieldTypes.mapNotNull { fieldType ->
     if (!fieldType.endsWith("Ptr") &&
         !fieldType.startsWith("std::vector<") &&
         !BASIC_JSON_TYPES_IN_CPP.contains(fieldType)) {
@@ -179,12 +156,31 @@ private fun collectValueTypesFromParameters(
     } else null
 }.toSet()
 
-private fun collectVectorElementTypesFromParameters(
+private fun collectValueTypesFromFields(
+    fields: List<DocField>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = collectValueTypes(
+    fields.map { field -> field.toCppFieldType(className) },
+    className,
+    customTypeNames
+)
+
+private fun collectValueTypesFromParameters(
     parameters: List<DocParameter>,
     className: String?,
     customTypeNames: Set<String>
-): Set<String> = parameters.mapNotNull { param ->
-    val fieldType = param.toCppFieldType(null)
+): Set<String> = collectValueTypes(
+    parameters.map { parameter -> parameter.toCppFieldType(null) },
+    className,
+    customTypeNames
+)
+
+private fun collectVectorElementTypes(
+    fieldTypes: List<String>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = fieldTypes.mapNotNull { fieldType ->
     if (fieldType.startsWith("std::vector<")) {
         val elementType = stripCppWrappers(fieldType)
         if (elementType in customTypeNames && elementType != className) {
@@ -192,6 +188,26 @@ private fun collectVectorElementTypesFromParameters(
         } else null
     } else null
 }.toSet()
+
+private fun collectVectorElementTypesFromFields(
+    fields: List<DocField>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = collectVectorElementTypes(
+    fields.map { field -> field.toCppFieldType(className) },
+    className,
+    customTypeNames
+)
+
+private fun collectVectorElementTypesFromParameters(
+    parameters: List<DocParameter>,
+    className: String?,
+    customTypeNames: Set<String>
+): Set<String> = collectVectorElementTypes(
+    parameters.map { parameter -> parameter.toCppFieldType(null) },
+    className,
+    customTypeNames
+)
 
 private fun generateFileTools(): CppModelFile {
     val headerBody = """
@@ -305,17 +321,20 @@ struct InputFile {
 
     val headerContent = buildCppHeader(
         forwardDeclarations = emptyList(),
-        includes = emptyList(),
+        includes = listOf(
+            "#incldue <string>",
+            "#include <memory>"
+        ),
         body = headerBody
     )
 
     val sourceContent = buildCppSource(
         headerName = "InputFile",
         category = CppFileCategory.TYPE,
-        includes = listOf("#include \"tgbot/tools/FileTools.h\"",
-                "#include <filesystem>",
-                "#include <memory>",
-                "#include <string>"),
+        includes = listOf(
+            "#include \"tgbot/tools/FileTools.h\"",
+            "#include <filesystem>",
+        ),
         body = sourceBody
     )
 
@@ -327,7 +346,7 @@ struct InputFile {
     )
 }
 
-private fun generateTelegramValueClassFiles(): List<CppModelFile> {
+private fun generateTelegramNoValueClassFiles(): List<CppModelFile> {
     val valueClasses = listOf(
         "ForumTopicClosed",
         "ForumTopicReopened",
@@ -339,13 +358,13 @@ private fun generateTelegramValueClassFiles(): List<CppModelFile> {
 
     val valueClassesDeclarations = valueClasses.map {
         val body = """
-struct $it {
-    typedef std::shared_ptr<$it> Ptr;
-};
-
-void to_json(json& j, const $it& value);
-void from_json(const json& j, $it& value);")
-    """.trimIndent()
+        struct $it {
+            typedef std::shared_ptr<$it> Ptr;
+        };
+        
+        void to_json(json& j, const $it& value);
+        void from_json(const json& j, $it& value);
+        """.trimIndent()
 
         val sourceBody = buildString {
             appendLine("void to_json(json& j, const $it& value) { j = json{}; }")
@@ -361,7 +380,7 @@ void from_json(const json& j, $it& value);")
         val sourceContent = buildCppSource(
             headerName = it,
             category = CppFileCategory.TYPE,
-            includes = listOf("#include <nlohmann/json.hpp>"),
+            includes = emptyList(),
             body = sourceBody
         )
 
@@ -380,34 +399,38 @@ private fun generateTelegramModelFile(): CppModelFile {
 
 
     val headerBody = buildString {
-        appendLine(
-            """
-struct TelegramModel {
-    typedef std::shared_ptr<TelegramModel> Ptr;
-    
-    virtual ~TelegramModel() = default;
-};
-""".trimIndent()
+        appendLine("""
+        struct TelegramModel {
+            typedef std::shared_ptr<TelegramModel> Ptr;
+            
+            virtual ~TelegramModel() = default;
+        };
+        
+        
+        """.trimIndent()
         )
 
         // Generic JSON serialization for std::shared_ptr<T> so model fields can use pointers
-        appendLine("template <typename T>")
-        appendLine("void to_json(json& j, const std::shared_ptr<T>& value) {")
-        appendLine("    if (!value) {")
-        appendLine("        j = nullptr;")
-        appendLine("    } else {")
-        appendLine("        j = *value;")
-        appendLine("    }")
-        appendLine("}")
-        appendLine()
-        appendLine("template <typename T>")
-        appendLine("void from_json(const json& j, std::shared_ptr<T>& value) {")
-        appendLine("    if (j.is_null()) {")
-        appendLine("        value.reset();")
-        appendLine("    } else {")
-        appendLine("        value = std::make_shared<T>(j.get<T>());")
-        appendLine("    }")
-        appendLine("}")
+        appendLine("""
+        template <typename T>
+        void to_json(json& j, const std::shared_ptr<T>& value) {
+            if (!value) {
+                j = nullptr;
+            } else {
+                j = *value;
+            }
+        }
+
+        template <typename T>
+        void from_json(const json& j, std::shared_ptr<T>& value) {
+            if (j.is_null()) {
+                value.reset();
+            } else {
+                value = std::make_shared<T>(j.get<T>());
+            }
+        }   
+        """.trimIndent()
+        )
     }.trimEnd()
 
     val headerContent = buildCppHeader(
@@ -462,7 +485,7 @@ private fun generateSuperTypeFiles(): List<CppModelFile> {
             sourceContent = buildCppSource(
                 headerName = superType.name,
                 category = CppFileCategory.TYPE,
-                includes = listOf("#include <nlohmann/json.hpp>"),
+                includes = emptyList(),
                 body = sourceBody
             )
         )
@@ -476,9 +499,9 @@ private fun DocType.toCppFile(
     val superTypeName = superType?.name ?: "TelegramModel"
 
     // Header: forward declare pointer types, include base class and value types
-    val pointerTypes = collectPointerTypes(docFields, name, customTypeNames)
-    val valueTypes = collectValueTypes(docFields, name, customTypeNames)
-    val vectorElementTypes = collectVectorElementTypes(docFields, name, customTypeNames)
+    val pointerTypes = collectPointerTypesFromFields(docFields, name, customTypeNames)
+    val valueTypes = collectValueTypesFromFields(docFields, name, customTypeNames)
+    val vectorElementTypes = collectVectorElementTypesFromFields(docFields, name, customTypeNames)
 
     val forwardDeclarations = emptyList<String>()
 
@@ -592,7 +615,7 @@ private fun DocMethod.toCppRequestFile(
 
     val forwardDeclarations = emptyList<String>()
     val headerIncludes = buildList {
-        addAll(CPP_BASE_INCLUDES)
+//        addAll(CPP_BASE_INCLUDES)
         addAll(valueTypes.map { "#include \"types/$it.hpp\"" })
         addAll(vectorElementTypes.map { "#include \"types/$it.hpp\"" })
         addAll(pointerTypes.map { "#include \"types/$it.hpp\"" })
@@ -602,11 +625,6 @@ private fun DocMethod.toCppRequestFile(
         appendLine(toCppDoc(showReturn = false))
         appendLine(toCppRequestStructDeclaration().trimEnd())
     }
-
-    val sourceIncludes = pointerTypes.map { "#include \"types/$it.hpp\"" } +
-        valueTypes.map { "#include \"types/$it.hpp\"" } +
-        vectorElementTypes.map { "#include \"types/$it.hpp\"" } +
-        listOf("#include <nlohmann/json.hpp>")
 
     val sourceBody = toCppRequestStructImplementation()
 
@@ -621,7 +639,7 @@ private fun DocMethod.toCppRequestFile(
         sourceContent = buildCppSource(
             headerName = structName,
             category = CppFileCategory.REQUEST,
-            includes = sourceIncludes.distinct(),
+            includes = emptyList(),
             body = sourceBody
         )
     )
@@ -645,12 +663,21 @@ private fun List<DocSection>.toCppModelFiles(): List<CppModelFile> {
     files += generateTelegramModelFile()
     files += generateFileTools()
     files += generateInputFileClassFile()
-    files += generateTelegramValueClassFiles()
+    files += generateTelegramNoValueClassFiles()
     files += generateSuperTypeFiles()
     files += docTypes.map { it.docType.toCppFile(customTypeNames) }
     files += flatMap { section ->
         section.docMethods.map { it.toCppRequestFile(customTypeNames) }
     }
+    files += generateEventBroadcaster()
+    files += generateEventHandler()
+    files += generateStringTools()
+    files += generateBotClass()
+    files += generateHttpClient()
+    files += generateBoostHttpOnlySslClient()
+    files += generateApi()
+    files += generateTelegramResponse()
+    files += generateLongPoll()
 
     return files
 }
@@ -668,9 +695,11 @@ fun List<DocSection>.writeCppFiles(outputDir: File) {
     val srcRequestsDir = File(srcDir, "requests")
     val includeToolsDir = File(includeDir, "tools")
     val srcToolsDir = File(srcDir, "tools")
+    val includeNetDir = File(includeDir, "net")
+    val srcNetDir = File(srcDir, "net")
 
 
-    listOf(includeTypesDir, srcTypesDir, includeRequestsDir, srcRequestsDir, includeToolsDir, srcToolsDir).forEach { it.mkdirs() }
+    listOf(includeTypesDir, srcTypesDir, includeRequestsDir, srcRequestsDir, includeToolsDir, srcToolsDir, includeNetDir, srcNetDir).forEach { it.mkdirs() }
 
     val files = toCppModelFiles()
     files.forEach { file ->
@@ -678,20 +707,14 @@ fun List<DocSection>.writeCppFiles(outputDir: File) {
             CppFileCategory.TYPE -> includeTypesDir to srcTypesDir
             CppFileCategory.REQUEST -> includeRequestsDir to srcRequestsDir
             CppFileCategory.TOOLS -> includeToolsDir to srcToolsDir
+            CppFileCategory.NET -> includeNetDir to srcNetDir
+            CppFileCategory.ROOT -> includeDir to srcDir
         }
         File(headerDir, "${file.name}.hpp").writeText(file.headerContent)
         if (file.sourceContent != null) {
             File(sourceDir, "${file.name}.cpp").writeText(file.sourceContent)
         }
     }
-
-    // Write client files
-    File(includeDir, "HttpClient.hpp").writeText(toHttpClientHeader())
-    File(srcDir, "HttpClient.cpp").writeText(toHttpClientSource())
-    File(includeDir, "Api.hpp").writeText(toApiHeader())
-    File(srcDir, "Api.cpp").writeText(toApiSource())
-    File(includeDir, "LongPoll.hpp").writeText(toLongPollHeader())
-    File(srcDir, "LongPoll.cpp").writeText(toLongPollSource())
 
     // Generate CMakeLists.txt
     File(outputDir, "CMakeLists.txt").writeText(generateCppCMakeLists(files))
@@ -732,6 +755,8 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
             CppFileCategory.TYPE -> "include/types/${it.name}.hpp"
             CppFileCategory.REQUEST -> "include/requests/${it.name}.hpp"
             CppFileCategory.TOOLS -> "include/tools/${it.name}.hpp"
+            CppFileCategory.NET -> "include/net/${it.name}.hpp"
+            CppFileCategory.ROOT -> "include/${it.name}.hpp"
         }
     }.sorted()
     val sourceFiles = files.filter { it.sourceContent != null }.map {
@@ -739,6 +764,8 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
             CppFileCategory.TYPE -> "src/types/${it.name}.cpp"
             CppFileCategory.REQUEST -> "src/requests/${it.name}.cpp"
             CppFileCategory.TOOLS -> "src/tools/${it.name}.cpp"
+            CppFileCategory.NET -> "src/net/${it.name}.cpp"
+            CppFileCategory.ROOT -> "src/${it.name}.cpp"
         }
     }.sorted()
 
@@ -750,10 +777,6 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     if (sourceFiles.isNotEmpty()) {
         appendLine("set(TELEGRAM_MODELS_SOURCES")
         sourceFiles.forEach { appendLine("    $it") }
-        appendLine("    src/HttpClient.cpp")
-        appendLine("    src/Api.cpp")
-        appendLine("    src/LongPoll.cpp")
-        appendLine("    src/Webhook.cpp")
         appendLine(")")
         appendLine()
     }
@@ -761,12 +784,12 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     appendLine("# Create library target")
     if (sourceFiles.isNotEmpty()) {
         appendLine("add_library(TelegramBotAPI_Models STATIC")
-        appendLine("    ${'$'}{TELEGRAM_MODELS_SOURCES}")
+        appendLine($$"    ${TELEGRAM_MODELS_SOURCES}")
         appendLine(")")
         appendLine()
         appendLine("target_include_directories(TelegramBotAPI_Models")
         appendLine("    PUBLIC")
-        appendLine("        ${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include")
+        appendLine($$"        ${CMAKE_CURRENT_SOURCE_DIR}/include")
         appendLine(")")
         appendLine()
         appendLine("target_link_libraries(TelegramBotAPI_Models")
@@ -779,7 +802,7 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
         appendLine()
         appendLine("target_include_directories(TelegramBotAPI_Models")
         appendLine("    INTERFACE")
-        appendLine("        ${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include")
+        appendLine($$"        ${CMAKE_CURRENT_SOURCE_DIR}/include")
         appendLine(")")
         appendLine()
         appendLine("target_link_libraries(TelegramBotAPI_Models")
@@ -791,20 +814,20 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     appendLine("# Install rules (optional)")
     appendLine("#install(TARGETS TelegramBotAPI_Models")
     appendLine("#    EXPORT TelegramBotAPI_ModelsTargets")
-    appendLine("#    LIBRARY DESTINATION ${'$'}{CMAKE_INSTALL_LIBDIR}")
-    appendLine("#    ARCHIVE DESTINATION ${'$'}{CMAKE_INSTALL_LIBDIR}")
-    appendLine("#    RUNTIME DESTINATION ${'$'}{CMAKE_INSTALL_BINDIR}")
-    appendLine("#    INCLUDES DESTINATION ${'$'}{CMAKE_INSTALL_INCLUDEDIR}/telegram")
+    appendLine($$"#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}")
+    appendLine($$"#    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}")
+    appendLine($$"#    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}")
+    appendLine($$"#    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/telegram")
     appendLine("#)")
     appendLine()
-    appendLine("#install(FILES ${'$'}{TELEGRAM_MODELS_HEADERS}")
-    appendLine("#    DESTINATION ${'$'}{CMAKE_INSTALL_INCLUDEDIR}/telegram")
+    appendLine($$"#install(FILES ${TELEGRAM_MODELS_HEADERS}")
+    appendLine($$"#    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/telegram")
     appendLine("#)")
     appendLine()
     appendLine("#install(EXPORT TelegramBotAPI_ModelsTargets")
     appendLine("#    FILE TelegramBotAPI_ModelsTargets.cmake")
     appendLine("#    NAMESPACE TelegramBotAPI::")
-    appendLine("#    DESTINATION ${'$'}{CMAKE_INSTALL_LIBDIR}/cmake/TelegramBotAPI_Models")
+    appendLine($$"#    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TelegramBotAPI_Models")
     appendLine("#)")
     appendLine()
     appendLine("# Usage in other projects:")
@@ -880,8 +903,7 @@ private fun DocMethod.toCppDoc(showReturn: Boolean = true, forClient: Boolean = 
 
 private fun DocType.toCppStructDeclaration() = buildString {
     val telegramType = TelegramType.from(name)
-    val superType = telegramType.superType
-    val superTypeName = when (superType) {
+    val superTypeName = when (val superType = telegramType.superType) {
         null -> "TelegramModel"
         else -> superType.name
     }
@@ -986,167 +1008,246 @@ private fun TelegramType.toCppTypeNoValueClasses(): String = when (this) {
     }
 }
 
-fun toHttpClientHeader() = buildString {
-    appendLine("// Auto-generated Telegram Bot API client for C++")
-    appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
-    appendLine("#pragma once")
-    appendLine("#include <boost/asio/any_io_executor.hpp>")
-    appendLine("#include <boost/asio/ssl/context.hpp>")
-    appendLine("#include <boost/asio/awaitable.hpp>")
-    appendLine("#include <boost/beast/http/verb.hpp>")
-    appendLine("#include <string>")
-    appendLine()
-    appendLine("namespace tgbot {")
-    appendLine()
-    appendLine("class HttpClient {")
-    appendLine("private:")
-    appendLine("    boost::asio::any_io_executor executor_;")
-    appendLine("    boost::asio::ssl::context ctx_{boost::asio::ssl::context::tlsv12_client};")
-    appendLine()
-    appendLine("public:")
-    appendLine("    explicit HttpClient(boost::asio::any_io_executor executor);")
-    appendLine()
-    appendLine("    boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = \"\");")
-    appendLine("};")
-    appendLine()
-    appendLine("} // namespace tgbot")
+private fun generateHttpClient(): CppModelFile {
+    val headerBody = """
+    class HttpClient {
+    public:
+        virtual ~HttpClient() = default;
+        virtual boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = \"\") = 0;
+    };    
+    """.trimIndent()
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = listOf(
+            "#include <boost/asio/awaitable.hpp>",
+            "#include <boost/beast/http/verb.hpp>",
+            "#include <string>"
+        ),
+        body = headerBody
+    )
+
+    return CppModelFile(
+        name = "HttpClient",
+        category = CppFileCategory.NET,
+        headerContent = headerContent,
+        sourceContent = null
+    )
 }
 
-fun toHttpClientSource() = buildString {
-    appendLine("// Auto-generated Telegram Bot API client for C++")
-    appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
-    appendLine("#include \"HttpClient.hpp\"")
-    appendLine("#include <boost/beast/core.hpp>")
-    appendLine("#include <boost/beast/http.hpp>")
-    appendLine("#include <boost/beast/ssl.hpp>")
-    appendLine("#include <boost/beast/version.hpp>")
-    appendLine("#include <boost/asio/connect.hpp>")
-    appendLine("#include <boost/asio/ip/tcp.hpp>")
-    appendLine("#include <boost/asio/ssl/stream.hpp>")
-    appendLine("#include <boost/asio/use_awaitable.hpp>")
-    appendLine()
-    appendLine("namespace tgbot {")
-    appendLine()
-    appendLine("HttpClient::HttpClient(boost::asio::any_io_executor executor) : executor_(std::move(executor)) {")
-    appendLine("    ctx_.set_default_verify_paths();")
-    appendLine("}")
-    appendLine()
-    appendLine("boost::asio::awaitable<std::string> HttpClient::makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body) {")
-    appendLine("    namespace beast = boost::beast;")
-    appendLine("    namespace http = beast::http;")
-    appendLine("    namespace ssl = boost::asio::ssl;")
-    appendLine("    using tcp = boost::asio::ip::tcp;")
-    appendLine()
-    appendLine("    tcp::resolver resolver{executor_};")
-    appendLine("    beast::ssl_stream<beast::tcp_stream> stream{executor_, ctx_};")
-    appendLine()
-    appendLine("    auto const results = co_await resolver.async_resolve(\"api.telegram.org\", \"443\", boost::asio::use_awaitable);")
-    appendLine("    co_await beast::get_lowest_layer(stream).async_connect(results, boost::asio::use_awaitable);")
-    appendLine("    co_await stream.async_handshake(ssl::stream_base::client, boost::asio::use_awaitable);")
-    appendLine()
-    appendLine("    http::request<http::string_body> req{verb, target, 11};")
-    appendLine("    req.set(http::field::host, \"api.telegram.org\");")
-    appendLine("    req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);")
-    appendLine("    if (verb == http::verb::post) {")
-    appendLine("        req.set(http::field::content_type, \"application/json\");")
-    appendLine("        req.body() = body.empty() ? \"{}\" : body;")
-    appendLine("    }")
-    appendLine("    req.prepare_payload();")
-    appendLine()
-    appendLine("    co_await http::async_write(stream, req, boost::asio::use_awaitable);")
-    appendLine()
-    appendLine("    beast::flat_buffer buffer;")
-    appendLine("    http::response<http::dynamic_body> res;")
-    appendLine("    co_await http::async_read(stream, buffer, res, boost::asio::use_awaitable);")
-    appendLine()
-    appendLine("    co_return beast::buffers_to_string(res.body().data());")
-    appendLine("}")
-    appendLine()
-    appendLine("} // namespace tgbot")
+private fun generateBoostHttpOnlySslClient(): CppModelFile {
+    val headerBody = """
+    namespace net {
+    
+    class BoostHttpOnlySslClient : public HttpClient {
+    private:
+        boost::asio::ssl::context ctx_{boost::asio::ssl::context::tlsv12_client};
+    
+    public:
+        BoostHttpOnlySslClient();
+    
+        boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = "") override;
+    };
+    
+    }
+    """.trimIndent()
+
+    val sourceBody = """
+    namespace net {
+    
+    BoostHttpOnlySslClient::BoostHttpOnlySslClient() {
+        ctx_.set_default_verify_paths();
+    }
+    
+    boost::asio::awaitable<std::string> BoostHttpOnlySslClient::makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body) {
+        auto executor = co_await boost::asio::this_coro::executor;
+        
+        namespace beast = boost::beast;
+        namespace http = beast::http;
+        namespace ssl = boost::asio::ssl;
+        using tcp = boost::asio::ip::tcp;
+    
+        tcp::resolver resolver{executor};
+        beast::ssl_stream<beast::tcp_stream> stream{executor, ctx_};
+    
+        if(!SSL_set_tlsext_host_name(stream.native_handle(), "api.telegram.org")) {
+            throw beast::system_error{
+                beast::error_code{
+                    static_cast<int>(::ERR_get_error()),
+                    boost::asio::error::get_ssl_category()
+                }
+            };
+        }
+    
+        auto const results = co_await resolver.async_resolve("api.telegram.org", "443", boost::asio::use_awaitable);
+        co_await beast::get_lowest_layer(stream).async_connect(results, boost::asio::use_awaitable);
+        co_await stream.async_handshake(ssl::stream_base::client, boost::asio::use_awaitable);
+    
+        http::request<http::string_body> req{verb, target, 11};
+        req.set(http::field::host, "api.telegram.org");
+        req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
+        if (verb == http::verb::post) {
+            req.set(http::field::content_type, "application/json");
+            req.body() = body.empty() ? "{}" : body;
+        }
+        req.prepare_payload();
+    
+        co_await http::async_write(stream, req, boost::asio::use_awaitable);
+    
+        beast::flat_buffer buffer;
+        http::response<http::dynamic_body> res;
+        co_await http::async_read(stream, buffer, res, boost::asio::use_awaitable);
+    
+        co_return beast::buffers_to_string(res.body().data());
+    }
+    
+    }
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = listOf(
+            "#include \"HttpClient.hpp\"",
+            "#include <boost/asio/ssl/context.hpp>",
+            "#include <string>"
+        ),
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "BoostHttpOnlySslClient",
+        category = CppFileCategory.NET,
+        includes = listOf(
+            "#include <boost/beast/core.hpp>",
+            "#include <boost/beast/http.hpp>",
+            "#include <boost/beast/ssl.hpp>",
+            "#include <boost/beast/version.hpp>",
+            "#include <boost/asio/connect.hpp>",
+            "#include <boost/asio/ip/tcp.hpp>",
+            "#include <boost/asio/ssl/stream.hpp>",
+            "#include <boost/asio/use_awaitable.hpp>",
+            "#include <openssl/ssl.h>"
+        ),
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "BoostHttpOnlySslClient",
+        category = CppFileCategory.NET,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
 }
 
-fun List<DocSection>.toApiHeader() = buildString {
-    appendLine("// Auto-generated Telegram Bot API client for C++")
-    appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
-    appendLine("#pragma once")
-    collectCppClientModelIncludes().sorted().forEach { model ->
-        appendLine("#include \"types/$model.hpp\"")
+private fun generateTelegramResponse(): CppModelFile {
+    val headerBody = """
+    template<typename T>
+    struct TelegramResponse {
+        bool ok;
+        std::optional<T> result;
     }
-    collectCppClientRequestIncludes().sorted().forEach { request ->
-        appendLine("#include \"requests/$request.hpp\"")
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = listOf("#include <optional>"),
+        body = headerBody
+    )
+
+    return CppModelFile(
+        name = "TelegramResponse",
+        category = CppFileCategory.NET,
+        headerContent = headerContent,
+        sourceContent = null
+    )
+}
+
+private fun List<DocSection>.generateApi(): CppModelFile {
+    val modelIncludes = collectCppClientModelIncludes().sorted().map { model ->
+        "#include \"types/$model.hpp\""
     }
-    appendLine("#include \"HttpClient.hpp\"")
-    appendLine("#include <nlohmann/json.hpp>")
-    appendLine("#include <optional>")
-    appendLine("#include <string>")
-    appendLine()
-    appendLine("namespace tgbot {")
-    appendLine()
-    appendLine("using json = nlohmann::json;")
-    appendLine()
-    appendLine("template<typename T>")
-    appendLine("struct TelegramResponse {")
-    appendLine("    bool ok;")
-    appendLine("    std::optional<T> result;")
-    appendLine("};")
-    appendLine()
-    appendLine("class Api {")
-    appendLine("private:")
-    appendLine("    std::string api_key_;")
-    appendLine("    HttpClient http_client_;")
-    appendLine()
-    appendLine("    template<typename T>")
-    appendLine("    TelegramResponse<T> parseResponse(const std::string& response_str);")
-    appendLine()
-    appendLine("public:")
-    appendLine("    explicit Api(boost::asio::any_io_executor executor, const std::string& api_key);")
-    appendLine()
-    this@toApiHeader.forEach { section ->
-        if (section.docMethods.isNotEmpty()) {
-            appendLine(comment(section.name, prefix = "    "))
-            section.docMethods.forEach { method ->
-                appendLine(withIndent(method.toCppClientMethodDeclaration()))
-                appendLine()
+    val requestsIncludes = collectCppClientRequestIncludes().sorted().map { request ->
+        "#include \"requests/$request.hpp\""
+    }
+
+    val headerIncludes = modelIncludes + requestsIncludes + listOf("#include \"HttpClient.hpp\"")
+    val headerBody = buildString {
+        appendLine("""
+        class Api {
+        private:
+            std::string api_key_;
+            const HttpClient& http_client_;
+            std::string url_;
+            
+            template<typename T>
+            TelegramResponse<T> parseResponse(const std::string& response_str);
+            
+        public:
+            explicit Api(const std::string& api_key, const HttpClient& http_client, const std::string& url = "https://api.telegram.org");
+            
+        """.trimIndent())
+        this@generateApi.forEach { section ->
+            if (section.docMethods.isNotEmpty()) {
+                appendLine(comment(section.name, prefix = "    "))
+                section.docMethods.forEach { method ->
+                    appendLine(withIndent(method.toCppClientMethodDeclaration()))
+                    appendLine()
+                }
+            }
+        }
+        appendLine("};")
+    }
+
+    val sourceBody = buildString {
+        appendLine("""
+        Api::Api(const std::string& api_key, const HttpClient& http_client, const std::string& url)
+            : api_key_(api_key), http_client_(http_client), url_(url) {
+        }
+        template<typename T>
+        
+        TelegramResponse<T> Api::parseResponse(const std::string& response_str) {
+            auto j = json::parse(response_str);
+        
+            TelegramResponse<T> result;
+            result.ok = j[\"ok\"].get<bool>();
+        
+            if (result.ok && j.contains(\"result\")) {
+                result.result = j[\"result\"].get<T>();
+            }
+            return result;
+        }
+        """.trimIndent())
+
+        appendLine()
+        this@generateApi.forEach { section ->
+            if (section.docMethods.isNotEmpty()) {
+                appendLine(comment(section.name))
+                section.docMethods.forEach { method ->
+                    appendLine(method.toCppClientMethodImplementation())
+                    appendLine()
+                }
             }
         }
     }
-    appendLine("};")
-    appendLine()
-    appendLine("} // namespace tgbot")
-}
 
-fun List<DocSection>.toApiSource() = buildString {
-    appendLine("// Auto-generated Telegram Bot API client for C++")
-    appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
-    appendLine("#include \"Api.hpp\"")
-    appendLine()
-    appendLine("namespace tgbot {")
-    appendLine()
-    appendLine("Api::Api(boost::asio::any_io_executor executor, const std::string& api_key)")
-    appendLine("    : api_key_(api_key), http_client_(std::move(executor)) {")
-    appendLine("}")
-    appendLine()
-    appendLine("template<typename T>")
-    appendLine("TelegramResponse<T> Api::parseResponse(const std::string& response_str) {")
-    appendLine("    auto j = json::parse(response_str);")
-    appendLine("    TelegramResponse<T> result;")
-    appendLine("    result.ok = j[\"ok\"].get<bool>();")
-    appendLine("    if (result.ok && j.contains(\"result\")) {")
-    appendLine("        result.result = j[\"result\"].get<T>();")
-    appendLine("    }")
-    appendLine("    return result;")
-    appendLine("}")
-    appendLine()
-    this@toApiSource.forEach { section ->
-        if (section.docMethods.isNotEmpty()) {
-            appendLine(comment(section.name))
-            section.docMethods.forEach { method ->
-                appendLine(method.toCppClientMethodImplementation())
-                appendLine()
-            }
-        }
-    }
-    appendLine("} // namespace tgbot")
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = headerIncludes,
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "Api",
+        category = CppFileCategory.NET,
+        includes = emptyList(),
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "Api",
+        category = CppFileCategory.NET,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
 }
 
 private fun DocMethod.toCppClientMethodDeclaration() = buildString {
@@ -1161,7 +1262,7 @@ private fun DocMethod.toCppClientMethodDeclaration() = buildString {
     if (docParameters.isEmpty()) {
         append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> $name();")
     } else {
-        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> $name(const tgbot::$structName& request);")
+        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> $name(const TgBot::$structName& request);")
     }
 }
 
@@ -1181,7 +1282,7 @@ private fun DocMethod.toCppClientMethodImplementation() = buildString {
         appendLine("    co_return parseResponse<$returnTypeWithVector>(response);")
         append("}")
     } else {
-        appendLine("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> Api::$name(const tgbot::$structName& request) {")
+        appendLine("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> Api::$name(const TgBot::$structName& request) {")
         appendLine("    json j = request;")
         appendLine("    std::string body = j.dump();")
         appendLine("    const std::string target = \"/bot\" + api_key_ + \"/$name\";")
@@ -1267,66 +1368,734 @@ private fun String.cleanHtml(): String {
         .trim()
 }
 
-fun toLongPollHeader() = buildString {
-    appendLine("// Auto-generated Telegram Bot API client for C++")
-    appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
-    appendLine("#pragma once")
-    appendLine("#include \"Api.hpp\"")
-    appendLine("#include <boost/asio/awaitable.hpp>")
-    appendLine("#include <string>")
-    appendLine()
-    appendLine("namespace tgbot {")
-    appendLine()
-    appendLine("class LongPoll {")
-    appendLine("private:")
-    appendLine("    Api& client_;")
-    appendLine("    std::string url_;")
-    appendLine("    std::string secret_token_;")
-    appendLine()
-    appendLine("public:")
-    appendLine("    explicit LongPoll(Api& client, const std::string& url, const std::string& secret_token = \"\");")
-    appendLine()
-    appendLine("    boost::asio::awaitable<void> start();")
-    appendLine()
-    appendLine("    bool validate(const std::string& header_secret_token) const;")
-    appendLine()
-    appendLine("    static Update::Ptr parse(const std::string& json);")
-    appendLine("};")
-    appendLine()
-    appendLine("} // namespace tgbot")
+private fun generateLongPoll(): CppModelFile {
+    val headerIncludes = listOf(
+        "#include \"Api.hpp\"",
+        "#include <boost/asio/awaitable.hpp>",
+        "#include <boost/asio/io_context.hpp>"
+    )
+
+    val headerBody = """
+    class LongPoll {
+    private:
+        Api& client_;
+        std::string url_;
+        std::string secret_token_;
+        boost::asio::io_context io_;
+    
+    public:
+        explicit LongPoll(Api& client, const std::string& url, const std::string& secret_token = "");
+        void start();
+        bool validate(const std::string& header_secret_token) const;
+        static Update::Ptr parse(const std::string& json);
+    
+    private:
+        boost::asio::awaitable<void> internalStart();
+    };
+    """.trimIndent()
+
+    val sourceIncludes = listOf(
+        "#include \"requests/SetWebhookRequest.hpp\"",
+        "#include <nlohmann/json.hpp>",
+        "#include <boost/asio.hpp>"
+    )
+
+    val sourceBody = """
+    LongPoll::LongPoll(Api& client, const std::string& url, const std::string& secret_token)
+        : client_(client), url_(url), secret_token_(secret_token) {}
+        
+    boost::asio::awaitable<void> LongPoll::internalStart() {
+        SetWebhookRequest request;
+        request.url = url_;
+        if (!secret_token_.empty()) {
+            request.secret_token = secret_token_;
+        }
+        co_await client_.setWebhook(request);
+    }
+    
+    void LongPoll::internalStart() {
+        boost::asio::co_spawn(io_, internalStart(), boost::asio::detached);
+    }
+    
+    bool LongPoll::validate(const std::string& header_secret_token) const {
+        return !secret_token_.empty() && secret_token_ == header_secret_token;
+    }
+    
+    Update::Ptr LongPoll::parse(const std::string& json_str) {
+        auto j = json::parse(json_str);
+        Update::Ptr update;
+        from_json(j, update);
+        return update;
+    }
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = headerIncludes,
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "LongPoll",
+        category = CppFileCategory.NET,
+        includes = sourceIncludes,
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "LongPoll",
+        category = CppFileCategory.NET,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
 }
 
-fun toLongPollSource() = buildString {
-    appendLine("// Auto-generated Telegram Bot API client for C++")
-    appendLine("// Generated by telegram-api-generator. Do not edit manually.\n")
-    appendLine("#include \"LongPoll.hpp\"")
-    appendLine("#include \"requests/SetWebhookRequest.hpp\"")
-    appendLine("#include <nlohmann/json.hpp>")
-    appendLine()
-    appendLine("namespace tgbot {")
-    appendLine()
-    appendLine("LongPoll::LongPoll(Api& client, const std::string& url, const std::string& secret_token)")
-    appendLine("    : client_(client), url_(url), secret_token_(secret_token) {}")
-    appendLine()
-    appendLine("boost::asio::awaitable<void> LongPoll::start() {")
-    appendLine("    SetWebhookRequest request;")
-    appendLine("    request.url = url_;")
-    appendLine("    if (!secret_token_.empty()) {")
-    appendLine("        request.secret_token = secret_token_;")
-    appendLine("    }")
-    appendLine("    co_await client_.setWebhook(request);")
-    appendLine("}")
-    appendLine()
-    appendLine("bool LongPoll::validate(const std::string& header_secret_token) const {")
-    appendLine("    return !secret_token_.empty() && secret_token_ == header_secret_token;")
-    appendLine("}")
-    appendLine()
-    appendLine("Update::Ptr LongPoll::parse(const std::string& json_str) {")
-    appendLine("    auto j = json::parse(json_str);")
-    appendLine("    Update::Ptr update;")
-    appendLine("    from_json(j, update);")
-    appendLine("    return update;")
-    appendLine("}")
-    appendLine()
-    appendLine("} // namespace tgbot")
+private fun generateEventBroadcaster(): CppModelFile {
+    val headerBody = """
+/**
+ * @brief This class holds all event listeners.
+ *
+ * @ingroup general
+ */
+class EventBroadcaster {
+
+friend class EventHandler;
+
+public:
+    typedef std::function<void (const Message::Ptr)> MessageListener;
+    typedef std::function<void (const InlineQuery::Ptr)> InlineQueryListener;
+    typedef std::function<void (const ChosenInlineResult::Ptr)> ChosenInlineResultListener;
+    typedef std::function<void (const CallbackQuery::Ptr)> CallbackQueryListener;
+    typedef std::function<void (const ShippingQuery::Ptr)> ShippingQueryListener;
+    typedef std::function<void (const PreCheckoutQuery::Ptr)> PreCheckoutQueryListener;
+    typedef std::function<void (const Poll::Ptr)> PollListener;
+    typedef std::function<void (const PollAnswer::Ptr)> PollAnswerListener;
+    typedef std::function<void (const ChatMemberUpdated::Ptr)> ChatMemberUpdatedListener;
+    typedef std::function<void (const ChatJoinRequest::Ptr)> ChatJoinRequestListener;
+    typedef std::function<void (const Message::Ptr, const SuccessfulPayment::Ptr)> SuccessfulPaymentListener;
+
+    /**
+     * @brief Registers listener which receives new incoming message of any kind - text, photo, sticker, etc.
+     * @param listener Listener.
+     */
+    void onAnyMessage(const MessageListener& listener);
+
+    /**
+     * @brief Registers listener which receives all messages with commands (messages with leading '/' char).
+     * @param commandName Command name which listener can handle.
+     * @param listener Listener. Pass nullptr to remove listener of command
+     */
+    void onCommand(const std::string& commandName, const MessageListener& listener);
+
+    /**
+    * @brief Registers listener which receives all messages with commands (messages with leading '/' char).
+    * @param commandsList Commands names which listener can handle.
+    * @param listener Listener. Pass nullptr to remove listener of commands
+    */
+    void onCommand(const std::initializer_list<std::string>& commandsList, const MessageListener& listener);
+
+    /**
+     * @brief Registers listener which receives all messages with commands (messages with leading '/' char) which haven't been handled by other listeners.
+     * @param listener Listener.
+     */
+    void onUnknownCommand(const MessageListener& listener);
+
+    /**
+     * @brief Registers listener which receives all messages without commands (messages with no leading '/' char)
+     * @param listener Listener.
+     */
+    void onNonCommandMessage(const MessageListener& listener);
+
+    /**
+     * @brief Registers listener which receives new versions of a message that is known to the bot and was edited
+     * @param listener Listener.
+     */
+    void onEditedMessage(const MessageListener& listener);
+
+    /**
+     * @brief Registers listener which receives new incoming inline queries
+     * @param listener Listener.
+     */
+    void onInlineQuery(const InlineQueryListener& listener);
+
+    /**
+     * @brief Registers listener which receives the results of an inline query that was chosen by a user and sent to their chat partner.
+     * Please see https://core.telegram.org/bots/inline#collecting-feedback for details on how to enable these updates for your bot.
+     * 
+     * @param listener Listener.
+     */
+    void onChosenInlineResult(const ChosenInlineResultListener& listener);
+
+    /**
+     * @brief Registers listener which receives new incoming callback queries
+     * @param listener Listener.
+     */
+    void onCallbackQuery(const CallbackQueryListener& listener);
+
+    /**
+     * @brief Registers listener which receives new incoming shipping queries.
+     * Only for invoices with flexible price
+     * 
+     * @param listener Listener.
+     */
+    void onShippingQuery(const ShippingQueryListener& listener);
+
+    /**
+     * @brief Registers listener which receives new incoming pre-checkout queries.
+     * Contains full information about checkout
+     * 
+     * @param listener Listener.
+     */
+    void onPreCheckoutQuery(const PreCheckoutQueryListener& listener);
+
+    /**
+     * @brief Registers listener which receives new poll states.
+     * Bots receive only updates about stopped polls and polls, which are sent by the bot
+     * 
+     * @param listener Listener.
+     */
+    void onPoll(const PollListener& listener);
+
+    /**
+     * @brief Registers listener which receives an answer if a user changed their answer in a non-anonymous poll.
+     * Bots receive new votes only in polls that were sent by the bot itself.
+     * 
+     * @param listener Listener.
+     */
+    void onPollAnswer(const PollAnswerListener& listener);
+
+    /**
+     * @brief Registers listener which receives the bot's chat member status if it was updated in a chat.
+     * For private chats, this update is received only when the bot is blocked or unblocked by the user.
+     * 
+     * @param listener Listener.
+     */
+    void onMyChatMember(const ChatMemberUpdatedListener& listener);
+
+    /**
+     * @brief Registers listener which receives a status if a chat member's status was updated in a chat.
+     * The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of allowedUpdates to receive these updates.
+     * 
+     * @param listener Listener.
+     */
+    void onChatMember(const ChatMemberUpdatedListener& listener);
+
+    /**
+     * @brief Registers listener which receives requests to join the chat.
+     * The bot must have the canInviteUsers administrator right in the chat to receive these updates.
+     * 
+     * @param listener Listener.
+     */
+    void onChatJoinRequest(const ChatJoinRequestListener& listener);
+
+    /**
+    * @brief Registers listener which receives information about successful payments.
+    * This listener is triggered when a successful payment is received by the bot.
+    * 
+    * @param listener Listener.
+    */
+    void onSuccessfulPayment(const SuccessfulPaymentListener& listener);
+
+private:
+    template<typename ListenerType, typename ObjectType>
+    void broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
+        if (!object)
+            return;
+
+        for (const ListenerType& item : listeners) {
+            item(object);
+        }
+    }
+
+    void broadcastAnyMessage(const Message::Ptr& message) const;
+    bool broadcastCommand(const std::string& command, const Message::Ptr& message) const;
+    void broadcastUnknownCommand(const Message::Ptr& message) const;
+    void broadcastNonCommandMessage(const Message::Ptr& message) const;
+    void broadcastEditedMessage(const Message::Ptr& message) const;
+    void broadcastInlineQuery(const InlineQuery::Ptr& query) const;
+    void broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const;
+    void broadcastCallbackQuery(const CallbackQuery::Ptr& result) const;
+    void broadcastShippingQuery(const ShippingQuery::Ptr& result) const;
+    void broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const;
+    void broadcastPoll(const Poll::Ptr& result) const;
+    void broadcastPollAnswer(const PollAnswer::Ptr& result) const;
+    void broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const;
+    void broadcastChatMember(const ChatMemberUpdated::Ptr& result) const;
+    void broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const;
+    void broadcastSuccessfulPayment(const Message::Ptr& message) const;
+
+    std::vector<MessageListener> _onAnyMessageListeners;
+    std::unordered_map<std::string, MessageListener> _onCommandListeners;
+    std::vector<MessageListener> _onUnknownCommandListeners;
+    std::vector<MessageListener> _onNonCommandMessageListeners;
+    std::vector<MessageListener> _onEditedMessageListeners;
+    std::vector<InlineQueryListener> _onInlineQueryListeners;
+    std::vector<ChosenInlineResultListener> _onChosenInlineResultListeners;
+    std::vector<CallbackQueryListener> _onCallbackQueryListeners;
+    std::vector<ShippingQueryListener> _onShippingQueryListeners;
+    std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
+    std::vector<PollListener> _onPollListeners;
+    std::vector<PollAnswerListener> _onPollAnswerListeners;
+    std::vector<ChatMemberUpdatedListener> _onMyChatMemberListeners;
+    std::vector<ChatMemberUpdatedListener> _onChatMemberListeners;
+    std::vector<ChatJoinRequestListener> _onChatJoinRequestListeners;
+    std::vector<SuccessfulPaymentListener> _onSuccessfulPaymentListeners;
+};
+    """.trimIndent()
+
+    val sourceBody = """
+namespace TgBot {
+
+void EventBroadcaster::onAnyMessage(const MessageListener& listener) {
+    _onAnyMessageListeners.push_back(listener);
+}
+
+void EventBroadcaster::onCommand(const std::string& commandName, const MessageListener& listener) {
+    if (listener) {
+        _onCommandListeners[commandName] = listener;
+    } else {
+        _onCommandListeners.erase(commandName);
+    }
+}
+
+void EventBroadcaster::onCommand(const std::initializer_list<std::string>& commandsList, const MessageListener& listener) {
+    if (listener) {
+        for (const auto& command : commandsList) {
+            _onCommandListeners[command] = listener;
+        }
+    } else {
+        for (const auto& command : commandsList) {
+            _onCommandListeners.erase(command);
+        }
+    }
+}
+
+void EventBroadcaster::onUnknownCommand(const MessageListener& listener) {
+    _onUnknownCommandListeners.push_back(listener);
+}
+
+void EventBroadcaster::onNonCommandMessage(const MessageListener& listener) {
+    _onNonCommandMessageListeners.push_back(listener);
+}
+
+void EventBroadcaster::onEditedMessage(const MessageListener& listener) {
+    _onEditedMessageListeners.push_back(listener);
+}
+
+void EventBroadcaster::onInlineQuery(const InlineQueryListener& listener) {
+    _onInlineQueryListeners.push_back(listener);
+}
+
+void EventBroadcaster::onChosenInlineResult(const ChosenInlineResultListener& listener) {
+    _onChosenInlineResultListeners.push_back(listener);
+}
+
+void EventBroadcaster::onCallbackQuery(const CallbackQueryListener& listener) {
+    _onCallbackQueryListeners.push_back(listener);
+}
+
+void EventBroadcaster::onShippingQuery(const ShippingQueryListener& listener) {
+    _onShippingQueryListeners.push_back(listener);
+}
+
+void EventBroadcaster::onPreCheckoutQuery(const PreCheckoutQueryListener& listener) {
+    _onPreCheckoutQueryListeners.push_back(listener);
+}
+
+void EventBroadcaster::onPoll(const PollListener& listener) {
+    _onPollListeners.push_back(listener);
+}
+
+void EventBroadcaster::onPollAnswer(const PollAnswerListener& listener) {
+    _onPollAnswerListeners.push_back(listener);
+}
+
+void EventBroadcaster::onMyChatMember(const ChatMemberUpdatedListener& listener) {
+    _onMyChatMemberListeners.push_back(listener);
+}
+
+void EventBroadcaster::onChatMember(const ChatMemberUpdatedListener& listener) {
+    _onChatMemberListeners.push_back(listener);
+}
+
+void EventBroadcaster::onChatJoinRequest(const ChatJoinRequestListener& listener) {
+    _onChatJoinRequestListeners.push_back(listener);
+}
+
+void EventBroadcaster::onSuccessfulPayment(const SuccessfulPaymentListener& listener) {
+    _onSuccessfulPaymentListeners.push_back(listener);
+}
+
+void EventBroadcaster::broadcastAnyMessage(const Message::Ptr& message) const {
+    broadcast<MessageListener, Message::Ptr>(_onAnyMessageListeners, message);
+}
+
+bool EventBroadcaster::broadcastCommand(const std::string& command, const Message::Ptr& message) const {
+    auto iter = _onCommandListeners.find(command);
+    if (iter == _onCommandListeners.end()) {
+        return false;
+    }
+    iter->second(message);
+    return true;
+}
+
+void EventBroadcaster::broadcastUnknownCommand(const Message::Ptr& message) const {
+    broadcast<MessageListener, Message::Ptr>(_onUnknownCommandListeners, message);
+}
+
+void EventBroadcaster::broadcastNonCommandMessage(const Message::Ptr& message) const {
+    broadcast<MessageListener, Message::Ptr>(_onNonCommandMessageListeners, message);
+}
+
+void EventBroadcaster::broadcastEditedMessage(const Message::Ptr& message) const {
+    broadcast<MessageListener, Message::Ptr>(_onEditedMessageListeners, message);
+}
+
+void EventBroadcaster::broadcastInlineQuery(const InlineQuery::Ptr& query) const {
+    broadcast<InlineQueryListener, InlineQuery::Ptr>(_onInlineQueryListeners, query);
+}
+
+void EventBroadcaster::broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
+    broadcast<ChosenInlineResultListener, ChosenInlineResult::Ptr>(_onChosenInlineResultListeners, result);
+}
+
+void EventBroadcaster::broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
+    broadcast<CallbackQueryListener, CallbackQuery::Ptr>(_onCallbackQueryListeners, result);
+}
+
+void EventBroadcaster::broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
+    broadcast<ShippingQueryListener, ShippingQuery::Ptr>(_onShippingQueryListeners, result);
+}
+
+void EventBroadcaster::broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const {
+    broadcast<PreCheckoutQueryListener, PreCheckoutQuery::Ptr>(_onPreCheckoutQueryListeners, result);
+}
+
+void EventBroadcaster::broadcastPoll(const Poll::Ptr& result) const {
+    broadcast<PollListener, Poll::Ptr>(_onPollListeners, result);
+}
+
+void EventBroadcaster::broadcastPollAnswer(const PollAnswer::Ptr& result) const {
+    broadcast<PollAnswerListener, PollAnswer::Ptr>(_onPollAnswerListeners, result);
+}
+
+void EventBroadcaster::broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const {
+    broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(_onMyChatMemberListeners, result);
+}
+
+void EventBroadcaster::broadcastChatMember(const ChatMemberUpdated::Ptr& result) const {
+    broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(_onChatMemberListeners, result);
+}
+
+void EventBroadcaster::broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const {
+    broadcast<ChatJoinRequestListener, ChatJoinRequest::Ptr>(_onChatJoinRequestListeners, result);
+}
+
+void EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) const {
+    if (!message || !message->successful_payment) {
+        return;
+    }
+    for (const auto& listener : _onSuccessfulPaymentListeners) {
+        listener(message, message->successful_payment);
+    }
+}
+
+}
+    """.trimIndent()
+
+    val includes = listOf(
+        "#include \"types/Message.hpp\"",
+        "#include \"types/InlineQuery.hpp\"",
+        "#include \"types/ChosenInlineResult.hpp\"",
+        "#include \"types/CallbackQuery.hpp\"",
+        "#include \"types/ShippingQuery.hpp\"",
+        "#include \"types/PreCheckoutQuery.hpp\"",
+        "#include \"types/Poll.hpp\"",
+        "#include \"types/PollAnswer.hpp\"",
+        "#include \"types/ChatMemberUpdated.hpp\"",
+        "#include \"types/ChatJoinRequest.hpp\"",
+        "#include \"types/SuccessfulPayment.hpp\"",
+        "#include \"EventHandler.hpp\"",
+        "#include <functional>",
+        "#include <initializer_list>",
+        "#include <string>",
+        "#include <unordered_map>",
+        "#include <vector>"
+    )
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = includes,
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "EventBroadcaster",
+        category = CppFileCategory.ROOT,
+        includes = emptyList(),
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "EventBroadcaster",
+        category = CppFileCategory.ROOT,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
+}
+
+private fun generateStringTools(): CppModelFile {
+    val headerBody = """
+namespace StringTools {
+    bool startsWith(const std::string& str, const std::string& prefix);
+}
+    """.trimIndent()
+
+    val sourceBody = """
+namespace StringTools {
+    bool startsWith(const std::string& str, const std::string& prefix) {
+        return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
+    }
+}
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = listOf("#include <string>"),
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "StringTools",
+        category = CppFileCategory.TOOLS,
+        includes = emptyList(),
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "StringTools",
+        category = CppFileCategory.TOOLS,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
+}
+
+private fun generateEventHandler(): CppModelFile {
+    val headerBody = """
+class EventHandler {
+public:
+    explicit EventHandler(const EventBroadcaster& broadcaster) : _broadcaster(broadcaster) {
+    }
+
+    void handleUpdate(const Update::Ptr& update) const;
+
+private:
+    const EventBroadcaster& _broadcaster;
+
+    void handleMessage(const Message::Ptr& message) const;
+};
+    """.trimIndent()
+
+    val sourceBody = """
+void EventHandler::handleUpdate(const Update::Ptr& update) const {
+    if (update->message) {
+        handleMessage(update->message);
+    }
+    if (update->edited_message) {
+        _broadcaster.broadcastEditedMessage(update->edited_message);
+    }
+    if (update->channel_post) {
+        handleMessage(update->channel_post);
+    }
+    if (update->edited_channel_post) {
+        _broadcaster.broadcastEditedMessage(update->edited_channel_post);
+    }
+    if (update->inline_query) {
+        _broadcaster.broadcastInlineQuery(update->inline_query);
+    }
+    if (update->chosen_inline_result) {
+        _broadcaster.broadcastChosenInlineResult(update->chosen_inline_result);
+    }
+    if (update->callback_query) {
+        _broadcaster.broadcastCallbackQuery(update->callback_query);
+    }
+    if (update->shipping_query) {
+        _broadcaster.broadcastShippingQuery(update->shipping_query);
+    }
+    if (update->pre_checkout_query) {
+        _broadcaster.broadcastPreCheckoutQuery(update->pre_checkout_query);
+    }
+    if (update->poll) {
+        _broadcaster.broadcastPoll(update->poll);
+    }
+    if (update->poll_answer) {
+        _broadcaster.broadcastPollAnswer(update->poll_answer);
+    }
+    if (update->my_chat_member) {
+        _broadcaster.broadcastMyChatMember(update->my_chat_member);
+    }
+    if (update->chat_member) {
+        _broadcaster.broadcastChatMember(update->chat_member);
+    }
+    if (update->chat_join_request) {
+        _broadcaster.broadcastChatJoinRequest(update->chat_join_request);
+    }
+}
+
+void EventHandler::handleMessage(const Message::Ptr& message) const {
+    _broadcaster.broadcastAnyMessage(message);
+
+    if (StringTools::startsWith(message->text, "/")) {
+        std::size_t splitPosition;
+        std::size_t spacePosition = message->text.find(' ');
+        std::size_t atSymbolPosition = message->text.find('@');
+        if (spacePosition == std::string::npos) {
+            if (atSymbolPosition == std::string::npos) {
+                splitPosition = message->text.size();
+            } else {
+                splitPosition = atSymbolPosition;
+            }
+        } else if (atSymbolPosition == std::string::npos) {
+            splitPosition = spacePosition;
+        } else {
+            splitPosition = std::min(spacePosition, atSymbolPosition);
+        }
+        std::string command = message->text.substr(1, splitPosition - 1);
+        if (!_broadcaster.broadcastCommand(command, message)) {
+            _broadcaster.broadcastUnknownCommand(message);
+        }
+    } else {
+        _broadcaster.broadcastNonCommandMessage(message);
+    }
+    
+    if (message->successful_payment) {
+        _broadcaster.broadcastSuccessfulPayment(message);
+    }
+}
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = listOf(
+            "#include \"EventBroadcaster.hpp\"",
+            "#include \"types/Update.hpp\"",
+            "#include \"tools/StringTools.hpp\"",
+            "#include <algorithm>",
+            "#include <cstddef>",
+            "#include <string>"
+        ),
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "EventHandler",
+        category = CppFileCategory.ROOT,
+        includes = emptyList(),
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "EventHandler",
+        category = CppFileCategory.ROOT,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
+}
+
+private fun generateBotClass(): CppModelFile {
+    val headerBody = """
+class HttpClient;
+
+/**
+ * @brief This object holds other objects specific for this bot instance.
+ *
+ * @ingroup general
+ */
+class Bot {
+
+public:
+    explicit Bot(std::string token, const HttpClient &httpClient = _getDefaultHttpClient(), const std::string& url="https://api.telegram.org");
+
+    /**
+     * @return Token for accessing api.
+     */
+    inline const std::string& getToken() const {
+        return _token;
+    }
+
+    /**
+     * @return Object which can execute Telegram Bot API methods.
+     */
+    inline const Api& getApi() const {
+        return _api;
+    }
+
+    /**
+     * @return Object which holds all event listeners.
+     */
+    inline EventBroadcaster& getEvents() {
+        return *_eventBroadcaster;
+    }
+
+    /**
+     * @return Object which handles new update objects. Usually it's only needed for TgLongPoll, TgWebhookLocalServer and TgWebhookTcpServer objects.
+     */
+    inline const EventHandler& getEventHandler() const {
+        return _eventHandler;
+    }
+
+private:
+    static HttpClient &_getDefaultHttpClient();
+
+    const std::string _token;
+    const Api _api;
+    std::unique_ptr<EventBroadcaster> _eventBroadcaster;
+    const EventHandler _eventHandler;
+};
+    """.trimIndent()
+
+    val sourceBody = """
+Bot::Bot(std::string token, const HttpClient& httpClient, const std::string& url)
+    : _token(std::move(token))
+    , _api(_token, httpClient, url)
+    , _eventBroadcaster(std::make_unique<EventBroadcaster>())
+    , _eventHandler(getEvents()) {
+}
+
+HttpClient& Bot::_getDefaultHttpClient() {
+    static net::BoostHttpOnlySslClient instance;
+    return instance;
+}
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = listOf("class EventBroadcaster;", "class HttpClient;"),
+        includes = listOf(
+            "#include \"Api.hpp\"",
+            "#include \"EventHandler.hpp\"",
+            "#include <memory>",
+            "#include <string>",
+            "#include <utility>"
+        ),
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "Bot",
+        category = CppFileCategory.ROOT,
+        includes = listOf(
+            "#include \"net/BoostHttpOnlySslClient.hpp\"",
+            "#include \"EventBroadcaster.hpp\"",
+            "#include <memory>",
+            "#include <string>"
+        ),
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "Bot",
+        category = CppFileCategory.ROOT,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
 }

@@ -17,6 +17,9 @@ private val CPP_BASE_INCLUDES = listOf(
     "#include <nlohmann/json.hpp>",
 )
 
+// Map of generated struct -> set of other struct names this struct includes
+private val cppIncludesMap: MutableMap<String, MutableSet<String>> = mutableMapOf()
+
 private enum class CppFileCategory {
     TYPE,
     REQUEST,
@@ -90,6 +93,9 @@ private fun stripCppWrappers(type: String): String {
         } else if (result.endsWith("Ptr")) {
             result = result.removeSuffix("::Ptr")
             changed = true
+        } else if (result.startsWith("std::weak_ptr<") && result.endsWith(">")) {
+            result = result.removePrefix("std::weak_ptr<").removeSuffix(">")
+            changed = true
         }
     } while (changed)
     return result
@@ -143,37 +149,37 @@ private fun collectPointerTypesFromParameters(
 
 private fun collectValueTypes(
     fieldTypes: List<String>,
-    className: String?,
-    customTypeNames: Set<String>
+    className: String?
 ): Set<String> = fieldTypes.mapNotNull { fieldType ->
-    if (!fieldType.endsWith("Ptr") &&
-        !fieldType.startsWith("std::vector<") &&
-        !BASIC_JSON_TYPES_IN_CPP.contains(fieldType)) {
-        val baseType = stripCppWrappers(fieldType)
-        if (baseType in customTypeNames && baseType != className) {
-            baseType
-        } else null
+    val baseType = stripCppWrappers(fieldType)
+    val customTypeNames = setOf(
+        "ForumTopicClosed",
+        "ForumTopicReopened",
+        "CallbackGame",
+        "GeneralForumTopicHidden",
+        "GeneralForumTopicUnhidden",
+        "VideoChatStarted",
+        "InputFile"
+    )
+    if (baseType in customTypeNames && baseType != className) {
+        baseType
     } else null
 }.toSet()
 
 private fun collectValueTypesFromFields(
     fields: List<DocField>,
-    className: String?,
-    customTypeNames: Set<String>
+    className: String?
 ): Set<String> = collectValueTypes(
     fields.map { field -> field.toCppFieldType(className) },
     className,
-    customTypeNames
 )
 
 private fun collectValueTypesFromParameters(
     parameters: List<DocParameter>,
-    className: String?,
-    customTypeNames: Set<String>
+    className: String?
 ): Set<String> = collectValueTypes(
     parameters.map { parameter -> parameter.toCppFieldType(null) },
     className,
-    customTypeNames
 )
 
 private fun collectVectorElementTypes(
@@ -306,8 +312,6 @@ struct InputFile {
     """.trimIndent()
 
     val sourceBody = """
-        namespace TgBot {
-
         InputFile::Ptr InputFile::fromFile(const std::string& filePath, const std::string& mimeType) {
             auto result(std::make_shared<InputFile>());
             result->data = FileTools::read(filePath);
@@ -315,14 +319,12 @@ struct InputFile {
             result->fileName = std::filesystem::path(filePath).filename().string();
             return result;
         }
-
-        }
     """.trimIndent()
 
     val headerContent = buildCppHeader(
         forwardDeclarations = emptyList(),
         includes = listOf(
-            "#incldue <string>",
+            "#include <string>",
             "#include <memory>"
         ),
         body = headerBody
@@ -332,7 +334,7 @@ struct InputFile {
         headerName = "InputFile",
         category = CppFileCategory.TYPE,
         includes = listOf(
-            "#include \"tgbot/tools/FileTools.h\"",
+            "#include \"tools/FileTools.hpp\"",
             "#include <filesystem>",
         ),
         body = sourceBody
@@ -428,8 +430,27 @@ private fun generateTelegramModelFile(): CppModelFile {
             } else {
                 value = std::make_shared<T>(j.get<T>());
             }
+        }
+
+        template <typename T>
+        void to_json(json& j, const std::weak_ptr<T>& value) {
+            if (std::shared_ptr<T> locked = value.lock()) {
+                j = locked;
+            } else {
+                j = nullptr;
+            }
+        }
+
+        template <typename T>
+        void from_json(const json& j, std::weak_ptr<T>& value) {
+            if (j.is_null()) {
+                value.reset();
+            } else {
+                value = std::make_shared<T>(j.get<T>());
+            }
         }   
-        """.trimIndent()
+        """.trimIndent() 
+        // TODO reverse for Message (now Message has weak_ptrs but it should be otherwise). Or maybe remove weak_ptr, it shouldn't lead to circular includes
         )
     }.trimEnd()
 
@@ -500,22 +521,30 @@ private fun DocType.toCppFile(
 
     // Header: forward declare pointer types, include base class and value types
     val pointerTypes = collectPointerTypesFromFields(docFields, name, customTypeNames)
-    val valueTypes = collectValueTypesFromFields(docFields, name, customTypeNames)
+    val valueTypes = collectValueTypesFromFields(docFields, name)
     val vectorElementTypes = collectVectorElementTypesFromFields(docFields, name, customTypeNames)
 
-    val forwardDeclarations = emptyList<String>()
+    val customIncludes = buildList {
+        addAll(valueTypes)
+        addAll(vectorElementTypes)
+        addAll(pointerTypes)
+    }.toSet()
+
+    // detect circular includes: if an included type already includes this type, forward-declare instead
+    val circularTypes = customIncludes.filter { included -> cppIncludesMap[included]?.contains(name) == true }.toSet()
+
+    val forwardDeclarations = circularTypes.map { included -> "struct $included;" }
 
     val headerIncludes = buildList {
         addAll(CPP_BASE_INCLUDES)
         add("#include \"types/$superTypeName.hpp\"")
-        addAll(valueTypes.map { "#include \"types/$it.hpp\"" })
-        addAll(vectorElementTypes.map { "#include \"types/$it.hpp\"" })
-        addAll(pointerTypes.map { "#include \"types/$it.hpp\"" })
+        // include only non-circular custom types
+        addAll((customIncludes - circularTypes).map { "#include \"types/$it.hpp\"" })
     }
 
     val headerBody = buildString {
         appendLine(toCppDoc().trimEnd())
-        appendLine(toCppStructDeclaration().trimEnd())
+        appendLine(toCppStructDeclaration(circularTypes).trimEnd())
     }
 
     // Source: include all full definitions and implement to_json()
@@ -540,10 +569,21 @@ private fun DocType.toCppFile(
             includes = sourceIncludes,
             body = sourceBody
         )
-    )
+    ).also {
+        // Update includes map for this generated type: store names of included custom types (excluding forward-declared circulars)
+        val includesForMap = (customIncludes - circularTypes).toMutableSet()
+        if (superTypeName != "TelegramModel") includesForMap.add(superTypeName)
+        cppIncludesMap[name] = includesForMap
+        if (name == "ChecklistTasksDone") {
+            println("Generated C++ struct for type $name, includes: ${cppIncludesMap[name]}, circular: $circularTypes")
+        }
+        if (name == "Message") {
+            println("Generated C++ struct for type $name, includes: ${cppIncludesMap[name]}, circular: $circularTypes")
+        }
+    }
 }
 
-private fun DocMethod.toCppRequestStructDeclaration() = buildString {
+private fun DocMethod.toCppRequestStructDeclaration(circularTypes: Set<String> = emptySet()) = buildString {
     val structName = requestStructName()
     appendLine("struct $structName {")
     appendLine("    typedef std::shared_ptr<$structName> Ptr;")
@@ -557,7 +597,7 @@ private fun DocMethod.toCppRequestStructDeclaration() = buildString {
                 appendLine("    // ${comment.replace("\n", " ")}")
             }
 
-            val fieldType = parameter.toCppFieldType(null)
+            val fieldType = parameter.toCppFieldType(null, circularTypes)
             appendLine("    $fieldType $fieldName;")
 
             if (index != docParameters.lastIndex) appendLine()
@@ -599,9 +639,11 @@ private fun generateSerialization(name: String, fields: Map<String, String>) = b
 private fun DocMethod.toCppRequestStructImplementation()
     = generateSerialization(
     requestStructName(),
-    docParameters.associate { parameter ->
-        parameter.name to parameter.cppFieldName()
-    }
+    docParameters
+        .filter { !it.type.containsInputFile() }  // Exclude InputFile fields from serialization
+        .associate { parameter ->
+            parameter.name to parameter.cppFieldName()
+        }
 )
 
 private fun DocMethod.toCppRequestFile(
@@ -610,20 +652,28 @@ private fun DocMethod.toCppRequestFile(
     val structName = requestStructName()
 
     val pointerTypes = collectPointerTypesFromParameters(docParameters, structName, customTypeNames)
-    val valueTypes = collectValueTypesFromParameters(docParameters, structName, customTypeNames)
+    val valueTypes = collectValueTypesFromParameters(docParameters, structName)
     val vectorElementTypes = collectVectorElementTypesFromParameters(docParameters, structName, customTypeNames)
 
-    val forwardDeclarations = emptyList<String>()
+    val customIncludes = buildList {
+        addAll(valueTypes)
+        addAll(vectorElementTypes)
+        addAll(pointerTypes)
+    }.toSet()
+
+    // detect circular includes for request struct: if an included type already includes this struct, forward-declare
+    val circularTypes = customIncludes.filter { included -> cppIncludesMap[included]?.contains(structName) == true }.toSet()
+
+    val forwardDeclarations = circularTypes.map { included -> "struct $included;" }
+
     val headerIncludes = buildList {
-//        addAll(CPP_BASE_INCLUDES)
-        addAll(valueTypes.map { "#include \"types/$it.hpp\"" })
-        addAll(vectorElementTypes.map { "#include \"types/$it.hpp\"" })
-        addAll(pointerTypes.map { "#include \"types/$it.hpp\"" })
+        addAll(CPP_BASE_INCLUDES)
+        addAll((customIncludes - circularTypes).map { "#include \"types/$it.hpp\"" })
     }
 
     val headerBody = buildString {
         appendLine(toCppDoc(showReturn = false))
-        appendLine(toCppRequestStructDeclaration().trimEnd())
+        appendLine(toCppRequestStructDeclaration(circularTypes).trimEnd())
     }
 
     val sourceBody = toCppRequestStructImplementation()
@@ -642,7 +692,9 @@ private fun DocMethod.toCppRequestFile(
             includes = emptyList(),
             body = sourceBody
         )
-    )
+    ).also {
+        cppIncludesMap[structName] = (customIncludes - circularTypes).toMutableSet()
+    }
 }
 
 private fun List<DocSection>.toCppModelFiles(): List<CppModelFile> {
@@ -901,7 +953,7 @@ private fun DocMethod.toCppDoc(showReturn: Boolean = true, forClient: Boolean = 
     append(" */")
 }
 
-private fun DocType.toCppStructDeclaration() = buildString {
+private fun DocType.toCppStructDeclaration(circularTypes: Set<String> = emptySet()) = buildString {
     val telegramType = TelegramType.from(name)
     val superTypeName = when (val superType = telegramType.superType) {
         null -> "TelegramModel"
@@ -910,6 +962,7 @@ private fun DocType.toCppStructDeclaration() = buildString {
 
     appendLine("struct $name : public $superTypeName {")
     appendLine("    typedef std::shared_ptr<$name> Ptr;")
+    appendLine("    typedef std::weak_ptr<$name> WeakPtr;")
     appendLine()
     appendLine("    virtual ~$name() = default;")
     if (docFields.isEmpty()) {
@@ -921,8 +974,7 @@ private fun DocType.toCppStructDeclaration() = buildString {
             if (comment != null) {
                 appendLine("    // ${comment.replace("\n", " ")}")
             }
-
-            val fieldType = field.toCppFieldType(name)
+            val fieldType = field.toCppFieldType(name, circularTypes)
             appendLine("    $fieldType $fieldName;")
 
             if (index != docFields.lastIndex) appendLine()
@@ -937,25 +989,36 @@ private fun DocType.toCppStructDeclaration() = buildString {
 
 
 private fun DocType.toCppStructImplementation() =
-    generateSerialization(name, docFields.associate { field -> field.name to field.cppFieldName() })
+    generateSerialization(name, docFields
+        .filter { !it.type.containsInputFile() }  // Exclude InputFile fields from serialization
+        .associate { field -> field.name to field.cppFieldName() })
 
 
 private fun DocField.cppFieldName() = if (name == "type") "type_" else name
 
 private fun DocParameter.cppFieldName() = if (name == "type") "type_" else name
 
-private fun DocField.toCppFieldType(className: String?) =
-    type.toCppTypeWithValueClasses(className, name)
+private fun DocField.toCppFieldType(className: String?, circularTypes: Set<String> = emptySet()) =
+    type.toCppTypeWithValueClasses(className, name, circularTypes)
 
-private fun DocParameter.toCppFieldType(className: String?) =
-    type.toCppTypeWithValueClasses(className, name)
+private fun DocParameter.toCppFieldType(className: String?, circularTypes: Set<String> = emptySet()) =
+    type.toCppTypeWithValueClasses(className, name, circularTypes)
 
 private fun TelegramType.toCppTypeWithValueClasses(
     className: String?,
-    propertyName: String?
+    propertyName: String?,
+    circularTypes: Set<String> = emptySet()
 ): String {
     return when (this) {
-        is TelegramType.ListType<*> -> "std::vector<${elementType.toCppTypeWithValueClasses(className, propertyName)}>"
+        is TelegramType.ListType<*> -> "std::vector<${elementType.toCppTypeWithValueClasses(className, propertyName, circularTypes)}>"
+        is TelegramType.Declared -> {
+            // If this declared type participates in a circular include with current class, use WeakPtr
+            if (name in circularTypes && name != className) {
+                "std::weak_ptr<${name}>"
+            } else {
+                "${name}::Ptr"
+            }
+        }
         else -> when {
             propertyName == null -> toCppTypeNoValueClasses()
             className == "User" && propertyName == "id" -> "int64_t"
@@ -974,6 +1037,13 @@ private fun TelegramType.toCppTypeWithValueClasses(
             else -> toCppTypeNoValueClasses()
         }
     }
+}
+
+// Check if a TelegramType is or contains InputFile (which should not be serialized)
+private fun TelegramType.containsInputFile(): Boolean = when (this) {
+    is TelegramType.ListType<*> -> elementType.containsInputFile()
+    TelegramType.InputFile -> true
+    else -> false
 }
 
 private fun TelegramType.toCppType(): String = toCppTypeNoValueClasses()
@@ -1013,7 +1083,9 @@ private fun generateHttpClient(): CppModelFile {
     class HttpClient {
     public:
         virtual ~HttpClient() = default;
-        virtual boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = \"\") = 0;
+
+        [[nodiscard]]
+        virtual boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = "") = 0;
     };    
     """.trimIndent()
     val headerContent = buildCppHeader(
@@ -1044,7 +1116,8 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
     
     public:
         BoostHttpOnlySslClient();
-    
+
+        [[nodiscard]]
         boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = "") override;
     };
     
@@ -1059,15 +1132,16 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
     }
     
     boost::asio::awaitable<std::string> BoostHttpOnlySslClient::makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body) {
-        auto executor = co_await boost::asio::this_coro::executor;
-        
         namespace beast = boost::beast;
         namespace http = beast::http;
-        namespace ssl = boost::asio::ssl;
-        using tcp = boost::asio::ip::tcp;
+        namespace net = boost::asio;
+        namespace ssl = net::ssl;
+        using tcp = net::ip::tcp;
     
-        tcp::resolver resolver{executor};
-        beast::ssl_stream<beast::tcp_stream> stream{executor, ctx_};
+        net::io_context ioc;
+
+        tcp::resolver resolver(ioc);
+        beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx_);
     
         if(!SSL_set_tlsext_host_name(stream.native_handle(), "api.telegram.org")) {
             throw beast::system_error{
@@ -1144,7 +1218,7 @@ private fun generateTelegramResponse(): CppModelFile {
     struct TelegramResponse {
         bool ok;
         std::optional<T> result;
-    }
+    };
     """.trimIndent()
 
     val headerContent = buildCppHeader(
@@ -1169,26 +1243,28 @@ private fun List<DocSection>.generateApi(): CppModelFile {
         "#include \"requests/$request.hpp\""
     }
 
-    val headerIncludes = modelIncludes + requestsIncludes + listOf("#include \"HttpClient.hpp\"")
+    val headerIncludes = modelIncludes + requestsIncludes + listOf("#include \"HttpClient.hpp\"", "#include \"TelegramResponse.hpp\"", "#include <boost/asio/awaitable.hpp>", "#include <string>")
+
     val headerBody = buildString {
         appendLine("""
         class Api {
         private:
             std::string api_key_;
-            const HttpClient& http_client_;
+            HttpClient& http_client_;
             std::string url_;
             
             template<typename T>
-            TelegramResponse<T> parseResponse(const std::string& response_str);
+            TelegramResponse<T> parseResponse(const std::string& response_str) const;
             
         public:
-            explicit Api(const std::string& api_key, const HttpClient& http_client, const std::string& url = "https://api.telegram.org");
+            explicit Api(std::string api_key, HttpClient& http_client, std::string url = "https://api.telegram.org");
             
         """.trimIndent())
         this@generateApi.forEach { section ->
             if (section.docMethods.isNotEmpty()) {
                 appendLine(comment(section.name, prefix = "    "))
                 section.docMethods.forEach { method ->
+                    appendLine("[[nodiscard]]")
                     appendLine(withIndent(method.toCppClientMethodDeclaration()))
                     appendLine()
                 }
@@ -1197,21 +1273,27 @@ private fun List<DocSection>.generateApi(): CppModelFile {
         appendLine("};")
     }
 
+    val sourceIncludes = listOf(
+        "#include <nlohmann/json.hpp>"
+    )
+
     val sourceBody = buildString {
         appendLine("""
-        Api::Api(const std::string& api_key, const HttpClient& http_client, const std::string& url)
-            : api_key_(api_key), http_client_(http_client), url_(url) {
+        using json = nlohmann::json;
+
+        Api::Api(std::string api_key, HttpClient& http_client, std::string url)
+            : api_key_(std::move(api_key)), http_client_(http_client), url_(std::move(url)) {
         }
         template<typename T>
         
-        TelegramResponse<T> Api::parseResponse(const std::string& response_str) {
+        TelegramResponse<T> Api::parseResponse(const std::string& response_str) const {
             auto j = json::parse(response_str);
         
             TelegramResponse<T> result;
-            result.ok = j[\"ok\"].get<bool>();
+            result.ok = j["ok"].get<bool>();
         
-            if (result.ok && j.contains(\"result\")) {
-                result.result = j[\"result\"].get<T>();
+            if (result.ok && j.contains("result")) {
+                result.result = j["result"].get<T>();
             }
             return result;
         }
@@ -1238,7 +1320,7 @@ private fun List<DocSection>.generateApi(): CppModelFile {
     val sourceContent = buildCppSource(
         headerName = "Api",
         category = CppFileCategory.NET,
-        includes = emptyList(),
+        includes = sourceIncludes,
         body = sourceBody
     )
 
@@ -1385,8 +1467,13 @@ private fun generateLongPoll(): CppModelFile {
     
     public:
         explicit LongPoll(Api& client, const std::string& url, const std::string& secret_token = "");
+
+        
         void start();
+        
+        [[nodiscard]]
         bool validate(const std::string& header_secret_token) const;
+        
         static Update::Ptr parse(const std::string& json);
     
     private:
@@ -1413,7 +1500,7 @@ private fun generateLongPoll(): CppModelFile {
         co_await client_.setWebhook(request);
     }
     
-    void LongPoll::internalStart() {
+    void LongPoll::start() {
         boost::asio::co_spawn(io_, internalStart(), boost::asio::detached);
     }
     
@@ -1624,184 +1711,184 @@ private:
     void broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const;
     void broadcastSuccessfulPayment(const Message::Ptr& message) const;
 
-    std::vector<MessageListener> _onAnyMessageListeners;
-    std::unordered_map<std::string, MessageListener> _onCommandListeners;
-    std::vector<MessageListener> _onUnknownCommandListeners;
-    std::vector<MessageListener> _onNonCommandMessageListeners;
-    std::vector<MessageListener> _onEditedMessageListeners;
-    std::vector<InlineQueryListener> _onInlineQueryListeners;
-    std::vector<ChosenInlineResultListener> _onChosenInlineResultListeners;
-    std::vector<CallbackQueryListener> _onCallbackQueryListeners;
-    std::vector<ShippingQueryListener> _onShippingQueryListeners;
-    std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
-    std::vector<PollListener> _onPollListeners;
-    std::vector<PollAnswerListener> _onPollAnswerListeners;
-    std::vector<ChatMemberUpdatedListener> _onMyChatMemberListeners;
-    std::vector<ChatMemberUpdatedListener> _onChatMemberListeners;
-    std::vector<ChatJoinRequestListener> _onChatJoinRequestListeners;
-    std::vector<SuccessfulPaymentListener> _onSuccessfulPaymentListeners;
+    std::vector<MessageListener> onAnyMessageListeners_;
+    std::unordered_map<std::string, MessageListener> onCommandListeners_;
+    std::vector<MessageListener> onUnknownCommandListeners_;
+    std::vector<MessageListener> onNonCommandMessageListeners_;
+    std::vector<MessageListener> onEditedMessageListeners_;
+    std::vector<InlineQueryListener> onInlineQueryListeners_;
+    std::vector<ChosenInlineResultListener> onChosenInlineResultListeners_;
+    std::vector<CallbackQueryListener> onCallbackQueryListeners_;
+    std::vector<ShippingQueryListener> onShippingQueryListeners_;
+    std::vector<PreCheckoutQueryListener> onPreCheckoutQueryListeners_;
+    std::vector<PollListener> onPollListeners_;
+    std::vector<PollAnswerListener> onPollAnswerListeners_;
+    std::vector<ChatMemberUpdatedListener> onMyChatMemberListeners_;
+    std::vector<ChatMemberUpdatedListener> onChatMemberListeners_;
+    std::vector<ChatJoinRequestListener> onChatJoinRequestListeners_;
+    std::vector<SuccessfulPaymentListener> onSuccessfulPaymentListeners_;
 };
     """.trimIndent()
 
     val sourceBody = """
-namespace TgBot {
-
-void EventBroadcaster::onAnyMessage(const MessageListener& listener) {
-    _onAnyMessageListeners.push_back(listener);
-}
-
-void EventBroadcaster::onCommand(const std::string& commandName, const MessageListener& listener) {
-    if (listener) {
-        _onCommandListeners[commandName] = listener;
-    } else {
-        _onCommandListeners.erase(commandName);
+    void EventBroadcaster::onAnyMessage(const MessageListener& listener) {
+        onAnyMessageListeners_.push_back(listener);
     }
-}
 
-void EventBroadcaster::onCommand(const std::initializer_list<std::string>& commandsList, const MessageListener& listener) {
-    if (listener) {
-        for (const auto& command : commandsList) {
-            _onCommandListeners[command] = listener;
-        }
-    } else {
-        for (const auto& command : commandsList) {
-            _onCommandListeners.erase(command);
+    void EventBroadcaster::onCommand(const std::string& commandName, const MessageListener& listener) {
+        if (listener) {
+            onCommandListeners_[commandName] = listener;
+        } else {
+            onCommandListeners_.erase(commandName);
         }
     }
-}
 
-void EventBroadcaster::onUnknownCommand(const MessageListener& listener) {
-    _onUnknownCommandListeners.push_back(listener);
-}
-
-void EventBroadcaster::onNonCommandMessage(const MessageListener& listener) {
-    _onNonCommandMessageListeners.push_back(listener);
-}
-
-void EventBroadcaster::onEditedMessage(const MessageListener& listener) {
-    _onEditedMessageListeners.push_back(listener);
-}
-
-void EventBroadcaster::onInlineQuery(const InlineQueryListener& listener) {
-    _onInlineQueryListeners.push_back(listener);
-}
-
-void EventBroadcaster::onChosenInlineResult(const ChosenInlineResultListener& listener) {
-    _onChosenInlineResultListeners.push_back(listener);
-}
-
-void EventBroadcaster::onCallbackQuery(const CallbackQueryListener& listener) {
-    _onCallbackQueryListeners.push_back(listener);
-}
-
-void EventBroadcaster::onShippingQuery(const ShippingQueryListener& listener) {
-    _onShippingQueryListeners.push_back(listener);
-}
-
-void EventBroadcaster::onPreCheckoutQuery(const PreCheckoutQueryListener& listener) {
-    _onPreCheckoutQueryListeners.push_back(listener);
-}
-
-void EventBroadcaster::onPoll(const PollListener& listener) {
-    _onPollListeners.push_back(listener);
-}
-
-void EventBroadcaster::onPollAnswer(const PollAnswerListener& listener) {
-    _onPollAnswerListeners.push_back(listener);
-}
-
-void EventBroadcaster::onMyChatMember(const ChatMemberUpdatedListener& listener) {
-    _onMyChatMemberListeners.push_back(listener);
-}
-
-void EventBroadcaster::onChatMember(const ChatMemberUpdatedListener& listener) {
-    _onChatMemberListeners.push_back(listener);
-}
-
-void EventBroadcaster::onChatJoinRequest(const ChatJoinRequestListener& listener) {
-    _onChatJoinRequestListeners.push_back(listener);
-}
-
-void EventBroadcaster::onSuccessfulPayment(const SuccessfulPaymentListener& listener) {
-    _onSuccessfulPaymentListeners.push_back(listener);
-}
-
-void EventBroadcaster::broadcastAnyMessage(const Message::Ptr& message) const {
-    broadcast<MessageListener, Message::Ptr>(_onAnyMessageListeners, message);
-}
-
-bool EventBroadcaster::broadcastCommand(const std::string& command, const Message::Ptr& message) const {
-    auto iter = _onCommandListeners.find(command);
-    if (iter == _onCommandListeners.end()) {
-        return false;
+    void EventBroadcaster::onCommand(const std::initializer_list<std::string>& commandsList, const MessageListener& listener) {
+        if (listener) {
+            for (const auto& command : commandsList) {
+                onCommandListeners_[command] = listener;
+            }
+        } else {
+            for (const auto& command : commandsList) {
+                onCommandListeners_.erase(command);
+            }
+        }
     }
-    iter->second(message);
-    return true;
-}
 
-void EventBroadcaster::broadcastUnknownCommand(const Message::Ptr& message) const {
-    broadcast<MessageListener, Message::Ptr>(_onUnknownCommandListeners, message);
-}
-
-void EventBroadcaster::broadcastNonCommandMessage(const Message::Ptr& message) const {
-    broadcast<MessageListener, Message::Ptr>(_onNonCommandMessageListeners, message);
-}
-
-void EventBroadcaster::broadcastEditedMessage(const Message::Ptr& message) const {
-    broadcast<MessageListener, Message::Ptr>(_onEditedMessageListeners, message);
-}
-
-void EventBroadcaster::broadcastInlineQuery(const InlineQuery::Ptr& query) const {
-    broadcast<InlineQueryListener, InlineQuery::Ptr>(_onInlineQueryListeners, query);
-}
-
-void EventBroadcaster::broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
-    broadcast<ChosenInlineResultListener, ChosenInlineResult::Ptr>(_onChosenInlineResultListeners, result);
-}
-
-void EventBroadcaster::broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
-    broadcast<CallbackQueryListener, CallbackQuery::Ptr>(_onCallbackQueryListeners, result);
-}
-
-void EventBroadcaster::broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
-    broadcast<ShippingQueryListener, ShippingQuery::Ptr>(_onShippingQueryListeners, result);
-}
-
-void EventBroadcaster::broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const {
-    broadcast<PreCheckoutQueryListener, PreCheckoutQuery::Ptr>(_onPreCheckoutQueryListeners, result);
-}
-
-void EventBroadcaster::broadcastPoll(const Poll::Ptr& result) const {
-    broadcast<PollListener, Poll::Ptr>(_onPollListeners, result);
-}
-
-void EventBroadcaster::broadcastPollAnswer(const PollAnswer::Ptr& result) const {
-    broadcast<PollAnswerListener, PollAnswer::Ptr>(_onPollAnswerListeners, result);
-}
-
-void EventBroadcaster::broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const {
-    broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(_onMyChatMemberListeners, result);
-}
-
-void EventBroadcaster::broadcastChatMember(const ChatMemberUpdated::Ptr& result) const {
-    broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(_onChatMemberListeners, result);
-}
-
-void EventBroadcaster::broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const {
-    broadcast<ChatJoinRequestListener, ChatJoinRequest::Ptr>(_onChatJoinRequestListeners, result);
-}
-
-void EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) const {
-    if (!message || !message->successful_payment) {
-        return;
+    void EventBroadcaster::onUnknownCommand(const MessageListener& listener) {
+        onUnknownCommandListeners_.push_back(listener);
     }
-    for (const auto& listener : _onSuccessfulPaymentListeners) {
-        listener(message, message->successful_payment);
-    }
-}
 
-}
+    void EventBroadcaster::onNonCommandMessage(const MessageListener& listener) {
+        onNonCommandMessageListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onEditedMessage(const MessageListener& listener) {
+        onEditedMessageListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onInlineQuery(const InlineQueryListener& listener) {
+        onInlineQueryListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onChosenInlineResult(const ChosenInlineResultListener& listener) {
+        onChosenInlineResultListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onCallbackQuery(const CallbackQueryListener& listener) {
+        onCallbackQueryListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onShippingQuery(const ShippingQueryListener& listener) {
+        onShippingQueryListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onPreCheckoutQuery(const PreCheckoutQueryListener& listener) {
+        onPreCheckoutQueryListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onPoll(const PollListener& listener) {
+        onPollListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onPollAnswer(const PollAnswerListener& listener) {
+        onPollAnswerListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onMyChatMember(const ChatMemberUpdatedListener& listener) {
+        onMyChatMemberListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onChatMember(const ChatMemberUpdatedListener& listener) {
+        onChatMemberListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onChatJoinRequest(const ChatJoinRequestListener& listener) {
+        onChatJoinRequestListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::onSuccessfulPayment(const SuccessfulPaymentListener& listener) {
+        onSuccessfulPaymentListeners_.push_back(listener);
+    }
+
+    void EventBroadcaster::broadcastAnyMessage(const Message::Ptr& message) const {
+        broadcast<MessageListener, Message::Ptr>(onAnyMessageListeners_, message);
+    }
+
+    bool EventBroadcaster::broadcastCommand(const std::string& command, const Message::Ptr& message) const {
+        auto iter = onCommandListeners_.find(command);
+        if (iter == onCommandListeners_.end()) {
+            return false;
+        }
+        iter->second(message);
+        return true;
+    }
+
+    void EventBroadcaster::broadcastUnknownCommand(const Message::Ptr& message) const {
+        broadcast<MessageListener, Message::Ptr>(onUnknownCommandListeners_, message);
+    }
+
+    void EventBroadcaster::broadcastNonCommandMessage(const Message::Ptr& message) const {
+        broadcast<MessageListener, Message::Ptr>(onNonCommandMessageListeners_, message);
+    }
+
+    void EventBroadcaster::broadcastEditedMessage(const Message::Ptr& message) const {
+        broadcast<MessageListener, Message::Ptr>(onEditedMessageListeners_, message);
+    }
+
+    void EventBroadcaster::broadcastInlineQuery(const InlineQuery::Ptr& query) const {
+        broadcast<InlineQueryListener, InlineQuery::Ptr>(onInlineQueryListeners_, query);
+    }
+
+    void EventBroadcaster::broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
+        broadcast<ChosenInlineResultListener, ChosenInlineResult::Ptr>(onChosenInlineResultListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
+        broadcast<CallbackQueryListener, CallbackQuery::Ptr>(onCallbackQueryListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
+        broadcast<ShippingQueryListener, ShippingQuery::Ptr>(onShippingQueryListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const {
+        broadcast<PreCheckoutQueryListener, PreCheckoutQuery::Ptr>(onPreCheckoutQueryListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastPoll(const Poll::Ptr& result) const {
+        broadcast<PollListener, Poll::Ptr>(onPollListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastPollAnswer(const PollAnswer::Ptr& result) const {
+        broadcast<PollAnswerListener, PollAnswer::Ptr>(onPollAnswerListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const {
+        broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onMyChatMemberListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastChatMember(const ChatMemberUpdated::Ptr& result) const {
+        broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onChatMemberListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const {
+        broadcast<ChatJoinRequestListener, ChatJoinRequest::Ptr>(onChatJoinRequestListeners_, result);
+    }
+
+    void EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) const {
+        if (!message || !message->successful_payment) {
+            return;
+        }
+        for (const auto& listener : onSuccessfulPaymentListeners_) {
+            listener(message, message->successful_payment);
+        }
+    }
     """.trimIndent()
+
+    val forwardDeclarations = listOf(
+        "class EventHandler;"
+    )
 
     val includes = listOf(
         "#include \"types/Message.hpp\"",
@@ -1815,7 +1902,6 @@ void EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) c
         "#include \"types/ChatMemberUpdated.hpp\"",
         "#include \"types/ChatJoinRequest.hpp\"",
         "#include \"types/SuccessfulPayment.hpp\"",
-        "#include \"EventHandler.hpp\"",
         "#include <functional>",
         "#include <initializer_list>",
         "#include <string>",
@@ -1824,7 +1910,7 @@ void EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) c
     )
 
     val headerContent = buildCppHeader(
-        forwardDeclarations = emptyList(),
+        forwardDeclarations = forwardDeclarations,
         includes = includes,
         body = headerBody
     )
@@ -1884,13 +1970,13 @@ private fun generateEventHandler(): CppModelFile {
     val headerBody = """
 class EventHandler {
 public:
-    explicit EventHandler(const EventBroadcaster& broadcaster) : _broadcaster(broadcaster) {
+    explicit EventHandler(const EventBroadcaster& broadcaster) : broadcaster_(broadcaster) {
     }
 
     void handleUpdate(const Update::Ptr& update) const;
 
 private:
-    const EventBroadcaster& _broadcaster;
+    const EventBroadcaster& broadcaster_;
 
     void handleMessage(const Message::Ptr& message) const;
 };
@@ -1902,48 +1988,48 @@ void EventHandler::handleUpdate(const Update::Ptr& update) const {
         handleMessage(update->message);
     }
     if (update->edited_message) {
-        _broadcaster.broadcastEditedMessage(update->edited_message);
+        broadcaster_.broadcastEditedMessage(update->edited_message);
     }
     if (update->channel_post) {
         handleMessage(update->channel_post);
     }
     if (update->edited_channel_post) {
-        _broadcaster.broadcastEditedMessage(update->edited_channel_post);
+        broadcaster_.broadcastEditedMessage(update->edited_channel_post);
     }
     if (update->inline_query) {
-        _broadcaster.broadcastInlineQuery(update->inline_query);
+        broadcaster_.broadcastInlineQuery(update->inline_query);
     }
     if (update->chosen_inline_result) {
-        _broadcaster.broadcastChosenInlineResult(update->chosen_inline_result);
+        broadcaster_.broadcastChosenInlineResult(update->chosen_inline_result);
     }
     if (update->callback_query) {
-        _broadcaster.broadcastCallbackQuery(update->callback_query);
+        broadcaster_.broadcastCallbackQuery(update->callback_query);
     }
     if (update->shipping_query) {
-        _broadcaster.broadcastShippingQuery(update->shipping_query);
+        broadcaster_.broadcastShippingQuery(update->shipping_query);
     }
     if (update->pre_checkout_query) {
-        _broadcaster.broadcastPreCheckoutQuery(update->pre_checkout_query);
+        broadcaster_.broadcastPreCheckoutQuery(update->pre_checkout_query);
     }
     if (update->poll) {
-        _broadcaster.broadcastPoll(update->poll);
+        broadcaster_.broadcastPoll(update->poll);
     }
     if (update->poll_answer) {
-        _broadcaster.broadcastPollAnswer(update->poll_answer);
+        broadcaster_.broadcastPollAnswer(update->poll_answer);
     }
     if (update->my_chat_member) {
-        _broadcaster.broadcastMyChatMember(update->my_chat_member);
+        broadcaster_.broadcastMyChatMember(update->my_chat_member);
     }
     if (update->chat_member) {
-        _broadcaster.broadcastChatMember(update->chat_member);
+        broadcaster_.broadcastChatMember(update->chat_member);
     }
     if (update->chat_join_request) {
-        _broadcaster.broadcastChatJoinRequest(update->chat_join_request);
+        broadcaster_.broadcastChatJoinRequest(update->chat_join_request);
     }
 }
 
 void EventHandler::handleMessage(const Message::Ptr& message) const {
-    _broadcaster.broadcastAnyMessage(message);
+    broadcaster_.broadcastAnyMessage(message);
 
     if (StringTools::startsWith(message->text, "/")) {
         std::size_t splitPosition;
@@ -1961,15 +2047,15 @@ void EventHandler::handleMessage(const Message::Ptr& message) const {
             splitPosition = std::min(spacePosition, atSymbolPosition);
         }
         std::string command = message->text.substr(1, splitPosition - 1);
-        if (!_broadcaster.broadcastCommand(command, message)) {
-            _broadcaster.broadcastUnknownCommand(message);
+        if (!broadcaster_.broadcastCommand(command, message)) {
+            broadcaster_.broadcastUnknownCommand(message);
         }
     } else {
-        _broadcaster.broadcastNonCommandMessage(message);
+        broadcaster_.broadcastNonCommandMessage(message);
     }
     
     if (message->successful_payment) {
-        _broadcaster.broadcastSuccessfulPayment(message);
+        broadcaster_.broadcastSuccessfulPayment(message);
     }
 }
     """.trimIndent()
@@ -2004,8 +2090,6 @@ void EventHandler::handleMessage(const Message::Ptr& message) const {
 
 private fun generateBotClass(): CppModelFile {
     val headerBody = """
-class HttpClient;
-
 /**
  * @brief This object holds other objects specific for this bot instance.
  *
@@ -2014,52 +2098,52 @@ class HttpClient;
 class Bot {
 
 public:
-    explicit Bot(std::string token, const HttpClient &httpClient = _getDefaultHttpClient(), const std::string& url="https://api.telegram.org");
+    explicit Bot(std::string token, HttpClient &httpClient = _getDefaultHttpClient(), const std::string& url="https://api.telegram.org");
 
     /**
      * @return Token for accessing api.
      */
     inline const std::string& getToken() const {
-        return _token;
+        return token_;
     }
 
     /**
      * @return Object which can execute Telegram Bot API methods.
      */
     inline const Api& getApi() const {
-        return _api;
+        return api_;
     }
 
     /**
      * @return Object which holds all event listeners.
      */
     inline EventBroadcaster& getEvents() {
-        return *_eventBroadcaster;
+        return *eventBroadcaster_;
     }
 
     /**
      * @return Object which handles new update objects. Usually it's only needed for TgLongPoll, TgWebhookLocalServer and TgWebhookTcpServer objects.
      */
     inline const EventHandler& getEventHandler() const {
-        return _eventHandler;
+        return eventHandler_;
     }
 
 private:
     static HttpClient &_getDefaultHttpClient();
 
-    const std::string _token;
-    const Api _api;
-    std::unique_ptr<EventBroadcaster> _eventBroadcaster;
-    const EventHandler _eventHandler;
+    const std::string token_;
+    Api api_;
+    std::unique_ptr<EventBroadcaster> eventBroadcaster_;
+    const EventHandler eventHandler_;
 };
     """.trimIndent()
 
     val sourceBody = """
-Bot::Bot(std::string token, const HttpClient& httpClient, const std::string& url)
-    : _token(std::move(token))
-    , _api(_token, httpClient, url)
-    , _eventBroadcaster(std::make_unique<EventBroadcaster>())
-    , _eventHandler(getEvents()) {
+Bot::Bot(std::string token, HttpClient& httpClient, const std::string& url)
+    : token_(std::move(token))
+    , api_(token_, httpClient, url)
+    , eventBroadcaster_(std::make_unique<EventBroadcaster>())
+    , eventHandler_(getEvents()) {
 }
 
 HttpClient& Bot::_getDefaultHttpClient() {
@@ -2071,7 +2155,7 @@ HttpClient& Bot::_getDefaultHttpClient() {
     val headerContent = buildCppHeader(
         forwardDeclarations = listOf("class EventBroadcaster;", "class HttpClient;"),
         includes = listOf(
-            "#include \"Api.hpp\"",
+            "#include \"net/Api.hpp\"",
             "#include \"EventHandler.hpp\"",
             "#include <memory>",
             "#include <string>",

@@ -608,6 +608,13 @@ private fun DocMethod.toCppRequestStructDeclaration(circularTypes: Set<String> =
     appendLine()
     appendLine("void to_json(json& j, const $structName& value);")
     appendLine("void from_json(const json& j, $structName& value);")
+    
+    // Add multipart serialization method if this request has file uploads
+    if (hasInputFileParameter()) {
+        appendLine()
+        appendLine("// Generate multipart form data for file uploads")
+        appendLine("std::string toMultipart(const $structName& value, const std::string& boundary);")
+    }
 }
 
 private fun generateSerialization(name: String, fields: Map<String, String>) = buildString {
@@ -635,6 +642,9 @@ private fun generateSerialization(name: String, fields: Map<String, String>) = b
     }
     appendLine("}")
 }
+
+private fun DocMethod.hasInputFileParameter(): Boolean =
+    docParameters.any { it.type.containsInputFile() }
 
 private fun DocMethod.toCppRequestStructImplementation()
     = generateSerialization(
@@ -669,6 +679,7 @@ private fun DocMethod.toCppRequestFile(
     val headerIncludes = buildList {
         addAll(CPP_BASE_INCLUDES)
         addAll((customIncludes - circularTypes).map { "#include \"types/$it.hpp\"" })
+        if (hasInputFileParameter()) add("#include <string>")
     }
 
     val headerBody = buildString {
@@ -676,7 +687,59 @@ private fun DocMethod.toCppRequestFile(
         appendLine(toCppRequestStructDeclaration(circularTypes).trimEnd())
     }
 
-    val sourceBody = toCppRequestStructImplementation()
+    val sourceBody = buildString {
+        appendLine(toCppRequestStructImplementation())
+        if (hasInputFileParameter()) {
+            appendLine()
+            val nonFileParams = docParameters.filter { !it.type.containsInputFile() }
+            val fileParams = docParameters.filter { it.type.containsInputFile() }
+            
+            appendLine("std::string toMultipart(const $structName& value, const std::string& boundary) {")
+            appendLine("    std::string body;")
+            appendLine()
+            
+            // Add non-file fields
+            // TODO add the support of custom structures
+            nonFileParams.forEach { param ->
+                val fieldName = param.cppFieldName()
+                val fieldType = param.toCppFieldType(null, circularTypes)
+                appendLine("    // Non-file field: ${param.name}")
+                appendLine("    body += \"--\" + boundary + \"\\r\\n\";")
+                appendLine("    body += \"Content-Disposition: form-data; name=\\\"${param.name}\\\"\\r\\n\\r\\n\";")
+                if (fieldType == "std::string") {
+                    appendLine("    body += value.$fieldName + \"\\r\\n\";")
+                } else if (fieldType == "bool") {
+                    appendLine("    body += (value.$fieldName ? \"true\" : \"false\") + std::string(\"\\r\\n\");")
+                } else if (fieldType == "std::vector<std::string>") {
+                    appendLine("    for (const auto& item : value.$fieldName) {")
+                    appendLine("        body += item + \"\\r\\n\";")
+                    appendLine("    }")
+                } else {
+                    appendLine("    body += std::to_string(value.$fieldName) + \"\\r\\n\";")
+                }
+                appendLine()
+            }
+            
+            // Add file fields
+            fileParams.forEach { param ->
+                val fieldName = param.cppFieldName()
+                appendLine("    // File field: ${param.name}")
+                appendLine("    if (value.$fieldName) {")
+                appendLine("        body += \"--\" + boundary + \"\\r\\n\";")
+                appendLine("        body += \"Content-Disposition: form-data; name=\\\"${param.name}\\\"; filename=\\\"\" + value.$fieldName->fileName + \"\\\".\\r\\n\";")
+                appendLine("        body += \"Content-Type: \" + value.$fieldName->mimeType + \"\\r\\n\\r\\n\";")
+                appendLine("        body += value.$fieldName->data + \"\\r\\n\";")
+                appendLine("    }")
+                appendLine()
+            }
+            
+            appendLine("    body += \"--\" + boundary + \"--\\r\\n\";")
+            appendLine("    return body;")
+            appendLine("}")
+        }
+    }
+
+    val sourceIncludes = if (hasInputFileParameter()) listOf("#include <string>") else emptyList()
 
     return CppModelFile(
         name = structName,
@@ -689,7 +752,7 @@ private fun DocMethod.toCppRequestFile(
         sourceContent = buildCppSource(
             headerName = structName,
             category = CppFileCategory.REQUEST,
-            includes = emptyList(),
+            includes = sourceIncludes,
             body = sourceBody
         )
     ).also {
@@ -729,6 +792,7 @@ private fun List<DocSection>.toCppModelFiles(): List<CppModelFile> {
     files += generateBoostHttpOnlySslClient()
     files += generateApi()
     files += generateTelegramResponse()
+    files += generateWebhookService()
     files += generateLongPoll()
 
     return files
@@ -1085,7 +1149,7 @@ private fun generateHttpClient(): CppModelFile {
         virtual ~HttpClient() = default;
 
         [[nodiscard]]
-        virtual boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = "") = 0;
+        virtual boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = "", const std::string& contentType = "application/json") = 0;
     };    
     """.trimIndent()
     val headerContent = buildCppHeader(
@@ -1118,7 +1182,7 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
         BoostHttpOnlySslClient();
 
         [[nodiscard]]
-        boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body = "") override;
+        boost::asio::awaitable<std::string> makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body, const std::string& contentType) override;
     };
     
     }
@@ -1131,7 +1195,7 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
         ctx_.set_default_verify_paths();
     }
     
-    boost::asio::awaitable<std::string> BoostHttpOnlySslClient::makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body) {
+    boost::asio::awaitable<std::string> BoostHttpOnlySslClient::makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body, const std::string& contentType) {
         namespace beast = boost::beast;
         namespace http = beast::http;
         namespace net = boost::asio;
@@ -1160,7 +1224,7 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
         req.set(http::field::host, "api.telegram.org");
         req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
         if (verb == http::verb::post) {
-            req.set(http::field::content_type, "application/json");
+            req.set(http::field::content_type, contentType);
             req.body() = body.empty() ? "{}" : body;
         }
         req.prepare_payload();
@@ -1342,9 +1406,9 @@ private fun DocMethod.toCppClientMethodDeclaration() = buildString {
 
     appendLine(toCppDoc(showReturn = true, forClient = true))
     if (docParameters.isEmpty()) {
-        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> $name();")
+        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> $name() const;")
     } else {
-        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> $name(const TgBot::$structName& request);")
+        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> $name(const TgBot::$structName& request) const;")
     }
 }
 
@@ -1357,18 +1421,26 @@ private fun DocMethod.toCppClientMethodImplementation() = buildString {
     }
 
     if (docParameters.isEmpty()) {
-        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> Api::$name() {")
+        append("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> Api::$name() const {")
         appendLine()
         appendLine("    const std::string target = \"/bot\" + api_key_ + \"/$name\";")
         appendLine("    std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::get, target);")
         appendLine("    co_return parseResponse<$returnTypeWithVector>(response);")
         append("}")
     } else {
-        appendLine("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> Api::$name(const TgBot::$structName& request) {")
-        appendLine("    json j = request;")
-        appendLine("    std::string body = j.dump();")
+        appendLine("boost::asio::awaitable<TelegramResponse<$returnTypeWithVector>> Api::$name(const TgBot::$structName& request) const {")
+        if (hasInputFileParameter()) {
+            appendLine("    // Generate multipart form data for file uploads")
+            appendLine("    std::string boundary = \"----TelegramBotAPI123456789\";")
+            appendLine("    std::string body = toMultipart(request, boundary);")
+            appendLine("    std::string contentType = \"multipart/form-data; boundary=\" + boundary;")
+        } else {
+            appendLine("    json j = request;")
+            appendLine("    std::string body = j.dump();")
+            appendLine("    std::string contentType = \"application/json\";")
+        }
         appendLine("    const std::string target = \"/bot\" + api_key_ + \"/$name\";")
-        appendLine("    std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body);")
+        appendLine("    std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);")
         appendLine("    co_return parseResponse<$returnTypeWithVector>(response);")
         append("}")
     }
@@ -1450,7 +1522,7 @@ private fun String.cleanHtml(): String {
         .trim()
 }
 
-private fun generateLongPoll(): CppModelFile {
+private fun generateWebhookService(): CppModelFile {
     val headerIncludes = listOf(
         "#include \"Api.hpp\"",
         "#include <boost/asio/awaitable.hpp>",
@@ -1458,7 +1530,7 @@ private fun generateLongPoll(): CppModelFile {
     )
 
     val headerBody = """
-    class LongPoll {
+    class WebhookService {
     private:
         Api& client_;
         std::string url_;
@@ -1466,7 +1538,7 @@ private fun generateLongPoll(): CppModelFile {
         boost::asio::io_context io_;
     
     public:
-        explicit LongPoll(Api& client, const std::string& url, const std::string& secret_token = "");
+        explicit WebhookService(Api& client, const std::string& url, const std::string& secret_token = "");
 
         
         void start();
@@ -1488,10 +1560,10 @@ private fun generateLongPoll(): CppModelFile {
     )
 
     val sourceBody = """
-    LongPoll::LongPoll(Api& client, const std::string& url, const std::string& secret_token)
+    WebhookService::WebhookService(Api& client, const std::string& url, const std::string& secret_token)
         : client_(client), url_(url), secret_token_(secret_token) {}
         
-    boost::asio::awaitable<void> LongPoll::internalStart() {
+    boost::asio::awaitable<void> WebhookService::internalStart() {
         SetWebhookRequest request;
         request.url = url_;
         if (!secret_token_.empty()) {
@@ -1500,15 +1572,15 @@ private fun generateLongPoll(): CppModelFile {
         co_await client_.setWebhook(request);
     }
     
-    void LongPoll::start() {
+    void WebhookService::start() {
         boost::asio::co_spawn(io_, internalStart(), boost::asio::detached);
     }
     
-    bool LongPoll::validate(const std::string& header_secret_token) const {
+    bool WebhookService::validate(const std::string& header_secret_token) const {
         return !secret_token_.empty() && secret_token_ == header_secret_token;
     }
     
-    Update::Ptr LongPoll::parse(const std::string& json_str) {
+    Update::Ptr WebhookService::parse(const std::string& json_str) {
         auto j = json::parse(json_str);
         Update::Ptr update;
         from_json(j, update);
@@ -1523,14 +1595,133 @@ private fun generateLongPoll(): CppModelFile {
     )
 
     val sourceContent = buildCppSource(
-        headerName = "LongPoll",
+        headerName = "WebhookService",
         category = CppFileCategory.NET,
         includes = sourceIncludes,
         body = sourceBody
     )
 
     return CppModelFile(
-        name = "LongPoll",
+        name = "WebhookService",
+        category = CppFileCategory.NET,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
+}
+
+private fun generateLongPoll(): CppModelFile {
+    val headerIncludes = listOf(
+        "#include \"Api.hpp\"",
+        "#include \"types/Update.hpp\"",
+        "#include <boost/asio/awaitable.hpp>",
+        "#include <cstdint>",
+        "#include <memory>",
+        "#include <string>",
+        "#include <vector>",
+        "#include <boost/asio/io_context.hpp>"
+    )
+
+    val forwardDeclarations = listOf(
+        "class Bot;",
+        "class EventHandler;"
+    )
+
+    val headerBody = """
+    /**
+     * @brief This class handles long polling and updates parsing.
+     *
+     * @ingroup net
+     */
+    class TgLongPoll {
+
+    public:
+        TgLongPoll(const Api* api, const EventHandler* eventHandler, std::int32_t limit, std::int32_t timeout, std::shared_ptr<std::vector<std::string>> allowUpdates);
+        TgLongPoll(const Bot& bot, std::int32_t limit = 100, std::int32_t timeout = 10, const std::shared_ptr<std::vector<std::string>>& allowUpdates = nullptr);
+
+        /**
+         * @brief Starts long poll. After new update will come, this method will parse it and send to EventHandler which invokes your listeners. Designed to be executed in a loop.
+         */
+        void start();
+
+    private:
+        const Api* api_;
+        const EventHandler* eventHandler_;
+        boost::asio::io_context io_context_;
+        std::int32_t lastUpdateId_ = 0;
+        std::int32_t limit_;
+        std::int32_t timeout_;
+        std::shared_ptr<std::vector<std::string>> allowUpdates_;
+
+        std::vector<Update::Ptr> updates_;
+
+        [[nodiscard]]
+        boost::asio::awaitable<void> startInternal();
+    };
+    """.trimIndent()
+
+    val sourceIncludes = listOf(
+        "#include \"Bot.hpp\"",
+        "#include \"EventHandler.hpp\"",
+        "#include \"requests/GetUpdatesRequest.hpp\"",
+        "#include <cstdint>",
+        "#include <memory>",
+        "#include <vector>",
+        "#include <utility>",
+        "#include <boost/asio.hpp>"
+    )
+
+    val sourceBody = """
+    TgLongPoll::TgLongPoll(const Api* api, const EventHandler* eventHandler, std::int32_t limit, std::int32_t timeout, std::shared_ptr<std::vector<std::string>> allowUpdates)
+        : api_(api), eventHandler_(eventHandler), limit_(limit), timeout_(timeout)
+        , allowUpdates_(std::move(allowUpdates)) {
+    }
+
+    TgLongPoll::TgLongPoll(const Bot& bot, std::int32_t limit, std::int32_t timeout, const std::shared_ptr<std::vector<std::string>>& allowUpdates)
+        : TgLongPoll(&bot.getApi(), &bot.getEventHandler(), limit, timeout, allowUpdates) {
+    }
+
+    void TgLongPoll::start() {
+        boost::asio::co_spawn(io_context_, startInternal(), boost::asio::detached);
+    }
+
+    boost::asio::awaitable<void> TgLongPoll::startInternal() {
+        // handle updates
+        for (Update::Ptr& item : updates_) {
+            if (item->update_id >= lastUpdateId_) {
+                lastUpdateId_ = item->update_id + 1;
+            }
+            eventHandler_->handleUpdate(item);
+        }
+
+        // confirm handled updates by fetching new ones
+        GetUpdatesRequest request;
+        request.offset = lastUpdateId_;
+        request.limit = limit_;
+        request.timeout = timeout_;
+        request.allowed_updates = *allowUpdates_;
+        
+        auto response = co_await api_->getUpdates(request);
+        if (response.result) {
+            updates_ = response.result.value();
+        }
+    }
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = forwardDeclarations,
+        includes = headerIncludes,
+        body = headerBody
+    )
+
+    val sourceContent = buildCppSource(
+        headerName = "TgLongPoll",
+        category = CppFileCategory.NET,
+        includes = sourceIncludes,
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "TgLongPoll",
         category = CppFileCategory.NET,
         headerContent = headerContent,
         sourceContent = sourceContent

@@ -66,5 +66,4 @@ fabric.properties
 /.gradle/
 .cache
 .vscode
-data
 generated

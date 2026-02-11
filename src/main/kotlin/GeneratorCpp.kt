@@ -574,12 +574,6 @@ private fun DocType.toCppFile(
         val includesForMap = (customIncludes - circularTypes).toMutableSet()
         if (superTypeName != "TelegramModel") includesForMap.add(superTypeName)
         cppIncludesMap[name] = includesForMap
-        if (name == "ChecklistTasksDone") {
-            println("Generated C++ struct for type $name, includes: ${cppIncludesMap[name]}, circular: $circularTypes")
-        }
-        if (name == "Message") {
-            println("Generated C++ struct for type $name, includes: ${cppIncludesMap[name]}, circular: $circularTypes")
-        }
     }
 }
 
@@ -598,7 +592,8 @@ private fun DocMethod.toCppRequestStructDeclaration(circularTypes: Set<String> =
             }
 
             val fieldType = parameter.toCppFieldType(null, circularTypes)
-            appendLine("    $fieldType $fieldName;")
+            val fieldDefaultValue = getDefaultValueForCppType(fieldType)
+            appendLine("    $fieldType $fieldName$fieldDefaultValue;")
 
             if (index != docParameters.lastIndex) appendLine()
         }
@@ -617,24 +612,96 @@ private fun DocMethod.toCppRequestStructDeclaration(circularTypes: Set<String> =
     }
 }
 
-private fun generateSerialization(name: String, fields: Map<String, String>) = buildString {
+private fun wrapWithOptionalCheck(field: DocField, className: String, toJsonField: String): String {
+    return when (field.type) {
+        is TelegramType.ListType<*> -> """if (!value.${field.cppFieldName()}.empty()) { 
+            $toJsonField 
+        }""".trimIndent()
+        
+        is TelegramType.Super -> """if (value.${field.cppFieldName()}) { 
+            $toJsonField 
+        }""".trimIndent()
+        is TelegramType.Declared -> """if (value.${field.cppFieldName()}) { 
+            $toJsonField 
+        }""".trimIndent()
+
+        TelegramType.Integer -> """if (value.${field.cppFieldName()} != 0) { 
+            $toJsonField 
+        }""".trimIndent()
+
+        TelegramType.ParseMode,
+        TelegramType.StringType -> """if (!value.${field.cppFieldName()}.empty()) { 
+            $toJsonField 
+        }""".trimIndent()
+
+        TelegramType.Boolean -> """if (value.${field.cppFieldName()}) { 
+            $toJsonField 
+        }""".trimIndent()
+        TelegramType.Float -> """if (value.${field.cppFieldName()} != 0.0) { 
+            $toJsonField 
+        }""".trimIndent()
+
+        TelegramType.CallbackGame,
+        TelegramType.InputFile,
+        TelegramType.ForumTopicClosed,
+        TelegramType.ForumTopicReopened,
+        TelegramType.GeneralForumTopicHidden,
+        TelegramType.GeneralForumTopicUnhidden,
+        TelegramType.GiveawayCreated,
+        TelegramType.VoiceChatStarted,
+        TelegramType.VideoChatStarted -> """if (value.${field.cppFieldName()}) { 
+            $toJsonField 
+        }""".trimIndent()
+        
+
+        is TelegramType.WithAlternative -> when (field.type) {
+            TelegramType.WithAlternative.InputFileOrString -> """if (!value.${field.cppFieldName()}.empty()) { 
+                $toJsonField 
+            }""".trimIndent()
+            TelegramType.WithAlternative.IntegerOrString -> {
+                if (field.toCppFieldType(className, emptySet()) == "int64_t") {
+                    return """if (value.${field.cppFieldName()} != 0) { 
+                                $toJsonField
+                              }""".trimIndent()        
+                } else {
+                    return """if (!value.${field.cppFieldName()}.empty()) { 
+                                $toJsonField 
+                              }""".trimIndent()
+                }
+            }
+            
+        }
+    }
+}
+
+private fun generateSerialization(name: String, fields: List<DocField>) = buildString {
     appendLine("void to_json(json& j, const $name& value) {")
     if (fields.isEmpty()) {
         appendLine("    j = json{};")
     } else {
-        appendLine("    j = json{")
-        val properties = fields.keys.joinToString(separator = ",\n") { key ->
-            val parameterName = fields[key]
-            "        {\"$key\", value.$parameterName}"
+        appendLine("    j = json{};")
+        
+        if (fields.isNotEmpty()) {
+            fields.forEach { field ->
+                val jsonName = field.name
+                val cppName = field.cppFieldName()
+
+                var toJsonField = "    j[\"$jsonName\"] = value.$cppName;"
+                if (!field.required) {
+                    toJsonField = wrapWithOptionalCheck(field, name, toJsonField)
+                }
+
+                appendLine(toJsonField)
         }
-        appendLine(properties)
-        appendLine("    };")
+        }
     }
     appendLine("}")
     appendLine()
     appendLine("void from_json(const json& j, $name& value) {")
     if (fields.isNotEmpty()) {
-        fields.forEach { (jsonName, cppName) ->
+        fields.forEach { field ->
+            val jsonName = field.name
+            val cppName = field.cppFieldName()
             appendLine("    if (j.contains(\"$jsonName\")) {")
             appendLine("        j.at(\"$jsonName\").get_to(value.$cppName);")
             appendLine("    }")
@@ -651,8 +718,8 @@ private fun DocMethod.toCppRequestStructImplementation()
     requestStructName(),
     docParameters
         .filter { !it.type.containsInputFile() }  // Exclude InputFile fields from serialization
-        .associate { parameter ->
-            parameter.name to parameter.cppFieldName()
+        .map { parameter ->
+            DocField(parameter.name, parameter.description, parameter.type, parameter.required)
         }
 )
 
@@ -858,6 +925,9 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     appendLine("    find_package(nlohmann_json QUIET)")
     appendLine("endif()")
     appendLine()
+    appendLine("find_package(OpenSSL REQUIRED)")
+    appendLine("find_package(Boost REQUIRED COMPONENTS system)")
+    appendLine()
     appendLine("# Option 2: Use FetchContent to download nlohmann/json if not found")
     appendLine("if(NOT TARGET nlohmann_json::nlohmann_json)")
     appendLine("    include(FetchContent)")
@@ -911,6 +981,9 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
         appendLine("target_link_libraries(TelegramBotAPI_Models")
         appendLine("    PUBLIC")
         appendLine("        nlohmann_json::nlohmann_json")
+        appendLine("        OpenSSL::SSL")
+        appendLine("        OpenSSL::Crypto")
+        appendLine("        Boost::system")
         appendLine(")")
     } else {
         appendLine("# Header-only library")
@@ -1039,7 +1112,8 @@ private fun DocType.toCppStructDeclaration(circularTypes: Set<String> = emptySet
                 appendLine("    // ${comment.replace("\n", " ")}")
             }
             val fieldType = field.toCppFieldType(name, circularTypes)
-            appendLine("    $fieldType $fieldName;")
+            val defaultValue = getDefaultValueForCppType(fieldType)
+            appendLine("    $fieldType $fieldName$defaultValue;")
 
             if (index != docFields.lastIndex) appendLine()
         }
@@ -1055,8 +1129,7 @@ private fun DocType.toCppStructDeclaration(circularTypes: Set<String> = emptySet
 private fun DocType.toCppStructImplementation() =
     generateSerialization(name, docFields
         .filter { !it.type.containsInputFile() }  // Exclude InputFile fields from serialization
-        .associate { field -> field.name to field.cppFieldName() })
-
+    )
 
 private fun DocField.cppFieldName() = if (name == "type") "type_" else name
 
@@ -1078,7 +1151,7 @@ private fun TelegramType.toCppTypeWithValueClasses(
         is TelegramType.Declared -> {
             // If this declared type participates in a circular include with current class, use WeakPtr
             if (name in circularTypes && name != className) {
-                "std::weak_ptr<${name}>"
+                "std::shared_ptr<${name}>"
             } else {
                 "${name}::Ptr"
             }
@@ -1100,6 +1173,15 @@ private fun TelegramType.toCppTypeWithValueClasses(
             propertyName == "parse_mode" -> "std::string"
             else -> toCppTypeNoValueClasses()
         }
+    }
+}
+
+private fun getDefaultValueForCppType(type: String): String {
+    return when (type) {
+        "int64_t" -> " = 0"
+        "double" -> " = 0.0"
+        "bool" -> " = false"
+        else -> ""
     }
 }
 
@@ -1194,7 +1276,9 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
     BoostHttpOnlySslClient::BoostHttpOnlySslClient() {
         ctx_.set_default_verify_paths();
     }
-    
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmismatched-new-delete"
     boost::asio::awaitable<std::string> BoostHttpOnlySslClient::makeRequest(boost::beast::http::verb verb, const std::string& target, const std::string& body, const std::string& contentType) {
         namespace beast = boost::beast;
         namespace http = beast::http;
@@ -1202,10 +1286,10 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
         namespace ssl = net::ssl;
         using tcp = net::ip::tcp;
     
-        net::io_context ioc;
+        auto executor = co_await net::this_coro::executor;
 
-        tcp::resolver resolver(ioc);
-        beast::ssl_stream<beast::tcp_stream> stream(ioc, ctx_);
+        tcp::resolver resolver(executor);
+        beast::ssl_stream<beast::tcp_stream> stream(executor, ctx_);
     
         if(!SSL_set_tlsext_host_name(stream.native_handle(), "api.telegram.org")) {
             throw beast::system_error{
@@ -1237,6 +1321,7 @@ private fun generateBoostHttpOnlySslClient(): CppModelFile {
     
         co_return beast::buffers_to_string(res.body().data());
     }
+#pragma GCC diagnostic pop
     
     }
     """.trimIndent()
@@ -1542,14 +1627,14 @@ private fun generateWebhookService(): CppModelFile {
 
         
         void start();
+
+        boost::asio::awaitable<void> startAsync();
         
         [[nodiscard]]
         bool validate(const std::string& header_secret_token) const;
         
         static Update::Ptr parse(const std::string& json);
     
-    private:
-        boost::asio::awaitable<void> internalStart();
     };
     """.trimIndent()
 
@@ -1563,7 +1648,7 @@ private fun generateWebhookService(): CppModelFile {
     WebhookService::WebhookService(Api& client, const std::string& url, const std::string& secret_token)
         : client_(client), url_(url), secret_token_(secret_token) {}
         
-    boost::asio::awaitable<void> WebhookService::internalStart() {
+    boost::asio::awaitable<void> WebhookService::startAsync() {
         SetWebhookRequest request;
         request.url = url_;
         if (!secret_token_.empty()) {
@@ -1573,7 +1658,9 @@ private fun generateWebhookService(): CppModelFile {
     }
     
     void WebhookService::start() {
-        boost::asio::co_spawn(io_, internalStart(), boost::asio::detached);
+        boost::asio::co_spawn(io_, startAsync(), boost::asio::detached);
+
+        io_.run();
     }
     
     bool WebhookService::validate(const std::string& header_secret_token) const {
@@ -1643,6 +1730,9 @@ private fun generateLongPoll(): CppModelFile {
          */
         void start();
 
+        [[nodiscard]]
+        boost::asio::awaitable<void> startAsync();
+
     private:
         const Api* api_;
         const EventHandler* eventHandler_;
@@ -1653,9 +1743,6 @@ private fun generateLongPoll(): CppModelFile {
         std::shared_ptr<std::vector<std::string>> allowUpdates_;
 
         std::vector<Update::Ptr> updates_;
-
-        [[nodiscard]]
-        boost::asio::awaitable<void> startInternal();
     };
     """.trimIndent()
 
@@ -1681,16 +1768,18 @@ private fun generateLongPoll(): CppModelFile {
     }
 
     void TgLongPoll::start() {
-        boost::asio::co_spawn(io_context_, startInternal(), boost::asio::detached);
+        boost::asio::co_spawn(io_context_, startAsync(), boost::asio::detached);
+
+        io_context_.run();
     }
 
-    boost::asio::awaitable<void> TgLongPoll::startInternal() {
+    boost::asio::awaitable<void> TgLongPoll::startAsync() {
         // handle updates
         for (Update::Ptr& item : updates_) {
             if (item->update_id >= lastUpdateId_) {
                 lastUpdateId_ = item->update_id + 1;
             }
-            eventHandler_->handleUpdate(item);
+            co_await eventHandler_->handleUpdate(item);
         }
 
         // confirm handled updates by fetching new ones
@@ -1698,7 +1787,8 @@ private fun generateLongPoll(): CppModelFile {
         request.offset = lastUpdateId_;
         request.limit = limit_;
         request.timeout = timeout_;
-        request.allowed_updates = *allowUpdates_;
+        if (allowUpdates_)
+            request.allowed_updates = *allowUpdates_;
         
         auto response = co_await api_->getUpdates(request);
         if (response.result) {
@@ -1740,17 +1830,17 @@ class EventBroadcaster {
 friend class EventHandler;
 
 public:
-    typedef std::function<void (const Message::Ptr)> MessageListener;
-    typedef std::function<void (const InlineQuery::Ptr)> InlineQueryListener;
-    typedef std::function<void (const ChosenInlineResult::Ptr)> ChosenInlineResultListener;
-    typedef std::function<void (const CallbackQuery::Ptr)> CallbackQueryListener;
-    typedef std::function<void (const ShippingQuery::Ptr)> ShippingQueryListener;
-    typedef std::function<void (const PreCheckoutQuery::Ptr)> PreCheckoutQueryListener;
-    typedef std::function<void (const Poll::Ptr)> PollListener;
-    typedef std::function<void (const PollAnswer::Ptr)> PollAnswerListener;
-    typedef std::function<void (const ChatMemberUpdated::Ptr)> ChatMemberUpdatedListener;
-    typedef std::function<void (const ChatJoinRequest::Ptr)> ChatJoinRequestListener;
-    typedef std::function<void (const Message::Ptr, const SuccessfulPayment::Ptr)> SuccessfulPaymentListener;
+    typedef std::function<boost::asio::awaitable<void> (const Message::Ptr)> MessageListener;
+    typedef std::function<boost::asio::awaitable<void> (const InlineQuery::Ptr)> InlineQueryListener;
+    typedef std::function<boost::asio::awaitable<void> (const ChosenInlineResult::Ptr)> ChosenInlineResultListener;
+    typedef std::function<boost::asio::awaitable<void> (const CallbackQuery::Ptr)> CallbackQueryListener;
+    typedef std::function<boost::asio::awaitable<void> (const ShippingQuery::Ptr)> ShippingQueryListener;
+    typedef std::function<boost::asio::awaitable<void> (const PreCheckoutQuery::Ptr)> PreCheckoutQueryListener;
+    typedef std::function<boost::asio::awaitable<void> (const Poll::Ptr)> PollListener;
+    typedef std::function<boost::asio::awaitable<void> (const PollAnswer::Ptr)> PollAnswerListener;
+    typedef std::function<boost::asio::awaitable<void> (const ChatMemberUpdated::Ptr)> ChatMemberUpdatedListener;
+    typedef std::function<boost::asio::awaitable<void> (const ChatJoinRequest::Ptr)> ChatJoinRequestListener;
+    typedef std::function<boost::asio::awaitable<void> (const Message::Ptr, const SuccessfulPayment::Ptr)> SuccessfulPaymentListener;
 
     /**
      * @brief Registers listener which receives new incoming message of any kind - text, photo, sticker, etc.
@@ -1876,31 +1966,31 @@ public:
 
 private:
     template<typename ListenerType, typename ObjectType>
-    void broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
+    boost::asio::awaitable<void> broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
         if (!object)
-            return;
+            co_return;
 
         for (const ListenerType& item : listeners) {
-            item(object);
+            co_await item(object);
         }
     }
 
-    void broadcastAnyMessage(const Message::Ptr& message) const;
-    bool broadcastCommand(const std::string& command, const Message::Ptr& message) const;
-    void broadcastUnknownCommand(const Message::Ptr& message) const;
-    void broadcastNonCommandMessage(const Message::Ptr& message) const;
-    void broadcastEditedMessage(const Message::Ptr& message) const;
-    void broadcastInlineQuery(const InlineQuery::Ptr& query) const;
-    void broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const;
-    void broadcastCallbackQuery(const CallbackQuery::Ptr& result) const;
-    void broadcastShippingQuery(const ShippingQuery::Ptr& result) const;
-    void broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const;
-    void broadcastPoll(const Poll::Ptr& result) const;
-    void broadcastPollAnswer(const PollAnswer::Ptr& result) const;
-    void broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const;
-    void broadcastChatMember(const ChatMemberUpdated::Ptr& result) const;
-    void broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const;
-    void broadcastSuccessfulPayment(const Message::Ptr& message) const;
+    boost::asio::awaitable<void> broadcastAnyMessage(const Message::Ptr& message) const;
+    boost::asio::awaitable<bool> broadcastCommand(const std::string& command, const Message::Ptr& message) const;
+    boost::asio::awaitable<void> broadcastUnknownCommand(const Message::Ptr& message) const;
+    boost::asio::awaitable<void> broadcastNonCommandMessage(const Message::Ptr& message) const;
+    boost::asio::awaitable<void> broadcastEditedMessage(const Message::Ptr& message) const;
+    boost::asio::awaitable<void> broadcastInlineQuery(const InlineQuery::Ptr& query) const;
+    boost::asio::awaitable<void> broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastCallbackQuery(const CallbackQuery::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastShippingQuery(const ShippingQuery::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastPoll(const Poll::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastPollAnswer(const PollAnswer::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastChatMember(const ChatMemberUpdated::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const;
+    boost::asio::awaitable<void> broadcastSuccessfulPayment(const Message::Ptr& message) const;
 
     std::vector<MessageListener> onAnyMessageListeners_;
     std::unordered_map<std::string, MessageListener> onCommandListeners_;
@@ -2002,77 +2092,77 @@ private:
         onSuccessfulPaymentListeners_.push_back(listener);
     }
 
-    void EventBroadcaster::broadcastAnyMessage(const Message::Ptr& message) const {
-        broadcast<MessageListener, Message::Ptr>(onAnyMessageListeners_, message);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastAnyMessage(const Message::Ptr& message) const {
+        co_await broadcast<MessageListener, Message::Ptr>(onAnyMessageListeners_, message);
     }
 
-    bool EventBroadcaster::broadcastCommand(const std::string& command, const Message::Ptr& message) const {
+    boost::asio::awaitable<bool> EventBroadcaster::broadcastCommand(const std::string& command, const Message::Ptr& message) const {
         auto iter = onCommandListeners_.find(command);
         if (iter == onCommandListeners_.end()) {
-            return false;
+            co_return false;
         }
-        iter->second(message);
-        return true;
+        co_await iter->second(message);
+        co_return true;
     }
 
-    void EventBroadcaster::broadcastUnknownCommand(const Message::Ptr& message) const {
-        broadcast<MessageListener, Message::Ptr>(onUnknownCommandListeners_, message);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastUnknownCommand(const Message::Ptr& message) const {
+        co_await broadcast<MessageListener, Message::Ptr>(onUnknownCommandListeners_, message);
     }
 
-    void EventBroadcaster::broadcastNonCommandMessage(const Message::Ptr& message) const {
-        broadcast<MessageListener, Message::Ptr>(onNonCommandMessageListeners_, message);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastNonCommandMessage(const Message::Ptr& message) const {
+        co_await broadcast<MessageListener, Message::Ptr>(onNonCommandMessageListeners_, message);
     }
 
-    void EventBroadcaster::broadcastEditedMessage(const Message::Ptr& message) const {
-        broadcast<MessageListener, Message::Ptr>(onEditedMessageListeners_, message);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastEditedMessage(const Message::Ptr& message) const {
+        co_await broadcast<MessageListener, Message::Ptr>(onEditedMessageListeners_, message);
     }
 
-    void EventBroadcaster::broadcastInlineQuery(const InlineQuery::Ptr& query) const {
-        broadcast<InlineQueryListener, InlineQuery::Ptr>(onInlineQueryListeners_, query);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastInlineQuery(const InlineQuery::Ptr& query) const {
+        co_await broadcast<InlineQueryListener, InlineQuery::Ptr>(onInlineQueryListeners_, query);
     }
 
-    void EventBroadcaster::broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
-        broadcast<ChosenInlineResultListener, ChosenInlineResult::Ptr>(onChosenInlineResultListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
+        co_await broadcast<ChosenInlineResultListener, ChosenInlineResult::Ptr>(onChosenInlineResultListeners_, result);
     }
 
-    void EventBroadcaster::broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
-        broadcast<CallbackQueryListener, CallbackQuery::Ptr>(onCallbackQueryListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
+        co_await broadcast<CallbackQueryListener, CallbackQuery::Ptr>(onCallbackQueryListeners_, result);
     }
 
-    void EventBroadcaster::broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
-        broadcast<ShippingQueryListener, ShippingQuery::Ptr>(onShippingQueryListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
+        co_await broadcast<ShippingQueryListener, ShippingQuery::Ptr>(onShippingQueryListeners_, result);
     }
 
-    void EventBroadcaster::broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const {
-        broadcast<PreCheckoutQueryListener, PreCheckoutQuery::Ptr>(onPreCheckoutQueryListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const {
+        co_await broadcast<PreCheckoutQueryListener, PreCheckoutQuery::Ptr>(onPreCheckoutQueryListeners_, result);
     }
 
-    void EventBroadcaster::broadcastPoll(const Poll::Ptr& result) const {
-        broadcast<PollListener, Poll::Ptr>(onPollListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastPoll(const Poll::Ptr& result) const {
+        co_await broadcast<PollListener, Poll::Ptr>(onPollListeners_, result);
     }
 
-    void EventBroadcaster::broadcastPollAnswer(const PollAnswer::Ptr& result) const {
-        broadcast<PollAnswerListener, PollAnswer::Ptr>(onPollAnswerListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastPollAnswer(const PollAnswer::Ptr& result) const {
+        co_await broadcast<PollAnswerListener, PollAnswer::Ptr>(onPollAnswerListeners_, result);
     }
 
-    void EventBroadcaster::broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const {
-        broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onMyChatMemberListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const {
+        co_await broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onMyChatMemberListeners_, result);
     }
 
-    void EventBroadcaster::broadcastChatMember(const ChatMemberUpdated::Ptr& result) const {
-        broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onChatMemberListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastChatMember(const ChatMemberUpdated::Ptr& result) const {
+        co_await broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onChatMemberListeners_, result);
     }
 
-    void EventBroadcaster::broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const {
-        broadcast<ChatJoinRequestListener, ChatJoinRequest::Ptr>(onChatJoinRequestListeners_, result);
+    boost::asio::awaitable<void> EventBroadcaster::broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const {
+        co_await broadcast<ChatJoinRequestListener, ChatJoinRequest::Ptr>(onChatJoinRequestListeners_, result);
     }
 
-    void EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) const {
+    boost::asio::awaitable<void> EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) const {
         if (!message || !message->successful_payment) {
-            return;
+            co_return;
         }
         for (const auto& listener : onSuccessfulPaymentListeners_) {
-            listener(message, message->successful_payment);
+            co_await listener(message, message->successful_payment);
         }
     }
     """.trimIndent()
@@ -2097,7 +2187,8 @@ private:
         "#include <initializer_list>",
         "#include <string>",
         "#include <unordered_map>",
-        "#include <vector>"
+        "#include <vector>",
+        "#include <boost/asio/awaitable.hpp>"
     )
 
     val headerContent = buildCppHeader(
@@ -2164,63 +2255,63 @@ public:
     explicit EventHandler(const EventBroadcaster& broadcaster) : broadcaster_(broadcaster) {
     }
 
-    void handleUpdate(const Update::Ptr& update) const;
+    boost::asio::awaitable<void> handleUpdate(const Update::Ptr& update) const;
 
 private:
     const EventBroadcaster& broadcaster_;
 
-    void handleMessage(const Message::Ptr& message) const;
+    boost::asio::awaitable<void> handleMessage(const Message::Ptr& message) const;
 };
     """.trimIndent()
 
     val sourceBody = """
-void EventHandler::handleUpdate(const Update::Ptr& update) const {
+boost::asio::awaitable<void> EventHandler::handleUpdate(const Update::Ptr& update) const {
     if (update->message) {
-        handleMessage(update->message);
+        co_await handleMessage(update->message);
     }
     if (update->edited_message) {
-        broadcaster_.broadcastEditedMessage(update->edited_message);
+        co_await broadcaster_.broadcastEditedMessage(update->edited_message);
     }
     if (update->channel_post) {
-        handleMessage(update->channel_post);
+        co_await handleMessage(update->channel_post);
     }
     if (update->edited_channel_post) {
-        broadcaster_.broadcastEditedMessage(update->edited_channel_post);
+        co_await broadcaster_.broadcastEditedMessage(update->edited_channel_post);
     }
     if (update->inline_query) {
-        broadcaster_.broadcastInlineQuery(update->inline_query);
+        co_await broadcaster_.broadcastInlineQuery(update->inline_query);
     }
     if (update->chosen_inline_result) {
-        broadcaster_.broadcastChosenInlineResult(update->chosen_inline_result);
+        co_await broadcaster_.broadcastChosenInlineResult(update->chosen_inline_result);
     }
     if (update->callback_query) {
-        broadcaster_.broadcastCallbackQuery(update->callback_query);
+        co_await broadcaster_.broadcastCallbackQuery(update->callback_query);
     }
     if (update->shipping_query) {
-        broadcaster_.broadcastShippingQuery(update->shipping_query);
+        co_await broadcaster_.broadcastShippingQuery(update->shipping_query);
     }
     if (update->pre_checkout_query) {
-        broadcaster_.broadcastPreCheckoutQuery(update->pre_checkout_query);
+        co_await broadcaster_.broadcastPreCheckoutQuery(update->pre_checkout_query);
     }
     if (update->poll) {
-        broadcaster_.broadcastPoll(update->poll);
+        co_await broadcaster_.broadcastPoll(update->poll);
     }
     if (update->poll_answer) {
-        broadcaster_.broadcastPollAnswer(update->poll_answer);
+        co_await broadcaster_.broadcastPollAnswer(update->poll_answer);
     }
     if (update->my_chat_member) {
-        broadcaster_.broadcastMyChatMember(update->my_chat_member);
+        co_await broadcaster_.broadcastMyChatMember(update->my_chat_member);
     }
     if (update->chat_member) {
-        broadcaster_.broadcastChatMember(update->chat_member);
+        co_await broadcaster_.broadcastChatMember(update->chat_member);
     }
     if (update->chat_join_request) {
-        broadcaster_.broadcastChatJoinRequest(update->chat_join_request);
+        co_await broadcaster_.broadcastChatJoinRequest(update->chat_join_request);
     }
 }
 
-void EventHandler::handleMessage(const Message::Ptr& message) const {
-    broadcaster_.broadcastAnyMessage(message);
+boost::asio::awaitable<void> EventHandler::handleMessage(const Message::Ptr& message) const {
+    co_await broadcaster_.broadcastAnyMessage(message);
 
     if (StringTools::startsWith(message->text, "/")) {
         std::size_t splitPosition;
@@ -2238,15 +2329,15 @@ void EventHandler::handleMessage(const Message::Ptr& message) const {
             splitPosition = std::min(spacePosition, atSymbolPosition);
         }
         std::string command = message->text.substr(1, splitPosition - 1);
-        if (!broadcaster_.broadcastCommand(command, message)) {
-            broadcaster_.broadcastUnknownCommand(message);
+        if (!co_await broadcaster_.broadcastCommand(command, message)) {
+            co_await broadcaster_.broadcastUnknownCommand(message);
         }
     } else {
-        broadcaster_.broadcastNonCommandMessage(message);
+        co_await broadcaster_.broadcastNonCommandMessage(message);
     }
     
     if (message->successful_payment) {
-        broadcaster_.broadcastSuccessfulPayment(message);
+        co_await broadcaster_.broadcastSuccessfulPayment(message);
     }
 }
     """.trimIndent()

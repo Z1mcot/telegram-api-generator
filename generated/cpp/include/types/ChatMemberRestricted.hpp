@@ -30,11 +30,13 @@ namespace TgBot {
      * @param can_send_polls True, if the user is allowed to send polls and checklists
      * @param can_send_other_messages True, if the user is allowed to send animations, games, stickers and use inline bots
      * @param can_add_web_page_previews True, if the user is allowed to add web page previews to their messages
+     * @param can_edit_tag True, if the user is allowed to edit their own tag
      * @param can_change_info True, if the user is allowed to change the chat title, photo and other settings
      * @param can_invite_users True, if the user is allowed to invite new users to the chat
      * @param can_pin_messages True, if the user is allowed to pin messages
      * @param can_manage_topics True, if the user is allowed to create forum topics
      * @param until_date Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever
+     * @param tag Optional. Tag of the member
      */
     struct ChatMemberRestricted : public ChatMember {
         typedef std::shared_ptr<ChatMemberRestricted> Ptr;
@@ -80,6 +82,9 @@ namespace TgBot {
         // True, if the user is allowed to add web page previews to their messages
         bool can_add_web_page_previews = false;
 
+        // True, if the user is allowed to edit their own tag
+        bool can_edit_tag = false;
+
         // True, if the user is allowed to change the chat title, photo and other settings
         bool can_change_info = false;
 
@@ -94,6 +99,9 @@ namespace TgBot {
 
         // Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever
         int64_t until_date = 0;
+
+        // Optional. Tag of the member
+        std::string tag;
     };
     void to_json(json& j, const ChatMemberRestricted& value);
     void from_json(const json& j, ChatMemberRestricted& value);

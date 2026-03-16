@@ -4,13 +4,13 @@
 #include "net/WebhookService.hpp"
 #include "requests/SetWebhookRequest.hpp"
 #include <nlohmann/json.hpp>
-#include <boost/asio.hpp>
+#include <coro/sync_wait.hpp>
 
 namespace TgBot {
     WebhookService::WebhookService(Api& client, const std::string& url, const std::string& secret_token)
         : client_(client), url_(url), secret_token_(secret_token) {}
         
-    boost::asio::awaitable<void> WebhookService::startAsync() {
+    coro::task<void> WebhookService::startAsync() {
         SetWebhookRequest request;
         request.url = url_;
         if (!secret_token_.empty()) {
@@ -20,9 +20,7 @@ namespace TgBot {
     }
 
     void WebhookService::start() {
-        boost::asio::co_spawn(io_, startAsync(), boost::asio::detached);
-
-        io_.run();
+        coro::sync_wait(startAsync());
     }
 
     bool WebhookService::validate(const std::string& header_secret_token) const {

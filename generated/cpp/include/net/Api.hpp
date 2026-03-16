@@ -180,6 +180,7 @@
 #include "requests/SetBusinessAccountUsernameRequest.hpp"
 #include "requests/SetChatAdministratorCustomTitleRequest.hpp"
 #include "requests/SetChatDescriptionRequest.hpp"
+#include "requests/SetChatMemberTagRequest.hpp"
 #include "requests/SetChatMenuButtonRequest.hpp"
 #include "requests/SetChatPermissionsRequest.hpp"
 #include "requests/SetChatPhotoRequest.hpp"
@@ -220,7 +221,6 @@
 #include "requests/VerifyUserRequest.hpp"
 #include "HttpClient.hpp"
 #include "TelegramResponse.hpp"
-#include <boost/asio/awaitable.hpp>
 #include <string>
 
 namespace TgBot {
@@ -249,7 +249,7 @@ namespace TgBot {
          *
          * @return std::vector<Update::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<Update::Ptr>>> getUpdates(const TgBot::GetUpdatesRequest& request) const;
+        coro::task<TelegramResponse<std::vector<Update::Ptr>>> getUpdates(const TgBot::GetUpdatesRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -261,7 +261,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setWebhook(const TgBot::SetWebhookRequest& request) const;
+        coro::task<TelegramResponse<bool>> setWebhook(const TgBot::SetWebhookRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -271,7 +271,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteWebhook(const TgBot::DeleteWebhookRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteWebhook(const TgBot::DeleteWebhookRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -279,7 +279,7 @@ namespace TgBot {
          *
          * @return WebhookInfo::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<WebhookInfo::Ptr>> getWebhookInfo() const;
+        coro::task<TelegramResponse<WebhookInfo::Ptr>> getWebhookInfo() const;
 
 
         // Available methods
@@ -290,7 +290,7 @@ namespace TgBot {
          *
          * @return User::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<User::Ptr>> getMe() const;
+        coro::task<TelegramResponse<User::Ptr>> getMe() const;
 
     [[nodiscard]]
         /**
@@ -298,7 +298,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> logOut() const;
+        coro::task<TelegramResponse<bool>> logOut() const;
 
     [[nodiscard]]
         /**
@@ -306,7 +306,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> close() const;
+        coro::task<TelegramResponse<bool>> close() const;
 
     [[nodiscard]]
         /**
@@ -316,7 +316,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendMessage(const TgBot::SendMessageRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendMessage(const TgBot::SendMessageRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -326,7 +326,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> forwardMessage(const TgBot::ForwardMessageRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> forwardMessage(const TgBot::ForwardMessageRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -336,7 +336,7 @@ namespace TgBot {
          *
          * @return std::vector<MessageId::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<MessageId::Ptr>>> forwardMessages(const TgBot::ForwardMessagesRequest& request) const;
+        coro::task<TelegramResponse<std::vector<MessageId::Ptr>>> forwardMessages(const TgBot::ForwardMessagesRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -346,7 +346,7 @@ namespace TgBot {
          *
          * @return MessageId::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<MessageId::Ptr>> copyMessage(const TgBot::CopyMessageRequest& request) const;
+        coro::task<TelegramResponse<MessageId::Ptr>> copyMessage(const TgBot::CopyMessageRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -356,7 +356,7 @@ namespace TgBot {
          *
          * @return std::vector<MessageId::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<MessageId::Ptr>>> copyMessages(const TgBot::CopyMessagesRequest& request) const;
+        coro::task<TelegramResponse<std::vector<MessageId::Ptr>>> copyMessages(const TgBot::CopyMessagesRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -366,7 +366,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendPhoto(const TgBot::SendPhotoRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendPhoto(const TgBot::SendPhotoRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -376,7 +376,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendAudio(const TgBot::SendAudioRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendAudio(const TgBot::SendAudioRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -386,7 +386,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendDocument(const TgBot::SendDocumentRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendDocument(const TgBot::SendDocumentRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -396,7 +396,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendVideo(const TgBot::SendVideoRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendVideo(const TgBot::SendVideoRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -406,7 +406,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendAnimation(const TgBot::SendAnimationRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendAnimation(const TgBot::SendAnimationRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -416,7 +416,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendVoice(const TgBot::SendVoiceRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendVoice(const TgBot::SendVoiceRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -426,7 +426,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendVideoNote(const TgBot::SendVideoNoteRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendVideoNote(const TgBot::SendVideoNoteRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -436,7 +436,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendPaidMedia(const TgBot::SendPaidMediaRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendPaidMedia(const TgBot::SendPaidMediaRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -446,7 +446,7 @@ namespace TgBot {
          *
          * @return std::vector<Message::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<Message::Ptr>>> sendMediaGroup(const TgBot::SendMediaGroupRequest& request) const;
+        coro::task<TelegramResponse<std::vector<Message::Ptr>>> sendMediaGroup(const TgBot::SendMediaGroupRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -456,7 +456,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendLocation(const TgBot::SendLocationRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendLocation(const TgBot::SendLocationRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -466,7 +466,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendVenue(const TgBot::SendVenueRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendVenue(const TgBot::SendVenueRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -476,7 +476,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendContact(const TgBot::SendContactRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendContact(const TgBot::SendContactRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -486,7 +486,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendPoll(const TgBot::SendPollRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendPoll(const TgBot::SendPollRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -496,7 +496,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendChecklist(const TgBot::SendChecklistRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendChecklist(const TgBot::SendChecklistRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -506,17 +506,17 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendDice(const TgBot::SendDiceRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendDice(const TgBot::SendDiceRequest& request) const;
 
     [[nodiscard]]
         /**
-         * Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.
+         * Use this method to stream a partial message to a user while the message is being generated. Returns True on success.
          *
          * @param request An object containing the request parameters.
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> sendMessageDraft(const TgBot::SendMessageDraftRequest& request) const;
+        coro::task<TelegramResponse<bool>> sendMessageDraft(const TgBot::SendMessageDraftRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -528,7 +528,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> sendChatAction(const TgBot::SendChatActionRequest& request) const;
+        coro::task<TelegramResponse<bool>> sendChatAction(const TgBot::SendChatActionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -538,7 +538,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setMessageReaction(const TgBot::SetMessageReactionRequest& request) const;
+        coro::task<TelegramResponse<bool>> setMessageReaction(const TgBot::SetMessageReactionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -548,7 +548,7 @@ namespace TgBot {
          *
          * @return UserProfilePhotos::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<UserProfilePhotos::Ptr>> getUserProfilePhotos(const TgBot::GetUserProfilePhotosRequest& request) const;
+        coro::task<TelegramResponse<UserProfilePhotos::Ptr>> getUserProfilePhotos(const TgBot::GetUserProfilePhotosRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -558,7 +558,7 @@ namespace TgBot {
          *
          * @return UserProfileAudios::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<UserProfileAudios::Ptr>> getUserProfileAudios(const TgBot::GetUserProfileAudiosRequest& request) const;
+        coro::task<TelegramResponse<UserProfileAudios::Ptr>> getUserProfileAudios(const TgBot::GetUserProfileAudiosRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -568,7 +568,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setUserEmojiStatus(const TgBot::SetUserEmojiStatusRequest& request) const;
+        coro::task<TelegramResponse<bool>> setUserEmojiStatus(const TgBot::SetUserEmojiStatusRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -578,7 +578,7 @@ namespace TgBot {
          *
          * @return File::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<File::Ptr>> getFile(const TgBot::GetFileRequest& request) const;
+        coro::task<TelegramResponse<File::Ptr>> getFile(const TgBot::GetFileRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -588,7 +588,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> banChatMember(const TgBot::BanChatMemberRequest& request) const;
+        coro::task<TelegramResponse<bool>> banChatMember(const TgBot::BanChatMemberRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -598,7 +598,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> unbanChatMember(const TgBot::UnbanChatMemberRequest& request) const;
+        coro::task<TelegramResponse<bool>> unbanChatMember(const TgBot::UnbanChatMemberRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -608,7 +608,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> restrictChatMember(const TgBot::RestrictChatMemberRequest& request) const;
+        coro::task<TelegramResponse<bool>> restrictChatMember(const TgBot::RestrictChatMemberRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -618,7 +618,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> promoteChatMember(const TgBot::PromoteChatMemberRequest& request) const;
+        coro::task<TelegramResponse<bool>> promoteChatMember(const TgBot::PromoteChatMemberRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -628,7 +628,17 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setChatAdministratorCustomTitle(const TgBot::SetChatAdministratorCustomTitleRequest& request) const;
+        coro::task<TelegramResponse<bool>> setChatAdministratorCustomTitle(const TgBot::SetChatAdministratorCustomTitleRequest& request) const;
+
+    [[nodiscard]]
+        /**
+         * Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the can_manage_tags administrator right. Returns True on success.
+         *
+         * @param request An object containing the request parameters.
+         *
+         * @return bool
+         */
+        coro::task<TelegramResponse<bool>> setChatMemberTag(const TgBot::SetChatMemberTagRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -638,7 +648,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> banChatSenderChat(const TgBot::BanChatSenderChatRequest& request) const;
+        coro::task<TelegramResponse<bool>> banChatSenderChat(const TgBot::BanChatSenderChatRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -648,7 +658,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> unbanChatSenderChat(const TgBot::UnbanChatSenderChatRequest& request) const;
+        coro::task<TelegramResponse<bool>> unbanChatSenderChat(const TgBot::UnbanChatSenderChatRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -658,7 +668,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setChatPermissions(const TgBot::SetChatPermissionsRequest& request) const;
+        coro::task<TelegramResponse<bool>> setChatPermissions(const TgBot::SetChatPermissionsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -669,7 +679,7 @@ namespace TgBot {
          *
          * @return std::string
          */
-        boost::asio::awaitable<TelegramResponse<std::string>> exportChatInviteLink(const TgBot::ExportChatInviteLinkRequest& request) const;
+        coro::task<TelegramResponse<std::string>> exportChatInviteLink(const TgBot::ExportChatInviteLinkRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -679,7 +689,7 @@ namespace TgBot {
          *
          * @return ChatInviteLink::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> createChatInviteLink(const TgBot::CreateChatInviteLinkRequest& request) const;
+        coro::task<TelegramResponse<ChatInviteLink::Ptr>> createChatInviteLink(const TgBot::CreateChatInviteLinkRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -689,7 +699,7 @@ namespace TgBot {
          *
          * @return ChatInviteLink::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> editChatInviteLink(const TgBot::EditChatInviteLinkRequest& request) const;
+        coro::task<TelegramResponse<ChatInviteLink::Ptr>> editChatInviteLink(const TgBot::EditChatInviteLinkRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -699,7 +709,7 @@ namespace TgBot {
          *
          * @return ChatInviteLink::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> createChatSubscriptionInviteLink(const TgBot::CreateChatSubscriptionInviteLinkRequest& request) const;
+        coro::task<TelegramResponse<ChatInviteLink::Ptr>> createChatSubscriptionInviteLink(const TgBot::CreateChatSubscriptionInviteLinkRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -709,7 +719,7 @@ namespace TgBot {
          *
          * @return ChatInviteLink::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> editChatSubscriptionInviteLink(const TgBot::EditChatSubscriptionInviteLinkRequest& request) const;
+        coro::task<TelegramResponse<ChatInviteLink::Ptr>> editChatSubscriptionInviteLink(const TgBot::EditChatSubscriptionInviteLinkRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -719,7 +729,7 @@ namespace TgBot {
          *
          * @return ChatInviteLink::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> revokeChatInviteLink(const TgBot::RevokeChatInviteLinkRequest& request) const;
+        coro::task<TelegramResponse<ChatInviteLink::Ptr>> revokeChatInviteLink(const TgBot::RevokeChatInviteLinkRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -729,7 +739,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> approveChatJoinRequest(const TgBot::ApproveChatJoinRequestRequest& request) const;
+        coro::task<TelegramResponse<bool>> approveChatJoinRequest(const TgBot::ApproveChatJoinRequestRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -739,7 +749,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> declineChatJoinRequest(const TgBot::DeclineChatJoinRequestRequest& request) const;
+        coro::task<TelegramResponse<bool>> declineChatJoinRequest(const TgBot::DeclineChatJoinRequestRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -749,7 +759,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setChatPhoto(const TgBot::SetChatPhotoRequest& request) const;
+        coro::task<TelegramResponse<bool>> setChatPhoto(const TgBot::SetChatPhotoRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -759,7 +769,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteChatPhoto(const TgBot::DeleteChatPhotoRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteChatPhoto(const TgBot::DeleteChatPhotoRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -769,7 +779,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setChatTitle(const TgBot::SetChatTitleRequest& request) const;
+        coro::task<TelegramResponse<bool>> setChatTitle(const TgBot::SetChatTitleRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -779,7 +789,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setChatDescription(const TgBot::SetChatDescriptionRequest& request) const;
+        coro::task<TelegramResponse<bool>> setChatDescription(const TgBot::SetChatDescriptionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -789,7 +799,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> pinChatMessage(const TgBot::PinChatMessageRequest& request) const;
+        coro::task<TelegramResponse<bool>> pinChatMessage(const TgBot::PinChatMessageRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -799,7 +809,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> unpinChatMessage(const TgBot::UnpinChatMessageRequest& request) const;
+        coro::task<TelegramResponse<bool>> unpinChatMessage(const TgBot::UnpinChatMessageRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -809,7 +819,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> unpinAllChatMessages(const TgBot::UnpinAllChatMessagesRequest& request) const;
+        coro::task<TelegramResponse<bool>> unpinAllChatMessages(const TgBot::UnpinAllChatMessagesRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -819,7 +829,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> leaveChat(const TgBot::LeaveChatRequest& request) const;
+        coro::task<TelegramResponse<bool>> leaveChat(const TgBot::LeaveChatRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -829,7 +839,7 @@ namespace TgBot {
          *
          * @return ChatFullInfo::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatFullInfo::Ptr>> getChat(const TgBot::GetChatRequest& request) const;
+        coro::task<TelegramResponse<ChatFullInfo::Ptr>> getChat(const TgBot::GetChatRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -839,7 +849,7 @@ namespace TgBot {
          *
          * @return std::vector<ChatMember::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<ChatMember::Ptr>>> getChatAdministrators(const TgBot::GetChatAdministratorsRequest& request) const;
+        coro::task<TelegramResponse<std::vector<ChatMember::Ptr>>> getChatAdministrators(const TgBot::GetChatAdministratorsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -849,7 +859,7 @@ namespace TgBot {
          *
          * @return int64_t
          */
-        boost::asio::awaitable<TelegramResponse<int64_t>> getChatMemberCount(const TgBot::GetChatMemberCountRequest& request) const;
+        coro::task<TelegramResponse<int64_t>> getChatMemberCount(const TgBot::GetChatMemberCountRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -859,7 +869,7 @@ namespace TgBot {
          *
          * @return ChatMember::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatMember::Ptr>> getChatMember(const TgBot::GetChatMemberRequest& request) const;
+        coro::task<TelegramResponse<ChatMember::Ptr>> getChatMember(const TgBot::GetChatMemberRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -869,7 +879,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setChatStickerSet(const TgBot::SetChatStickerSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> setChatStickerSet(const TgBot::SetChatStickerSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -879,7 +889,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteChatStickerSet(const TgBot::DeleteChatStickerSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteChatStickerSet(const TgBot::DeleteChatStickerSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -887,7 +897,7 @@ namespace TgBot {
          *
          * @return std::vector<Sticker::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<Sticker::Ptr>>> getForumTopicIconStickers() const;
+        coro::task<TelegramResponse<std::vector<Sticker::Ptr>>> getForumTopicIconStickers() const;
 
     [[nodiscard]]
         /**
@@ -897,7 +907,7 @@ namespace TgBot {
          *
          * @return ForumTopic::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ForumTopic::Ptr>> createForumTopic(const TgBot::CreateForumTopicRequest& request) const;
+        coro::task<TelegramResponse<ForumTopic::Ptr>> createForumTopic(const TgBot::CreateForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -907,7 +917,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> editForumTopic(const TgBot::EditForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> editForumTopic(const TgBot::EditForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -917,7 +927,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> closeForumTopic(const TgBot::CloseForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> closeForumTopic(const TgBot::CloseForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -927,7 +937,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> reopenForumTopic(const TgBot::ReopenForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> reopenForumTopic(const TgBot::ReopenForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -937,7 +947,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteForumTopic(const TgBot::DeleteForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteForumTopic(const TgBot::DeleteForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -947,7 +957,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> unpinAllForumTopicMessages(const TgBot::UnpinAllForumTopicMessagesRequest& request) const;
+        coro::task<TelegramResponse<bool>> unpinAllForumTopicMessages(const TgBot::UnpinAllForumTopicMessagesRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -957,7 +967,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> editGeneralForumTopic(const TgBot::EditGeneralForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> editGeneralForumTopic(const TgBot::EditGeneralForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -967,7 +977,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> closeGeneralForumTopic(const TgBot::CloseGeneralForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> closeGeneralForumTopic(const TgBot::CloseGeneralForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -977,7 +987,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> reopenGeneralForumTopic(const TgBot::ReopenGeneralForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> reopenGeneralForumTopic(const TgBot::ReopenGeneralForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -987,7 +997,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> hideGeneralForumTopic(const TgBot::HideGeneralForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> hideGeneralForumTopic(const TgBot::HideGeneralForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -997,7 +1007,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> unhideGeneralForumTopic(const TgBot::UnhideGeneralForumTopicRequest& request) const;
+        coro::task<TelegramResponse<bool>> unhideGeneralForumTopic(const TgBot::UnhideGeneralForumTopicRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1007,7 +1017,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> unpinAllGeneralForumTopicMessages(const TgBot::UnpinAllGeneralForumTopicMessagesRequest& request) const;
+        coro::task<TelegramResponse<bool>> unpinAllGeneralForumTopicMessages(const TgBot::UnpinAllGeneralForumTopicMessagesRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1018,7 +1028,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> answerCallbackQuery(const TgBot::AnswerCallbackQueryRequest& request) const;
+        coro::task<TelegramResponse<bool>> answerCallbackQuery(const TgBot::AnswerCallbackQueryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1028,7 +1038,7 @@ namespace TgBot {
          *
          * @return UserChatBoosts::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<UserChatBoosts::Ptr>> getUserChatBoosts(const TgBot::GetUserChatBoostsRequest& request) const;
+        coro::task<TelegramResponse<UserChatBoosts::Ptr>> getUserChatBoosts(const TgBot::GetUserChatBoostsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1038,7 +1048,7 @@ namespace TgBot {
          *
          * @return BusinessConnection::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<BusinessConnection::Ptr>> getBusinessConnection(const TgBot::GetBusinessConnectionRequest& request) const;
+        coro::task<TelegramResponse<BusinessConnection::Ptr>> getBusinessConnection(const TgBot::GetBusinessConnectionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1048,7 +1058,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setMyCommands(const TgBot::SetMyCommandsRequest& request) const;
+        coro::task<TelegramResponse<bool>> setMyCommands(const TgBot::SetMyCommandsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1058,7 +1068,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteMyCommands(const TgBot::DeleteMyCommandsRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteMyCommands(const TgBot::DeleteMyCommandsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1068,7 +1078,7 @@ namespace TgBot {
          *
          * @return std::vector<BotCommand::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<BotCommand::Ptr>>> getMyCommands(const TgBot::GetMyCommandsRequest& request) const;
+        coro::task<TelegramResponse<std::vector<BotCommand::Ptr>>> getMyCommands(const TgBot::GetMyCommandsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1078,7 +1088,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setMyName(const TgBot::SetMyNameRequest& request) const;
+        coro::task<TelegramResponse<bool>> setMyName(const TgBot::SetMyNameRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1088,7 +1098,7 @@ namespace TgBot {
          *
          * @return BotName::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<BotName::Ptr>> getMyName(const TgBot::GetMyNameRequest& request) const;
+        coro::task<TelegramResponse<BotName::Ptr>> getMyName(const TgBot::GetMyNameRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1098,7 +1108,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setMyDescription(const TgBot::SetMyDescriptionRequest& request) const;
+        coro::task<TelegramResponse<bool>> setMyDescription(const TgBot::SetMyDescriptionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1108,7 +1118,7 @@ namespace TgBot {
          *
          * @return BotDescription::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<BotDescription::Ptr>> getMyDescription(const TgBot::GetMyDescriptionRequest& request) const;
+        coro::task<TelegramResponse<BotDescription::Ptr>> getMyDescription(const TgBot::GetMyDescriptionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1118,7 +1128,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setMyShortDescription(const TgBot::SetMyShortDescriptionRequest& request) const;
+        coro::task<TelegramResponse<bool>> setMyShortDescription(const TgBot::SetMyShortDescriptionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1128,7 +1138,7 @@ namespace TgBot {
          *
          * @return BotShortDescription::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<BotShortDescription::Ptr>> getMyShortDescription(const TgBot::GetMyShortDescriptionRequest& request) const;
+        coro::task<TelegramResponse<BotShortDescription::Ptr>> getMyShortDescription(const TgBot::GetMyShortDescriptionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1138,7 +1148,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setMyProfilePhoto(const TgBot::SetMyProfilePhotoRequest& request) const;
+        coro::task<TelegramResponse<bool>> setMyProfilePhoto(const TgBot::SetMyProfilePhotoRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1148,7 +1158,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setChatMenuButton(const TgBot::SetChatMenuButtonRequest& request) const;
+        coro::task<TelegramResponse<bool>> setChatMenuButton(const TgBot::SetChatMenuButtonRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1158,7 +1168,7 @@ namespace TgBot {
          *
          * @return MenuButton::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<MenuButton::Ptr>> getChatMenuButton(const TgBot::GetChatMenuButtonRequest& request) const;
+        coro::task<TelegramResponse<MenuButton::Ptr>> getChatMenuButton(const TgBot::GetChatMenuButtonRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1168,7 +1178,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setMyDefaultAdministratorRights(const TgBot::SetMyDefaultAdministratorRightsRequest& request) const;
+        coro::task<TelegramResponse<bool>> setMyDefaultAdministratorRights(const TgBot::SetMyDefaultAdministratorRightsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1178,7 +1188,7 @@ namespace TgBot {
          *
          * @return ChatAdministratorRights::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<ChatAdministratorRights::Ptr>> getMyDefaultAdministratorRights(const TgBot::GetMyDefaultAdministratorRightsRequest& request) const;
+        coro::task<TelegramResponse<ChatAdministratorRights::Ptr>> getMyDefaultAdministratorRights(const TgBot::GetMyDefaultAdministratorRightsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1188,7 +1198,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> sendGift(const TgBot::SendGiftRequest& request) const;
+        coro::task<TelegramResponse<bool>> sendGift(const TgBot::SendGiftRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1198,7 +1208,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> giftPremiumSubscription(const TgBot::GiftPremiumSubscriptionRequest& request) const;
+        coro::task<TelegramResponse<bool>> giftPremiumSubscription(const TgBot::GiftPremiumSubscriptionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1208,7 +1218,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> verifyUser(const TgBot::VerifyUserRequest& request) const;
+        coro::task<TelegramResponse<bool>> verifyUser(const TgBot::VerifyUserRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1218,7 +1228,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> verifyChat(const TgBot::VerifyChatRequest& request) const;
+        coro::task<TelegramResponse<bool>> verifyChat(const TgBot::VerifyChatRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1228,7 +1238,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> removeUserVerification(const TgBot::RemoveUserVerificationRequest& request) const;
+        coro::task<TelegramResponse<bool>> removeUserVerification(const TgBot::RemoveUserVerificationRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1238,7 +1248,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> removeChatVerification(const TgBot::RemoveChatVerificationRequest& request) const;
+        coro::task<TelegramResponse<bool>> removeChatVerification(const TgBot::RemoveChatVerificationRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1248,7 +1258,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> readBusinessMessage(const TgBot::ReadBusinessMessageRequest& request) const;
+        coro::task<TelegramResponse<bool>> readBusinessMessage(const TgBot::ReadBusinessMessageRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1258,7 +1268,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteBusinessMessages(const TgBot::DeleteBusinessMessagesRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteBusinessMessages(const TgBot::DeleteBusinessMessagesRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1268,7 +1278,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setBusinessAccountName(const TgBot::SetBusinessAccountNameRequest& request) const;
+        coro::task<TelegramResponse<bool>> setBusinessAccountName(const TgBot::SetBusinessAccountNameRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1278,7 +1288,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setBusinessAccountUsername(const TgBot::SetBusinessAccountUsernameRequest& request) const;
+        coro::task<TelegramResponse<bool>> setBusinessAccountUsername(const TgBot::SetBusinessAccountUsernameRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1288,7 +1298,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setBusinessAccountBio(const TgBot::SetBusinessAccountBioRequest& request) const;
+        coro::task<TelegramResponse<bool>> setBusinessAccountBio(const TgBot::SetBusinessAccountBioRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1298,7 +1308,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setBusinessAccountProfilePhoto(const TgBot::SetBusinessAccountProfilePhotoRequest& request) const;
+        coro::task<TelegramResponse<bool>> setBusinessAccountProfilePhoto(const TgBot::SetBusinessAccountProfilePhotoRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1308,7 +1318,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> removeBusinessAccountProfilePhoto(const TgBot::RemoveBusinessAccountProfilePhotoRequest& request) const;
+        coro::task<TelegramResponse<bool>> removeBusinessAccountProfilePhoto(const TgBot::RemoveBusinessAccountProfilePhotoRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1318,7 +1328,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setBusinessAccountGiftSettings(const TgBot::SetBusinessAccountGiftSettingsRequest& request) const;
+        coro::task<TelegramResponse<bool>> setBusinessAccountGiftSettings(const TgBot::SetBusinessAccountGiftSettingsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1328,7 +1338,7 @@ namespace TgBot {
          *
          * @return StarAmount::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<StarAmount::Ptr>> getBusinessAccountStarBalance(const TgBot::GetBusinessAccountStarBalanceRequest& request) const;
+        coro::task<TelegramResponse<StarAmount::Ptr>> getBusinessAccountStarBalance(const TgBot::GetBusinessAccountStarBalanceRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1338,7 +1348,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> transferBusinessAccountStars(const TgBot::TransferBusinessAccountStarsRequest& request) const;
+        coro::task<TelegramResponse<bool>> transferBusinessAccountStars(const TgBot::TransferBusinessAccountStarsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1348,7 +1358,7 @@ namespace TgBot {
          *
          * @return OwnedGifts::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<OwnedGifts::Ptr>> getBusinessAccountGifts(const TgBot::GetBusinessAccountGiftsRequest& request) const;
+        coro::task<TelegramResponse<OwnedGifts::Ptr>> getBusinessAccountGifts(const TgBot::GetBusinessAccountGiftsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1358,7 +1368,7 @@ namespace TgBot {
          *
          * @return OwnedGifts::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<OwnedGifts::Ptr>> getUserGifts(const TgBot::GetUserGiftsRequest& request) const;
+        coro::task<TelegramResponse<OwnedGifts::Ptr>> getUserGifts(const TgBot::GetUserGiftsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1368,7 +1378,7 @@ namespace TgBot {
          *
          * @return OwnedGifts::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<OwnedGifts::Ptr>> getChatGifts(const TgBot::GetChatGiftsRequest& request) const;
+        coro::task<TelegramResponse<OwnedGifts::Ptr>> getChatGifts(const TgBot::GetChatGiftsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1378,7 +1388,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> convertGiftToStars(const TgBot::ConvertGiftToStarsRequest& request) const;
+        coro::task<TelegramResponse<bool>> convertGiftToStars(const TgBot::ConvertGiftToStarsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1388,7 +1398,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> upgradeGift(const TgBot::UpgradeGiftRequest& request) const;
+        coro::task<TelegramResponse<bool>> upgradeGift(const TgBot::UpgradeGiftRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1398,7 +1408,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> transferGift(const TgBot::TransferGiftRequest& request) const;
+        coro::task<TelegramResponse<bool>> transferGift(const TgBot::TransferGiftRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1408,7 +1418,7 @@ namespace TgBot {
          *
          * @return Story::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Story::Ptr>> postStory(const TgBot::PostStoryRequest& request) const;
+        coro::task<TelegramResponse<Story::Ptr>> postStory(const TgBot::PostStoryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1418,7 +1428,7 @@ namespace TgBot {
          *
          * @return Story::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Story::Ptr>> repostStory(const TgBot::RepostStoryRequest& request) const;
+        coro::task<TelegramResponse<Story::Ptr>> repostStory(const TgBot::RepostStoryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1428,7 +1438,7 @@ namespace TgBot {
          *
          * @return Story::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Story::Ptr>> editStory(const TgBot::EditStoryRequest& request) const;
+        coro::task<TelegramResponse<Story::Ptr>> editStory(const TgBot::EditStoryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1438,7 +1448,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteStory(const TgBot::DeleteStoryRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteStory(const TgBot::DeleteStoryRequest& request) const;
 
 
         // Updating messages
@@ -1451,7 +1461,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> editMessageText(const TgBot::EditMessageTextRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> editMessageText(const TgBot::EditMessageTextRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1461,7 +1471,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> editMessageCaption(const TgBot::EditMessageCaptionRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> editMessageCaption(const TgBot::EditMessageCaptionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1471,7 +1481,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> editMessageMedia(const TgBot::EditMessageMediaRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> editMessageMedia(const TgBot::EditMessageMediaRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1481,7 +1491,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> editMessageLiveLocation(const TgBot::EditMessageLiveLocationRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> editMessageLiveLocation(const TgBot::EditMessageLiveLocationRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1491,7 +1501,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> stopMessageLiveLocation(const TgBot::StopMessageLiveLocationRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> stopMessageLiveLocation(const TgBot::StopMessageLiveLocationRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1501,7 +1511,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> editMessageChecklist(const TgBot::EditMessageChecklistRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> editMessageChecklist(const TgBot::EditMessageChecklistRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1511,7 +1521,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> editMessageReplyMarkup(const TgBot::EditMessageReplyMarkupRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> editMessageReplyMarkup(const TgBot::EditMessageReplyMarkupRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1521,7 +1531,7 @@ namespace TgBot {
          *
          * @return Poll::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Poll::Ptr>> stopPoll(const TgBot::StopPollRequest& request) const;
+        coro::task<TelegramResponse<Poll::Ptr>> stopPoll(const TgBot::StopPollRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1531,7 +1541,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> approveSuggestedPost(const TgBot::ApproveSuggestedPostRequest& request) const;
+        coro::task<TelegramResponse<bool>> approveSuggestedPost(const TgBot::ApproveSuggestedPostRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1541,7 +1551,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> declineSuggestedPost(const TgBot::DeclineSuggestedPostRequest& request) const;
+        coro::task<TelegramResponse<bool>> declineSuggestedPost(const TgBot::DeclineSuggestedPostRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1551,7 +1561,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteMessage(const TgBot::DeleteMessageRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteMessage(const TgBot::DeleteMessageRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1561,7 +1571,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteMessages(const TgBot::DeleteMessagesRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteMessages(const TgBot::DeleteMessagesRequest& request) const;
 
 
         // Stickers
@@ -1574,7 +1584,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendSticker(const TgBot::SendStickerRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendSticker(const TgBot::SendStickerRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1584,7 +1594,7 @@ namespace TgBot {
          *
          * @return StickerSet::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<StickerSet::Ptr>> getStickerSet(const TgBot::GetStickerSetRequest& request) const;
+        coro::task<TelegramResponse<StickerSet::Ptr>> getStickerSet(const TgBot::GetStickerSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1594,7 +1604,7 @@ namespace TgBot {
          *
          * @return std::vector<Sticker::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<Sticker::Ptr>>> getCustomEmojiStickers(const TgBot::GetCustomEmojiStickersRequest& request) const;
+        coro::task<TelegramResponse<std::vector<Sticker::Ptr>>> getCustomEmojiStickers(const TgBot::GetCustomEmojiStickersRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1604,7 +1614,7 @@ namespace TgBot {
          *
          * @return File::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<File::Ptr>> uploadStickerFile(const TgBot::UploadStickerFileRequest& request) const;
+        coro::task<TelegramResponse<File::Ptr>> uploadStickerFile(const TgBot::UploadStickerFileRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1614,7 +1624,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> createNewStickerSet(const TgBot::CreateNewStickerSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> createNewStickerSet(const TgBot::CreateNewStickerSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1624,7 +1634,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> addStickerToSet(const TgBot::AddStickerToSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> addStickerToSet(const TgBot::AddStickerToSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1634,7 +1644,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setStickerPositionInSet(const TgBot::SetStickerPositionInSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> setStickerPositionInSet(const TgBot::SetStickerPositionInSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1644,7 +1654,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteStickerFromSet(const TgBot::DeleteStickerFromSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteStickerFromSet(const TgBot::DeleteStickerFromSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1654,7 +1664,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> replaceStickerInSet(const TgBot::ReplaceStickerInSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> replaceStickerInSet(const TgBot::ReplaceStickerInSetRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1664,7 +1674,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setStickerEmojiList(const TgBot::SetStickerEmojiListRequest& request) const;
+        coro::task<TelegramResponse<bool>> setStickerEmojiList(const TgBot::SetStickerEmojiListRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1674,7 +1684,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setStickerKeywords(const TgBot::SetStickerKeywordsRequest& request) const;
+        coro::task<TelegramResponse<bool>> setStickerKeywords(const TgBot::SetStickerKeywordsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1684,7 +1694,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setStickerMaskPosition(const TgBot::SetStickerMaskPositionRequest& request) const;
+        coro::task<TelegramResponse<bool>> setStickerMaskPosition(const TgBot::SetStickerMaskPositionRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1694,7 +1704,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setStickerSetTitle(const TgBot::SetStickerSetTitleRequest& request) const;
+        coro::task<TelegramResponse<bool>> setStickerSetTitle(const TgBot::SetStickerSetTitleRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1704,7 +1714,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setStickerSetThumbnail(const TgBot::SetStickerSetThumbnailRequest& request) const;
+        coro::task<TelegramResponse<bool>> setStickerSetThumbnail(const TgBot::SetStickerSetThumbnailRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1714,7 +1724,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setCustomEmojiStickerSetThumbnail(const TgBot::SetCustomEmojiStickerSetThumbnailRequest& request) const;
+        coro::task<TelegramResponse<bool>> setCustomEmojiStickerSetThumbnail(const TgBot::SetCustomEmojiStickerSetThumbnailRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1724,7 +1734,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> deleteStickerSet(const TgBot::DeleteStickerSetRequest& request) const;
+        coro::task<TelegramResponse<bool>> deleteStickerSet(const TgBot::DeleteStickerSetRequest& request) const;
 
 
         // Inline mode
@@ -1737,7 +1747,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> answerInlineQuery(const TgBot::AnswerInlineQueryRequest& request) const;
+        coro::task<TelegramResponse<bool>> answerInlineQuery(const TgBot::AnswerInlineQueryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1747,7 +1757,7 @@ namespace TgBot {
          *
          * @return SentWebAppMessage::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<SentWebAppMessage::Ptr>> answerWebAppQuery(const TgBot::AnswerWebAppQueryRequest& request) const;
+        coro::task<TelegramResponse<SentWebAppMessage::Ptr>> answerWebAppQuery(const TgBot::AnswerWebAppQueryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1757,7 +1767,7 @@ namespace TgBot {
          *
          * @return PreparedInlineMessage::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<PreparedInlineMessage::Ptr>> savePreparedInlineMessage(const TgBot::SavePreparedInlineMessageRequest& request) const;
+        coro::task<TelegramResponse<PreparedInlineMessage::Ptr>> savePreparedInlineMessage(const TgBot::SavePreparedInlineMessageRequest& request) const;
 
 
         // Payments
@@ -1770,7 +1780,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendInvoice(const TgBot::SendInvoiceRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendInvoice(const TgBot::SendInvoiceRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1780,7 +1790,7 @@ namespace TgBot {
          *
          * @return std::string
          */
-        boost::asio::awaitable<TelegramResponse<std::string>> createInvoiceLink(const TgBot::CreateInvoiceLinkRequest& request) const;
+        coro::task<TelegramResponse<std::string>> createInvoiceLink(const TgBot::CreateInvoiceLinkRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1790,7 +1800,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> answerShippingQuery(const TgBot::AnswerShippingQueryRequest& request) const;
+        coro::task<TelegramResponse<bool>> answerShippingQuery(const TgBot::AnswerShippingQueryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1800,7 +1810,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> answerPreCheckoutQuery(const TgBot::AnswerPreCheckoutQueryRequest& request) const;
+        coro::task<TelegramResponse<bool>> answerPreCheckoutQuery(const TgBot::AnswerPreCheckoutQueryRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1810,7 +1820,7 @@ namespace TgBot {
          *
          * @return StarTransactions::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<StarTransactions::Ptr>> getStarTransactions(const TgBot::GetStarTransactionsRequest& request) const;
+        coro::task<TelegramResponse<StarTransactions::Ptr>> getStarTransactions(const TgBot::GetStarTransactionsRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1820,7 +1830,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> refundStarPayment(const TgBot::RefundStarPaymentRequest& request) const;
+        coro::task<TelegramResponse<bool>> refundStarPayment(const TgBot::RefundStarPaymentRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1830,7 +1840,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> editUserStarSubscription(const TgBot::EditUserStarSubscriptionRequest& request) const;
+        coro::task<TelegramResponse<bool>> editUserStarSubscription(const TgBot::EditUserStarSubscriptionRequest& request) const;
 
 
         // Telegram Passport
@@ -1843,7 +1853,7 @@ namespace TgBot {
          *
          * @return bool
          */
-        boost::asio::awaitable<TelegramResponse<bool>> setPassportDataErrors(const TgBot::SetPassportDataErrorsRequest& request) const;
+        coro::task<TelegramResponse<bool>> setPassportDataErrors(const TgBot::SetPassportDataErrorsRequest& request) const;
 
 
         // Games
@@ -1856,7 +1866,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> sendGame(const TgBot::SendGameRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> sendGame(const TgBot::SendGameRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1866,7 +1876,7 @@ namespace TgBot {
          *
          * @return Message::Ptr
          */
-        boost::asio::awaitable<TelegramResponse<Message::Ptr>> setGameScore(const TgBot::SetGameScoreRequest& request) const;
+        coro::task<TelegramResponse<Message::Ptr>> setGameScore(const TgBot::SetGameScoreRequest& request) const;
 
     [[nodiscard]]
         /**
@@ -1877,7 +1887,7 @@ namespace TgBot {
          *
          * @return std::vector<GameHighScore::Ptr>
          */
-        boost::asio::awaitable<TelegramResponse<std::vector<GameHighScore::Ptr>>> getGameHighScores(const TgBot::GetGameHighScoresRequest& request) const;
+        coro::task<TelegramResponse<std::vector<GameHighScore::Ptr>>> getGameHighScores(const TgBot::GetGameHighScoresRequest& request) const;
 
     };
 }

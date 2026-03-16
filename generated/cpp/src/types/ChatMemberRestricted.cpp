@@ -21,11 +21,15 @@ namespace TgBot {
         j["can_send_polls"] = value.can_send_polls;
         j["can_send_other_messages"] = value.can_send_other_messages;
         j["can_add_web_page_previews"] = value.can_add_web_page_previews;
+        j["can_edit_tag"] = value.can_edit_tag;
         j["can_change_info"] = value.can_change_info;
         j["can_invite_users"] = value.can_invite_users;
         j["can_pin_messages"] = value.can_pin_messages;
         j["can_manage_topics"] = value.can_manage_topics;
         j["until_date"] = value.until_date;
+    if (!value.tag.empty()) { 
+                    j["tag"] = value.tag; 
+            }
     }
 
     void from_json(const json& j, ChatMemberRestricted& value) {
@@ -68,6 +72,9 @@ namespace TgBot {
         if (j.contains("can_add_web_page_previews")) {
             j.at("can_add_web_page_previews").get_to(value.can_add_web_page_previews);
         }
+        if (j.contains("can_edit_tag")) {
+            j.at("can_edit_tag").get_to(value.can_edit_tag);
+        }
         if (j.contains("can_change_info")) {
             j.at("can_change_info").get_to(value.can_change_info);
         }
@@ -82,6 +89,9 @@ namespace TgBot {
         }
         if (j.contains("until_date")) {
             j.at("until_date").get_to(value.until_date);
+        }
+        if (j.contains("tag")) {
+            j.at("tag").get_to(value.tag);
         }
     }
 }

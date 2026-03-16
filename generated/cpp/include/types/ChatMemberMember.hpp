@@ -19,6 +19,7 @@ namespace TgBot {
      *
      * @param status The member's status in the chat, always “member”
      * @param user Information about the user
+     * @param tag Optional. Tag of the member
      * @param until_date Optional. Date when the user's subscription will expire; Unix time
      */
     struct ChatMemberMember : public ChatMember {
@@ -31,6 +32,9 @@ namespace TgBot {
 
         // Information about the user
         User::Ptr user;
+
+        // Optional. Tag of the member
+        std::string tag;
 
         // Optional. Date when the user's subscription will expire; Unix time
         int64_t until_date = 0;

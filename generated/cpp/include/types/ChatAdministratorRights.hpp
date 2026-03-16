@@ -32,6 +32,7 @@ namespace TgBot {
      * @param can_pin_messages Optional. True, if the user is allowed to pin messages; for groups and supergroups only
      * @param can_manage_topics Optional. True, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
      * @param can_manage_direct_messages Optional. True, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only
+     * @param can_manage_tags Optional. True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.
      */
     struct ChatAdministratorRights : public TelegramModel {
         typedef std::shared_ptr<ChatAdministratorRights> Ptr;
@@ -85,6 +86,9 @@ namespace TgBot {
 
         // Optional. True, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only
         bool can_manage_direct_messages = false;
+
+        // Optional. True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.
+        bool can_manage_tags = false;
     };
     void to_json(json& j, const ChatAdministratorRights& value);
     void from_json(const json& j, ChatAdministratorRights& value);

@@ -18,7 +18,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <boost/asio/awaitable.hpp>
+#include <coro/task.hpp>
 
 namespace TgBot {
 
@@ -34,17 +34,17 @@ namespace TgBot {
     friend class EventHandler;
 
     public:
-        typedef std::function<boost::asio::awaitable<void> (const Message::Ptr)> MessageListener;
-        typedef std::function<boost::asio::awaitable<void> (const InlineQuery::Ptr)> InlineQueryListener;
-        typedef std::function<boost::asio::awaitable<void> (const ChosenInlineResult::Ptr)> ChosenInlineResultListener;
-        typedef std::function<boost::asio::awaitable<void> (const CallbackQuery::Ptr)> CallbackQueryListener;
-        typedef std::function<boost::asio::awaitable<void> (const ShippingQuery::Ptr)> ShippingQueryListener;
-        typedef std::function<boost::asio::awaitable<void> (const PreCheckoutQuery::Ptr)> PreCheckoutQueryListener;
-        typedef std::function<boost::asio::awaitable<void> (const Poll::Ptr)> PollListener;
-        typedef std::function<boost::asio::awaitable<void> (const PollAnswer::Ptr)> PollAnswerListener;
-        typedef std::function<boost::asio::awaitable<void> (const ChatMemberUpdated::Ptr)> ChatMemberUpdatedListener;
-        typedef std::function<boost::asio::awaitable<void> (const ChatJoinRequest::Ptr)> ChatJoinRequestListener;
-        typedef std::function<boost::asio::awaitable<void> (const Message::Ptr, const SuccessfulPayment::Ptr)> SuccessfulPaymentListener;
+        typedef std::function<coro::task<void> (const Message::Ptr)> MessageListener;
+        typedef std::function<coro::task<void> (const InlineQuery::Ptr)> InlineQueryListener;
+        typedef std::function<coro::task<void> (const ChosenInlineResult::Ptr)> ChosenInlineResultListener;
+        typedef std::function<coro::task<void> (const CallbackQuery::Ptr)> CallbackQueryListener;
+        typedef std::function<coro::task<void> (const ShippingQuery::Ptr)> ShippingQueryListener;
+        typedef std::function<coro::task<void> (const PreCheckoutQuery::Ptr)> PreCheckoutQueryListener;
+        typedef std::function<coro::task<void> (const Poll::Ptr)> PollListener;
+        typedef std::function<coro::task<void> (const PollAnswer::Ptr)> PollAnswerListener;
+        typedef std::function<coro::task<void> (const ChatMemberUpdated::Ptr)> ChatMemberUpdatedListener;
+        typedef std::function<coro::task<void> (const ChatJoinRequest::Ptr)> ChatJoinRequestListener;
+        typedef std::function<coro::task<void> (const Message::Ptr, const SuccessfulPayment::Ptr)> SuccessfulPaymentListener;
 
         /**
          * @brief Registers listener which receives new incoming message of any kind - text, photo, sticker, etc.
@@ -170,7 +170,7 @@ namespace TgBot {
 
     private:
         template<typename ListenerType, typename ObjectType>
-        boost::asio::awaitable<void> broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
+        coro::task<void> broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
             if (!object)
                 co_return;
 
@@ -179,22 +179,22 @@ namespace TgBot {
             }
         }
 
-        boost::asio::awaitable<void> broadcastAnyMessage(const Message::Ptr& message) const;
-        boost::asio::awaitable<bool> broadcastCommand(const std::string& command, const Message::Ptr& message) const;
-        boost::asio::awaitable<void> broadcastUnknownCommand(const Message::Ptr& message) const;
-        boost::asio::awaitable<void> broadcastNonCommandMessage(const Message::Ptr& message) const;
-        boost::asio::awaitable<void> broadcastEditedMessage(const Message::Ptr& message) const;
-        boost::asio::awaitable<void> broadcastInlineQuery(const InlineQuery::Ptr& query) const;
-        boost::asio::awaitable<void> broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastCallbackQuery(const CallbackQuery::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastShippingQuery(const ShippingQuery::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastPoll(const Poll::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastPollAnswer(const PollAnswer::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastChatMember(const ChatMemberUpdated::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const;
-        boost::asio::awaitable<void> broadcastSuccessfulPayment(const Message::Ptr& message) const;
+        coro::task<void> broadcastAnyMessage(const Message::Ptr& message) const;
+        coro::task<bool> broadcastCommand(const std::string& command, const Message::Ptr& message) const;
+        coro::task<void> broadcastUnknownCommand(const Message::Ptr& message) const;
+        coro::task<void> broadcastNonCommandMessage(const Message::Ptr& message) const;
+        coro::task<void> broadcastEditedMessage(const Message::Ptr& message) const;
+        coro::task<void> broadcastInlineQuery(const InlineQuery::Ptr& query) const;
+        coro::task<void> broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const;
+        coro::task<void> broadcastCallbackQuery(const CallbackQuery::Ptr& result) const;
+        coro::task<void> broadcastShippingQuery(const ShippingQuery::Ptr& result) const;
+        coro::task<void> broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const;
+        coro::task<void> broadcastPoll(const Poll::Ptr& result) const;
+        coro::task<void> broadcastPollAnswer(const PollAnswer::Ptr& result) const;
+        coro::task<void> broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const;
+        coro::task<void> broadcastChatMember(const ChatMemberUpdated::Ptr& result) const;
+        coro::task<void> broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const;
+        coro::task<void> broadcastSuccessfulPayment(const Message::Ptr& message) const;
 
         std::vector<MessageListener> onAnyMessageListeners_;
         std::unordered_map<std::string, MessageListener> onCommandListeners_;

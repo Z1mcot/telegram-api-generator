@@ -4,12 +4,11 @@
 #pragma once
 #include "Api.hpp"
 #include "types/Update.hpp"
-#include <boost/asio/awaitable.hpp>
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
-#include <boost/asio/io_context.hpp>
+#include <coro/task.hpp>
 
 namespace TgBot {
 
@@ -33,12 +32,11 @@ namespace TgBot {
         void start();
 
         [[nodiscard]]
-        boost::asio::awaitable<void> startAsync();
+        coro::task<void> startAsync();
 
     private:
         const Api* api_;
         const EventHandler* eventHandler_;
-        boost::asio::io_context io_context_;
         std::int32_t lastUpdateId_ = 0;
         std::int32_t limit_;
         std::int32_t timeout_;

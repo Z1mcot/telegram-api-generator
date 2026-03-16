@@ -92,6 +92,7 @@ namespace TgBot {
      * @param sender_chat Optional. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field from contains a fake sender user in non-channel chats.
      * @param sender_boost_count Optional. If the sender of the message boosted the chat, the number of boosts added by the user
      * @param sender_business_bot Optional. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
+     * @param sender_tag Optional. Tag or custom title of the sender of the message; for supergroups only
      * @param business_connection_id Optional. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
      * @param forward_origin Optional. Information about the original message for forwarded messages
      * @param is_topic_message Optional. True, if the message is sent to a topic in a forum supergroup or a private chat with the bot
@@ -106,7 +107,7 @@ namespace TgBot {
      * @param has_protected_content Optional. True, if the message can't be forwarded
      * @param is_from_offline Optional. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message
      * @param is_paid_post Optional. True, if the message is a paid post. Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited.
-     * @param media_group_id Optional. The unique identifier of a media message group this message belongs to
+     * @param media_group_id Optional. The unique identifier inside this chat of a media message group this message belongs to
      * @param author_signature Optional. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator
      * @param paid_star_count Optional. The number of Telegram Stars that were paid by the sender of the message to send it
      * @param text Optional. For text messages, the actual UTF-8 text of the message
@@ -221,6 +222,9 @@ namespace TgBot {
         // Optional. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.
         User::Ptr sender_business_bot;
 
+        // Optional. Tag or custom title of the sender of the message; for supergroups only
+        std::string sender_tag;
+
         // Optional. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.
         std::string business_connection_id;
 
@@ -263,7 +267,7 @@ namespace TgBot {
         // Optional. True, if the message is a paid post. Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited.
         bool is_paid_post = false;
 
-        // Optional. The unique identifier of a media message group this message belongs to
+        // Optional. The unique identifier inside this chat of a media message group this message belongs to
         std::string media_group_id;
 
         // Optional. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator

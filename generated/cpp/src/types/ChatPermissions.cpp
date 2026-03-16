@@ -37,6 +37,9 @@ namespace TgBot {
     if (value.can_add_web_page_previews) { 
                     j["can_add_web_page_previews"] = value.can_add_web_page_previews; 
             }
+    if (value.can_edit_tag) { 
+                    j["can_edit_tag"] = value.can_edit_tag; 
+            }
     if (value.can_change_info) { 
                     j["can_change_info"] = value.can_change_info; 
             }
@@ -81,6 +84,9 @@ namespace TgBot {
         }
         if (j.contains("can_add_web_page_previews")) {
             j.at("can_add_web_page_previews").get_to(value.can_add_web_page_previews);
+        }
+        if (j.contains("can_edit_tag")) {
+            j.at("can_edit_tag").get_to(value.can_edit_tag);
         }
         if (j.contains("can_change_info")) {
             j.at("can_change_info").get_to(value.can_change_info);

@@ -33,6 +33,7 @@ namespace TgBot {
      * @param can_pin_messages Pass True if the administrator can pin messages; for supergroups only
      * @param can_manage_topics Pass True if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
      * @param can_manage_direct_messages Pass True if the administrator can manage direct messages within the channel and decline suggested posts; for channels only
+     * @param can_manage_tags Pass True if the administrator can edit the tags of regular members; for groups and supergroups only
      */
     struct PromoteChatMemberRequest {
         typedef std::shared_ptr<PromoteChatMemberRequest> Ptr;
@@ -89,6 +90,9 @@ namespace TgBot {
 
         // Pass True if the administrator can manage direct messages within the channel and decline suggested posts; for channels only
         bool can_manage_direct_messages = false;
+
+        // Pass True if the administrator can edit the tags of regular members; for groups and supergroups only
+        bool can_manage_tags = false;
     };
     void to_json(json& j, const PromoteChatMemberRequest& value);
     void from_json(const json& j, PromoteChatMemberRequest& value);

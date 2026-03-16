@@ -56,6 +56,9 @@ namespace TgBot {
     if (value.can_manage_direct_messages) { 
                     j["can_manage_direct_messages"] = value.can_manage_direct_messages; 
             }
+    if (value.can_manage_tags) { 
+                    j["can_manage_tags"] = value.can_manage_tags; 
+            }
     }
 
     void from_json(const json& j, PromoteChatMemberRequest& value) {
@@ -112,6 +115,9 @@ namespace TgBot {
         }
         if (j.contains("can_manage_direct_messages")) {
             j.at("can_manage_direct_messages").get_to(value.can_manage_direct_messages);
+        }
+        if (j.contains("can_manage_tags")) {
+            j.at("can_manage_tags").get_to(value.can_manage_tags);
         }
     }
 }

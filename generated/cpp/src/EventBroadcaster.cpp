@@ -84,11 +84,11 @@ namespace TgBot {
         onSuccessfulPaymentListeners_.push_back(listener);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastAnyMessage(const Message::Ptr& message) const {
+    coro::task<void> EventBroadcaster::broadcastAnyMessage(const Message::Ptr& message) const {
         co_await broadcast<MessageListener, Message::Ptr>(onAnyMessageListeners_, message);
     }
 
-    boost::asio::awaitable<bool> EventBroadcaster::broadcastCommand(const std::string& command, const Message::Ptr& message) const {
+    coro::task<bool> EventBroadcaster::broadcastCommand(const std::string& command, const Message::Ptr& message) const {
         auto iter = onCommandListeners_.find(command);
         if (iter == onCommandListeners_.end()) {
             co_return false;
@@ -97,59 +97,59 @@ namespace TgBot {
         co_return true;
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastUnknownCommand(const Message::Ptr& message) const {
+    coro::task<void> EventBroadcaster::broadcastUnknownCommand(const Message::Ptr& message) const {
         co_await broadcast<MessageListener, Message::Ptr>(onUnknownCommandListeners_, message);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastNonCommandMessage(const Message::Ptr& message) const {
+    coro::task<void> EventBroadcaster::broadcastNonCommandMessage(const Message::Ptr& message) const {
         co_await broadcast<MessageListener, Message::Ptr>(onNonCommandMessageListeners_, message);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastEditedMessage(const Message::Ptr& message) const {
+    coro::task<void> EventBroadcaster::broadcastEditedMessage(const Message::Ptr& message) const {
         co_await broadcast<MessageListener, Message::Ptr>(onEditedMessageListeners_, message);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastInlineQuery(const InlineQuery::Ptr& query) const {
+    coro::task<void> EventBroadcaster::broadcastInlineQuery(const InlineQuery::Ptr& query) const {
         co_await broadcast<InlineQueryListener, InlineQuery::Ptr>(onInlineQueryListeners_, query);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
         co_await broadcast<ChosenInlineResultListener, ChosenInlineResult::Ptr>(onChosenInlineResultListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
         co_await broadcast<CallbackQueryListener, CallbackQuery::Ptr>(onCallbackQueryListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
         co_await broadcast<ShippingQueryListener, ShippingQuery::Ptr>(onShippingQueryListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastPreCheckoutQuery(const PreCheckoutQuery::Ptr& result) const {
         co_await broadcast<PreCheckoutQueryListener, PreCheckoutQuery::Ptr>(onPreCheckoutQueryListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastPoll(const Poll::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastPoll(const Poll::Ptr& result) const {
         co_await broadcast<PollListener, Poll::Ptr>(onPollListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastPollAnswer(const PollAnswer::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastPollAnswer(const PollAnswer::Ptr& result) const {
         co_await broadcast<PollAnswerListener, PollAnswer::Ptr>(onPollAnswerListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastMyChatMember(const ChatMemberUpdated::Ptr& result) const {
         co_await broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onMyChatMemberListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastChatMember(const ChatMemberUpdated::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastChatMember(const ChatMemberUpdated::Ptr& result) const {
         co_await broadcast<ChatMemberUpdatedListener, ChatMemberUpdated::Ptr>(onChatMemberListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const {
+    coro::task<void> EventBroadcaster::broadcastChatJoinRequest(const ChatJoinRequest::Ptr& result) const {
         co_await broadcast<ChatJoinRequestListener, ChatJoinRequest::Ptr>(onChatJoinRequestListeners_, result);
     }
 
-    boost::asio::awaitable<void> EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) const {
+    coro::task<void> EventBroadcaster::broadcastSuccessfulPayment(const Message::Ptr& message) const {
         if (!message || !message->successful_payment) {
             co_return;
         }

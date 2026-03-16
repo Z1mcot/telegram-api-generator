@@ -27,1470 +27,1479 @@ namespace TgBot {
 
     // Getting updates
 
-    boost::asio::awaitable<TelegramResponse<std::vector<Update::Ptr>>> Api::getUpdates(const TgBot::GetUpdatesRequest& request) const {
+    coro::task<TelegramResponse<std::vector<Update::Ptr>>> Api::getUpdates(const TgBot::GetUpdatesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getUpdates";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<Update::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setWebhook(const TgBot::SetWebhookRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setWebhook(const TgBot::SetWebhookRequest& request) const {
         // Generate multipart form data for file uploads
         std::string boundary = "----TelegramBotAPI123456789";
         std::string body = toMultipart(request, boundary);
         std::string contentType = "multipart/form-data; boundary=" + boundary;
         const std::string target = "/bot" + api_key_ + "/setWebhook";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteWebhook(const TgBot::DeleteWebhookRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteWebhook(const TgBot::DeleteWebhookRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteWebhook";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<WebhookInfo::Ptr>> Api::getWebhookInfo() const {
+    coro::task<TelegramResponse<WebhookInfo::Ptr>> Api::getWebhookInfo() const {
         const std::string target = "/bot" + api_key_ + "/getWebhookInfo";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::get, target);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::GET, target);
         co_return parseResponse<WebhookInfo::Ptr>(response);
     }
 
 
     // Available methods
 
-    boost::asio::awaitable<TelegramResponse<User::Ptr>> Api::getMe() const {
+    coro::task<TelegramResponse<User::Ptr>> Api::getMe() const {
         const std::string target = "/bot" + api_key_ + "/getMe";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::get, target);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::GET, target);
         co_return parseResponse<User::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::logOut() const {
+    coro::task<TelegramResponse<bool>> Api::logOut() const {
         const std::string target = "/bot" + api_key_ + "/logOut";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::get, target);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::GET, target);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::close() const {
+    coro::task<TelegramResponse<bool>> Api::close() const {
         const std::string target = "/bot" + api_key_ + "/close";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::get, target);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::GET, target);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendMessage(const TgBot::SendMessageRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendMessage(const TgBot::SendMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::forwardMessage(const TgBot::ForwardMessageRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::forwardMessage(const TgBot::ForwardMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/forwardMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<MessageId::Ptr>>> Api::forwardMessages(const TgBot::ForwardMessagesRequest& request) const {
+    coro::task<TelegramResponse<std::vector<MessageId::Ptr>>> Api::forwardMessages(const TgBot::ForwardMessagesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/forwardMessages";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<MessageId::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<MessageId::Ptr>> Api::copyMessage(const TgBot::CopyMessageRequest& request) const {
+    coro::task<TelegramResponse<MessageId::Ptr>> Api::copyMessage(const TgBot::CopyMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/copyMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<MessageId::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<MessageId::Ptr>>> Api::copyMessages(const TgBot::CopyMessagesRequest& request) const {
+    coro::task<TelegramResponse<std::vector<MessageId::Ptr>>> Api::copyMessages(const TgBot::CopyMessagesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/copyMessages";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<MessageId::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendPhoto(const TgBot::SendPhotoRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendPhoto(const TgBot::SendPhotoRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendPhoto";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendAudio(const TgBot::SendAudioRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendAudio(const TgBot::SendAudioRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendAudio";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendDocument(const TgBot::SendDocumentRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendDocument(const TgBot::SendDocumentRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendDocument";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendVideo(const TgBot::SendVideoRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendVideo(const TgBot::SendVideoRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendVideo";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendAnimation(const TgBot::SendAnimationRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendAnimation(const TgBot::SendAnimationRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendAnimation";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendVoice(const TgBot::SendVoiceRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendVoice(const TgBot::SendVoiceRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendVoice";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendVideoNote(const TgBot::SendVideoNoteRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendVideoNote(const TgBot::SendVideoNoteRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendVideoNote";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendPaidMedia(const TgBot::SendPaidMediaRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendPaidMedia(const TgBot::SendPaidMediaRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendPaidMedia";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<Message::Ptr>>> Api::sendMediaGroup(const TgBot::SendMediaGroupRequest& request) const {
+    coro::task<TelegramResponse<std::vector<Message::Ptr>>> Api::sendMediaGroup(const TgBot::SendMediaGroupRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendMediaGroup";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<Message::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendLocation(const TgBot::SendLocationRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendLocation(const TgBot::SendLocationRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendLocation";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendVenue(const TgBot::SendVenueRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendVenue(const TgBot::SendVenueRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendVenue";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendContact(const TgBot::SendContactRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendContact(const TgBot::SendContactRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendContact";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendPoll(const TgBot::SendPollRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendPoll(const TgBot::SendPollRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendPoll";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendChecklist(const TgBot::SendChecklistRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendChecklist(const TgBot::SendChecklistRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendChecklist";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendDice(const TgBot::SendDiceRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendDice(const TgBot::SendDiceRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendDice";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::sendMessageDraft(const TgBot::SendMessageDraftRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::sendMessageDraft(const TgBot::SendMessageDraftRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendMessageDraft";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::sendChatAction(const TgBot::SendChatActionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::sendChatAction(const TgBot::SendChatActionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendChatAction";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setMessageReaction(const TgBot::SetMessageReactionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setMessageReaction(const TgBot::SetMessageReactionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setMessageReaction";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<UserProfilePhotos::Ptr>> Api::getUserProfilePhotos(const TgBot::GetUserProfilePhotosRequest& request) const {
+    coro::task<TelegramResponse<UserProfilePhotos::Ptr>> Api::getUserProfilePhotos(const TgBot::GetUserProfilePhotosRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getUserProfilePhotos";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<UserProfilePhotos::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<UserProfileAudios::Ptr>> Api::getUserProfileAudios(const TgBot::GetUserProfileAudiosRequest& request) const {
+    coro::task<TelegramResponse<UserProfileAudios::Ptr>> Api::getUserProfileAudios(const TgBot::GetUserProfileAudiosRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getUserProfileAudios";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<UserProfileAudios::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setUserEmojiStatus(const TgBot::SetUserEmojiStatusRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setUserEmojiStatus(const TgBot::SetUserEmojiStatusRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setUserEmojiStatus";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<File::Ptr>> Api::getFile(const TgBot::GetFileRequest& request) const {
+    coro::task<TelegramResponse<File::Ptr>> Api::getFile(const TgBot::GetFileRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getFile";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<File::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::banChatMember(const TgBot::BanChatMemberRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::banChatMember(const TgBot::BanChatMemberRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/banChatMember";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::unbanChatMember(const TgBot::UnbanChatMemberRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::unbanChatMember(const TgBot::UnbanChatMemberRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/unbanChatMember";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::restrictChatMember(const TgBot::RestrictChatMemberRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::restrictChatMember(const TgBot::RestrictChatMemberRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/restrictChatMember";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::promoteChatMember(const TgBot::PromoteChatMemberRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::promoteChatMember(const TgBot::PromoteChatMemberRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/promoteChatMember";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setChatAdministratorCustomTitle(const TgBot::SetChatAdministratorCustomTitleRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatAdministratorCustomTitle(const TgBot::SetChatAdministratorCustomTitleRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setChatAdministratorCustomTitle";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::banChatSenderChat(const TgBot::BanChatSenderChatRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatMemberTag(const TgBot::SetChatMemberTagRequest& request) const {
+        json j = request;
+        std::string body = j.dump();
+        std::string contentType = "application/json";
+        const std::string target = "/bot" + api_key_ + "/setChatMemberTag";
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
+        co_return parseResponse<bool>(response);
+    }
+
+    coro::task<TelegramResponse<bool>> Api::banChatSenderChat(const TgBot::BanChatSenderChatRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/banChatSenderChat";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::unbanChatSenderChat(const TgBot::UnbanChatSenderChatRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::unbanChatSenderChat(const TgBot::UnbanChatSenderChatRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/unbanChatSenderChat";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setChatPermissions(const TgBot::SetChatPermissionsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatPermissions(const TgBot::SetChatPermissionsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setChatPermissions";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::string>> Api::exportChatInviteLink(const TgBot::ExportChatInviteLinkRequest& request) const {
+    coro::task<TelegramResponse<std::string>> Api::exportChatInviteLink(const TgBot::ExportChatInviteLinkRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/exportChatInviteLink";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::string>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> Api::createChatInviteLink(const TgBot::CreateChatInviteLinkRequest& request) const {
+    coro::task<TelegramResponse<ChatInviteLink::Ptr>> Api::createChatInviteLink(const TgBot::CreateChatInviteLinkRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/createChatInviteLink";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatInviteLink::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> Api::editChatInviteLink(const TgBot::EditChatInviteLinkRequest& request) const {
+    coro::task<TelegramResponse<ChatInviteLink::Ptr>> Api::editChatInviteLink(const TgBot::EditChatInviteLinkRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editChatInviteLink";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatInviteLink::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> Api::createChatSubscriptionInviteLink(const TgBot::CreateChatSubscriptionInviteLinkRequest& request) const {
+    coro::task<TelegramResponse<ChatInviteLink::Ptr>> Api::createChatSubscriptionInviteLink(const TgBot::CreateChatSubscriptionInviteLinkRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/createChatSubscriptionInviteLink";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatInviteLink::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> Api::editChatSubscriptionInviteLink(const TgBot::EditChatSubscriptionInviteLinkRequest& request) const {
+    coro::task<TelegramResponse<ChatInviteLink::Ptr>> Api::editChatSubscriptionInviteLink(const TgBot::EditChatSubscriptionInviteLinkRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editChatSubscriptionInviteLink";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatInviteLink::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatInviteLink::Ptr>> Api::revokeChatInviteLink(const TgBot::RevokeChatInviteLinkRequest& request) const {
+    coro::task<TelegramResponse<ChatInviteLink::Ptr>> Api::revokeChatInviteLink(const TgBot::RevokeChatInviteLinkRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/revokeChatInviteLink";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatInviteLink::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::approveChatJoinRequest(const TgBot::ApproveChatJoinRequestRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::approveChatJoinRequest(const TgBot::ApproveChatJoinRequestRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/approveChatJoinRequest";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::declineChatJoinRequest(const TgBot::DeclineChatJoinRequestRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::declineChatJoinRequest(const TgBot::DeclineChatJoinRequestRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/declineChatJoinRequest";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setChatPhoto(const TgBot::SetChatPhotoRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatPhoto(const TgBot::SetChatPhotoRequest& request) const {
         // Generate multipart form data for file uploads
         std::string boundary = "----TelegramBotAPI123456789";
         std::string body = toMultipart(request, boundary);
         std::string contentType = "multipart/form-data; boundary=" + boundary;
         const std::string target = "/bot" + api_key_ + "/setChatPhoto";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteChatPhoto(const TgBot::DeleteChatPhotoRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteChatPhoto(const TgBot::DeleteChatPhotoRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteChatPhoto";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setChatTitle(const TgBot::SetChatTitleRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatTitle(const TgBot::SetChatTitleRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setChatTitle";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setChatDescription(const TgBot::SetChatDescriptionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatDescription(const TgBot::SetChatDescriptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setChatDescription";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::pinChatMessage(const TgBot::PinChatMessageRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::pinChatMessage(const TgBot::PinChatMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/pinChatMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::unpinChatMessage(const TgBot::UnpinChatMessageRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::unpinChatMessage(const TgBot::UnpinChatMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/unpinChatMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::unpinAllChatMessages(const TgBot::UnpinAllChatMessagesRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::unpinAllChatMessages(const TgBot::UnpinAllChatMessagesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/unpinAllChatMessages";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::leaveChat(const TgBot::LeaveChatRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::leaveChat(const TgBot::LeaveChatRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/leaveChat";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatFullInfo::Ptr>> Api::getChat(const TgBot::GetChatRequest& request) const {
+    coro::task<TelegramResponse<ChatFullInfo::Ptr>> Api::getChat(const TgBot::GetChatRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getChat";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatFullInfo::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<ChatMember::Ptr>>> Api::getChatAdministrators(const TgBot::GetChatAdministratorsRequest& request) const {
+    coro::task<TelegramResponse<std::vector<ChatMember::Ptr>>> Api::getChatAdministrators(const TgBot::GetChatAdministratorsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getChatAdministrators";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<ChatMember::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<int64_t>> Api::getChatMemberCount(const TgBot::GetChatMemberCountRequest& request) const {
+    coro::task<TelegramResponse<int64_t>> Api::getChatMemberCount(const TgBot::GetChatMemberCountRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getChatMemberCount";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<int64_t>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatMember::Ptr>> Api::getChatMember(const TgBot::GetChatMemberRequest& request) const {
+    coro::task<TelegramResponse<ChatMember::Ptr>> Api::getChatMember(const TgBot::GetChatMemberRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getChatMember";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatMember::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setChatStickerSet(const TgBot::SetChatStickerSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatStickerSet(const TgBot::SetChatStickerSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setChatStickerSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteChatStickerSet(const TgBot::DeleteChatStickerSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteChatStickerSet(const TgBot::DeleteChatStickerSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteChatStickerSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<Sticker::Ptr>>> Api::getForumTopicIconStickers() const {
+    coro::task<TelegramResponse<std::vector<Sticker::Ptr>>> Api::getForumTopicIconStickers() const {
         const std::string target = "/bot" + api_key_ + "/getForumTopicIconStickers";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::get, target);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::GET, target);
         co_return parseResponse<std::vector<Sticker::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ForumTopic::Ptr>> Api::createForumTopic(const TgBot::CreateForumTopicRequest& request) const {
+    coro::task<TelegramResponse<ForumTopic::Ptr>> Api::createForumTopic(const TgBot::CreateForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/createForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ForumTopic::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::editForumTopic(const TgBot::EditForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::editForumTopic(const TgBot::EditForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::closeForumTopic(const TgBot::CloseForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::closeForumTopic(const TgBot::CloseForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/closeForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::reopenForumTopic(const TgBot::ReopenForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::reopenForumTopic(const TgBot::ReopenForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/reopenForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteForumTopic(const TgBot::DeleteForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteForumTopic(const TgBot::DeleteForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::unpinAllForumTopicMessages(const TgBot::UnpinAllForumTopicMessagesRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::unpinAllForumTopicMessages(const TgBot::UnpinAllForumTopicMessagesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/unpinAllForumTopicMessages";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::editGeneralForumTopic(const TgBot::EditGeneralForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::editGeneralForumTopic(const TgBot::EditGeneralForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editGeneralForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::closeGeneralForumTopic(const TgBot::CloseGeneralForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::closeGeneralForumTopic(const TgBot::CloseGeneralForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/closeGeneralForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::reopenGeneralForumTopic(const TgBot::ReopenGeneralForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::reopenGeneralForumTopic(const TgBot::ReopenGeneralForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/reopenGeneralForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::hideGeneralForumTopic(const TgBot::HideGeneralForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::hideGeneralForumTopic(const TgBot::HideGeneralForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/hideGeneralForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::unhideGeneralForumTopic(const TgBot::UnhideGeneralForumTopicRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::unhideGeneralForumTopic(const TgBot::UnhideGeneralForumTopicRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/unhideGeneralForumTopic";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::unpinAllGeneralForumTopicMessages(const TgBot::UnpinAllGeneralForumTopicMessagesRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::unpinAllGeneralForumTopicMessages(const TgBot::UnpinAllGeneralForumTopicMessagesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/unpinAllGeneralForumTopicMessages";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::answerCallbackQuery(const TgBot::AnswerCallbackQueryRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::answerCallbackQuery(const TgBot::AnswerCallbackQueryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/answerCallbackQuery";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<UserChatBoosts::Ptr>> Api::getUserChatBoosts(const TgBot::GetUserChatBoostsRequest& request) const {
+    coro::task<TelegramResponse<UserChatBoosts::Ptr>> Api::getUserChatBoosts(const TgBot::GetUserChatBoostsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getUserChatBoosts";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<UserChatBoosts::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<BusinessConnection::Ptr>> Api::getBusinessConnection(const TgBot::GetBusinessConnectionRequest& request) const {
+    coro::task<TelegramResponse<BusinessConnection::Ptr>> Api::getBusinessConnection(const TgBot::GetBusinessConnectionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getBusinessConnection";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<BusinessConnection::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setMyCommands(const TgBot::SetMyCommandsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setMyCommands(const TgBot::SetMyCommandsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setMyCommands";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteMyCommands(const TgBot::DeleteMyCommandsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteMyCommands(const TgBot::DeleteMyCommandsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteMyCommands";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<BotCommand::Ptr>>> Api::getMyCommands(const TgBot::GetMyCommandsRequest& request) const {
+    coro::task<TelegramResponse<std::vector<BotCommand::Ptr>>> Api::getMyCommands(const TgBot::GetMyCommandsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getMyCommands";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<BotCommand::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setMyName(const TgBot::SetMyNameRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setMyName(const TgBot::SetMyNameRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setMyName";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<BotName::Ptr>> Api::getMyName(const TgBot::GetMyNameRequest& request) const {
+    coro::task<TelegramResponse<BotName::Ptr>> Api::getMyName(const TgBot::GetMyNameRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getMyName";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<BotName::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setMyDescription(const TgBot::SetMyDescriptionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setMyDescription(const TgBot::SetMyDescriptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setMyDescription";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<BotDescription::Ptr>> Api::getMyDescription(const TgBot::GetMyDescriptionRequest& request) const {
+    coro::task<TelegramResponse<BotDescription::Ptr>> Api::getMyDescription(const TgBot::GetMyDescriptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getMyDescription";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<BotDescription::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setMyShortDescription(const TgBot::SetMyShortDescriptionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setMyShortDescription(const TgBot::SetMyShortDescriptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setMyShortDescription";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<BotShortDescription::Ptr>> Api::getMyShortDescription(const TgBot::GetMyShortDescriptionRequest& request) const {
+    coro::task<TelegramResponse<BotShortDescription::Ptr>> Api::getMyShortDescription(const TgBot::GetMyShortDescriptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getMyShortDescription";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<BotShortDescription::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setMyProfilePhoto(const TgBot::SetMyProfilePhotoRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setMyProfilePhoto(const TgBot::SetMyProfilePhotoRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setMyProfilePhoto";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setChatMenuButton(const TgBot::SetChatMenuButtonRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setChatMenuButton(const TgBot::SetChatMenuButtonRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setChatMenuButton";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<MenuButton::Ptr>> Api::getChatMenuButton(const TgBot::GetChatMenuButtonRequest& request) const {
+    coro::task<TelegramResponse<MenuButton::Ptr>> Api::getChatMenuButton(const TgBot::GetChatMenuButtonRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getChatMenuButton";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<MenuButton::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setMyDefaultAdministratorRights(const TgBot::SetMyDefaultAdministratorRightsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setMyDefaultAdministratorRights(const TgBot::SetMyDefaultAdministratorRightsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setMyDefaultAdministratorRights";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<ChatAdministratorRights::Ptr>> Api::getMyDefaultAdministratorRights(const TgBot::GetMyDefaultAdministratorRightsRequest& request) const {
+    coro::task<TelegramResponse<ChatAdministratorRights::Ptr>> Api::getMyDefaultAdministratorRights(const TgBot::GetMyDefaultAdministratorRightsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getMyDefaultAdministratorRights";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<ChatAdministratorRights::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::sendGift(const TgBot::SendGiftRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::sendGift(const TgBot::SendGiftRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendGift";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::giftPremiumSubscription(const TgBot::GiftPremiumSubscriptionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::giftPremiumSubscription(const TgBot::GiftPremiumSubscriptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/giftPremiumSubscription";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::verifyUser(const TgBot::VerifyUserRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::verifyUser(const TgBot::VerifyUserRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/verifyUser";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::verifyChat(const TgBot::VerifyChatRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::verifyChat(const TgBot::VerifyChatRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/verifyChat";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::removeUserVerification(const TgBot::RemoveUserVerificationRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::removeUserVerification(const TgBot::RemoveUserVerificationRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/removeUserVerification";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::removeChatVerification(const TgBot::RemoveChatVerificationRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::removeChatVerification(const TgBot::RemoveChatVerificationRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/removeChatVerification";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::readBusinessMessage(const TgBot::ReadBusinessMessageRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::readBusinessMessage(const TgBot::ReadBusinessMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/readBusinessMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteBusinessMessages(const TgBot::DeleteBusinessMessagesRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteBusinessMessages(const TgBot::DeleteBusinessMessagesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteBusinessMessages";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setBusinessAccountName(const TgBot::SetBusinessAccountNameRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setBusinessAccountName(const TgBot::SetBusinessAccountNameRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setBusinessAccountName";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setBusinessAccountUsername(const TgBot::SetBusinessAccountUsernameRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setBusinessAccountUsername(const TgBot::SetBusinessAccountUsernameRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setBusinessAccountUsername";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setBusinessAccountBio(const TgBot::SetBusinessAccountBioRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setBusinessAccountBio(const TgBot::SetBusinessAccountBioRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setBusinessAccountBio";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setBusinessAccountProfilePhoto(const TgBot::SetBusinessAccountProfilePhotoRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setBusinessAccountProfilePhoto(const TgBot::SetBusinessAccountProfilePhotoRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setBusinessAccountProfilePhoto";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::removeBusinessAccountProfilePhoto(const TgBot::RemoveBusinessAccountProfilePhotoRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::removeBusinessAccountProfilePhoto(const TgBot::RemoveBusinessAccountProfilePhotoRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/removeBusinessAccountProfilePhoto";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setBusinessAccountGiftSettings(const TgBot::SetBusinessAccountGiftSettingsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setBusinessAccountGiftSettings(const TgBot::SetBusinessAccountGiftSettingsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setBusinessAccountGiftSettings";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<StarAmount::Ptr>> Api::getBusinessAccountStarBalance(const TgBot::GetBusinessAccountStarBalanceRequest& request) const {
+    coro::task<TelegramResponse<StarAmount::Ptr>> Api::getBusinessAccountStarBalance(const TgBot::GetBusinessAccountStarBalanceRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getBusinessAccountStarBalance";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<StarAmount::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::transferBusinessAccountStars(const TgBot::TransferBusinessAccountStarsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::transferBusinessAccountStars(const TgBot::TransferBusinessAccountStarsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/transferBusinessAccountStars";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<OwnedGifts::Ptr>> Api::getBusinessAccountGifts(const TgBot::GetBusinessAccountGiftsRequest& request) const {
+    coro::task<TelegramResponse<OwnedGifts::Ptr>> Api::getBusinessAccountGifts(const TgBot::GetBusinessAccountGiftsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getBusinessAccountGifts";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<OwnedGifts::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<OwnedGifts::Ptr>> Api::getUserGifts(const TgBot::GetUserGiftsRequest& request) const {
+    coro::task<TelegramResponse<OwnedGifts::Ptr>> Api::getUserGifts(const TgBot::GetUserGiftsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getUserGifts";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<OwnedGifts::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<OwnedGifts::Ptr>> Api::getChatGifts(const TgBot::GetChatGiftsRequest& request) const {
+    coro::task<TelegramResponse<OwnedGifts::Ptr>> Api::getChatGifts(const TgBot::GetChatGiftsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getChatGifts";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<OwnedGifts::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::convertGiftToStars(const TgBot::ConvertGiftToStarsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::convertGiftToStars(const TgBot::ConvertGiftToStarsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/convertGiftToStars";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::upgradeGift(const TgBot::UpgradeGiftRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::upgradeGift(const TgBot::UpgradeGiftRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/upgradeGift";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::transferGift(const TgBot::TransferGiftRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::transferGift(const TgBot::TransferGiftRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/transferGift";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Story::Ptr>> Api::postStory(const TgBot::PostStoryRequest& request) const {
+    coro::task<TelegramResponse<Story::Ptr>> Api::postStory(const TgBot::PostStoryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/postStory";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Story::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Story::Ptr>> Api::repostStory(const TgBot::RepostStoryRequest& request) const {
+    coro::task<TelegramResponse<Story::Ptr>> Api::repostStory(const TgBot::RepostStoryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/repostStory";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Story::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Story::Ptr>> Api::editStory(const TgBot::EditStoryRequest& request) const {
+    coro::task<TelegramResponse<Story::Ptr>> Api::editStory(const TgBot::EditStoryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editStory";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Story::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteStory(const TgBot::DeleteStoryRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteStory(const TgBot::DeleteStoryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteStory";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
 
     // Updating messages
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::editMessageText(const TgBot::EditMessageTextRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::editMessageText(const TgBot::EditMessageTextRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editMessageText";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::editMessageCaption(const TgBot::EditMessageCaptionRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::editMessageCaption(const TgBot::EditMessageCaptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editMessageCaption";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::editMessageMedia(const TgBot::EditMessageMediaRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::editMessageMedia(const TgBot::EditMessageMediaRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editMessageMedia";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::editMessageLiveLocation(const TgBot::EditMessageLiveLocationRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::editMessageLiveLocation(const TgBot::EditMessageLiveLocationRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editMessageLiveLocation";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::stopMessageLiveLocation(const TgBot::StopMessageLiveLocationRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::stopMessageLiveLocation(const TgBot::StopMessageLiveLocationRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/stopMessageLiveLocation";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::editMessageChecklist(const TgBot::EditMessageChecklistRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::editMessageChecklist(const TgBot::EditMessageChecklistRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editMessageChecklist";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::editMessageReplyMarkup(const TgBot::EditMessageReplyMarkupRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::editMessageReplyMarkup(const TgBot::EditMessageReplyMarkupRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editMessageReplyMarkup";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Poll::Ptr>> Api::stopPoll(const TgBot::StopPollRequest& request) const {
+    coro::task<TelegramResponse<Poll::Ptr>> Api::stopPoll(const TgBot::StopPollRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/stopPoll";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Poll::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::approveSuggestedPost(const TgBot::ApproveSuggestedPostRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::approveSuggestedPost(const TgBot::ApproveSuggestedPostRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/approveSuggestedPost";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::declineSuggestedPost(const TgBot::DeclineSuggestedPostRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::declineSuggestedPost(const TgBot::DeclineSuggestedPostRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/declineSuggestedPost";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteMessage(const TgBot::DeleteMessageRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteMessage(const TgBot::DeleteMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteMessages(const TgBot::DeleteMessagesRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteMessages(const TgBot::DeleteMessagesRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteMessages";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
 
     // Stickers
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendSticker(const TgBot::SendStickerRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendSticker(const TgBot::SendStickerRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendSticker";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<StickerSet::Ptr>> Api::getStickerSet(const TgBot::GetStickerSetRequest& request) const {
+    coro::task<TelegramResponse<StickerSet::Ptr>> Api::getStickerSet(const TgBot::GetStickerSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getStickerSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<StickerSet::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<Sticker::Ptr>>> Api::getCustomEmojiStickers(const TgBot::GetCustomEmojiStickersRequest& request) const {
+    coro::task<TelegramResponse<std::vector<Sticker::Ptr>>> Api::getCustomEmojiStickers(const TgBot::GetCustomEmojiStickersRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getCustomEmojiStickers";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<Sticker::Ptr>>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<File::Ptr>> Api::uploadStickerFile(const TgBot::UploadStickerFileRequest& request) const {
+    coro::task<TelegramResponse<File::Ptr>> Api::uploadStickerFile(const TgBot::UploadStickerFileRequest& request) const {
         // Generate multipart form data for file uploads
         std::string boundary = "----TelegramBotAPI123456789";
         std::string body = toMultipart(request, boundary);
         std::string contentType = "multipart/form-data; boundary=" + boundary;
         const std::string target = "/bot" + api_key_ + "/uploadStickerFile";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<File::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::createNewStickerSet(const TgBot::CreateNewStickerSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::createNewStickerSet(const TgBot::CreateNewStickerSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/createNewStickerSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::addStickerToSet(const TgBot::AddStickerToSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::addStickerToSet(const TgBot::AddStickerToSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/addStickerToSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setStickerPositionInSet(const TgBot::SetStickerPositionInSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setStickerPositionInSet(const TgBot::SetStickerPositionInSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setStickerPositionInSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteStickerFromSet(const TgBot::DeleteStickerFromSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteStickerFromSet(const TgBot::DeleteStickerFromSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteStickerFromSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::replaceStickerInSet(const TgBot::ReplaceStickerInSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::replaceStickerInSet(const TgBot::ReplaceStickerInSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/replaceStickerInSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setStickerEmojiList(const TgBot::SetStickerEmojiListRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setStickerEmojiList(const TgBot::SetStickerEmojiListRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setStickerEmojiList";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setStickerKeywords(const TgBot::SetStickerKeywordsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setStickerKeywords(const TgBot::SetStickerKeywordsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setStickerKeywords";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setStickerMaskPosition(const TgBot::SetStickerMaskPositionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setStickerMaskPosition(const TgBot::SetStickerMaskPositionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setStickerMaskPosition";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setStickerSetTitle(const TgBot::SetStickerSetTitleRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setStickerSetTitle(const TgBot::SetStickerSetTitleRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setStickerSetTitle";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setStickerSetThumbnail(const TgBot::SetStickerSetThumbnailRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setStickerSetThumbnail(const TgBot::SetStickerSetThumbnailRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setStickerSetThumbnail";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setCustomEmojiStickerSetThumbnail(const TgBot::SetCustomEmojiStickerSetThumbnailRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setCustomEmojiStickerSetThumbnail(const TgBot::SetCustomEmojiStickerSetThumbnailRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setCustomEmojiStickerSetThumbnail";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::deleteStickerSet(const TgBot::DeleteStickerSetRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::deleteStickerSet(const TgBot::DeleteStickerSetRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/deleteStickerSet";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
 
     // Inline mode
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::answerInlineQuery(const TgBot::AnswerInlineQueryRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::answerInlineQuery(const TgBot::AnswerInlineQueryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/answerInlineQuery";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<SentWebAppMessage::Ptr>> Api::answerWebAppQuery(const TgBot::AnswerWebAppQueryRequest& request) const {
+    coro::task<TelegramResponse<SentWebAppMessage::Ptr>> Api::answerWebAppQuery(const TgBot::AnswerWebAppQueryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/answerWebAppQuery";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<SentWebAppMessage::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<PreparedInlineMessage::Ptr>> Api::savePreparedInlineMessage(const TgBot::SavePreparedInlineMessageRequest& request) const {
+    coro::task<TelegramResponse<PreparedInlineMessage::Ptr>> Api::savePreparedInlineMessage(const TgBot::SavePreparedInlineMessageRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/savePreparedInlineMessage";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<PreparedInlineMessage::Ptr>(response);
     }
 
 
     // Payments
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendInvoice(const TgBot::SendInvoiceRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendInvoice(const TgBot::SendInvoiceRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendInvoice";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::string>> Api::createInvoiceLink(const TgBot::CreateInvoiceLinkRequest& request) const {
+    coro::task<TelegramResponse<std::string>> Api::createInvoiceLink(const TgBot::CreateInvoiceLinkRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/createInvoiceLink";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::string>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::answerShippingQuery(const TgBot::AnswerShippingQueryRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::answerShippingQuery(const TgBot::AnswerShippingQueryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/answerShippingQuery";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::answerPreCheckoutQuery(const TgBot::AnswerPreCheckoutQueryRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::answerPreCheckoutQuery(const TgBot::AnswerPreCheckoutQueryRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/answerPreCheckoutQuery";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<StarTransactions::Ptr>> Api::getStarTransactions(const TgBot::GetStarTransactionsRequest& request) const {
+    coro::task<TelegramResponse<StarTransactions::Ptr>> Api::getStarTransactions(const TgBot::GetStarTransactionsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getStarTransactions";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<StarTransactions::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::refundStarPayment(const TgBot::RefundStarPaymentRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::refundStarPayment(const TgBot::RefundStarPaymentRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/refundStarPayment";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::editUserStarSubscription(const TgBot::EditUserStarSubscriptionRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::editUserStarSubscription(const TgBot::EditUserStarSubscriptionRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/editUserStarSubscription";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
 
     // Telegram Passport
 
-    boost::asio::awaitable<TelegramResponse<bool>> Api::setPassportDataErrors(const TgBot::SetPassportDataErrorsRequest& request) const {
+    coro::task<TelegramResponse<bool>> Api::setPassportDataErrors(const TgBot::SetPassportDataErrorsRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setPassportDataErrors";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<bool>(response);
     }
 
 
     // Games
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::sendGame(const TgBot::SendGameRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::sendGame(const TgBot::SendGameRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/sendGame";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<Message::Ptr>> Api::setGameScore(const TgBot::SetGameScoreRequest& request) const {
+    coro::task<TelegramResponse<Message::Ptr>> Api::setGameScore(const TgBot::SetGameScoreRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/setGameScore";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<Message::Ptr>(response);
     }
 
-    boost::asio::awaitable<TelegramResponse<std::vector<GameHighScore::Ptr>>> Api::getGameHighScores(const TgBot::GetGameHighScoresRequest& request) const {
+    coro::task<TelegramResponse<std::vector<GameHighScore::Ptr>>> Api::getGameHighScores(const TgBot::GetGameHighScoresRequest& request) const {
         json j = request;
         std::string body = j.dump();
         std::string contentType = "application/json";
         const std::string target = "/bot" + api_key_ + "/getGameHighScores";
-        std::string response = co_await http_client_.makeRequest(boost::beast::http::verb::post, target, body, contentType);
+        std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);
         co_return parseResponse<std::vector<GameHighScore::Ptr>>(response);
     }
 }

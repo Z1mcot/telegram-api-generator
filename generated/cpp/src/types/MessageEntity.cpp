@@ -23,6 +23,12 @@ namespace TgBot {
     if (!value.custom_emoji_id.empty()) { 
                     j["custom_emoji_id"] = value.custom_emoji_id; 
             }
+    if (value.unix_time != 0) { 
+                    j["unix_time"] = value.unix_time; 
+            }
+    if (!value.date_time_format.empty()) { 
+                    j["date_time_format"] = value.date_time_format; 
+            }
     }
 
     void from_json(const json& j, MessageEntity& value) {
@@ -46,6 +52,12 @@ namespace TgBot {
         }
         if (j.contains("custom_emoji_id")) {
             j.at("custom_emoji_id").get_to(value.custom_emoji_id);
+        }
+        if (j.contains("unix_time")) {
+            j.at("unix_time").get_to(value.unix_time);
+        }
+        if (j.contains("date_time_format")) {
+            j.at("date_time_format").get_to(value.date_time_format);
         }
     }
 }

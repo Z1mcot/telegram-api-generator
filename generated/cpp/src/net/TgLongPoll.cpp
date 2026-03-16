@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 #include <utility>
-#include <boost/asio.hpp>
+#include <coro/sync_wait.hpp>
 
 namespace TgBot {
     TgLongPoll::TgLongPoll(const Api* api, const EventHandler* eventHandler, std::int32_t limit, std::int32_t timeout, std::shared_ptr<std::vector<std::string>> allowUpdates)
@@ -22,12 +22,10 @@ namespace TgBot {
     }
 
     void TgLongPoll::start() {
-        boost::asio::co_spawn(io_context_, startAsync(), boost::asio::detached);
-
-        io_context_.run();
+        coro::sync_wait(startAsync());
     }
 
-    boost::asio::awaitable<void> TgLongPoll::startAsync() {
+    coro::task<void> TgLongPoll::startAsync() {
         // handle updates
         for (Update::Ptr& item : updates_) {
             if (item->update_id >= lastUpdateId_) {

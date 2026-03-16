@@ -10,6 +10,9 @@ namespace TgBot {
         j = json{};
         j["status"] = value.status;
         j["user"] = value.user;
+    if (!value.tag.empty()) { 
+                    j["tag"] = value.tag; 
+            }
     if (value.until_date != 0) { 
                     j["until_date"] = value.until_date; 
             }
@@ -21,6 +24,9 @@ namespace TgBot {
         }
         if (j.contains("user")) {
             j.at("user").get_to(value.user);
+        }
+        if (j.contains("tag")) {
+            j.at("tag").get_to(value.tag);
         }
         if (j.contains("until_date")) {
             j.at("until_date").get_to(value.until_date);

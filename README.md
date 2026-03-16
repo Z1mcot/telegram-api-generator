@@ -9,7 +9,7 @@ How to run:
 ./gradlew run
 ```
 
-Last update: Telegram Bot API 9.4
+Last update: Telegram Bot API 9.5
 
 Example in:
 

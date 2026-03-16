@@ -26,6 +26,7 @@ namespace TgBot {
      * @param can_send_polls Optional. True, if the user is allowed to send polls and checklists
      * @param can_send_other_messages Optional. True, if the user is allowed to send animations, games, stickers and use inline bots
      * @param can_add_web_page_previews Optional. True, if the user is allowed to add web page previews to their messages
+     * @param can_edit_tag Optional. True, if the user is allowed to edit their own tag
      * @param can_change_info Optional. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
      * @param can_invite_users Optional. True, if the user is allowed to invite new users to the chat
      * @param can_pin_messages Optional. True, if the user is allowed to pin messages. Ignored in public supergroups
@@ -65,6 +66,9 @@ namespace TgBot {
 
         // Optional. True, if the user is allowed to add web page previews to their messages
         bool can_add_web_page_previews = false;
+
+        // Optional. True, if the user is allowed to edit their own tag
+        bool can_edit_tag = false;
 
         // Optional. True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups
         bool can_change_info = false;

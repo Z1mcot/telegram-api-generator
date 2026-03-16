@@ -37,6 +37,9 @@ namespace TgBot {
     if (value.can_manage_direct_messages) { 
                     j["can_manage_direct_messages"] = value.can_manage_direct_messages; 
             }
+    if (value.can_manage_tags) { 
+                    j["can_manage_tags"] = value.can_manage_tags; 
+            }
     if (!value.custom_title.empty()) { 
                     j["custom_title"] = value.custom_title; 
             }
@@ -99,6 +102,9 @@ namespace TgBot {
         }
         if (j.contains("can_manage_direct_messages")) {
             j.at("can_manage_direct_messages").get_to(value.can_manage_direct_messages);
+        }
+        if (j.contains("can_manage_tags")) {
+            j.at("can_manage_tags").get_to(value.can_manage_tags);
         }
         if (j.contains("custom_title")) {
             j.at("custom_title").get_to(value.custom_title);

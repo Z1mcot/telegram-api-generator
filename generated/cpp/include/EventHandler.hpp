@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <string>
+#include <coro/task.hpp>
 
 namespace TgBot {
 
@@ -16,11 +17,11 @@ namespace TgBot {
         explicit EventHandler(const EventBroadcaster& broadcaster) : broadcaster_(broadcaster) {
         }
 
-        boost::asio::awaitable<void> handleUpdate(const Update::Ptr& update) const;
+        coro::task<void> handleUpdate(const Update::Ptr& update) const;
 
     private:
         const EventBroadcaster& broadcaster_;
 
-        boost::asio::awaitable<void> handleMessage(const Message::Ptr& message) const;
+        coro::task<void> handleMessage(const Message::Ptr& message) const;
     };
 }

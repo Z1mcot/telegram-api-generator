@@ -3,8 +3,8 @@
 
 #pragma once
 #include "Api.hpp"
-#include <boost/asio/awaitable.hpp>
-#include <boost/asio/io_context.hpp>
+#include <coro/task.hpp>
+#include <string>
 
 namespace TgBot {
 
@@ -13,15 +13,14 @@ namespace TgBot {
         Api& client_;
         std::string url_;
         std::string secret_token_;
-        boost::asio::io_context io_;
 
     public:
         explicit WebhookService(Api& client, const std::string& url, const std::string& secret_token = "");
-
         
         void start();
 
-        boost::asio::awaitable<void> startAsync();
+        [[nodiscard]]
+        coro::task<void> startAsync();
         
         [[nodiscard]]
         bool validate(const std::string& header_secret_token) const;

@@ -88,6 +88,9 @@ namespace TgBot {
     if (value.sender_business_bot) { 
                     j["sender_business_bot"] = value.sender_business_bot; 
             }
+    if (!value.sender_tag.empty()) { 
+                    j["sender_tag"] = value.sender_tag; 
+            }
     if (!value.business_connection_id.empty()) { 
                     j["business_connection_id"] = value.business_connection_id; 
             }
@@ -405,6 +408,9 @@ namespace TgBot {
         }
         if (j.contains("sender_business_bot")) {
             j.at("sender_business_bot").get_to(value.sender_business_bot);
+        }
+        if (j.contains("sender_tag")) {
+            j.at("sender_tag").get_to(value.sender_tag);
         }
         if (j.contains("business_connection_id")) {
             j.at("business_connection_id").get_to(value.business_connection_id);

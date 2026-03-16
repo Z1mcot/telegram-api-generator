@@ -4,7 +4,7 @@
 #include "EventHandler.hpp"
 
 namespace TgBot {
-    boost::asio::awaitable<void> EventHandler::handleUpdate(const Update::Ptr& update) const {
+    coro::task<void> EventHandler::handleUpdate(const Update::Ptr& update) const {
         if (update->message) {
             co_await handleMessage(update->message);
         }
@@ -49,7 +49,7 @@ namespace TgBot {
         }
     }
 
-    boost::asio::awaitable<void> EventHandler::handleMessage(const Message::Ptr& message) const {
+    coro::task<void> EventHandler::handleMessage(const Message::Ptr& message) const {
         co_await broadcaster_.broadcastAnyMessage(message);
 
         if (StringTools::startsWith(message->text, "/")) {

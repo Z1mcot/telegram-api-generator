@@ -930,7 +930,7 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     endif()
                   
     project(tgbot-lib
-        VERSION 1.0.0
+        VERSION 1.0.4
         LANGUAGES CXX
         DESCRIPTION "Telegram Bot API C++ models"
     )
@@ -998,7 +998,7 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
 
         target_include_directories(tgbot-lib
             PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                $<BUILD_INTERFACE:${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include>
                 $<INSTALL_INTERFACE:include>
         )
         
@@ -1020,8 +1020,8 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
         
         target_include_directories(tgbot-lib
             PUBLIC
-                $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+                $<BUILD_INTERFACE:${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include>
+                $<INSTALL_INTERFACE:${'$'}{CMAKE_INSTALL_INCLUDEDIR}>
         )
         
         target_link_libraries(tgbot-lib

@@ -74,7 +74,7 @@ private fun buildCppSource(
         CppFileCategory.NET -> "net/"
         CppFileCategory.ROOT -> ""
     }
-    appendLine("#include \"$prefix$headerName.hpp\"")
+    appendLine("#include <tgbot/$prefix$headerName.hpp>")
     includes.distinct().forEach { appendLine(it) }
     appendLine()
     appendLine("namespace TgBot {")
@@ -334,7 +334,7 @@ struct InputFile {
         headerName = "InputFile",
         category = CppFileCategory.TYPE,
         includes = listOf(
-            "#include \"tools/FileTools.hpp\"",
+            "#include <tgbot/tools/FileTools.hpp>",
             "#include <filesystem>",
         ),
         body = sourceBody
@@ -477,7 +477,7 @@ private fun generateSuperTypeFiles(): List<CppModelFile> {
     return TelegramType.allSuper.map { superType ->
         val parentName = superType.superTypeNameOrBase()
 
-        val headerIncludes = CPP_BASE_INCLUDES + listOf("#include \"types/$parentName.hpp\"")
+        val headerIncludes = CPP_BASE_INCLUDES + listOf("#include <tgbot/types/$parentName.hpp>")
 
         val headerBody = buildString {
             appendLine("struct ${superType.name} : public $parentName {")
@@ -537,9 +537,9 @@ private fun DocType.toCppFile(
 
     val headerIncludes = buildList {
         addAll(CPP_BASE_INCLUDES)
-        add("#include \"types/$superTypeName.hpp\"")
+        add("#include <tgbot/types/$superTypeName.hpp>")
         // include only non-circular custom types
-        addAll((customIncludes - circularTypes).map { "#include \"types/$it.hpp\"" })
+        addAll((customIncludes - circularTypes).map { "#include <tgbot/types/$it.hpp>" })
     }
 
     val headerBody = buildString {
@@ -548,7 +548,7 @@ private fun DocType.toCppFile(
     }
 
     // Source: include all full definitions and implement to_json()
-    val sourceIncludes = pointerTypes.map { "#include \"types/$it.hpp\"" } +
+    val sourceIncludes = pointerTypes.map { "#include <tgbot/types/$it.hpp>" } +
         listOf("#include <nlohmann/json.hpp>")
 
     val sourceBody = buildString {
@@ -745,7 +745,7 @@ private fun DocMethod.toCppRequestFile(
 
     val headerIncludes = buildList {
         addAll(CPP_BASE_INCLUDES)
-        addAll((customIncludes - circularTypes).map { "#include \"types/$it.hpp\"" })
+        addAll((customIncludes - circularTypes).map { "#include <tgbot/types/$it.hpp>" })
         if (hasInputFileParameter()) add("#include <string>")
     }
 
@@ -858,7 +858,7 @@ private fun List<DocSection>.toCppModelFiles(): List<CppModelFile> {
     files += generateHttpClient()
     files += generateLibCoroHttpClient()
     files += generateApi()
-    files += generateTelegramResponse()
+    files += generateTelegramException()
     files += generateWebhookService()
     files += generateLongPoll()
 
@@ -930,7 +930,7 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     endif()
                   
     project(tgbot-lib
-        VERSION 1.0.4
+        VERSION 1.0.5
         LANGUAGES CXX
         DESCRIPTION "Telegram Bot API C++ models"
     )
@@ -949,8 +949,9 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     else()
         message("Couldn't find OpenSSL!")
     endif()
-    
-    pkg_check_modules(test REQUIRED IMPORTED_TARGET libcoro)
+
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(libcoro REQUIRED IMPORTED_TARGET libcoro)
     find_package(httplib)
     find_package(nlohmann_json)
     """.trimIndent()
@@ -992,7 +993,7 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     if (sourceFiles.isNotEmpty()) {
         appendLine(
         """
-        add_library(tgbot-lib SHARED
+        add_library(tgbot-lib STATIC
             ${'$'}{TELEGRAM_MODELS_SOURCES}
         )
 
@@ -1001,13 +1002,23 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
                 $<BUILD_INTERFACE:${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include>
                 $<INSTALL_INTERFACE:include>
         )
+
+        if(APPLE)
+            message("Found MACOS")
+            target_link_libraries(tgbot-lib
+                PUBLIC
+                    "-framework CoreFoundation"
+                    "-framework CFNetwork"
+                    "-framework Security"
+            )
+        endif()
         
         target_link_libraries(tgbot-lib
             PUBLIC
                 nlohmann_json::nlohmann_json
                 OpenSSL::SSL
                 OpenSSL::Crypto
-                libcoro
+                PkgConfig::libcoro
                 httplib::httplib
         )
         """.trimIndent()
@@ -1029,7 +1040,7 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
                 nlohmann_json::nlohmann_json
                 OpenSSL::SSL
                 OpenSSL::Crypto
-                libcoro
+                PkgConfig::libcoro
                 httplib::httplib
         )
         """.trimIndent()
@@ -1374,7 +1385,7 @@ private fun generateLibCoroHttpClient(): CppModelFile {
     val headerContent = buildCppHeader(
         forwardDeclarations = emptyList(),
         includes = listOf(
-            "#include \"HttpClient.hpp\"",
+            "#include <tgbot/net/HttpClient.hpp>",
             "#include <coro/thread_pool.hpp>",
             "#include <memory>",
             "#include <string>"
@@ -1406,6 +1417,8 @@ private fun generateTelegramResponse(): CppModelFile {
         bool ok;
         std::optional<T> result;
     };
+
+
     """.trimIndent()
 
     val headerContent = buildCppHeader(
@@ -1422,15 +1435,59 @@ private fun generateTelegramResponse(): CppModelFile {
     )
 }
 
+private fun generateTelegramException(): CppModelFile {
+    val headerBody = """
+    class TgException : public std::runtime_error {
+    public:
+        enum class ErrorCode : size_t {
+            Undefined = 0,
+            BadRequest = 400, Unauthorized = 401, 
+            Forbidden = 403, NotFound = 404, 
+            Flood = 402, Internal = 500,
+            HtmlResponse = 100, InvalidJson = 101
+        };
+
+        explicit TgException(const std::string& description, ErrorCode errorCode);
+
+        const ErrorCode errorCode;
+    };
+    """.trimIndent()
+
+    val headerContent = buildCppHeader(
+        forwardDeclarations = emptyList(),
+        includes = listOf("#include <stdexcept>", "#include <string>", "#include <cstddef>"),
+        body = headerBody
+    )
+
+    val sourceBody = """
+    TgException::TgException(const std::string& description, ErrorCode errorCode)
+        : std::runtime_error(description), errorCode(errorCode) {}
+    """.trimIndent()
+
+    val sourceContent = buildCppSource(
+        headerName = "TelegramException",
+        category = CppFileCategory.NET,
+        includes = emptyList(),
+        body = sourceBody
+    )
+
+    return CppModelFile(
+        name = "TelegramException",
+        category = CppFileCategory.NET,
+        headerContent = headerContent,
+        sourceContent = sourceContent
+    )
+}
+
 private fun List<DocSection>.generateApi(): CppModelFile {
     val modelIncludes = collectCppClientModelIncludes().sorted().map { model ->
-        "#include \"types/$model.hpp\""
+        "#include <tgbot/types/$model.hpp>"
     }
     val requestsIncludes = collectCppClientRequestIncludes().sorted().map { request ->
-        "#include \"requests/$request.hpp\""
+        "#include <tgbot/requests/$request.hpp>"
     }
 
-    val headerIncludes = modelIncludes + requestsIncludes + listOf("#include \"HttpClient.hpp\"", "#include \"TelegramResponse.hpp\"", "#include <string>")
+    val headerIncludes = modelIncludes + requestsIncludes + listOf("#include <tgbot/net/HttpClient.hpp>", "#include <string>")
 
     val headerBody = buildString {
         appendLine("""
@@ -1441,7 +1498,7 @@ private fun List<DocSection>.generateApi(): CppModelFile {
             std::string url_;
             
             template<typename T>
-            TelegramResponse<T> parseResponse(const std::string& response_str) const;
+            T parseResponse(const std::string& response_str) const;
             
         public:
             explicit Api(std::string api_key, HttpClient& http_client, std::string url = "https://api.telegram.org");
@@ -1473,16 +1530,35 @@ private fun List<DocSection>.generateApi(): CppModelFile {
         }
         template<typename T>
         
-        TelegramResponse<T> Api::parseResponse(const std::string& response_str) const {
-            auto j = json::parse(response_str);
-        
-            TelegramResponse<T> result;
-            result.ok = j["ok"].get<bool>();
-        
-            if (result.ok && j.contains("result")) {
-                result.result = j["result"].get<T>();
+        T Api::parseResponse(const std::string& response_str) const {
+            if (response_str.compare(0, 6, "<html>") == 0) {
+                throw TgException("Received HTML response from Telegram API, likely an error page. Response: " + response_str, TgException::ErrorCode::HtmlResponse);
             }
-            return result;
+
+            try {
+                json::parse(response_str);
+            } catch (const json::parse_error& e) {
+                throw TgException("Failed to parse JSON response: " + std::string(e.what()) + ". Response: " + response_str, TgException::ErrorCode::InvalidJson);
+            }
+        
+            bool isOk = j["ok"].get<bool>();
+
+            if (!isOk) {
+                auto descriptionIt = j.find("description");
+                auto errorCodeIt = j.find("error_code");
+
+                std::string description = descriptionIt != j.end() ? descriptionIt->get<std::string>() : "Unknown error";
+                int errorCode = errorCodeIt != j.end() ? errorCodeIt->get<int>() : 0;
+                TgException::ErrorCode tgErrorCode = static_cast<TgException::ErrorCode>(errorCode);
+                throw TgException(description, tgErrorCode);
+            }
+
+            auto resultIt = j.find("result");
+        
+            if (resultIt == j.end()) {
+                throw TgException("Response JSON does not contain 'result' field. Response: " + response_str, TgException::ErrorCode::InvalidJson);
+            }
+            return resultIt->get<T>();
         }
         """.trimIndent())
 
@@ -1538,7 +1614,7 @@ private fun DocMethod.toCppClientMethodDeclaration() = buildString {
 
     appendLine(toCppDoc(showReturn = true, forClient = true))
     if (docParameters.isEmpty()) {
-        append("coro::task<TelegramResponse<$returnTypeWithVector>> $name() const;")
+        append("coro::task<$returnTypeWithVector> $name() const;")
     } else {
         val paramsSignature = docParameters.joinToString(", ") { parameter ->
             val baseType = parameter.toCppFieldType(null)
@@ -1550,7 +1626,9 @@ private fun DocMethod.toCppClientMethodDeclaration() = buildString {
             }
             "$paramType ${paramName}$defaultValue"
         }
-        append("coro::task<TelegramResponse<$returnTypeWithVector>> $name($paramsSignature) const;")
+        append("coro::task<$returnTypeWithVector> $name($paramsSignature) const;")
+        appendLine()
+        append("coro::task<$returnTypeWithVector> $name(const $structName& request) const;")
     }
 }
 
@@ -1563,7 +1641,7 @@ private fun DocMethod.toCppClientMethodImplementation() = buildString {
     }
 
     if (docParameters.isEmpty()) {
-        append("coro::task<TelegramResponse<$returnTypeWithVector>> Api::$name() const {")
+        append("coro::task<$returnTypeWithVector> Api::$name() const {")
         appendLine()
         appendLine("    const std::string target = \"/bot\" + api_key_ + \"/$name\";")
         appendLine("    std::string response = co_await http_client_.makeRequest(HttpVerb::GET, target);")
@@ -1575,8 +1653,29 @@ private fun DocMethod.toCppClientMethodImplementation() = buildString {
             val paramType = getParameterType(baseType)
             "$paramType ${parameter.cppFieldName()}"
         }
-        appendLine("coro::task<TelegramResponse<$returnTypeWithVector>> Api::$name($paramsSignature) const {")
+        appendLine("coro::task<$returnTypeWithVector> Api::$name($paramsSignature) const {")
         appendLine("    TgBot::$structName request{};")
+        docParameters.forEach { parameter ->
+            val fieldName = parameter.cppFieldName()
+            appendLine("    request.$fieldName = $fieldName;")
+        }
+        if (hasInputFileParameter()) {
+            appendLine("    // Generate multipart form data for file uploads")
+            appendLine("    std::string boundary = \"----TelegramBotAPI123456789\";")
+            appendLine("    std::string body = toMultipart(request, boundary);")
+            appendLine("    std::string contentType = \"multipart/form-data; boundary=\" + boundary;")
+        } else {
+            appendLine("    json j = request;")
+            appendLine("    std::string body = j.dump();")
+            appendLine("    std::string contentType = \"application/json\";")
+        }
+        appendLine("    const std::string target = \"/bot\" + api_key_ + \"/$name\";")
+        appendLine("    std::string response = co_await http_client_.makeRequest(HttpVerb::POST, target, body, contentType);")
+        appendLine("    co_return parseResponse<$returnTypeWithVector>(response);")
+        appendLine("}")
+        appendLine()
+        appendLine("coro::task<$returnTypeWithVector> Api::$name(const $structName& request) const {")
+        appendLine("     request{};")
         docParameters.forEach { parameter ->
             val fieldName = parameter.cppFieldName()
             appendLine("    request.$fieldName = $fieldName;")
@@ -1676,7 +1775,7 @@ private fun String.cleanHtml(): String {
 
 private fun generateWebhookService(): CppModelFile {
     val headerIncludes = listOf(
-        "#include \"Api.hpp\"",
+        "#include <tgbot/net/Api.hpp>",
         "#include <coro/task.hpp>",
         "#include <string>",
     )
@@ -1705,7 +1804,7 @@ private fun generateWebhookService(): CppModelFile {
     """.trimIndent()
 
     val sourceIncludes = listOf(
-        "#include \"requests/SetWebhookRequest.hpp\"",
+        "#include <tgbot/requests/SetWebhookRequest.hpp>",
         "#include <nlohmann/json.hpp>",
         "#include <coro/sync_wait.hpp>",
     )
@@ -1762,8 +1861,8 @@ private fun generateWebhookService(): CppModelFile {
 
 private fun generateLongPoll(): CppModelFile {
     val headerIncludes = listOf(
-        "#include \"Api.hpp\"",
-        "#include \"types/Update.hpp\"",
+        "#include <tgbot/net/Api.hpp>",
+        "#include <tgbot/types/Update.hpp>",
         "#include <cstdint>",
         "#include <memory>",
         "#include <string>",
@@ -1809,9 +1908,9 @@ private fun generateLongPoll(): CppModelFile {
     """.trimIndent()
 
     val sourceIncludes = listOf(
-        "#include \"Bot.hpp\"",
-        "#include \"EventHandler.hpp\"",
-        "#include \"requests/GetUpdatesRequest.hpp\"",
+        "#include <tgbot/Bot.hpp>",
+        "#include <tgbot/EventHandler.hpp>",
+        "#include <tgbot/requests/GetUpdatesRequest.hpp>",
         "#include <cstdint>",
         "#include <memory>",
         "#include <vector>",
@@ -2228,17 +2327,17 @@ private:
     )
 
     val includes = listOf(
-        "#include \"types/Message.hpp\"",
-        "#include \"types/InlineQuery.hpp\"",
-        "#include \"types/ChosenInlineResult.hpp\"",
-        "#include \"types/CallbackQuery.hpp\"",
-        "#include \"types/ShippingQuery.hpp\"",
-        "#include \"types/PreCheckoutQuery.hpp\"",
-        "#include \"types/Poll.hpp\"",
-        "#include \"types/PollAnswer.hpp\"",
-        "#include \"types/ChatMemberUpdated.hpp\"",
-        "#include \"types/ChatJoinRequest.hpp\"",
-        "#include \"types/SuccessfulPayment.hpp\"",
+        "#include <tgbot/types/Message.hpp>",
+        "#include <tgbot/types/InlineQuery.hpp>",
+        "#include <tgbot/types/ChosenInlineResult.hpp>",
+        "#include <tgbot/types/CallbackQuery.hpp>",
+        "#include <tgbot/types/ShippingQuery.hpp>",
+        "#include <tgbot/types/PreCheckoutQuery.hpp>",
+        "#include <tgbot/types/Poll.hpp>",
+        "#include <tgbot/types/PollAnswer.hpp>",
+        "#include <tgbot/types/ChatMemberUpdated.hpp>",
+        "#include <tgbot/types/ChatJoinRequest.hpp>",
+        "#include <tgbot/types/SuccessfulPayment.hpp>",
         "#include <functional>",
         "#include <initializer_list>",
         "#include <string>",
@@ -2401,9 +2500,9 @@ coro::task<void> EventHandler::handleMessage(const Message::Ptr& message) const 
     val headerContent = buildCppHeader(
         forwardDeclarations = emptyList(),
         includes = listOf(
-            "#include \"EventBroadcaster.hpp\"",
-            "#include \"types/Update.hpp\"",
-            "#include \"tools/StringTools.hpp\"",
+            "#include <tgbot/EventBroadcaster.hpp>",
+            "#include <tgbot/types/Update.hpp>",
+            "#include <tgbot/tools/StringTools.hpp>",
             "#include <algorithm>",
             "#include <cstddef>",
             "#include <string>",
@@ -2494,8 +2593,8 @@ Bot::Bot(std::string token, HttpClient& httpClient, const std::string& url)
     val headerContent = buildCppHeader(
         forwardDeclarations = listOf("class EventBroadcaster;", "class HttpClient;"),
         includes = listOf(
-            "#include \"net/Api.hpp\"",
-            "#include \"EventHandler.hpp\"",
+            "#include <tgbot/net/Api.hpp>",
+            "#include <tgbot/EventHandler.hpp>",
             "#include <memory>",
             "#include <string>",
             "#include <utility>"
@@ -2507,8 +2606,8 @@ Bot::Bot(std::string token, HttpClient& httpClient, const std::string& url)
         headerName = "Bot",
         category = CppFileCategory.ROOT,
         includes = listOf(
-            "#include \"net/LibCoroHttpClient.hpp\"",
-            "#include \"EventBroadcaster.hpp\"",
+            "#include <tgbot/net/LibCoroHttpClient.hpp>",
+            "#include <tgbot/EventBroadcaster.hpp>",
             "#include <memory>",
             "#include <string>"
         ),

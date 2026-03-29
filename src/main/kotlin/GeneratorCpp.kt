@@ -20,6 +20,10 @@ private val CPP_BASE_INCLUDES = listOf(
 // Map of generated struct -> set of other struct names this struct includes
 private val cppIncludesMap: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
+private enum class CppFileType {
+    HEADER, SOURCE
+}
+
 private enum class CppFileCategory {
     TYPE,
     REQUEST,
@@ -842,27 +846,47 @@ private fun List<DocSection>.toCppModelFiles(): List<CppModelFile> {
     val customTypeNames = docTypeNames + requestStructNames + superTypeNames + setOf("TelegramModel")
 
     val files = mutableListOf<CppModelFile>()
-    files += generateTelegramModelFile()
-    files += generateFileTools()
-    files += generateInputFileClassFile()
-    files += generateTelegramNoValueClassFiles()
-    files += generateSuperTypeFiles()
-    files += docTypes.map { it.docType.toCppFile(customTypeNames) }
-    files += flatMap { section ->
-        section.docMethods.map { it.toCppRequestFile(customTypeNames) }
-    }
-    files += generateEventBroadcaster()
-    files += generateEventHandler()
-    files += generateStringTools()
-    files += generateBotClass()
-    files += generateHttpClient()
-    files += generateLibCoroHttpClient()
-    files += generateApi()
-    files += generateTelegramException()
-    files += generateWebhookService()
-    files += generateLongPoll()
+    generateCoreFiles(files)
+    generateRequestsFiles(files, customTypeNames)
+    generateModelFiles(files, docTypes, customTypeNames)
+    generateUtilsFiles(files)
+    generateNetFiles(files)
 
     return files
+}
+
+private fun List<DocSection>.generateCoreFiles(files: MutableList<CppModelFile>) {
+    files.add(generateEventBroadcaster())
+    files.add(generateEventHandler())
+    files.add(generateBotClass())
+}
+
+private fun List<DocSection>.generateModelFiles(files: MutableList<CppModelFile>, docTypes: List<DocTypeWithSection>, customTypeNames: Set<String>) {
+    files.add(generateTelegramModelFile())
+    files.add(generateInputFileClassFile())
+    files.addAll(generateTelegramNoValueClassFiles())
+    files.addAll(generateSuperTypeFiles())
+    files.addAll(docTypes.map { it.docType.toCppFile(customTypeNames) })
+}
+
+private fun List<DocSection>.generateRequestsFiles(files: MutableList<CppModelFile>, customTypeNames: Set<String>) {
+    files.addAll(flatMap { section ->
+        section.docMethods.map { it.toCppRequestFile(customTypeNames) }
+    })
+}
+
+private fun List<DocSection>.generateUtilsFiles(files: MutableList<CppModelFile>) {
+    files.add(generateFileTools())
+    files.add(generateStringTools())
+}
+
+private fun List<DocSection>.generateNetFiles(files: MutableList<CppModelFile>) {
+    files.add(generateHttpClient())
+    files.add(generateLibCoroHttpClient())
+    files.add(generateApi())
+    files.add(generateTelegramException())
+    files.add(generateWebhookService())
+    files.add(generateLongPoll())
 }
 
 fun List<DocSection>.writeCppFiles(outputDir: File) {
@@ -884,6 +908,12 @@ fun List<DocSection>.writeCppFiles(outputDir: File) {
 
     listOf(includeTypesDir, srcTypesDir, includeRequestsDir, srcRequestsDir, includeToolsDir, srcToolsDir, includeNetDir, srcNetDir).forEach { it.mkdirs() }
 
+    val rootFiles = mutableListOf<CppModelFile>()
+    val typesFiles = mutableListOf<CppModelFile>()
+    val requestsFiles = mutableListOf<CppModelFile>()
+    val toolsFiles = mutableListOf<CppModelFile>()
+    val netFiles = mutableListOf<CppModelFile>()
+
     val files = toCppModelFiles()
     files.forEach { file ->
         val (headerDir, sourceDir) = when (file.category) {
@@ -893,6 +923,13 @@ fun List<DocSection>.writeCppFiles(outputDir: File) {
             CppFileCategory.NET -> includeNetDir to srcNetDir
             CppFileCategory.ROOT -> includeDir to srcDir
         }
+        when (file.category) {
+            CppFileCategory.TYPE -> typesFiles.add(file)
+            CppFileCategory.REQUEST -> requestsFiles.add(file)
+            CppFileCategory.TOOLS -> toolsFiles.add(file)
+            CppFileCategory.NET -> netFiles.add(file)
+            CppFileCategory.ROOT -> rootFiles.add(file)
+        }
         File(headerDir, "${file.name}.hpp").writeText(file.headerContent)
         if (file.sourceContent != null) {
             File(sourceDir, "${file.name}.cpp").writeText(file.sourceContent)
@@ -900,14 +937,28 @@ fun List<DocSection>.writeCppFiles(outputDir: File) {
     }
 
     // Generate CMakeLists.txt
-    File(outputDir, "CMakeLists.txt").writeText(generateCppCMakeLists(files))
+    File(outputDir, "CMakeLists.txt").writeText(generateRootCMakeLists())
+    
+    File(includeDir, "CMakeLists.txt").writeText(generateCMakeLists(rootFiles, CppFileType.HEADER, true))
+    File(includeTypesDir, "CMakeLists.txt").writeText(generateCMakeLists(typesFiles, CppFileType.HEADER))
+    File(includeRequestsDir, "CMakeLists.txt").writeText(generateCMakeLists(requestsFiles, CppFileType.HEADER))
+    File(includeToolsDir, "CMakeLists.txt").writeText(generateCMakeLists(toolsFiles, CppFileType.HEADER))
+    File(includeNetDir, "CMakeLists.txt").writeText(generateCMakeLists(netFiles, CppFileType.HEADER))
+
+    File(srcDir, "CMakeLists.txt").writeText(generateCMakeLists(rootFiles, CppFileType.SOURCE, true))
+    File(srcTypesDir, "CMakeLists.txt").writeText(generateCMakeLists(typesFiles, CppFileType.SOURCE))
+    File(srcRequestsDir, "CMakeLists.txt").writeText(generateCMakeLists(requestsFiles, CppFileType.SOURCE))
+    File(srcToolsDir, "CMakeLists.txt").writeText(generateCMakeLists(toolsFiles, CppFileType.SOURCE))
+    File(srcNetDir, "CMakeLists.txt").writeText(generateCMakeLists(netFiles, CppFileType.SOURCE))
+    
+    // Generate VCPKG
     File(outputDir, "vcpkg.json").writeText(generateVcpkg())
 }
 
 private fun generateVcpkg(): String = buildString {
     appendLine("""{
     "name": "tgbot-lib",
-        "version": "1.0.0",
+        "version": "1.0.6",
         "dependencies": [
             "nlohmann-json",
             "cpp-httplib",
@@ -918,7 +969,42 @@ private fun generateVcpkg(): String = buildString {
     )
 }
 
-private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildString {
+private fun generateCMakeLists(files: List<CppModelFile>, type: CppFileType, isRoot: Boolean = false): String = buildString {
+    val fileExtension = if (type == CppFileType.HEADER) ".hpp" else ".cpp"
+    val fileCategory = files[0].category
+    val dirName = when (fileCategory) {
+        CppFileCategory.TYPE -> "TYPE"
+        CppFileCategory.REQUEST -> "REQUEST"
+        CppFileCategory.TOOLS -> "TOOLS"
+        CppFileCategory.NET -> "NET"
+        CppFileCategory.ROOT -> "ROOT"
+    }
+    val parentSet = if (type == CppFileType.HEADER) "TGBOT_HEADERS" else "TGBOT_SOURCES"
+    appendLine("""
+    # Auto-generated CMakeLists.txt for Telegram Bot API C++ models
+    # Generated by telegram-api-generator. Do not edit manually.
+
+    set(${dirName}_HEADERS
+    """.trimIndent()
+    )
+    files.forEach { appendLine("    ${'$'}{CMAKE_CURRENT_SOURCE_DIR}/${it.name}$fileExtension") }
+    appendLine("""
+    )
+
+    list(APPEND ${parentSet} ${'$'}{${dirName}_HEADERS})
+    set(${parentSet} "${'$'}{${parentSet}}" PARENT_SCOPE)
+
+    """.trimIndent()
+    )
+    if (isRoot) {
+        appendLine("add_subdirectory(types)")
+        appendLine("add_subdirectory(requests)")
+        appendLine("add_subdirectory(tools)")
+        appendLine("add_subdirectory(net)")
+    }
+}
+
+private fun generateRootCMakeLists(): String = buildString {
     appendLine("""
     # Auto-generated CMakeLists.txt for Telegram Bot API C++ models
     # Generated by telegram-api-generator. Do not edit manually.
@@ -930,7 +1016,7 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     endif()
                   
     project(tgbot-lib
-        VERSION 1.0.5
+        VERSION 1.0.6
         LANGUAGES CXX
         DESCRIPTION "Telegram Bot API C++ models"
     )
@@ -954,98 +1040,48 @@ private fun generateCppCMakeLists(files: List<CppModelFile>): String = buildStri
     pkg_check_modules(libcoro REQUIRED IMPORTED_TARGET libcoro)
     find_package(httplib)
     find_package(nlohmann_json)
+
+    set(TGBOT_SOURCES "")
+    set(TGBOT_HEADERS "")
+
+    add_subdirectory(include)
+    add_subdirectory(src)
     """.trimIndent()
     )
-    appendLine()
-    appendLine("# Collect all source files")
-    val headerFiles = files.map {
-        when (it.category) {
-            CppFileCategory.TYPE -> "include/types/${it.name}.hpp"
-            CppFileCategory.REQUEST -> "include/requests/${it.name}.hpp"
-            CppFileCategory.TOOLS -> "include/tools/${it.name}.hpp"
-            CppFileCategory.NET -> "include/net/${it.name}.hpp"
-            CppFileCategory.ROOT -> "include/${it.name}.hpp"
-        }
-    }.sorted()
-    val sourceFiles = files.filter { it.sourceContent != null }.map {
-        when (it.category) {
-            CppFileCategory.TYPE -> "src/types/${it.name}.cpp"
-            CppFileCategory.REQUEST -> "src/requests/${it.name}.cpp"
-            CppFileCategory.TOOLS -> "src/tools/${it.name}.cpp"
-            CppFileCategory.NET -> "src/net/${it.name}.cpp"
-            CppFileCategory.ROOT -> "src/${it.name}.cpp"
-        }
-    }.sorted()
-
-    appendLine("set(TELEGRAM_MODELS_HEADERS")
-    headerFiles.forEach { appendLine("    $it") }
-    appendLine(")")
-    appendLine()
-
-    if (sourceFiles.isNotEmpty()) {
-        appendLine("set(TELEGRAM_MODELS_SOURCES")
-        sourceFiles.forEach { appendLine("    $it") }
-        appendLine(")")
-        appendLine()
-    }
 
     appendLine("# Create library target")
-    if (sourceFiles.isNotEmpty()) {
-        appendLine(
-        """
-        add_library(tgbot-lib STATIC
-            ${'$'}{TELEGRAM_MODELS_SOURCES}
-        )
+    appendLine(
+    """
+    add_library(tgbot-lib STATIC
+        ${'$'}{TGBOT_SOURCES}
+    )
 
-        target_include_directories(tgbot-lib
-            PUBLIC
-                $<BUILD_INTERFACE:${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include>
-                $<INSTALL_INTERFACE:include>
-        )
+    target_include_directories(tgbot-lib
+        PUBLIC
+            $<BUILD_INTERFACE:${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>
+    )
 
-        if(APPLE)
-            message("Found MACOS")
-            target_link_libraries(tgbot-lib
-                PUBLIC
-                    "-framework CoreFoundation"
-                    "-framework CFNetwork"
-                    "-framework Security"
-            )
-        endif()
-        
+    if(APPLE)
+        message("Found MACOS")
         target_link_libraries(tgbot-lib
             PUBLIC
-                nlohmann_json::nlohmann_json
-                OpenSSL::SSL
-                OpenSSL::Crypto
-                PkgConfig::libcoro
-                httplib::httplib
+                "-framework CoreFoundation"
+                "-framework CFNetwork"
+                "-framework Security"
         )
-        """.trimIndent()
-        )
-    } else {
-        appendLine(
-        """
-        # Header-only library
-        add_library(tgbot-lib INTERFACE)
-        
-        target_include_directories(tgbot-lib
-            PUBLIC
-                $<BUILD_INTERFACE:${'$'}{CMAKE_CURRENT_SOURCE_DIR}/include>
-                $<INSTALL_INTERFACE:${'$'}{CMAKE_INSTALL_INCLUDEDIR}>
-        )
-        
-        target_link_libraries(tgbot-lib
-            INTERFACE
-                nlohmann_json::nlohmann_json
-                OpenSSL::SSL
-                OpenSSL::Crypto
-                PkgConfig::libcoro
-                httplib::httplib
-        )
-        """.trimIndent()
-        )
-    }
+    endif()
+    
+    target_link_libraries(tgbot-lib
+        PUBLIC
+            nlohmann_json::nlohmann_json
+            OpenSSL::SSL
+            OpenSSL::Crypto
+            PkgConfig::libcoro
+            httplib::httplib
+    )
+    """.trimIndent()
+    )
     
     appendLine("""
     # Install rules (optional)

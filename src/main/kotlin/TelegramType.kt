@@ -28,20 +28,19 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
         object InputMessageContent : Super(
             name = "InputMessageContent",
             subclasses = { it.startsWith("Input") && it.endsWith("MessageContent") },
-            deserializer = ""
-
+            deserializer = "",
         )
 
         object InlineQueryResult : Super(
             name = "InlineQueryResult",
             subclasses = { it.startsWith("InlineQueryResult") && "Results" !in it },
-            deserializer = ""
+            deserializer = "",
         )
 
         object PassportElementError : Super(
             name = "PassportElementError",
             subclasses = { it.startsWith("PassportElementError") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object InputMedia : Super(
@@ -56,79 +55,79 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                 "document" -> InputMediaDocument.serializer()
                else -> error("unknown type: " + type)
             }
-            """
+            """,
         )
 
         object ChatMember : Super(
             name = "ChatMember",
             subclasses = { it.startsWith("ChatMember") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object BotCommandScope : Super(
             name = "BotCommandScope",
             subclasses = { it.startsWith("BotCommandScope") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object ReactionType : Super(
             name = "ReactionType",
             subclasses = { it.startsWith("ReactionType") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object MessageOrigin : Super(
             name = "MessageOrigin",
             subclasses = { it.startsWith("MessageOrigin") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object ChatBoostSource : Super(
             name = "ChatBoostSource",
             subclasses = { it.startsWith("ChatBoostSource") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object MenuButton : Super(
             name = "MenuButton",
             subclasses = { it.startsWith("MenuButton") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object BackgroundFill : Super(
             name = "BackgroundFill",
             subclasses = { it.startsWith("BackgroundFill") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object BackgroundType : Super(
             name = "BackgroundType",
             subclasses = { it.startsWith("BackgroundType") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object RevenueWithdrawalState : Super(
             name = "RevenueWithdrawalState",
             subclasses = { it.startsWith("RevenueWithdrawalState") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object TransactionPartner : Super(
             name = "TransactionPartner",
             subclasses = { it.startsWith("TransactionPartner") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object PaidMedia : Super(
             name = "PaidMedia",
             subclasses = { it.startsWith("PaidMedia") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object InputPaidMedia : Super(
             name = "InputPaidMedia",
             subclasses = { it.startsWith("InputPaidMedia") },
-            deserializer = ""
+            deserializer = "",
         )
 
         object KeyboardOption : Super(
@@ -141,7 +140,7 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                     "ForceReply"
                 )
             },
-            deserializer = ""
+            deserializer = "",
         )
 
         object MaybeInaccessibleMessage : Super(
@@ -151,7 +150,31 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                                     InaccessibleMessage.serializer()
                                 } else {
                                     Message.serializer()
-                                }"""
+                                }""",
+        )
+
+        object StoryAreaType : Super(
+            name = "StoryAreaType",
+            subclasses = { it.startsWith("StoryAreaType") },
+            deserializer = "",
+        )
+
+        object OwnedGift : Super(
+            name = "OwnedGift",
+            subclasses = { it.startsWith("OwnedGift") && it != "OwnedGifts" },
+            deserializer = "",
+        )
+
+        object InputProfilePhoto : Super(
+            name = "InputProfilePhoto",
+            subclasses = { it.startsWith("InputProfilePhoto") },
+            deserializer = "",
+        )
+
+        object InputStoryContent : Super(
+            name = "InputStoryContent",
+            subclasses = { it.startsWith("InputStoryContent") },
+            deserializer = "",
         )
     }
 
@@ -200,6 +223,10 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             Super.InputPaidMedia,
             Super.KeyboardOption,
             Super.MaybeInaccessibleMessage,
+            Super.StoryAreaType,
+            Super.OwnedGift,
+            Super.InputProfilePhoto,
+            Super.InputStoryContent,
             WithAlternative.InputFileOrString,
             WithAlternative.IntegerOrString,
         )
@@ -210,6 +237,7 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
                 .firstOrNull { it.subclasses(docName) }
 
         fun from(type: String): TelegramType = when (type) {
+            "Int" -> Integer
             "Integer" -> Integer
             "String" -> StringType
             "Boolean" -> Boolean
@@ -242,6 +270,10 @@ sealed class TelegramType(val name: String, val superType: TelegramType? = findS
             "BotCommandScope" -> Super.BotCommandScope
             "KeyboardOption" -> Super.KeyboardOption
             "MaybeInaccessibleMessage" -> Super.MaybeInaccessibleMessage
+            "StoryAreaType" -> Super.StoryAreaType
+            "OwnedGift" -> Super.OwnedGift
+            "InputProfilePhoto" -> Super.InputProfilePhoto
+            "InputStoryContent" -> Super.InputStoryContent
             "InputFileOrString" -> WithAlternative.InputFileOrString
             "IntegerOrString" -> WithAlternative.IntegerOrString
             else -> {

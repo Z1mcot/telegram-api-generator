@@ -20,7 +20,7 @@ fun main() = runBlocking {
                 type.copy(
                     docFields = type.docFields.sortedByDescending { it.required }
                 )
-            }.filter { it.name != "MessageId" },
+            },
             docMethods = doc.docMethods.map { method ->
                 method.copy(
                     docParameters = method.docParameters.sortedByDescending { it.required }
@@ -43,14 +43,16 @@ fun main() = runBlocking {
             )
         }
     }
-    File("example/telegram.md").writeText(docs.toReadmeSmallExample())
-    File("example/telegram_tiny.md").writeText(docs.toReadmeTinyExample())
-    File("example/telegram_full.md").writeText(docs.toReadmeFullExample())
-    File("example/telegram.json").writeText(docs.toJson())
-    File("example/TelegramModelsOnly.kt").writeText(docsRequiredFirst.toKotlinModels(useKotlinXSerialization = false))
-    File("example/TelegramModels.kt").writeText(docsRequiredFirst.toKotlinModels(useKotlinXSerialization = true))
-    File("example/TelegramClient.kt").writeText(docsRequiredFirst.toKotlinMethods())
-    File("example/TelegramModels.rs").writeText(docs.toRustModels())
+//    File("example/telegram.md").writeText(docs.toReadmeSmallExample())
+//    File("example/telegram_tiny.md").writeText(docs.toReadmeTinyExample())
+//    File("example/telegram_full.md").writeText(docs.toReadmeFullExample())
+    // File("example/telegram.json").writeText(docs.toJson())
+    // File("example/TelegramModelsOnly.kt").writeText(docsRequiredFirst.toKotlinModels(useKotlinXSerialization = false))
+    // File("example/TelegramModels.kt").writeText(docsRequiredFirst.toKotlinModels(useKotlinXSerialization = true))
+    // File("example/TelegramClient.kt").writeText(docsRequiredFirst.toKotlinMethods())
+    // File("example/TelegramModels.rs").writeText(docs.toRustModels())
+    val cppOutputDir = File("generated/cpp")
+    docsRequiredFirst.writeCppFiles(cppOutputDir)
 
     println("🎉 $version - Examples generated!")
 }
